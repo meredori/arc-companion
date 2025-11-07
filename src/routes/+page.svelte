@@ -6,6 +6,12 @@
   />
 </svelte:head>
 
+<script lang="ts">
+  import { base } from '$app/paths';
+
+  const withBase = (href: string) => (base ? `${base}${href}` : href);
+</script>
+
 <div class="page-stack">
   <header class="space-y-4">
     <h1 class="text-4xl font-semibold">ARC Raiders Companion</h1>
@@ -17,25 +23,25 @@
   </header>
 
   <div class="grid gap-5 md:grid-cols-2">
-    <a class="section-card transition-transform duration-200 hover:-translate-y-1" href="/what-to-do">
+    <a class="section-card transition-transform duration-200 hover:-translate-y-1" href={withBase('/what-to-do')}>
       <h2 class="text-xl font-semibold">What To Do</h2>
       <p class="mt-2 text-sm text-slate-400">
         Item recommendations driven by synced data and personalized player goals.
       </p>
     </a>
-    <a class="section-card transition-transform duration-200 hover:-translate-y-1" href="/track">
+    <a class="section-card transition-transform duration-200 hover:-translate-y-1" href={withBase('/track')}>
       <h2 class="text-xl font-semibold">Track</h2>
       <p class="mt-2 text-sm text-slate-400">
         Quest, upgrade, and goal tracking that informs future loot decisions.
       </p>
     </a>
-    <a class="section-card transition-transform duration-200 hover:-translate-y-1" href="/blueprints">
+    <a class="section-card transition-transform duration-200 hover:-translate-y-1" href={withBase('/blueprints')}>
       <h2 class="text-xl font-semibold">Blueprints</h2>
       <p class="mt-2 text-sm text-slate-400">
         Manage owned schematics to unlock crafting suggestions and salvage guidance.
       </p>
     </a>
-    <a class="section-card transition-transform duration-200 hover:-translate-y-1" href="/run">
+    <a class="section-card transition-transform duration-200 hover:-translate-y-1" href={withBase('/run')}>
       <h2 class="text-xl font-semibold">Run Analyzer</h2>
       <p class="mt-2 text-sm text-slate-400">
         Live run logging with contextual tips and telemetry overlays.

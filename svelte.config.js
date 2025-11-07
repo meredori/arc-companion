@@ -20,7 +20,12 @@ const config = {
     },
     prerender: {
       handleHttpError: ({ status, path, referrer }) => {
-        if (status === 404 && path === '/admin') {
+        const allowlisted404 = ['/admin'];
+        if (basePath) {
+          allowlisted404.push(`${basePath.replace(/\/$/, '')}/admin`);
+        }
+
+        if (status === 404 && allowlisted404.includes(path)) {
           return;
         }
 
