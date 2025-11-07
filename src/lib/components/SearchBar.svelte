@@ -1,10 +1,10 @@
+<script lang="ts" context="module">
+  export type { SearchBarInputDetail } from './types';
+</script>
+
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import type { HTMLInputElement } from 'svelte/elements';
-
-  export interface SearchBarInputDetail {
-    value: string;
-  }
+  import type { SearchBarInputDetail } from './types';
 
   const dispatch = createEventDispatcher<{ input: SearchBarInputDetail }>();
 
@@ -13,7 +13,9 @@
   export let label = 'Search';
 
   type SearchInputEvent = {
-    currentTarget: HTMLInputElement;
+    currentTarget: {
+      value: string;
+    };
   };
 
   function handleInput(event: SearchInputEvent) {

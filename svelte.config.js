@@ -17,6 +17,15 @@ const config = {
     },
     paths: {
       base: dev ? '' : process.env.BASE_PATH ?? ''
+    },
+    prerender: {
+      handleHttpError: ({ status, path, referrer }) => {
+        if (status === 404 && path === '/admin') {
+          return;
+        }
+
+        throw new Error(`${status} ${path}${referrer ? ` (linked from ${referrer})` : ''}`);
+      }
     }
   }
 };

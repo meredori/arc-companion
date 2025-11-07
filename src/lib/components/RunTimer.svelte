@@ -1,23 +1,23 @@
+<script lang="ts" context="module">
+  export type { RunTimerProps } from './types';
+</script>
+
 <script lang="ts">
-  export interface RunTimerProps {
-    label?: string;
-    elapsed: number;
-    isRunning?: boolean;
-  }
+  import type { RunTimerProps } from './types';
 
-export let label: RunTimerProps['label'] = 'Current Run';
-export let elapsed: RunTimerProps['elapsed'] = 0;
-export let isRunning: RunTimerProps['isRunning'] = false;
+  export let label: RunTimerProps['label'] = 'Current Run';
+  export let elapsed: RunTimerProps['elapsed'] = 0;
+  export let isRunning: RunTimerProps['isRunning'] = false;
 
-let minutes = '00';
-let seconds = '00';
+  let minutes = '00';
+  let seconds = '00';
 
-$: minutes = Math.floor(elapsed / 60)
-  .toString()
-  .padStart(2, '0');
-$: seconds = Math.floor(elapsed % 60)
-  .toString()
-  .padStart(2, '0');
+  $: minutes = Math.floor(elapsed / 60)
+    .toString()
+    .padStart(2, '0');
+  $: seconds = Math.floor(elapsed % 60)
+    .toString()
+    .padStart(2, '0');
 </script>
 
 <div class="grid gap-3 rounded-2xl border border-slate-800 bg-slate-950/70 p-5 text-slate-200 shadow-card">

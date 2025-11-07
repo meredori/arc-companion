@@ -1,12 +1,9 @@
-<script lang="ts">
-  export type RecommendationAction = 'save' | 'keep' | 'salvage' | 'sell';
+<script lang="ts" context="module">
+  export type { RecommendationAction, RecommendationCardProps } from './types';
+</script>
 
-  export interface RecommendationCardProps {
-    name: string;
-    action: RecommendationAction;
-    rarity?: string;
-    reason?: string;
-  }
+<script lang="ts">
+  import type { RecommendationAction, RecommendationCardProps } from './types';
 
   export let name: RecommendationCardProps['name'];
   export let action: RecommendationCardProps['action'];

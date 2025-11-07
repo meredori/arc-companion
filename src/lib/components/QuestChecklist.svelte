@@ -1,9 +1,9 @@
+<script lang="ts" context="module">
+  export type { ChecklistItem } from './types';
+</script>
+
 <script lang="ts">
-  export interface ChecklistItem {
-    id: string;
-    label: string;
-    completed?: boolean;
-  }
+  import type { ChecklistItem } from './types';
 
   export let title = 'Quest Checklist';
   export let items: ChecklistItem[] = [];
