@@ -6,29 +6,40 @@
   />
 </svelte:head>
 
-<div class="space-y-6">
-  <h1 class="text-3xl font-bold tracking-tight text-white">ARC Raiders Companion</h1>
-  <p class="max-w-2xl text-slate-300">
-    This SvelteKit workspace establishes the baseline project structure, tooling, and routes described
-    in the design document. Each section of the application will evolve from these placeholders as the
-    data pipeline, recommendation engine, and offline-ready experiences are implemented.
-  </p>
-  <div class="grid gap-4 md:grid-cols-2">
-    <a class="rounded-lg border border-slate-800 bg-slate-900/60 p-4 hover:border-sky-500" href="/what-to-do">
-      <h2 class="text-xl font-semibold text-white">What To Do</h2>
-      <p class="text-sm text-slate-400">Item recommendations driven by synced data and player goals.</p>
+<div class="page-stack">
+  <header class="space-y-4">
+    <h1 class="text-4xl font-semibold">ARC Raiders Companion</h1>
+    <p class="max-w-2xl text-sm text-slate-400">
+      This workspace establishes the shared layout, theming tokens, and component scaffolding that power
+      each feature vertical. As data pipelines and persistence arrive, these sections will evolve into the
+      fully interactive companion experience.
+    </p>
+  </header>
+
+  <div class="grid gap-5 md:grid-cols-2">
+    <a class="section-card transition-transform duration-200 hover:-translate-y-1" href="/what-to-do">
+      <h2 class="text-xl font-semibold">What To Do</h2>
+      <p class="mt-2 text-sm text-slate-400">
+        Item recommendations driven by synced data and personalized player goals.
+      </p>
     </a>
-    <a class="rounded-lg border border-slate-800 bg-slate-900/60 p-4 hover:border-sky-500" href="/track">
-      <h2 class="text-xl font-semibold text-white">Track</h2>
-      <p class="text-sm text-slate-400">Quest, upgrade, and goal tracking that informs item priorities.</p>
+    <a class="section-card transition-transform duration-200 hover:-translate-y-1" href="/track">
+      <h2 class="text-xl font-semibold">Track</h2>
+      <p class="mt-2 text-sm text-slate-400">
+        Quest, upgrade, and goal tracking that informs future loot decisions.
+      </p>
     </a>
-    <a class="rounded-lg border border-slate-800 bg-slate-900/60 p-4 hover:border-sky-500" href="/blueprints">
-      <h2 class="text-xl font-semibold text-white">Blueprints</h2>
-      <p class="text-sm text-slate-400">Manage owned schematics to unlock crafting suggestions.</p>
+    <a class="section-card transition-transform duration-200 hover:-translate-y-1" href="/blueprints">
+      <h2 class="text-xl font-semibold">Blueprints</h2>
+      <p class="mt-2 text-sm text-slate-400">
+        Manage owned schematics to unlock crafting suggestions and salvage guidance.
+      </p>
     </a>
-    <a class="rounded-lg border border-slate-800 bg-slate-900/60 p-4 hover:border-sky-500" href="/run">
-      <h2 class="text-xl font-semibold text-white">Run Analyzer</h2>
-      <p class="text-sm text-slate-400">Live run logging with contextual tips for active sessions.</p>
+    <a class="section-card transition-transform duration-200 hover:-translate-y-1" href="/run">
+      <h2 class="text-xl font-semibold">Run Analyzer</h2>
+      <p class="mt-2 text-sm text-slate-400">
+        Live run logging with contextual tips and telemetry overlays.
+      </p>
     </a>
   </div>
 </div>

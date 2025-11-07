@@ -2,13 +2,44 @@
   <title>Run Analyzer | ARC Companion</title>
 </svelte:head>
 
-<section class="space-y-4">
-  <h1 class="text-2xl font-semibold text-white">Run Analyzer</h1>
-  <p class="text-slate-300">
-    A guided interface for live run tracking, timers, and contextual tips will be implemented here using
-    the stores defined in <code>src/lib</code>.
-  </p>
-  <div class="rounded-lg border border-dashed border-slate-700 bg-slate-900/50 p-6 text-sm text-slate-400">
-    Placeholder controls for run logging, timers, and dynamic tips.
-  </div>
+<script lang="ts">
+  import { RunTimer, SearchBar, TipsPanel } from '$lib/components';
+
+  let encounter = '';
+  const liveTips = [
+    'Log major loot pickups and deaths to populate the run history dashboard.',
+    'Timer controls will sync with keyboard shortcuts for quick splits.',
+    'Tips adapt as quests are completed and loot needs change mid-run.'
+  ];
+</script>
+
+<section class="page-stack">
+  <header class="space-y-3">
+    <h1 class="text-3xl font-semibold">Run Analyzer</h1>
+    <p class="max-w-2xl text-sm text-slate-400">
+      Log real-time run data, monitor pacing, and surface contextual tips. This placeholder layout
+      sketches the final structure for timers, logging, and guidance widgets.
+    </p>
+  </header>
+
+  <section class="section-card space-y-6">
+    <div class="grid gap-6 lg:grid-cols-[3fr,2fr]">
+      <div class="space-y-6">
+        <RunTimer label="Live session" elapsed={782} isRunning={false} />
+        <div class="space-y-3">
+          <h2 class="text-base font-semibold uppercase tracking-[0.3em] text-slate-400">Log Encounter</h2>
+          <SearchBar
+            label="Encounter"
+            placeholder="Tag an area, boss, or event"
+            value={encounter}
+            on:input={({ detail }) => (encounter = detail.value)}
+          />
+          <p class="text-xs text-slate-500">
+            Encounter tagging will associate loot drops, deaths, and quest progress for analytics.
+          </p>
+        </div>
+      </div>
+      <TipsPanel heading="Adaptive run tips" tips={liveTips} />
+    </div>
+  </section>
 </section>
