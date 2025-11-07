@@ -18,6 +18,8 @@ jobs:
   build:
     name: Build & Test
     runs-on: ubuntu-latest
+    env:
+      BASE_PATH: /arc-companion
 
     steps:
       - uses: actions/checkout@v4
