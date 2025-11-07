@@ -1,5 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
+  import type { HTMLInputElement } from 'svelte/elements';
 
   export interface SearchBarInputDetail {
     value: string;
@@ -11,9 +12,12 @@
   export let placeholder = 'Search items';
   export let label = 'Search';
 
-  function handleInput(event: Event) {
-    const nextValue = (event.target as HTMLInputElement)?.value ?? '';
-    dispatch('input', { value: nextValue });
+  type SearchInputEvent = {
+    currentTarget: HTMLInputElement;
+  };
+
+  function handleInput(event: SearchInputEvent) {
+    dispatch('input', { value: event.currentTarget.value });
   }
 </script>
 
