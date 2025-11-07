@@ -1,8 +1,7 @@
 import adapter from '@sveltejs/adapter-static';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
-const dev = process.argv.includes('dev');
-const basePath = dev ? '' : process.env.BASE_PATH ?? '/arc-companion';
+const basePath = process.env.BASE_PATH ?? '';
 
 const config = {
   preprocess: vitePreprocess(),
@@ -17,8 +16,7 @@ const config = {
       $lib: 'src/lib'
     },
     paths: {
-      base: basePath,
-      assets: basePath
+      base: basePath
     },
     prerender: {
       handleHttpError: ({ status, path, referrer }) => {
