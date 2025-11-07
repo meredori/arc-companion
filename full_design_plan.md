@@ -12,7 +12,7 @@ It is intended for **AI code-generation (Codex)** or human engineers to implemen
 ### Primary Objectives
 - Provide deterministic recommendations for each loot item: **save**, **keep**, **salvage**, or **sell**.
 - Use authoritative data from **MetaForge API** and the **ARC Raiders Wiki**.
-- Persist user state locally (offline-friendly, no login).
+- Persist user state locally (offline-friendly, no login) with tolerance for "lite offline" sessions that defer heavy sync/admin operations until connectivity returns.
 - Offer dynamic, personalized **run tracking and analytics**.
 - Allow users to track quests, blueprints, and goals to feed into item recommendations.
 
@@ -52,36 +52,37 @@ It is intended for **AI code-generation (Codex)** or human engineers to implemen
 ### 3.2 Pipeline Stages
 
 **Pass A — Seed from Loot Table**
-- Parse all rows from the Loot wiki page.
-- Extract columns: Name, Category, Rarity, Sell Price, Recycles To, Keep for Quests/Workshop.
-- Add `wikiItemUrl` for enrichment.
+- Parse all rows from the Loot wiki page using a manual batching script that respects rate limits (configurable batch size with retry).
+- Extract columns: Name, Category, Rarity, Sell Price, Recycles To, Keep for Quests/Workshop, and stage each batch to a temporary `staging/pass-a/` directory for preview in the protected admin tooling.
+- Add `wikiItemUrl` for enrichment and surface deltas for admin approval before promotion to Pass B.
 
 **Pass B — Wiki Item Enrichment**
-- For each item, crawl its wiki page.
+- For each item, crawl its wiki page using the approved Pass A staging list (manual approval gate in admin dashboard).
 - Parse structured sections:
   - **Sources** (enemy, zone, vendor)
   - **Crafting** (input/output)
   - **Recycle/Salvage** (outputs, yields, base vs in-raid)
   - **Vendors** (names, locations)
   - **Sell Price** (verify)
-- Output structured item enrichment JSON.
+- Output structured item enrichment JSON batches, log fetch anomalies, and allow admins to review/override parsed values before merging.
 
 **Pass C — MetaForge Merge**
-- Fetch MetaForge data for items, quests, vendors.
-- Merge and normalize fields with wiki data.
-- Prefer MetaForge IDs; keep provenance flags.
+- Fetch MetaForge data for items, quests, vendors using the admin-configured API keys.
+- Merge and normalize fields with wiki data with a preview diff shown in the admin tooling to resolve mismatches.
+- Prefer MetaForge IDs; keep provenance flags and record manual overrides during approval.
 
 **Pass D — Quest & Quest Chain Importer**
-- Use MetaForge and wiki quest data.
-- Build `quests.json` and `chains.json` with ordered questline structure.
-- Extract required items per quest.
-- Include upgrades/workbench packs.
+- Use MetaForge and wiki quest data with manual batching controls identical to Pass A to prevent API exhaustion.
+- Build `quests.json` and `chains.json` with ordered questline structure and present draft quest trees for admin validation.
+- Extract required items per quest and flag missing items for admin decision in the protected tooling.
+- Include upgrades/workbench packs with an approval checklist before they enter the canonical dataset.
 
 **Pass E — Conflict Resolution & Versioning**
-- Resolve field conflicts (e.g., sell price, salvage outputs).
-- Add metadata: `{ generatedAt, sourceURLs, conflicts[] }`.
+- Resolve field conflicts (e.g., sell price, salvage outputs) via the admin conflict-resolution UI that stores accepted resolutions.
+- Add metadata: `{ generatedAt, sourceURLs, conflicts[] }` and record the approving admin plus timestamps for audit history.
 
 **Pass F — Output Files**
+- Generate final JSON artifacts only after admin approval, keeping rejected drafts stored under `data/_pending/` for re-review.
 ```
 data/items.json
  data/quests.json
@@ -117,6 +118,8 @@ interface Item {
   provenance: { wiki: boolean; api: boolean };
 }
 ```
+
+`needsTotals` is computed client-side based on the user's quest and workshop progress; when the backend data omits the field, the UI falls back to recomputing totals from the canonical quest/upgrade datasets and documents the calculation path for transparency in the admin tooling.
 
 ### Quest Schema
 ```ts
@@ -211,6 +214,7 @@ function recommend(item, context) {
   - Shows what items to prioritize based on current quest/goal data.
   - Adjusts dynamically for **Free Loadout** (tips for augment trade-ins, safe-pocket absence).
 - **Runs History Dashboard**: Aggregates past runs for performance metrics.
+- **History Management**: Inline edit/delete controls with undo to maintain accurate analytics and comply with admin retention policies.
 
 ### KPIs Calculated
 | Metric | Formula |
@@ -234,7 +238,7 @@ function recommend(item, context) {
 | **Track** | Goals list with per-item progress and acquisition suggestions |
 | **Blueprints** | Toggle ownership, affects crafting logic |
 | **Run** | Run Analyzer live interface |
-| **Runs** | Metrics + historical runs table |
+| **Runs** | Metrics + historical runs table with edit/delete history controls |
 
 ### Components
 - **SearchBar** — global item search.
@@ -253,6 +257,7 @@ function recommend(item, context) {
 ---
 
 ## 9. File Structure Example
+The SPA reserves a dedicated admin workspace that is not exposed in the primary navigation; admin routes live under `src/routes/admin/` with their own layout guard and data loaders for the protected tooling referenced in the pipeline passes.
 ```
 scripts/import/
   wiki-loot.mjs
@@ -282,6 +287,9 @@ src/routes/
   blueprints/+page.svelte
   run/+page.svelte
   runs/+page.svelte
+  admin/
+    +layout.svelte
+    passes/+page.svelte
 ```
 
 ---
@@ -292,7 +300,7 @@ src/routes/
 3. Deterministic recommendation logic yields consistent results for each item.
 4. Run Analyzer correctly records, persists, and displays metrics.
 5. Tips adapt to current quests, free loadout, and goals.
-6. Entire app functions offline after first load.
+6. Entire app supports "lite offline" sessions (read and staged writes) while guaranteeing persistence sync once connectivity returns.
 
 ---
 
