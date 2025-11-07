@@ -1,21 +1,55 @@
 <script lang="ts">
   import '../app.postcss';
+  import { page } from '$app/stores';
+  import { base } from '$app/paths';
+
+  const links = [
+    { href: '/what-to-do', label: 'What To Do' },
+    { href: '/track', label: 'Track' },
+    { href: '/blueprints', label: 'Blueprints' },
+    { href: '/run', label: 'Run' },
+    { href: '/runs', label: 'Runs' },
+    { href: '/previews', label: 'Previews' },
+    { href: '/admin', label: 'Admin' }
+  ];
+
+  const stripBase = (pathname: string) => {
+    if (!base || !pathname.startsWith(base)) {
+      return pathname;
+    }
+
+    const trimmed = pathname.slice(base.length);
+    return trimmed ? trimmed : '/';
+  };
+
+  const withBase = (href: string) => `${base}${href}`.replace(/\/{2,}/g, '/');
+
+  const isActive = (href: string, pathname: string) => {
+    const normalized = stripBase(pathname);
+    return normalized === href || (href !== '/' && normalized.startsWith(`${href}/`));
+  };
 </script>
 
-<main class="min-h-screen bg-slate-950 text-slate-100">
-  <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur">
-    <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-      <a class="text-lg font-semibold tracking-tight" href="/">ARC Companion</a>
-      <nav class="flex gap-4 text-sm uppercase text-slate-300">
-        <a class="hover:text-sky-400" href="/what-to-do">What To Do</a>
-        <a class="hover:text-sky-400" href="/track">Track</a>
-        <a class="hover:text-sky-400" href="/blueprints">Blueprints</a>
-        <a class="hover:text-sky-400" href="/run">Run</a>
-        <a class="hover:text-sky-400" href="/runs">Runs</a>
+<main class="app-shell">
+  <header class="app-header">
+    <div class="app-container flex items-center justify-between gap-6 py-5">
+      <a class="brand" href={withBase('/')}>
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-name">ARC Companion</span>
+      </a>
+      <nav aria-label="Primary" class="nav-links">
+        {#each links as link}
+          <a
+            class:active-link={isActive(link.href, $page.url.pathname)}
+            href={withBase(link.href)}
+            aria-current={isActive(link.href, $page.url.pathname) ? 'page' : undefined}
+            >{link.label}</a
+          >
+        {/each}
       </nav>
     </div>
   </header>
-  <section class="mx-auto max-w-6xl px-6 py-8">
+  <section class="app-container pb-16 pt-10">
     <slot />
   </section>
 </main>

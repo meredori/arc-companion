@@ -5,3 +5,127 @@
 :root {
   color-scheme: dark;
 }
+
+@layer base {
+  html {
+    @apply font-sans text-base text-slate-100 antialiased;
+    background-color: theme('colors.surface.950');
+  }
+
+  body {
+    @apply m-0 min-h-screen bg-transparent;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-display text-slate-100 tracking-tight;
+  }
+
+  p {
+    @apply text-slate-300;
+  }
+}
+
+@layer components {
+  .app-shell {
+    @apply min-h-screen bg-surface-950 text-slate-100;
+  }
+
+  .app-header {
+    @apply border-b border-slate-900/80 bg-slate-950/80 backdrop-blur;
+  }
+
+  .app-container {
+    @apply mx-auto w-full max-w-6xl px-5 sm:px-6 lg:px-8;
+  }
+
+  .brand {
+    @apply inline-flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.32em] text-slate-200 no-underline;
+  }
+
+  .brand:hover {
+    @apply text-sky-300;
+  }
+
+  .brand-mark {
+    @apply h-8 w-8 rounded-full border border-sky-500/60 bg-gradient-to-br from-sky-500/20 via-slate-900 to-slate-900 shadow-brand;
+  }
+
+  .brand-name {
+    @apply text-base font-semibold tracking-[0.32em];
+  }
+
+  .nav-links {
+    @apply flex flex-wrap items-center gap-4 text-[0.7rem] font-semibold uppercase tracking-[0.38em] text-slate-400;
+  }
+
+  .nav-links a {
+    @apply transition-colors duration-200 hover:text-sky-300;
+  }
+
+  .nav-links a.active-link {
+    @apply text-sky-300;
+  }
+
+  .page-stack {
+    @apply space-y-8;
+  }
+
+  .section-card {
+    @apply rounded-3xl border border-slate-800/80 bg-slate-950/70 p-6 shadow-card;
+  }
+
+  .section-grid {
+    @apply grid gap-6 md:grid-cols-2;
+  }
+
+  .shadow-card {
+    box-shadow: 0 20px 60px -40px rgba(15, 23, 42, 0.8), inset 0 1px 0 0 rgba(148, 163, 184, 0.08);
+  }
+
+  .shadow-brand {
+    box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.45), 0 12px 35px -20px rgba(56, 189, 248, 0.65);
+  }
+
+  .badge {
+    @apply inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-widest;
+  }
+
+  .badge-action-save {
+    @apply border-emerald-400/60 bg-emerald-500/10 text-emerald-300;
+  }
+
+  .badge-action-keep {
+    @apply border-sky-400/60 bg-sky-500/10 text-sky-300;
+  }
+
+  .badge-action-salvage {
+    @apply border-amber-400/60 bg-amber-500/10 text-amber-300;
+  }
+
+  .badge-action-sell {
+    @apply border-rose-400/60 bg-rose-500/10 text-rose-300;
+  }
+
+  .recommendation-card {
+    @apply rounded-3xl border border-slate-800/80 bg-slate-950/70 p-6 shadow-card transition-transform duration-200 hover:-translate-y-1;
+  }
+
+  .chip {
+    @apply inline-flex items-center rounded-full border px-4 py-1.5 font-semibold uppercase tracking-[0.3em];
+  }
+
+  .chip.muted {
+    @apply border-slate-800 bg-slate-900/60 text-slate-500;
+  }
+}
+
+@layer utilities {
+  .content-grid {
+    @apply grid gap-6 lg:grid-cols-[2fr,1fr];
+  }
+}

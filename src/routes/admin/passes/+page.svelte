@@ -2,13 +2,15 @@
   <title>Import Passes | ARC Companion</title>
 </svelte:head>
 
-<section class="space-y-4">
-  <h2 class="text-xl font-semibold text-white">Data Import Passes</h2>
-  <p class="text-slate-300">
-    Review queues, diff viewers, and approval workflows for Pass A-F will be surfaced here to support
-    the staged data pipeline described in the design document.
-  </p>
-  <ol class="list-decimal space-y-2 pl-5 text-slate-400">
+<article class="space-y-5">
+  <header class="space-y-2">
+    <h2 class="text-xl font-semibold text-white">Data Import Passes</h2>
+    <p class="text-sm text-slate-400">
+      Each pass will expose approval queues, diff viewers, and retry tooling. The checklist below
+      illustrates the lifecycle that will be wired into the admin dashboard.
+    </p>
+  </header>
+  <ol class="list-decimal space-y-3 rounded-2xl border border-slate-800/70 bg-slate-950/60 p-6 pl-8 text-sm text-slate-300">
     <li>Pass A — Wiki loot seed staging</li>
     <li>Pass B — Item enrichment</li>
     <li>Pass C — MetaForge merge</li>
@@ -16,4 +18,4 @@
     <li>Pass E — Conflict resolution</li>
     <li>Pass F — Final JSON outputs</li>
   </ol>
-</section>
+</article>
