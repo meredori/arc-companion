@@ -4,6 +4,8 @@
 
 <script lang="ts">
   /* eslint-env browser */
+  /* globals globalThis */
+  import { browser } from '$app/environment';
   import { onDestroy } from 'svelte';
   import { derived, get } from 'svelte/store';
   import { RunTimer, TipsPanel } from '$lib/components';
@@ -57,8 +59,12 @@
   let runForm = createDefaultForm(get(settings).freeLoadoutDefault);
   let tips = [];
   let elapsedSeconds = 0;
-  const intervalSet = window.setInterval.bind(window);
-  const intervalClear = window.clearInterval.bind(window);
+  const intervalSet = browser
+    ? window.setInterval.bind(window)
+    : globalThis.setInterval.bind(globalThis);
+  const intervalClear = browser
+    ? window.clearInterval.bind(window)
+    : globalThis.clearInterval.bind(globalThis);
   let timer: ReturnType<typeof intervalSet> | null = null;
 
   const stopTimer = () => {
