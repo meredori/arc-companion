@@ -57,11 +57,13 @@
   let runForm = createDefaultForm(get(settings).freeLoadoutDefault);
   let tips = [];
   let elapsedSeconds = 0;
-  let timer: ReturnType<typeof globalThis.setInterval> | null = null;
+  const intervalSet = window.setInterval.bind(window);
+  const intervalClear = window.clearInterval.bind(window);
+  let timer: ReturnType<typeof intervalSet> | null = null;
 
   const stopTimer = () => {
     if (timer) {
-      globalThis.clearInterval(timer);
+      intervalClear(timer);
       timer = null;
     }
   };
@@ -73,7 +75,7 @@
       elapsedSeconds = Math.max(0, Math.floor((Date.now() - startTime) / 1000));
     };
     tick();
-    timer = globalThis.setInterval(tick, 1000);
+    timer = intervalSet(tick, 1000);
   };
 
   const nowIso = () => new Date().toISOString();
