@@ -43,15 +43,22 @@ The project is configured for SvelteKit with TypeScript, TailwindCSS, ESLint, Pr
 └── static/                  # Static assets served directly (e.g. favicon)
 ```
 
-Key routes (`src/routes/`) already exist for:
-- `/what-to-do`
-- `/track`
-- `/blueprints`
-- `/run`
-- `/runs`
-- `/admin/passes`
+Key routes (`src/routes/`) now include:
 
-Each page contains descriptive placeholder copy to guide future implementation work.
+- `/what-to-do` — tokenized item recommendations that factor in quests, workbenches, and expedition projects.
+- `/what-i-have` — the inventory control center for quest completion, workbench upgrades, blueprint ownership, and expedition project contributions.
+- `/track` — streamlined quest + upgrade checklist (legacy view).
+- `/blueprints` — focused blueprint ownership manager.
+- `/run` / `/runs` — live run logger + historical dashboard.
+- `/admin/passes` — import pipeline controls (rerun/approve/stage inspection).
+
+Each section is wired to the shared stores so toggling a quest, bench, or project immediately influences the What To Do page.
+
+## Workshop Upgrade Data
+
+Instructions for capturing bench upgrade requirements live in `docs/workbench-upgrades.md`. Use that
+guide when copying tables from the ARC Raiders wiki so the **What I Have** page and recommendation
+engine stay accurate.
 
 ## Continuous Integration
 
@@ -64,13 +71,56 @@ GitHub Actions workflows (`.github/workflows/ci.yml`) execute on pull requests a
 Artifacts generated on pull requests can be previewed using GitHub Pages environments. Pushes to
 `main` publish an artifact suitable for production deployment.
 
-## TailwindCSS Usage
+## Data ingestion & assets
+
+### Base data
+
+The canonical JSON artifacts under `static/data/` (items, quests, upgrades, projects, vendors, chains)
+are generated from the richer temp feeds checked into `temp/`:
+
+- `temp/items.json`
+- `temp/quests.json`
+- `temp/hideoutModules.json`
+- `temp/projects.json`
+
+Use the helper script whenever those files (or `/static/images/items/*`) are refreshed:
+
+```bash
+node scripts/data/merge-temp-data.mjs
+```
+
+The script:
+
+1. Normalises IDs (`item-…`, `upgrade-…`, `project-…`).
+2. Points images at `/static/images/items/<filename>` when a matching file exists.
+3. Merges recycle data, quest rewards/objectives, workbench upgrade levels, and expedition projects.
+4. Writes the consolidated results to `static/data/items.json`, `static/data/quests.json`,
+   `static/data/upgrades.json`, and `static/data/projects.json`.
+
+### Workbench upgrade capture
+
+When new bench levels appear on the wiki, paste their requirement tables into
+`docs/workbench-upgrades.md`. That guide explains the JSON structure expected by the merge script so
+it can ingest `static/data/upgrades.json` reliably.
+
+### Expedition projects
+
+`static/data/projects.json` describes expedition projects and their phases. The **What I Have** page
+lets you record partial contributions; state is persisted in `localStorage` via the project progress
+store. Once a phase reaches 100 %, the What To Do recommendations stop flagging its items as “keep.”
+
+### Images
+
+Drop loot art into `static/images/items/` using snake_case filenames (e.g. `advanced_arc_powercell.png`).
+The merge script automatically rewrites `imageUrl` fields to `/images/items/<file>` when possible.
+
+## TailwindCSS usage
 
 Global Tailwind layers are imported through `src/app.postcss` and activated in the root layout. When
 adding new components, reference the Tailwind configuration in `tailwind.config.cjs`.
 
-## Import Pipeline Stubs
+## Import pipeline stubs
 
-`scripts/import/` contains executable placeholders for the staged import passes described in the
-design document. Replace the console output with real fetch/transform/approve logic when
-implementing the data tooling.
+`scripts/import/` still mirrors the planned staged importer (Pass A–F). The data merge script
+described above is a stopgap until the import pipeline is wired to the same feeds. Replace the console
+output in `scripts/import/*.mjs` with the real fetch/transform/approve logic as backend work progresses.

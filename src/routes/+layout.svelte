@@ -3,8 +3,15 @@
   import { page } from '$app/stores';
   import { base } from '$app/paths';
 
+  export let data;
+  export let form;
+  export let params;
+  const __layoutProps = { data, form, params };
+  void __layoutProps;
+
   const links = [
     { href: '/what-to-do', label: 'What To Do' },
+    { href: '/what-i-have', label: 'What I Have' },
     { href: '/track', label: 'Track' },
     { href: '/blueprints', label: 'Blueprints' },
     { href: '/run', label: 'Run' },

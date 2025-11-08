@@ -1,1 +1,1020 @@
-[]
+[
+  {
+    "id": "upgrade-explosives-station-level-1",
+    "name": "Explosives Station · Level 1",
+    "bench": "Explosives Station",
+    "level": 1,
+    "items": [
+      {
+        "itemId": "item-rubber-parts",
+        "qty": 50
+      },
+      {
+        "itemId": "item-arc-alloy",
+        "qty": 6
+      }
+    ]
+  },
+  {
+    "id": "upgrade-explosives_bench-1",
+    "name": "Explosives Station · Level 1",
+    "bench": "Explosives Station",
+    "level": 1,
+    "items": [
+      {
+        "itemId": "item-rubber-parts",
+        "qty": 50
+      },
+      {
+        "itemId": "item-arc-alloy",
+        "qty": 6
+      }
+    ]
+  },
+  {
+    "id": "upgrade-explosives-station-level-2",
+    "name": "Explosives Station · Level 2",
+    "bench": "Explosives Station",
+    "level": 2,
+    "items": [
+      {
+        "itemId": "item-synthesized-fuel",
+        "qty": 3
+      },
+      {
+        "itemId": "item-crude-explosives",
+        "qty": 5
+      },
+      {
+        "itemId": "item-pop-trigger",
+        "qty": 5
+      }
+    ]
+  },
+  {
+    "id": "upgrade-explosives_bench-2",
+    "name": "Explosives Station · Level 2",
+    "bench": "Explosives Station",
+    "level": 2,
+    "items": [
+      {
+        "itemId": "item-synthesized-fuel",
+        "qty": 3
+      },
+      {
+        "itemId": "item-crude-explosives",
+        "qty": 5
+      },
+      {
+        "itemId": "item-pop-trigger",
+        "qty": 5
+      }
+    ]
+  },
+  {
+    "id": "upgrade-explosives-station-level-3",
+    "name": "Explosives Station · Level 3",
+    "bench": "Explosives Station",
+    "level": 3,
+    "items": [
+      {
+        "itemId": "item-laboratory-reagents",
+        "qty": 3
+      },
+      {
+        "itemId": "item-explosive-compound",
+        "qty": 5
+      },
+      {
+        "itemId": "item-rocketeer-driver",
+        "qty": 3
+      }
+    ]
+  },
+  {
+    "id": "upgrade-explosives_bench-3",
+    "name": "Explosives Station · Level 3",
+    "bench": "Explosives Station",
+    "level": 3,
+    "items": [
+      {
+        "itemId": "item-laboratory-reagents",
+        "qty": 3
+      },
+      {
+        "itemId": "item-explosive-compound",
+        "qty": 5
+      },
+      {
+        "itemId": "item-rocketeer-driver",
+        "qty": 3
+      }
+    ]
+  },
+  {
+    "id": "upgrade-gear-bench-level-1",
+    "name": "Gear Bench · Level 1",
+    "bench": "Gear Bench",
+    "level": 1,
+    "items": [
+      {
+        "itemId": "item-plastic-parts",
+        "qty": 25
+      },
+      {
+        "itemId": "item-fabric",
+        "qty": 30
+      }
+    ]
+  },
+  {
+    "id": "upgrade-equipment_bench-1",
+    "name": "Gear Bench · Level 1",
+    "bench": "Gear Bench",
+    "level": 1,
+    "items": [
+      {
+        "itemId": "item-plastic-parts",
+        "qty": 25
+      },
+      {
+        "itemId": "item-fabric",
+        "qty": 30
+      }
+    ]
+  },
+  {
+    "id": "upgrade-gear-bench-level-2",
+    "name": "Gear Bench · Level 2",
+    "bench": "Gear Bench",
+    "level": 2,
+    "items": [
+      {
+        "itemId": "item-power-cable",
+        "qty": 3
+      },
+      {
+        "itemId": "item-electrical-components",
+        "qty": 5
+      },
+      {
+        "itemId": "item-hornet-driver",
+        "qty": 5
+      }
+    ]
+  },
+  {
+    "id": "upgrade-equipment_bench-2",
+    "name": "Gear Bench · Level 2",
+    "bench": "Gear Bench",
+    "level": 2,
+    "items": [
+      {
+        "itemId": "item-power-cable",
+        "qty": 3
+      },
+      {
+        "itemId": "item-electrical-components",
+        "qty": 5
+      },
+      {
+        "itemId": "item-hornet-driver",
+        "qty": 5
+      }
+    ]
+  },
+  {
+    "id": "upgrade-gear-bench-level-3",
+    "name": "Gear Bench · Level 3",
+    "bench": "Gear Bench",
+    "level": 3,
+    "items": [
+      {
+        "itemId": "item-industrial-battery",
+        "qty": 3
+      },
+      {
+        "itemId": "item-advanced-electrical-components",
+        "qty": 5
+      },
+      {
+        "itemId": "item-bastion-cell",
+        "qty": 6
+      }
+    ]
+  },
+  {
+    "id": "upgrade-equipment_bench-3",
+    "name": "Gear Bench · Level 3",
+    "bench": "Gear Bench",
+    "level": 3,
+    "items": [
+      {
+        "itemId": "item-industrial-battery",
+        "qty": 3
+      },
+      {
+        "itemId": "item-advanced-electrical-components",
+        "qty": 5
+      },
+      {
+        "itemId": "item-bastion-cell",
+        "qty": 6
+      }
+    ]
+  },
+  {
+    "id": "upgrade-gearbench-level-1",
+    "name": "GearBench · Level 1",
+    "bench": "GearBench",
+    "level": 1,
+    "items": [
+      {
+        "itemId": "item-plastic-parts",
+        "qty": 25
+      },
+      {
+        "itemId": "item-fabric",
+        "qty": 30
+      }
+    ]
+  },
+  {
+    "id": "upgrade-gearbench-level-2",
+    "name": "GearBench · Level 2",
+    "bench": "GearBench",
+    "level": 2,
+    "items": [
+      {
+        "itemId": "item-power-cable",
+        "qty": 3
+      },
+      {
+        "itemId": "item-electrical-components",
+        "qty": 5
+      },
+      {
+        "itemId": "item-hornet-driver",
+        "qty": 5
+      }
+    ]
+  },
+  {
+    "id": "upgrade-gearbench-level-3",
+    "name": "GearBench · Level 3",
+    "bench": "GearBench",
+    "level": 3,
+    "items": [
+      {
+        "itemId": "item-industrial-battery",
+        "qty": 3
+      },
+      {
+        "itemId": "item-advanced-electrical-components",
+        "qty": 5
+      },
+      {
+        "itemId": "item-bastion-cell",
+        "qty": 6
+      }
+    ]
+  },
+  {
+    "id": "upgrade-gunsmith-level-1",
+    "name": "Gunsmith · Level 1",
+    "bench": "Gunsmith",
+    "level": 1,
+    "items": [
+      {
+        "itemId": "item-metal-parts",
+        "qty": 20
+      },
+      {
+        "itemId": "item-rubber-parts",
+        "qty": 30
+      }
+    ]
+  },
+  {
+    "id": "upgrade-weapon_bench-1",
+    "name": "Gunsmith · Level 1",
+    "bench": "Gunsmith",
+    "level": 1,
+    "items": [
+      {
+        "itemId": "item-metal-parts",
+        "qty": 20
+      },
+      {
+        "itemId": "item-rubber-parts",
+        "qty": 30
+      }
+    ]
+  },
+  {
+    "id": "upgrade-gunsmith-level-2",
+    "name": "Gunsmith · Level 2",
+    "bench": "Gunsmith",
+    "level": 2,
+    "items": [
+      {
+        "itemId": "item-rusted-tools",
+        "qty": 3
+      },
+      {
+        "itemId": "item-mechanical-components",
+        "qty": 5
+      },
+      {
+        "itemId": "item-wasp-driver",
+        "qty": 8
+      }
+    ]
+  },
+  {
+    "id": "upgrade-weapon_bench-2",
+    "name": "Gunsmith · Level 2",
+    "bench": "Gunsmith",
+    "level": 2,
+    "items": [
+      {
+        "itemId": "item-rusted-tools",
+        "qty": 3
+      },
+      {
+        "itemId": "item-mechanical-components",
+        "qty": 5
+      },
+      {
+        "itemId": "item-wasp-driver",
+        "qty": 8
+      }
+    ]
+  },
+  {
+    "id": "upgrade-gunsmith-level-3",
+    "name": "Gunsmith · Level 3",
+    "bench": "Gunsmith",
+    "level": 3,
+    "items": [
+      {
+        "itemId": "item-rusted-gear",
+        "qty": 3
+      },
+      {
+        "itemId": "item-advanced-mechanical-components",
+        "qty": 5
+      },
+      {
+        "itemId": "item-sentinel-firing-core",
+        "qty": 4
+      }
+    ]
+  },
+  {
+    "id": "upgrade-weapon_bench-3",
+    "name": "Gunsmith · Level 3",
+    "bench": "Gunsmith",
+    "level": 3,
+    "items": [
+      {
+        "itemId": "item-rusted-gear",
+        "qty": 3
+      },
+      {
+        "itemId": "item-advanced-mechanical-components",
+        "qty": 5
+      },
+      {
+        "itemId": "item-sentinel-firing-core",
+        "qty": 4
+      }
+    ]
+  },
+  {
+    "id": "upgrade-medical-lab-level-1",
+    "name": "Medical Lab · Level 1",
+    "bench": "Medical Lab",
+    "level": 1,
+    "items": [
+      {
+        "itemId": "item-fabric",
+        "qty": 50
+      },
+      {
+        "itemId": "item-arc-alloy",
+        "qty": 6
+      }
+    ]
+  },
+  {
+    "id": "upgrade-med_station-1",
+    "name": "Medical Lab · Level 1",
+    "bench": "Medical Lab",
+    "level": 1,
+    "items": [
+      {
+        "itemId": "item-fabric",
+        "qty": 50
+      },
+      {
+        "itemId": "item-arc-alloy",
+        "qty": 6
+      }
+    ]
+  },
+  {
+    "id": "upgrade-medical-lab-level-2",
+    "name": "Medical Lab · Level 2",
+    "bench": "Medical Lab",
+    "level": 2,
+    "items": [
+      {
+        "itemId": "item-cracked-bioscanner",
+        "qty": 2
+      },
+      {
+        "itemId": "item-durable-cloth",
+        "qty": 5
+      },
+      {
+        "itemId": "item-tick-pod",
+        "qty": 8
+      }
+    ]
+  },
+  {
+    "id": "upgrade-med_station-2",
+    "name": "Medical Lab · Level 2",
+    "bench": "Medical Lab",
+    "level": 2,
+    "items": [
+      {
+        "itemId": "item-cracked-bioscanner",
+        "qty": 2
+      },
+      {
+        "itemId": "item-durable-cloth",
+        "qty": 5
+      },
+      {
+        "itemId": "item-tick-pod",
+        "qty": 8
+      }
+    ]
+  },
+  {
+    "id": "upgrade-medical-lab-level-3",
+    "name": "Medical Lab · Level 3",
+    "bench": "Medical Lab",
+    "level": 3,
+    "items": [
+      {
+        "itemId": "item-rusted-shut-medical-kit",
+        "qty": 3
+      },
+      {
+        "itemId": "item-antiseptic",
+        "qty": 8
+      },
+      {
+        "itemId": "item-surveyor-vault",
+        "qty": 5
+      }
+    ]
+  },
+  {
+    "id": "upgrade-med_station-3",
+    "name": "Medical Lab · Level 3",
+    "bench": "Medical Lab",
+    "level": 3,
+    "items": [
+      {
+        "itemId": "item-rusted-shut-medical-kit",
+        "qty": 3
+      },
+      {
+        "itemId": "item-antiseptic",
+        "qty": 8
+      },
+      {
+        "itemId": "item-surveyor-vault",
+        "qty": 5
+      }
+    ]
+  },
+  {
+    "id": "upgrade-refiner-level-1",
+    "name": "Refiner · Level 1",
+    "bench": "Refiner",
+    "level": 1,
+    "items": [
+      {
+        "itemId": "item-metal-parts",
+        "qty": 60
+      },
+      {
+        "itemId": "item-arc-powercell",
+        "qty": 5
+      }
+    ]
+  },
+  {
+    "id": "upgrade-refiner-1",
+    "name": "Refiner · Level 1",
+    "bench": "Refiner",
+    "level": 1,
+    "items": [
+      {
+        "itemId": "item-metal-parts",
+        "qty": 60
+      },
+      {
+        "itemId": "item-arc-powercell",
+        "qty": 5
+      }
+    ]
+  },
+  {
+    "id": "upgrade-refiner-level-2",
+    "name": "Refiner · Level 2",
+    "bench": "Refiner",
+    "level": 2,
+    "items": [
+      {
+        "itemId": "item-toaster",
+        "qty": 3
+      },
+      {
+        "itemId": "item-arc-motion-core",
+        "qty": 5
+      },
+      {
+        "itemId": "item-fireball-burner",
+        "qty": 8
+      }
+    ]
+  },
+  {
+    "id": "upgrade-refiner-2",
+    "name": "Refiner · Level 2",
+    "bench": "Refiner",
+    "level": 2,
+    "items": [
+      {
+        "itemId": "item-toaster",
+        "qty": 3
+      },
+      {
+        "itemId": "item-arc-motion-core",
+        "qty": 5
+      },
+      {
+        "itemId": "item-fireball-burner",
+        "qty": 8
+      }
+    ]
+  },
+  {
+    "id": "upgrade-refiner-level-3",
+    "name": "Refiner · Level 3",
+    "bench": "Refiner",
+    "level": 3,
+    "items": [
+      {
+        "itemId": "item-motor",
+        "qty": 3
+      },
+      {
+        "itemId": "item-arc-circuitry",
+        "qty": 10
+      },
+      {
+        "itemId": "item-bombardier-cell",
+        "qty": 6
+      }
+    ]
+  },
+  {
+    "id": "upgrade-refiner-3",
+    "name": "Refiner · Level 3",
+    "bench": "Refiner",
+    "level": 3,
+    "items": [
+      {
+        "itemId": "item-motor",
+        "qty": 3
+      },
+      {
+        "itemId": "item-arc-circuitry",
+        "qty": 10
+      },
+      {
+        "itemId": "item-bombardier-cell",
+        "qty": 6
+      }
+    ]
+  },
+  {
+    "id": "upgrade-scrappy-level-1",
+    "name": "Scrappy · Level 1",
+    "bench": "Scrappy",
+    "level": 1,
+    "items": []
+  },
+  {
+    "id": "upgrade-scrappy-1",
+    "name": "Scrappy · Level 1",
+    "bench": "Scrappy",
+    "level": 1,
+    "items": []
+  },
+  {
+    "id": "upgrade-scrappy-level-2",
+    "name": "Scrappy · Level 2",
+    "bench": "Scrappy",
+    "level": 2,
+    "items": [
+      {
+        "itemId": "item-dog-collar",
+        "qty": 1
+      }
+    ]
+  },
+  {
+    "id": "upgrade-scrappy-2",
+    "name": "Scrappy · Level 2",
+    "bench": "Scrappy",
+    "level": 2,
+    "items": [
+      {
+        "itemId": "item-dog-collar",
+        "qty": 1
+      }
+    ]
+  },
+  {
+    "id": "upgrade-scrappy-level-3",
+    "name": "Scrappy · Level 3",
+    "bench": "Scrappy",
+    "level": 3,
+    "items": [
+      {
+        "itemId": "item-lemon",
+        "qty": 3
+      },
+      {
+        "itemId": "item-apricot",
+        "qty": 3
+      }
+    ]
+  },
+  {
+    "id": "upgrade-scrappy-3",
+    "name": "Scrappy · Level 3",
+    "bench": "Scrappy",
+    "level": 3,
+    "items": [
+      {
+        "itemId": "item-lemon",
+        "qty": 3
+      },
+      {
+        "itemId": "item-apricot",
+        "qty": 3
+      }
+    ]
+  },
+  {
+    "id": "upgrade-scrappy-level-4",
+    "name": "Scrappy · Level 4",
+    "bench": "Scrappy",
+    "level": 4,
+    "items": [
+      {
+        "itemId": "item-prickly-pear",
+        "qty": 6
+      },
+      {
+        "itemId": "item-olives",
+        "qty": 6
+      },
+      {
+        "itemId": "item-cat-bed",
+        "qty": 1
+      }
+    ]
+  },
+  {
+    "id": "upgrade-scrappy-4",
+    "name": "Scrappy · Level 4",
+    "bench": "Scrappy",
+    "level": 4,
+    "items": [
+      {
+        "itemId": "item-prickly-pear",
+        "qty": 6
+      },
+      {
+        "itemId": "item-olives",
+        "qty": 6
+      },
+      {
+        "itemId": "item-cat-bed",
+        "qty": 1
+      }
+    ]
+  },
+  {
+    "id": "upgrade-scrappy-level-5",
+    "name": "Scrappy · Level 5",
+    "bench": "Scrappy",
+    "level": 5,
+    "items": [
+      {
+        "itemId": "item-mushroom",
+        "qty": 12
+      },
+      {
+        "itemId": "item-apricot",
+        "qty": 12
+      },
+      {
+        "itemId": "item-very-comfortable-pillow",
+        "qty": 3
+      }
+    ]
+  },
+  {
+    "id": "upgrade-scrappy-5",
+    "name": "Scrappy · Level 5",
+    "bench": "Scrappy",
+    "level": 5,
+    "items": [
+      {
+        "itemId": "item-mushroom",
+        "qty": 12
+      },
+      {
+        "itemId": "item-apricot",
+        "qty": 12
+      },
+      {
+        "itemId": "item-very-comfortable-pillow",
+        "qty": 3
+      }
+    ]
+  },
+  {
+    "id": "upgrade-stash-level-1",
+    "name": "Stash · Level 1",
+    "bench": "Stash",
+    "level": 1,
+    "items": []
+  },
+  {
+    "id": "upgrade-stash-1",
+    "name": "Stash · Level 1",
+    "bench": "Stash",
+    "level": 1,
+    "items": []
+  },
+  {
+    "id": "upgrade-stash-level-2",
+    "name": "Stash · Level 2",
+    "bench": "Stash",
+    "level": 2,
+    "items": []
+  },
+  {
+    "id": "upgrade-stash-2",
+    "name": "Stash · Level 2",
+    "bench": "Stash",
+    "level": 2,
+    "items": []
+  },
+  {
+    "id": "upgrade-stash-level-3",
+    "name": "Stash · Level 3",
+    "bench": "Stash",
+    "level": 3,
+    "items": []
+  },
+  {
+    "id": "upgrade-stash-3",
+    "name": "Stash · Level 3",
+    "bench": "Stash",
+    "level": 3,
+    "items": []
+  },
+  {
+    "id": "upgrade-stash-level-4",
+    "name": "Stash · Level 4",
+    "bench": "Stash",
+    "level": 4,
+    "items": []
+  },
+  {
+    "id": "upgrade-stash-4",
+    "name": "Stash · Level 4",
+    "bench": "Stash",
+    "level": 4,
+    "items": []
+  },
+  {
+    "id": "upgrade-stash-level-5",
+    "name": "Stash · Level 5",
+    "bench": "Stash",
+    "level": 5,
+    "items": []
+  },
+  {
+    "id": "upgrade-stash-5",
+    "name": "Stash · Level 5",
+    "bench": "Stash",
+    "level": 5,
+    "items": []
+  },
+  {
+    "id": "upgrade-stash-level-6",
+    "name": "Stash · Level 6",
+    "bench": "Stash",
+    "level": 6,
+    "items": []
+  },
+  {
+    "id": "upgrade-stash-6",
+    "name": "Stash · Level 6",
+    "bench": "Stash",
+    "level": 6,
+    "items": []
+  },
+  {
+    "id": "upgrade-stash-level-7",
+    "name": "Stash · Level 7",
+    "bench": "Stash",
+    "level": 7,
+    "items": []
+  },
+  {
+    "id": "upgrade-stash-7",
+    "name": "Stash · Level 7",
+    "bench": "Stash",
+    "level": 7,
+    "items": []
+  },
+  {
+    "id": "upgrade-stash-level-8",
+    "name": "Stash · Level 8",
+    "bench": "Stash",
+    "level": 8,
+    "items": []
+  },
+  {
+    "id": "upgrade-stash-8",
+    "name": "Stash · Level 8",
+    "bench": "Stash",
+    "level": 8,
+    "items": []
+  },
+  {
+    "id": "upgrade-stash-level-9",
+    "name": "Stash · Level 9",
+    "bench": "Stash",
+    "level": 9,
+    "items": []
+  },
+  {
+    "id": "upgrade-stash-9",
+    "name": "Stash · Level 9",
+    "bench": "Stash",
+    "level": 9,
+    "items": []
+  },
+  {
+    "id": "upgrade-stash-level-10",
+    "name": "Stash · Level 10",
+    "bench": "Stash",
+    "level": 10,
+    "items": []
+  },
+  {
+    "id": "upgrade-stash-10",
+    "name": "Stash · Level 10",
+    "bench": "Stash",
+    "level": 10,
+    "items": []
+  },
+  {
+    "id": "upgrade-utility-station-level-1",
+    "name": "Utility Station · Level 1",
+    "bench": "Utility Station",
+    "level": 1,
+    "items": [
+      {
+        "itemId": "item-plastic-parts",
+        "qty": 50
+      },
+      {
+        "itemId": "item-arc-alloy",
+        "qty": 6
+      }
+    ]
+  },
+  {
+    "id": "upgrade-utility_bench-1",
+    "name": "Utility Station · Level 1",
+    "bench": "Utility Station",
+    "level": 1,
+    "items": [
+      {
+        "itemId": "item-plastic-parts",
+        "qty": 50
+      },
+      {
+        "itemId": "item-arc-alloy",
+        "qty": 6
+      }
+    ]
+  },
+  {
+    "id": "upgrade-utility-station-level-2",
+    "name": "Utility Station · Level 2",
+    "bench": "Utility Station",
+    "level": 2,
+    "items": [
+      {
+        "itemId": "item-damaged-heat-sink",
+        "qty": 2
+      },
+      {
+        "itemId": "item-electrical-components",
+        "qty": 5
+      },
+      {
+        "itemId": "item-snitch-scanner",
+        "qty": 6
+      }
+    ]
+  },
+  {
+    "id": "upgrade-utility_bench-2",
+    "name": "Utility Station · Level 2",
+    "bench": "Utility Station",
+    "level": 2,
+    "items": [
+      {
+        "itemId": "item-damaged-heat-sink",
+        "qty": 2
+      },
+      {
+        "itemId": "item-electrical-components",
+        "qty": 5
+      },
+      {
+        "itemId": "item-snitch-scanner",
+        "qty": 6
+      }
+    ]
+  },
+  {
+    "id": "upgrade-utility-station-level-3",
+    "name": "Utility Station · Level 3",
+    "bench": "Utility Station",
+    "level": 3,
+    "items": [
+      {
+        "itemId": "item-fried-motherboard",
+        "qty": 3
+      },
+      {
+        "itemId": "item-advanced-electrical-components",
+        "qty": 5
+      },
+      {
+        "itemId": "item-leaper-pulse-unit",
+        "qty": 4
+      }
+    ]
+  },
+  {
+    "id": "upgrade-utility_bench-3",
+    "name": "Utility Station · Level 3",
+    "bench": "Utility Station",
+    "level": 3,
+    "items": [
+      {
+        "itemId": "item-fried-motherboard",
+        "qty": 3
+      },
+      {
+        "itemId": "item-advanced-electrical-components",
+        "qty": 5
+      },
+      {
+        "itemId": "item-leaper-pulse-unit",
+        "qty": 4
+      }
+    ]
+  }
+]

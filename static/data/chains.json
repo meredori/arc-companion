@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "id": "chain-resistance-support",
+    "name": "Resistance Support",
+    "stages": [
+      "quest-signal-recovery",
+      "quest-rust-and-shine"
+    ]
+  },
+  {
+    "id": "chain-matrix-calibration",
+    "name": "Matrix Calibration",
+    "stages": [
+      "quest-power-surge"
+    ]
+  }
+]

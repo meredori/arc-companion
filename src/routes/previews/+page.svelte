@@ -7,6 +7,13 @@
     TipsPanel,
     type ChecklistItem
   } from '$lib/components';
+  import type { RecommendationCardProps } from '$lib/components';
+
+  export let data;
+  export let form: unknown;
+  export let params: Record<string, string>;
+  const __previewProps = { data, form, params };
+  void __previewProps;
 
   let query = '';
   const checklist: ChecklistItem[] = [
@@ -15,20 +22,38 @@
     { id: 'pass-c', label: 'Sync MetaForge deltas', completed: false }
   ];
 
-  const recommendations = [
+  const recommendations: RecommendationCardProps[] = [
     {
       name: 'Advanced ARC Powercell',
       action: 'save',
       rarity: 'Epic Component',
-      reason: 'Needed for upcoming workshop upgrade quests.'
+      reason: 'Needed for upcoming workshop upgrade quests.',
+      category: 'Misc',
+      slug: 'advanced-arc-powercell',
+      sellPrice: 640,
+      salvageValue: 960,
+      questNeeds: [{ questId: 'quest-one', name: 'Power Restoration', qty: 2 }],
+      upgradeNeeds: [],
+      salvageBreakdown: [{ itemId: 'mat-arc-powercell', name: 'ARC Powercell', qty: 2 }],
+      needs: { quests: 2, workshop: 0 },
+      variant: 'token'
     },
     {
       name: 'Damaged Servo Gear',
       action: 'salvage',
       rarity: 'Common Salvage',
-      reason: 'Break down extras for recycler tokens.'
+      category: 'Scrap',
+      slug: 'damaged-servo-gear',
+      reason: 'Break down extras for recycler tokens.',
+      salvageValue: 210,
+      salvageBreakdown: [
+        { itemId: 'mat-servo', name: 'Servo', qty: 2 },
+        { itemId: 'mat-gear', name: 'Gear Bits', qty: 1 }
+      ],
+      needs: { quests: 0, workshop: 0 },
+      variant: 'token'
     }
-  ] as const;
+  ];
 
   const tips = [
     'Prioritize finishing the MetaForge weekly to unlock higher sell values.',

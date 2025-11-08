@@ -1,1 +1,31 @@
-[]
+[
+  {
+    "id": "vendor-laila",
+    "name": "Laila",
+    "location": "Dam Outpost",
+    "stock": [
+      {
+        "itemId": "item-frayed-wiring-bundle",
+        "name": "Frayed Wiring Bundle",
+        "price": 140
+      },
+      {
+        "itemId": "item-recovered-arc-battery",
+        "name": "Recovered ARC Battery",
+        "price": 980
+      }
+    ]
+  },
+  {
+    "id": "vendor-dax",
+    "name": "Dax",
+    "location": "MetaForge Hub",
+    "stock": [
+      {
+        "itemId": "item-advanced-arc-powercell",
+        "name": "Advanced ARC Powercell",
+        "price": 1320
+      }
+    ]
+  }
+]
