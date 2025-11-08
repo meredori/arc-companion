@@ -27,3 +27,15 @@ export function saveToStorage<T>(key: string, value: T): void {
     console.warn(`Failed to save ${key} to localStorage`, error);
   }
 }
+
+export function removeFromStorage(key: string): void {
+  if (!browser) {
+    return;
+  }
+
+  try {
+    window.localStorage.removeItem(STORAGE_PREFIX + key);
+  } catch (error) {
+    console.warn(`Failed to remove ${key} from localStorage`, error);
+  }
+}

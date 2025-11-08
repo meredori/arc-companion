@@ -1,0 +1,166 @@
+[
+  {
+    "id": "item-frayed-wiring-bundle",
+    "name": "Frayed Wiring Bundle",
+    "slug": "frayed-wiring-bundle",
+    "rarity": "Common Salvage",
+    "category": "Electronics",
+    "sell": 65,
+    "recycle": [
+      {
+        "itemId": "mat-copper-strand",
+        "name": "Copper Strand",
+        "qty": 5
+      }
+    ],
+    "needs": {
+      "quests": 1,
+      "workshop": 4
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Frayed_Wiring_Bundle",
+    "notes": "Frequent drop in residential zones; feeds multiple crafting trees.",
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-07T14:59:10.668Z",
+        "rowNumber": 3,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-07T14:59:12.300Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-07T14:59:13.904Z",
+        "source": "metaforge",
+        "apiId": "mf-0870"
+      }
+    ],
+    "sources": [
+      {
+        "type": "scavenge",
+        "ref": "residential-caches",
+        "note": "Common salvage crates"
+      },
+      {
+        "type": "vendor",
+        "ref": "vendor-laila",
+        "note": "Rotating daily stock"
+      }
+    ],
+    "vendors": [
+      {
+        "vendorId": "vendor-laila",
+        "name": "Laila (Dam Outpost)",
+        "price": 140
+      }
+    ],
+    "craftsFrom": [],
+    "craftsInto": [
+      {
+        "productId": "upgrade-workbench-kit",
+        "productName": "Workbench Kit",
+        "qty": 1
+      }
+    ],
+    "zones": [
+      "residential",
+      "industrial"
+    ],
+    "metaforgeId": "mf-0870",
+    "provenance": {
+      "wiki": true,
+      "api": true
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-rusted-tools",
+    "name": "Rusted Tools",
+    "slug": "rusted-tools",
+    "rarity": "Uncommon Salvage",
+    "category": "Utilities",
+    "sell": 115,
+    "recycle": [
+      {
+        "itemId": "mat-metal-scrap",
+        "name": "Metal Scrap",
+        "qty": 7
+      },
+      {
+        "itemId": "mat-bolts",
+        "name": "Bolts",
+        "qty": 3
+      }
+    ],
+    "needs": {
+      "quests": 2,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Rusted_Tools",
+    "notes": "Quest givers in Dam and Spaceport require these for repairs.",
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-07T14:59:10.668Z",
+        "rowNumber": 4,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-07T14:59:12.300Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-07T14:59:13.904Z",
+        "source": "metaforge",
+        "apiId": "mf-0904"
+      }
+    ],
+    "sources": [
+      {
+        "type": "scavenge",
+        "ref": "spaceport",
+        "note": "Containers near docking area"
+      },
+      {
+        "type": "quest",
+        "ref": "quest-rust-and-shine",
+        "note": "Turn-in requirement"
+      }
+    ],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [
+      {
+        "productId": "upgrade-field-maintenance",
+        "productName": "Field Maintenance Kit",
+        "qty": 1
+      }
+    ],
+    "zones": [
+      "spaceport",
+      "dam"
+    ],
+    "metaforgeId": "mf-0904",
+    "provenance": {
+      "wiki": true,
+      "api": true
+    },
+    "conflicts": [
+      {
+        "field": "sell",
+        "wikiValue": 110,
+        "apiValue": 115,
+        "resolvedTo": 115,
+        "resolvedAt": "2025-11-07T14:59:13.904Z",
+        "strategy": "prefer-api"
+      }
+    ]
+  }
+]

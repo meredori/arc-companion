@@ -1,24 +1,221 @@
-import { derived, writable } from 'svelte/store';
-import type { BlueprintState, ItemRecommendation, QuestProgress, RunLogEntry } from '$lib/types';
-import { loadFromStorage, saveToStorage } from '$lib/persist';
+import { browser } from '$app/environment';
+import { derived, get, writable } from 'svelte/store';
+import type {
+  AppSettings,
+  BlueprintState,
+  QuestProgress,
+  RunHistoryState,
+  RunLogEntry
+} from '$lib/types';
+import { loadFromStorage, removeFromStorage, saveToStorage } from '$lib/persist';
 
-const RECOMMENDATION_KEY = 'recommendations';
-const QUEST_KEY = 'quests';
-const BLUEPRINT_KEY = 'blueprints';
-const RUNS_KEY = 'runs';
+const STORAGE_VERSION = 'v1';
+const STORAGE_KEYS = {
+  quests: `quests:${STORAGE_VERSION}`,
+  blueprints: `blueprints:${STORAGE_VERSION}`,
+  runs: `runs:${STORAGE_VERSION}`,
+  settings: `settings:${STORAGE_VERSION}`
+} as const;
 
-function createPersistentStore<T>(key: string, initial: T) {
-  const storedValue = loadFromStorage<T>(key, initial);
-  const store = writable<T>(storedValue);
+const DEBOUNCE_MS = 3000;
 
-  store.subscribe((value) => saveToStorage(key, value));
-
-  return store;
+function nowIso() {
+  return new Date().toISOString();
 }
 
-export const recommendations = createPersistentStore<ItemRecommendation[]>(RECOMMENDATION_KEY, []);
-export const quests = createPersistentStore<QuestProgress[]>(QUEST_KEY, []);
-export const blueprints = createPersistentStore<BlueprintState[]>(BLUEPRINT_KEY, []);
-export const runs = createPersistentStore<RunLogEntry[]>(RUNS_KEY, []);
+function randomId(prefix: string) {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return `${prefix}-${crypto.randomUUID()}`;
+  }
+  return `${prefix}-${Math.random().toString(36).slice(2, 10)}`;
+}
 
-export const recentRuns = derived(runs, ($runs) => $runs.slice(-5));
+function createPersistentStore<T>(key: string, initialValue: T) {
+  const store = writable<T>(initialValue);
+  let hydrated = !browser;
+  let flushTimer: ReturnType<typeof setTimeout> | undefined;
+
+  const schedulePersist = (value: T) => {
+    if (!browser) return;
+    clearTimeout(flushTimer);
+    flushTimer = setTimeout(() => {
+      saveToStorage(key, value);
+    }, DEBOUNCE_MS);
+  };
+
+  if (browser) {
+    const stored = loadFromStorage<T>(key, initialValue);
+    hydrated = true;
+    store.set(stored);
+    store.subscribe((value) => {
+      if (!hydrated) return;
+      schedulePersist(value);
+    });
+  }
+
+  return {
+    subscribe: store.subscribe,
+    set(value: T) {
+      hydrated = true;
+      store.set(value);
+      schedulePersist(value);
+    },
+    update(updater: (value: T) => T) {
+      hydrated = true;
+      store.update((current) => {
+        const next = updater(current);
+        schedulePersist(next);
+        return next;
+      });
+    },
+    reset() {
+      hydrated = true;
+      store.set(initialValue);
+      removeFromStorage(key);
+    }
+  };
+}
+
+const defaultSettings: AppSettings = {
+  freeLoadoutDefault: false,
+  showExperimental: false,
+  approvalsEnabled: false,
+  approvalToken: undefined
+};
+
+const questStore = createPersistentStore<QuestProgress[]>(STORAGE_KEYS.quests, []);
+const blueprintStore = createPersistentStore<BlueprintState[]>(STORAGE_KEYS.blueprints, []);
+const runStore = createPersistentStore<RunHistoryState>(STORAGE_KEYS.runs, {
+  entries: [],
+  lastRemoved: null
+});
+const settingsStore = createPersistentStore<AppSettings>(STORAGE_KEYS.settings, defaultSettings);
+
+export const quests = {
+  subscribe: questStore.subscribe,
+  toggle(id: string) {
+    questStore.update((records) =>
+      records.map((quest) => (quest.id === id ? { ...quest, completed: !quest.completed } : quest))
+    );
+  },
+  upsert(progress: QuestProgress) {
+    questStore.update((records) => {
+      const exists = records.some((item) => item.id === progress.id);
+      if (exists) {
+        return records.map((item) => (item.id === progress.id ? { ...item, ...progress } : item));
+      }
+      return [...records, progress];
+    });
+  },
+  remove(id: string) {
+    questStore.update((records) => records.filter((item) => item.id !== id));
+  },
+  reset: questStore.reset
+};
+
+export const blueprints = {
+  subscribe: blueprintStore.subscribe,
+  toggle(id: string) {
+    blueprintStore.update((records) =>
+      records.map((bp) => (bp.id === id ? { ...bp, owned: !bp.owned } : bp))
+    );
+  },
+  upsert(blueprint: BlueprintState) {
+    blueprintStore.update((records) => {
+      const exists = records.some((item) => item.id === blueprint.id);
+      if (exists) {
+        return records.map((item) => (item.id === blueprint.id ? { ...item, ...blueprint } : item));
+      }
+      return [...records, blueprint];
+    });
+  },
+  reset: blueprintStore.reset
+};
+
+function sortRuns(entries: RunLogEntry[]) {
+  return [...entries].sort((a, b) => {
+    return new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime();
+  });
+}
+
+export const runs = {
+  subscribe: derived(runStore, (state) => sortRuns(state.entries)).subscribe,
+  add(entry: Partial<RunLogEntry>) {
+    const payload: RunLogEntry = {
+      id: entry.id ?? randomId('run'),
+      startedAt: entry.startedAt ?? nowIso(),
+      endedAt: entry.endedAt,
+      totalXp: entry.totalXp,
+      totalValue: entry.totalValue,
+      extractedValue: entry.extractedValue,
+      deaths: entry.deaths,
+      notes: entry.notes,
+      freeLoadout: entry.freeLoadout,
+      crew: entry.crew
+    };
+
+    runStore.update((state) => ({
+      entries: sortRuns([...state.entries, payload]),
+      lastRemoved: null
+    }));
+  },
+  updateEntry(id: string, updates: Partial<RunLogEntry>) {
+    runStore.update((state) => ({
+      ...state,
+      entries: sortRuns(
+        state.entries.map((entry) => (entry.id === id ? { ...entry, ...updates } : entry))
+      )
+    }));
+  },
+  remove(id: string) {
+    runStore.update((state) => {
+      const target = state.entries.find((entry) => entry.id === id);
+      if (!target) {
+        return state;
+      }
+      return {
+        entries: state.entries.filter((entry) => entry.id !== id),
+        lastRemoved: { ...target, removedAt: nowIso() }
+      };
+    });
+  },
+  restoreLast() {
+    runStore.update((state) => {
+      if (!state.lastRemoved) {
+        return state;
+      }
+      const { removedAt, ...entry } = state.lastRemoved;
+      return {
+        entries: sortRuns([...state.entries, entry]),
+        lastRemoved: null
+      };
+    });
+  },
+  clear() {
+    runStore.reset();
+  }
+};
+
+export const runHistory = runStore;
+export const recentRuns = derived(runStore, (state) => sortRuns(state.entries).slice(0, 5));
+export const lastRemovedRun = derived(runStore, (state) => state.lastRemoved ?? null);
+export const settings = settingsStore;
+
+export function resetAllStores() {
+  quests.reset();
+  blueprints.reset();
+  runs.clear();
+  settings.reset();
+}
+
+export function hydrateFromCanonical(questsData: QuestProgress[], blueprintData: BlueprintState[]) {
+  const existingQuests = get(questStore);
+  if (existingQuests.length === 0 && questsData.length > 0) {
+    questStore.set(questsData);
+  }
+
+  const existingBlueprints = get(blueprintStore);
+  if (existingBlueprints.length === 0 && blueprintData.length > 0) {
+    blueprintStore.set(blueprintData);
+  }
+}

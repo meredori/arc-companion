@@ -1,0 +1,127 @@
+[
+  {
+    "type": "quest",
+    "data": {
+      "id": "quest-signal-recovery",
+      "name": "Signal Recovery",
+      "chainId": "chain-resistance-support",
+      "giver": "Ana Bray",
+      "items": [
+        {
+          "itemId": "item-recovered-arc-battery",
+          "qty": 2
+        },
+        {
+          "itemId": "item-frayed-wiring-bundle",
+          "qty": 4
+        }
+      ],
+      "rewards": [
+        {
+          "coins": 420
+        }
+      ],
+      "mapHints": [
+        "Dam uplink array",
+        "Spaceport mezzanine"
+      ]
+    },
+    "stageHistory": [
+      {
+        "pass": "D",
+        "indexedAt": "2025-11-07T14:59:15.531Z",
+        "source": "metaforge+wiki",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "type": "quest",
+    "data": {
+      "id": "quest-rust-and-shine",
+      "name": "Rust and Shine",
+      "chainId": "chain-resistance-support",
+      "giver": "Mechanic Taja",
+      "items": [
+        {
+          "itemId": "item-rusted-tools",
+          "qty": 3
+        },
+        {
+          "itemId": "item-frayed-wiring-bundle",
+          "qty": 2
+        }
+      ],
+      "rewards": [
+        {
+          "itemId": "item-recovered-arc-battery",
+          "qty": 1
+        }
+      ],
+      "mapHints": [
+        "Spaceport docks",
+        "Industrial scrapyard"
+      ]
+    },
+    "stageHistory": [
+      {
+        "pass": "D",
+        "indexedAt": "2025-11-07T14:59:15.531Z",
+        "source": "metaforge+wiki",
+        "order": 2
+      }
+    ]
+  },
+  {
+    "type": "quest",
+    "data": {
+      "id": "quest-power-surge",
+      "name": "Power Surge",
+      "chainId": "chain-matrix-calibration",
+      "giver": "Dr. Sima",
+      "items": [
+        {
+          "itemId": "item-advanced-arc-powercell",
+          "qty": 1
+        }
+      ],
+      "rewards": [
+        {
+          "itemId": "upgrade-power-matrix",
+          "name": "Power Matrix Blueprint",
+          "qty": 1
+        }
+      ],
+      "mapHints": [
+        "Blue Gate incursion zone"
+      ]
+    },
+    "stageHistory": [
+      {
+        "pass": "D",
+        "indexedAt": "2025-11-07T14:59:15.531Z",
+        "source": "metaforge+wiki",
+        "order": 3
+      }
+    ]
+  },
+  {
+    "type": "chain",
+    "data": {
+      "id": "chain-resistance-support",
+      "name": "Resistance Support",
+      "stages": [
+        "quest-signal-recovery",
+        "quest-rust-and-shine"
+      ]
+    },
+    "stageHistory": [
+      {
+        "pass": "D",
+        "indexedAt": "2025-11-07T14:59:15.531Z",
+        "source": "metaforge+wiki",
+        "order": 4
+      }
+    ]
+  }
+]

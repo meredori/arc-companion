@@ -18,8 +18,36 @@
         "qty": 2
       }
     ],
+    "needs": {
+      "quests": 2,
+      "workshop": 1
+    },
     "wikiUrl": "https://arcraiders.wiki/wiki/Recovered_ARC_Battery",
     "notes": "Used to calibrate uplink towers during seasonal questlines.",
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-07T14:59:10.668Z",
+        "rowNumber": 1,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-07T14:59:12.300Z",
+        "source": "wiki-item",
+        "sections": [
+          "Sources",
+          "Crafting",
+          "Vendors"
+        ]
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-07T14:59:13.904Z",
+        "source": "metaforge",
+        "apiId": "mf-1138"
+      }
+    ],
     "sources": [
       {
         "type": "quest",
@@ -67,10 +95,16 @@
       "wiki": true,
       "api": true
     },
-    "needsTotals": {
-      "quests": 2,
-      "workshop": 1
-    }
+    "conflicts": [
+      {
+        "field": "sell",
+        "wikiValue": 680,
+        "apiValue": 700,
+        "resolvedTo": 700,
+        "resolvedAt": "2025-11-07T14:59:13.904Z",
+        "strategy": "prefer-api"
+      }
+    ]
   },
   {
     "id": "item-advanced-arc-powercell",
@@ -91,8 +125,36 @@
         "qty": 2
       }
     ],
+    "needs": {
+      "quests": 3,
+      "workshop": 2
+    },
     "wikiUrl": "https://arcraiders.wiki/wiki/Advanced_ARC_Powercell",
     "notes": "Primary ingredient for late-game ARC weapon upgrades.",
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-07T14:59:10.668Z",
+        "rowNumber": 2,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-07T14:59:12.300Z",
+        "source": "wiki-item",
+        "sections": [
+          "Sources",
+          "Crafting",
+          "Vendors"
+        ]
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-07T14:59:13.904Z",
+        "source": "metaforge",
+        "apiId": "mf-1422"
+      }
+    ],
     "sources": [
       {
         "type": "enemy",
@@ -140,122 +202,6 @@
       "wiki": true,
       "api": true
     },
-    "needsTotals": {
-      "quests": 1,
-      "workshop": 1
-    }
-  },
-  {
-    "id": "item-frayed-wiring-bundle",
-    "name": "Frayed Wiring Bundle",
-    "slug": "frayed-wiring-bundle",
-    "rarity": "Common Salvage",
-    "category": "Electronics",
-    "sell": 65,
-    "recycle": [
-      {
-        "itemId": "mat-copper-strand",
-        "name": "Copper Strand",
-        "qty": 5
-      }
-    ],
-    "wikiUrl": "https://arcraiders.wiki/wiki/Frayed_Wiring_Bundle",
-    "notes": "Frequent drop in residential zones; feeds multiple crafting trees.",
-    "sources": [
-      {
-        "type": "scavenge",
-        "ref": "residential-caches",
-        "note": "Common salvage crates"
-      },
-      {
-        "type": "vendor",
-        "ref": "vendor-laila",
-        "note": "Rotating daily stock"
-      }
-    ],
-    "vendors": [
-      {
-        "vendorId": "vendor-laila",
-        "name": "Laila (Dam Outpost)",
-        "price": 140
-      }
-    ],
-    "craftsFrom": [],
-    "craftsInto": [
-      {
-        "productId": "upgrade-workbench-kit",
-        "productName": "Workbench Kit",
-        "qty": 1
-      }
-    ],
-    "zones": [
-      "residential",
-      "industrial"
-    ],
-    "metaforgeId": "mf-0870",
-    "provenance": {
-      "wiki": true,
-      "api": true
-    },
-    "needsTotals": {
-      "quests": 6,
-      "workshop": 5
-    }
-  },
-  {
-    "id": "item-rusted-tools",
-    "name": "Rusted Tools",
-    "slug": "rusted-tools",
-    "rarity": "Uncommon Salvage",
-    "category": "Utilities",
-    "sell": 115,
-    "recycle": [
-      {
-        "itemId": "mat-metal-scrap",
-        "name": "Metal Scrap",
-        "qty": 7
-      },
-      {
-        "itemId": "mat-bolts",
-        "name": "Bolts",
-        "qty": 3
-      }
-    ],
-    "wikiUrl": "https://arcraiders.wiki/wiki/Rusted_Tools",
-    "notes": "Quest givers in Dam and Spaceport require these for repairs.",
-    "sources": [
-      {
-        "type": "scavenge",
-        "ref": "spaceport",
-        "note": "Containers near docking area"
-      },
-      {
-        "type": "quest",
-        "ref": "quest-rust-and-shine",
-        "note": "Turn-in requirement"
-      }
-    ],
-    "vendors": [],
-    "craftsFrom": [],
-    "craftsInto": [
-      {
-        "productId": "upgrade-field-maintenance",
-        "productName": "Field Maintenance Kit",
-        "qty": 1
-      }
-    ],
-    "zones": [
-      "spaceport",
-      "dam"
-    ],
-    "metaforgeId": "mf-0904",
-    "provenance": {
-      "wiki": true,
-      "api": true
-    },
-    "needsTotals": {
-      "quests": 3,
-      "workshop": 2
-    }
+    "conflicts": []
   }
 ]

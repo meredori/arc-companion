@@ -3,19 +3,55 @@
 </svelte:head>
 
 <script lang="ts">
-  import { QuestChecklist, TipsPanel, type ChecklistItem } from '$lib/components';
+  import { derived } from 'svelte/store';
+  import { onMount } from 'svelte';
+  import { QuestChecklist, TipsPanel } from '$lib/components';
+  import { blueprints, hydrateFromCanonical, quests } from '$lib/stores/app';
+  import { tipsForBlueprints } from '$lib/tips';
+  import type { PageData } from './$types';
 
-  const questItems: ChecklistItem[] = [
-    { id: 'quest-1', label: 'Complete “Signal Recovery” quest chain', completed: true },
-    { id: 'quest-2', label: 'Unlock Tier 2 Workshop Bench', completed: false },
-    { id: 'quest-3', label: 'Collect 3 Advanced ARC Powercells', completed: false }
-  ];
+  export let data: PageData;
 
-  const trackingTips = [
-    'Quest and blueprint completion will update the recommendation engine priorities.',
-    'Offline persistence keeps progress in sync between sessions without a login.',
-    'Upcoming milestone widgets will surface the next best objective automatically.'
-  ];
+  const { quests: questDefs, upgrades } = data;
+
+  onMount(() => {
+    hydrateFromCanonical(
+      questDefs.map((quest) => ({ id: quest.id, completed: false })),
+      upgrades.map((upgrade) => ({
+        id: upgrade.id,
+        name: upgrade.name,
+        bench: upgrade.bench,
+        level: upgrade.level,
+        owned: false
+      }))
+    );
+  });
+
+  const checklistItems = derived(quests, ($quests) =>
+    questDefs.map((quest) => {
+      const progress = $quests.find((entry) => entry.id === quest.id);
+      return {
+        id: quest.id,
+        label: `${quest.name} — ${quest.items
+          .map((item) => `${item.qty}x ${item.itemId}`)
+          .join(', ')}`,
+        completed: progress?.completed ?? false
+      };
+    })
+  );
+
+  const blueprintSummary = derived(blueprints, ($blueprints) => {
+    const owned = $blueprints.filter((bp) => bp.owned).length;
+    return {
+      owned,
+      total: upgrades.length,
+      tips: tipsForBlueprints(owned, upgrades.length)
+    };
+  });
+
+  const toggleQuest = (event: CustomEvent<{ id: string }>) => {
+    quests.toggle(event.detail.id);
+  };
 </script>
 
 <section class="page-stack">
@@ -29,8 +65,15 @@
 
   <section class="section-card">
     <div class="content-grid">
-      <QuestChecklist title="Immediate objectives" items={questItems} />
-      <TipsPanel heading="Tracking insights" tips={trackingTips} />
+      <QuestChecklist title="Immediate objectives" items={$checklistItems} on:toggle={toggleQuest} />
+      <TipsPanel heading="Tracking insights" tips={$blueprintSummary.tips} />
+    </div>
+    <div class="rounded-2xl border border-slate-800/70 bg-slate-950/60 p-6 text-sm text-slate-300">
+      <p class="font-semibold text-white">Blueprint progress</p>
+      <p class="mt-2">
+        {$blueprintSummary.owned} of {$blueprintSummary.total} schematics owned.
+        Toggle ownership to influence upgrade recommendations and salvage priorities.
+      </p>
     </div>
   </section>
 </section>

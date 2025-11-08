@@ -1,0 +1,70 @@
+[
+  {
+    "id": "item-recovered-arc-battery",
+    "name": "Recovered ARC Battery",
+    "slug": "recovered-arc-battery",
+    "rarity": "Rare Component",
+    "category": "Power",
+    "sell": 680,
+    "recycle": [
+      {
+        "itemId": "mat-conductor-wire",
+        "name": "Conductor Wire",
+        "qty": 6
+      },
+      {
+        "itemId": "mat-spare-cells",
+        "name": "Spare Cells",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 2,
+      "workshop": 1
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Recovered_ARC_Battery",
+    "notes": "Used to calibrate uplink towers during seasonal questlines.",
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-07T14:59:10.668Z",
+        "rowNumber": 1,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-advanced-arc-powercell",
+    "name": "Advanced ARC Powercell",
+    "slug": "advanced-arc-powercell",
+    "rarity": "Epic Component",
+    "category": "Power",
+    "sell": 840,
+    "recycle": [
+      {
+        "itemId": "mat-arc-sparks",
+        "name": "ARC Sparks",
+        "qty": 4
+      },
+      {
+        "itemId": "mat-energy-coil",
+        "name": "Energy Coil",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 3,
+      "workshop": 2
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Advanced_ARC_Powercell",
+    "notes": "Primary ingredient for late-game ARC weapon upgrades.",
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-07T14:59:10.668Z",
+        "rowNumber": 2,
+        "source": "wiki-loot"
+      }
+    ]
+  }
+]
