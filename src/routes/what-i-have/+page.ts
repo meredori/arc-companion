@@ -1,13 +1,14 @@
+import { base } from '$app/paths';
 import type { ItemRecord, Project, Quest, QuestChain, UpgradePack } from '$lib/types';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch }) => {
   const [questsRes, upgradesRes, itemsRes, projectsRes, chainsRes] = await Promise.all([
-    fetch('/data/quests.json'),
-    fetch('/data/upgrades.json'),
-    fetch('/data/items.json'),
-    fetch('/data/projects.json'),
-    fetch('/data/chains.json')
+    fetch(`${base}/data/quests.json`),
+    fetch(`${base}/data/upgrades.json`),
+    fetch(`${base}/data/items.json`),
+    fetch(`${base}/data/projects.json`),
+    fetch(`${base}/data/chains.json`)
   ]);
 
   const [quests, upgrades, items, projects, chains] = await Promise.all([

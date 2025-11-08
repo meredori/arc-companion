@@ -4,6 +4,7 @@
 </script>
 
 <script lang="ts">
+  import { base } from '$app/paths';
   import type { RecommendationCardProps } from './types';
 
   export let name: RecommendationCardProps['name'];
@@ -59,6 +60,10 @@
       .slice(0, 3)
       .toUpperCase();
   $: tooltipId = `loot-tooltip-${sanitize(slug ?? name)}`;
+  $: resolvedImageUrl =
+    imageUrl && imageUrl.startsWith('/')
+      ? `${base}${imageUrl}`.replace(/\/{2,}/g, '/')
+      : imageUrl;
   $: formattedSell = sellPrice !== undefined ? sellPrice.toLocaleString() : null;
   $: formattedSalvage = salvageValue !== undefined ? salvageValue.toLocaleString() : null;
 </script>
@@ -75,8 +80,8 @@
         class={`flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border bg-gradient-to-br text-base font-semibold uppercase tracking-wide text-white ${rarityClass}`}
         aria-hidden="true"
       >
-        {#if imageUrl}
-          <img src={imageUrl} alt={name} class="h-full w-full object-cover" loading="lazy" decoding="async" />
+        {#if resolvedImageUrl}
+          <img src={resolvedImageUrl} alt={name} class="h-full w-full object-cover" loading="lazy" decoding="async" />
         {:else}
           <span>{iconLabel || 'ARC'}</span>
         {/if}
