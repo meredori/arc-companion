@@ -44,6 +44,7 @@ export interface ItemRecord {
   slug: string;
   rarity?: string;
   category?: string;
+  imageUrl?: string | null;
   sell: number;
   recycle: ItemRecycleEntry[];
   sources?: ItemSource[];
@@ -60,6 +61,9 @@ export interface ItemRecord {
   zones?: string[];
   provenance: DataProvenance;
 }
+
+export type ItemOverride = Partial<Pick<ItemRecord, 'category' | 'rarity' | 'notes' | 'imageUrl'>>;
+export type ItemOverrideMap = Record<string, ItemOverride>;
 
 export interface QuestRequirement {
   itemId: string;
@@ -110,17 +114,76 @@ export interface Vendor {
   stock?: VendorStockItem[];
 }
 
+export interface ProjectRequirement {
+  itemId: string;
+  qty: number;
+}
+
+export interface ProjectPhase {
+  id: string;
+  order: number;
+  name: string;
+  description?: string | null;
+  requirements: ProjectRequirement[];
+}
+
+export interface Project {
+  id: string;
+  name: string;
+  description?: string | null;
+  phases: ProjectPhase[];
+}
+
+export interface ProjectProgressState {
+  [projectId: string]: {
+    [phaseId: string]: {
+      [itemId: string]: number;
+    };
+  };
+}
+
+export interface QuestNeedDetail {
+  questId: string;
+  name: string;
+  qty: number;
+}
+
+export interface UpgradeNeedDetail {
+  upgradeId: string;
+  name: string;
+  qty: number;
+  bench: string;
+  level: number;
+}
+
+export interface ProjectNeedDetail {
+  projectId: string;
+  phaseId: string;
+  projectName: string;
+  phaseName: string;
+  qty: number;
+}
+
 export interface ItemRecommendation {
   itemId: string;
   name: string;
+  slug: string;
+  category?: string;
   rarity?: string;
+  imageUrl?: string | null;
   action: RecommendationAction;
   rationale: string;
+  sellPrice: number;
   salvageValue: number;
-  contexts: string[];
+  salvageBreakdown: ItemRecycleEntry[];
+  questNeeds: QuestNeedDetail[];
+  upgradeNeeds: UpgradeNeedDetail[];
+  projectNeeds: ProjectNeedDetail[];
+  alwaysKeepCategory?: boolean;
   needs: {
     quests: number;
     workshop: number;
+    projects: number;
   };
 }
 
@@ -162,6 +225,7 @@ export interface AppSettings {
   showExperimental: boolean;
   approvalsEnabled: boolean;
   approvalToken?: string;
+  alwaysKeepCategories: string[];
 }
 
 export interface RecommendationContext {
@@ -170,6 +234,9 @@ export interface RecommendationContext {
   questProgress: QuestProgress[];
   upgrades: UpgradePack[];
   blueprints: BlueprintState[];
+  projects: Project[];
+  projectProgress: ProjectProgressState;
+  alwaysKeepCategories: string[];
 }
 
 export interface RunTip {

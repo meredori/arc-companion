@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { createRunTipContext, generateRunTips } from './tips';
+import { createRunTipContext, generateRunTips, tipsForWorkshop } from './tips';
 import type { AppSettings, RunLogEntry } from './types';
 
 const settings: AppSettings = {
   freeLoadoutDefault: true,
   showExperimental: false,
-  approvalsEnabled: false
+  approvalsEnabled: false,
+  alwaysKeepCategories: []
 };
 
 describe('run tips', () => {
@@ -47,5 +48,17 @@ describe('run tips', () => {
     });
     const tips = generateRunTips(context);
     expect(tips.some((tip) => tip.id === 'average-extract')).toBe(true);
+  });
+});
+
+describe('workshop tips', () => {
+  it('handles missing data gracefully', () => {
+    const tips = tipsForWorkshop(0, 0, 0);
+    expect(tips[0]).toContain('missing');
+  });
+
+  it('highlights next target level', () => {
+    const tips = tipsForWorkshop(2, 5, 2);
+    expect(tips.some((tip) => tip.includes('Level 3'))).toBe(true);
   });
 });

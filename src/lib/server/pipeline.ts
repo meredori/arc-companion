@@ -13,11 +13,13 @@ const dataDir = path.join(projectRoot, 'static', 'data');
 const metaPath = path.join(dataDir, 'meta', 'index.json');
 const stagingDir = path.join(dataDir, '_staging');
 
+// Pass E (conflict resolution) runs through the finalize script alongside pass F.
 const scriptMap: Record<string, string> = {
   A: 'wiki-loot.mjs',
   B: 'wiki-item.mjs',
   C: 'metaforge.mjs',
   D: 'quests.mjs',
+  E: 'finalize.mjs',
   F: 'finalize.mjs'
 };
 
@@ -26,7 +28,7 @@ export async function readPipelineMeta(): Promise<PipelineMeta> {
   return JSON.parse(raw) as PipelineMeta;
 }
 
-export async function listStageBatches(pass: string) {
+export async function readStageRecords(pass: string) {
   const dir = path.join(stagingDir, pass.toLowerCase());
   const files = await fs.readdir(dir).catch(() => []);
   const batches = [];
@@ -34,9 +36,18 @@ export async function listStageBatches(pass: string) {
     const full = path.join(dir, file);
     const content = await fs.readFile(full, 'utf8');
     const records = JSON.parse(content);
-    batches.push({ file, count: Array.isArray(records) ? records.length : 0 });
+    batches.push({
+      file,
+      count: Array.isArray(records) ? records.length : 0,
+      records: Array.isArray(records) ? records : []
+    });
   }
   return batches;
+}
+
+export async function listStageBatches(pass: string) {
+  const batches = await readStageRecords(pass);
+  return batches.map(({ file, count }) => ({ file, count }));
 }
 
 export async function executePass(pass: string, options: { approve?: boolean } = {}) {

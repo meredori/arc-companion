@@ -11,6 +11,8 @@
   import type { PageData } from './$types';
 
   export let data: PageData;
+  export let form: unknown;
+  export let params: Record<string, string>;
 
   const { quests: questDefs, upgrades } = data;
 

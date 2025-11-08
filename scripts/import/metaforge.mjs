@@ -5,54 +5,27 @@ import {
   logBatchResult,
   parseArgs,
   readStage,
+  toSlug,
   updatePassMeta,
   writeBatches
 } from './_shared.mjs';
+import { loadLootRecords } from './data/load-loot-data.mjs';
 
-const args = parseArgs({ 'batch-size': 2, dry: false, approve: false });
-const batchSize = Number(args['batch-size']) || 2;
+const args = parseArgs({ 'batch-size': 50, dry: false, approve: false });
+const batchSize = Number(args['batch-size']) || 50;
 const dryRun = Boolean(args.dry || args['dry-run']);
 const approve = Boolean(args.approve);
 
-const METAFORGE_ITEMS = new Map([
-  [
-    'item-recovered-arc-battery',
-    {
-      id: 'mf-1138',
-      sell: 700,
-      zones: ['dam', 'spaceport'],
-      provenance: { wiki: true, api: true },
-      notes: 'MetaForge canonical entry reconciled with wiki values.'
-    }
-  ],
-  [
-    'item-advanced-arc-powercell',
-    {
-      id: 'mf-1422',
-      sell: 840,
-      zones: ['spaceport', 'industrial'],
-      provenance: { wiki: true, api: true }
-    }
-  ],
-  [
-    'item-frayed-wiring-bundle',
-    {
-      id: 'mf-0870',
-      sell: 65,
-      zones: ['residential', 'industrial'],
-      provenance: { wiki: true, api: true }
-    }
-  ],
-  [
-    'item-rusted-tools',
-    {
-      id: 'mf-0904',
-      sell: 115,
-      zones: ['spaceport', 'dam'],
-      provenance: { wiki: true, api: true }
-    }
-  ]
-]);
+const lootRows = await loadLootRecords({ source: 'cache' });
+const METAFORGE_ITEMS = new Map(
+  lootRows
+    .filter((row) => Boolean(row.metaforge))
+    .map((row) => {
+      const slug = row.slug ?? toSlug(row.name);
+      const id = row.id ?? `item-${slug}`;
+      return [id, row.metaforge];
+    })
+);
 
 const mergedAt = isoNow();
 

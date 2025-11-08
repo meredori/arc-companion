@@ -1,36 +1,36 @@
 {
   "version": 1,
-  "generatedAt": "2025-11-07T14:59:18.085Z",
+  "generatedAt": "2025-11-08T02:54:07.289Z",
   "passes": {
     "A": {
       "label": "Pass A — Wiki Loot Seed",
-      "batches": 2,
-      "records": 4,
-      "lastRunAt": "2025-11-07T14:59:10.668Z",
+      "batches": 4,
+      "records": 196,
+      "lastRunAt": "2025-11-08T02:53:23.380Z",
       "approved": true,
       "notes": null
     },
     "B": {
       "label": "Pass B — Wiki Enrichment",
-      "batches": 2,
-      "records": 4,
-      "lastRunAt": "2025-11-07T14:59:12.300Z",
+      "batches": 4,
+      "records": 196,
+      "lastRunAt": "2025-11-08T02:53:06.422Z",
       "approved": true,
       "notes": null
     },
     "C": {
       "label": "Pass C — MetaForge Merge",
-      "batches": 2,
-      "records": 4,
-      "lastRunAt": "2025-11-07T14:59:13.904Z",
+      "batches": 4,
+      "records": 196,
+      "lastRunAt": "2025-11-08T02:54:04.703Z",
       "approved": true,
       "notes": null
     },
     "D": {
       "label": "Pass D — Quests + Chains",
-      "batches": 3,
+      "batches": 4,
       "records": 10,
-      "lastRunAt": "2025-11-07T14:59:15.531Z",
+      "lastRunAt": "2025-11-08T02:54:06.291Z",
       "approved": true,
       "notes": null
     },
@@ -38,25 +38,25 @@
       "label": "Pass E — Conflict Resolution",
       "batches": 1,
       "records": 2,
-      "lastRunAt": "2025-11-07T14:59:18.074Z",
+      "lastRunAt": "2025-11-08T02:54:07.270Z",
       "approved": true,
       "notes": "2 conflict(s) resolved with prefer-api strategy"
     },
     "F": {
       "label": "Pass F — Finalization",
       "batches": 1,
-      "records": 14,
-      "lastRunAt": "2025-11-07T14:59:18.074Z",
+      "records": 206,
+      "lastRunAt": "2025-11-08T02:54:07.270Z",
       "approved": true,
       "notes": "Canonical artifacts written to static/data"
     }
   },
   "final": {
-    "items": 4,
+    "items": 196,
     "quests": 3,
     "upgrades": 3,
     "vendors": 2,
     "chains": 2,
-    "updatedAt": "2025-11-07T14:59:18.085Z"
+    "updatedAt": "2025-11-08T02:54:07.289Z"
   }
 }

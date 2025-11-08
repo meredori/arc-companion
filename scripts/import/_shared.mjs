@@ -132,6 +132,12 @@ export async function writeBatches(passName, records, { batchSize, dryRun = fals
   }
 
   await ensureDir(dir);
+  const existing = await fs.readdir(dir);
+  await Promise.all(
+    existing
+      .filter((file) => file.endsWith('.json'))
+      .map((file) => fs.unlink(path.join(dir, file)))
+  );
   const results = [];
   for (let index = 0; index < batches.length; index += 1) {
     const batch = batches[index];

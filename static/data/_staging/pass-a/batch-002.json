@@ -1,63 +1,1448 @@
 [
   {
-    "id": "item-frayed-wiring-bundle",
-    "name": "Frayed Wiring Bundle",
-    "slug": "frayed-wiring-bundle",
-    "rarity": "Common Salvage",
-    "category": "Electronics",
-    "sell": 65,
+    "id": "item-crude-explosives",
+    "name": "Crude Explosives",
+    "slug": "crude-explosives",
+    "rarity": "Uncommon",
+    "category": "Refined Material",
+    "sell": 270,
     "recycle": [
       {
-        "itemId": "mat-copper-strand",
-        "name": "Copper Strand",
-        "qty": 5
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 3
       }
     ],
     "needs": {
-      "quests": 1,
-      "workshop": 4
+      "quests": 0,
+      "workshop": 5
     },
-    "wikiUrl": "https://arcraiders.wiki/wiki/Frayed_Wiring_Bundle",
-    "notes": "Frequent drop in residential zones; feeds multiple crafting trees.",
+    "wikiUrl": "https://arcraiders.wiki/wiki/Crude_Explosives",
+    "notes": null,
     "stageHistory": [
       {
         "pass": "A",
-        "indexedAt": "2025-11-07T14:59:10.668Z",
-        "rowNumber": 3,
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 51,
         "source": "wiki-loot"
       }
     ]
   },
   {
-    "id": "item-rusted-tools",
-    "name": "Rusted Tools",
-    "slug": "rusted-tools",
-    "rarity": "Uncommon Salvage",
-    "category": "Utilities",
-    "sell": 110,
+    "id": "item-crumpled-plastic-bottle",
+    "name": "Crumpled Plastic Bottle",
+    "slug": "crumpled-plastic-bottle",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 80,
     "recycle": [
       {
-        "itemId": "mat-metal-scrap",
-        "name": "Metal Scrap",
-        "qty": 7
-      },
-      {
-        "itemId": "mat-bolts",
-        "name": "Bolts",
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
         "qty": 3
       }
     ],
     "needs": {
-      "quests": 2,
+      "quests": 0,
       "workshop": 0
     },
-    "wikiUrl": "https://arcraiders.wiki/wiki/Rusted_Tools",
-    "notes": "Quest givers in Dam and Spaceport require these for repairs.",
+    "wikiUrl": "https://arcraiders.wiki/wiki/Crumpled_Plastic_Bottle",
+    "notes": null,
     "stageHistory": [
       {
         "pass": "A",
-        "indexedAt": "2025-11-07T14:59:10.668Z",
-        "rowNumber": 4,
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 52,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-dam-control-tower-key",
+    "name": "Dam Control Tower Key",
+    "slug": "dam-control-tower-key",
+    "rarity": "Epic",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Dam_Control_Tower_Key",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 53,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-dam-staff-room-key",
+    "name": "Dam Staff Room Key",
+    "slug": "dam-staff-room-key",
+    "rarity": "Uncommon",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Dam_Staff_Room_Key",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 54,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-dam-surveillance-key",
+    "name": "Dam Surveillance Key",
+    "slug": "dam-surveillance-key",
+    "rarity": "Uncommon",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Dam_Surveillance_Key",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 55,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-dam-testing-annex-key",
+    "name": "Dam Testing Annex Key",
+    "slug": "dam-testing-annex-key",
+    "rarity": "Rare",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Dam_Testing_Annex_Key",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 56,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-dam-utility-key",
+    "name": "Dam Utility Key",
+    "slug": "dam-utility-key",
+    "rarity": "Uncommon",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Dam_Utility_Key",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 57,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-damaged-arc-motion-core",
+    "name": "Damaged ARC Motion Core",
+    "slug": "damaged-arc-motion-core",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Damaged_ARC_Motion_Core",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 58,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-damaged-arc-powercell",
+    "name": "Damaged ARC Powercell",
+    "slug": "damaged-arc-powercell",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 293,
+    "recycle": [
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 1
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Damaged_ARC_Powercell",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 59,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-damaged-fireball-burner",
+    "name": "Damaged Fireball Burner",
+    "slug": "damaged-fireball-burner",
+    "rarity": "Common",
+    "category": "Recyclable",
+    "sell": 270,
+    "recycle": [
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 1
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Damaged_Fireball_Burner",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 60,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-damaged-heat-sink",
+    "name": "Damaged Heat Sink",
+    "slug": "damaged-heat-sink",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 6
+      },
+      {
+        "itemId": "mat-wires",
+        "name": "Wires",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 2
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Damaged_Heat_Sink",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 61,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-damaged-hornet-driver",
+    "name": "Damaged Hornet Driver",
+    "slug": "damaged-hornet-driver",
+    "rarity": "Common",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Damaged_Hornet_Driver",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 62,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-damaged-rocketeer-driver",
+    "name": "Damaged Rocketeer Driver",
+    "slug": "damaged-rocketeer-driver",
+    "rarity": "Common",
+    "category": "Recyclable",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 3
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Damaged_Rocketeer_Driver",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 63,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-damaged-snitch-scanner",
+    "name": "Damaged Snitch Scanner",
+    "slug": "damaged-snitch-scanner",
+    "rarity": "Common",
+    "category": "Recyclable",
+    "sell": 659,
+    "recycle": [
+      {
+        "itemId": "mat-",
+        "name": "-",
+        "qty": 1
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Damaged_Snitch_Scanner",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 64,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-damaged-wasp-driver",
+    "name": "Damaged Wasp Driver",
+    "slug": "damaged-wasp-driver",
+    "rarity": "Common",
+    "category": "Recyclable",
+    "sell": 270,
+    "recycle": [
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 1
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Damaged_Wasp_Driver",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 65,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-dart-board",
+    "name": "Dart Board",
+    "slug": "dart-board",
+    "rarity": "Uncommon",
+    "category": "Trinket",
+    "sell": 2000,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Dart_Board",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 66,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-deflated-football",
+    "name": "Deflated Football",
+    "slug": "deflated-football",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 15
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Deflated_Football",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 67,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-degraded-arc-rubber",
+    "name": "Degraded ARC Rubber",
+    "slug": "degraded-arc-rubber",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 11
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Degraded_ARC_Rubber",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 68,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-diving-goggles",
+    "name": "Diving Goggles",
+    "slug": "diving-goggles",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 12
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Diving_Goggles",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 69,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-dog-collar",
+    "name": "Dog Collar",
+    "slug": "dog-collar",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 270,
+    "recycle": [
+      {
+        "itemId": "mat-fabric",
+        "name": "Fabric",
+        "qty": 8
+      },
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 1
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 1
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Dog_Collar",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 70,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-dried-out-arc-resin",
+    "name": "Dried-Out ARC Resin",
+    "slug": "dried-out-arc-resin",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
+        "qty": 9
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Dried-Out_ARC_Resin",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 71,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-duct-tape",
+    "name": "Duct Tape",
+    "slug": "duct-tape",
+    "rarity": "Uncommon",
+    "category": "Topside Material",
+    "sell": 300,
+    "recycle": [
+      {
+        "itemId": "mat-fabric",
+        "name": "Fabric",
+        "qty": 3
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Duct_Tape",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 72,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-durable-cloth",
+    "name": "Durable Cloth",
+    "slug": "durable-cloth",
+    "rarity": "Uncommon",
+    "category": "Refined Material",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-fabric",
+        "name": "Fabric",
+        "qty": 6
+      }
+    ],
+    "needs": {
+      "quests": 36,
+      "workshop": 5
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Durable_Cloth",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 73,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-electrical-components",
+    "name": "Electrical Components",
+    "slug": "electrical-components",
+    "rarity": "Uncommon",
+    "category": "Refined Material",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
+        "qty": 3
+      },
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 3
+      }
+    ],
+    "needs": {
+      "quests": 30,
+      "workshop": 10
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Electrical_Components",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 74,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-empty-wine-bottle",
+    "name": "Empty Wine Bottle",
+    "slug": "empty-wine-bottle",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 1000,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Empty_Wine_Bottle",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 75,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-exodus-modules",
+    "name": "Exodus Modules",
+    "slug": "exodus-modules",
+    "rarity": "Epic",
+    "category": "Topside Material",
+    "sell": 2750,
+    "recycle": [
+      {
+        "itemId": "mat-magnet",
+        "name": "Magnet",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-mechanical-components",
+        "name": "Mechanical Components",
+        "qty": 1
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Exodus_Modules",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 76,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-expired-pasta",
+    "name": "Expired Pasta",
+    "slug": "expired-pasta",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 1000,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Expired_Pasta",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 77,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-expired-respirator",
+    "name": "Expired Respirator",
+    "slug": "expired-respirator",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 8
+      },
+      {
+        "itemId": "mat-fabric",
+        "name": "Fabric",
+        "qty": 4
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Expired_Respirator",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 78,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-explosive-compound",
+    "name": "Explosive Compound",
+    "slug": "explosive-compound",
+    "rarity": "Rare",
+    "category": "Refined Material",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-crude-explosives",
+        "name": "Crude Explosives",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 5
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Explosive_Compound",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 79,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-fabric",
+    "name": "Fabric",
+    "slug": "fabric",
+    "rarity": "Common",
+    "category": "Basic Material",
+    "sell": 50,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 80
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Fabric",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 80,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-faded-photograph",
+    "name": "Faded Photograph",
+    "slug": "faded-photograph",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 640,
+    "recycle": [],
+    "needs": {
+      "quests": 2,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Faded_Photograph",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 81,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-fertilizer",
+    "name": "Fertilizer",
+    "slug": "fertilizer",
+    "rarity": "Uncommon",
+    "category": "Nature",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-assorted-seeds",
+        "name": "Assorted Seeds",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Fertilizer",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 82,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-film-reel",
+    "name": "Film Reel",
+    "slug": "film-reel",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 2000,
+    "recycle": [],
+    "needs": {
+      "quests": 1,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Film_Reel",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 83,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-fine-wristwatch",
+    "name": "Fine Wristwatch",
+    "slug": "fine-wristwatch",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 3000,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Fine_Wristwatch",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 84,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-fireball-burner",
+    "name": "Fireball Burner",
+    "slug": "fireball-burner",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 1
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 8
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Fireball_Burner",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 85,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-fried-motherboard",
+    "name": "Fried Motherboard",
+    "slug": "fried-motherboard",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
+        "qty": 5
+      },
+      {
+        "itemId": "mat-electrical-components",
+        "name": "Electrical Components",
+        "qty": 1
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 3
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Fried_Motherboard",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 86,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-frying-pan",
+    "name": "Frying Pan",
+    "slug": "frying-pan",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 270,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 8
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Frying_Pan",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 87,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-garlic-press",
+    "name": "Garlic Press",
+    "slug": "garlic-press",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 12
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Garlic_Press",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 88,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-great-mullein",
+    "name": "Great Mullein",
+    "slug": "great-mullein",
+    "rarity": "Uncommon",
+    "category": "Topside Material",
+    "sell": 300,
+    "recycle": [
+      {
+        "itemId": "mat-assorted-seeds",
+        "name": "Assorted Seeds",
+        "qty": 4
+      }
+    ],
+    "needs": {
+      "quests": 1,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Great_Mullein",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 89,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-headphones",
+    "name": "Headphones",
+    "slug": "headphones",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 6
+      },
+      {
+        "itemId": "mat-speaker-component",
+        "name": "Speaker Component",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Headphones",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 90,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-heavy-gun-parts",
+    "name": "Heavy Gun Parts",
+    "slug": "heavy-gun-parts",
+    "rarity": "Rare",
+    "category": "Topside Material",
+    "sell": 700,
+    "recycle": [
+      {
+        "itemId": "mat-simple-gun-parts",
+        "name": "Simple Gun Parts",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Heavy_Gun_Parts",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 91,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-hornet-driver",
+    "name": "Hornet Driver",
+    "slug": "hornet-driver",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-electrical-components",
+        "name": "Electrical Components",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 5
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Hornet_Driver",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 92,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-household-cleaner",
+    "name": "Household Cleaner",
+    "slug": "household-cleaner",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 13
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Household_Cleaner",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 93,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-humidifier",
+    "name": "Humidifier",
+    "slug": "humidifier",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-canister",
+        "name": "Canister",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-wires",
+        "name": "Wires",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 5,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Humidifier",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 94,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-ice-cream-scooper",
+    "name": "Ice Cream Scooper",
+    "slug": "ice-cream-scooper",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 7
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Ice_Cream_Scooper",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 95,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-impure-arc-coolant",
+    "name": "Impure ARC Coolant",
+    "slug": "impure-arc-coolant",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 13
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Impure_ARC_Coolant",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 96,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-industrial-battery",
+    "name": "Industrial Battery",
+    "slug": "industrial-battery",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 7
+      },
+      {
+        "itemId": "mat-battery",
+        "name": "Battery",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 3
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Industrial_Battery",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 97,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-industrial-charger",
+    "name": "Industrial Charger",
+    "slug": "industrial-charger",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 5
+      },
+      {
+        "itemId": "mat-voltage-converter",
+        "name": "Voltage Converter",
+        "qty": 1
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Industrial_Charger",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 98,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-industrial-magnet",
+    "name": "Industrial Magnet",
+    "slug": "industrial-magnet",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-magnet",
+        "name": "Magnet",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 4
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Industrial_Magnet",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 99,
+        "source": "wiki-loot"
+      }
+    ]
+  },
+  {
+    "id": "item-laboratory-reagents",
+    "name": "Laboratory Reagents",
+    "slug": "laboratory-reagents",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-crude-explosives",
+        "name": "Crude Explosives",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 3
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Laboratory_Reagents",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:53:23.380Z",
+        "rowNumber": 100,
         "source": "wiki-loot"
       }
     ]

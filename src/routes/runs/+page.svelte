@@ -7,6 +7,10 @@
   import { RecommendationCard, TipsPanel } from '$lib/components';
   import { lastRemovedRun, runs } from '$lib/stores/app';
 
+  export let data;
+  export let form: unknown;
+  export let params: Record<string, string>;
+
   const highlightRuns = derived(runs, ($runs) =>
     [...$runs]
       .filter((run) => run.extractedValue)

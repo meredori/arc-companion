@@ -2,6 +2,25 @@
   {
     "type": "chain",
     "data": {
+      "id": "chain-resistance-support",
+      "name": "Resistance Support",
+      "stages": [
+        "quest-signal-recovery",
+        "quest-rust-and-shine"
+      ]
+    },
+    "stageHistory": [
+      {
+        "pass": "D",
+        "indexedAt": "2025-11-08T02:54:06.291Z",
+        "source": "metaforge+wiki",
+        "order": 4
+      }
+    ]
+  },
+  {
+    "type": "chain",
+    "data": {
       "id": "chain-matrix-calibration",
       "name": "Matrix Calibration",
       "stages": [
@@ -11,7 +30,7 @@
     "stageHistory": [
       {
         "pass": "D",
-        "indexedAt": "2025-11-07T14:59:15.531Z",
+        "indexedAt": "2025-11-08T02:54:06.291Z",
         "source": "metaforge+wiki",
         "order": 5
       }
@@ -38,59 +57,9 @@
     "stageHistory": [
       {
         "pass": "D",
-        "indexedAt": "2025-11-07T14:59:15.531Z",
+        "indexedAt": "2025-11-08T02:54:06.291Z",
         "source": "metaforge+wiki",
         "order": 6
-      }
-    ]
-  },
-  {
-    "type": "upgrade",
-    "data": {
-      "id": "upgrade-power-matrix",
-      "name": "Power Matrix",
-      "bench": "MetaForge",
-      "level": 3,
-      "items": [
-        {
-          "itemId": "item-advanced-arc-powercell",
-          "qty": 1
-        },
-        {
-          "itemId": "item-frayed-wiring-bundle",
-          "qty": 2
-        }
-      ]
-    },
-    "stageHistory": [
-      {
-        "pass": "D",
-        "indexedAt": "2025-11-07T14:59:15.531Z",
-        "source": "metaforge+wiki",
-        "order": 7
-      }
-    ]
-  },
-  {
-    "type": "upgrade",
-    "data": {
-      "id": "upgrade-field-maintenance",
-      "name": "Field Maintenance Kit",
-      "bench": "Workshop",
-      "level": 1,
-      "items": [
-        {
-          "itemId": "item-rusted-tools",
-          "qty": 2
-        }
-      ]
-    },
-    "stageHistory": [
-      {
-        "pass": "D",
-        "indexedAt": "2025-11-07T14:59:15.531Z",
-        "source": "metaforge+wiki",
-        "order": 8
       }
     ]
   }

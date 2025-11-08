@@ -106,3 +106,25 @@ export function tipsForBlueprints(totalOwned: number, totalAvailable: number): s
     'Use the admin import tools to refresh blueprint metadata after each pipeline run.'
   ];
 }
+
+export function tipsForWorkshop(
+  ownedLevels: number,
+  totalLevels: number,
+  highestOwnedLevel: number
+): string[] {
+  if (totalLevels === 0) {
+    return ['Workshop upgrade metadata is missing. Sync the data pipeline to populate levels.'];
+  }
+  const progress = Math.round((ownedLevels / totalLevels) * 100);
+  const tips: string[] = [];
+  tips.push(`Workshop progress: ${ownedLevels}/${totalLevels} levels (${progress}%).`);
+  if (highestOwnedLevel === 0) {
+    tips.push('Mark Level 1 once it finishes upgrading to unlock automated tracking.');
+  } else if (highestOwnedLevel >= totalLevels) {
+    tips.push('All levels marked as owned — consider resetting if you prestige or wipe.');
+  } else {
+    tips.push(`Next target: Level ${highestOwnedLevel + 1}. Toggle it once the bench upgrade completes.`);
+  }
+  tips.push('Updating ownership instantly removes those material queues from the What To Do tab.');
+  return tips;
+}

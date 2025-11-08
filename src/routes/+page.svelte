@@ -9,6 +9,10 @@
 <script lang="ts">
   import { base } from '$app/paths';
 
+  export let data;
+  export let form;
+  export let params;
+
   const withBase = (href: string) => (base ? `${base}${href}` : href);
 </script>
 
@@ -33,6 +37,12 @@
       <h2 class="text-xl font-semibold">Track</h2>
       <p class="mt-2 text-sm text-slate-400">
         Quest, upgrade, and goal tracking that informs future loot decisions.
+      </p>
+    </a>
+    <a class="section-card transition-transform duration-200 hover:-translate-y-1" href={withBase('/what-i-have')}>
+      <h2 class="text-xl font-semibold">What I Have</h2>
+      <p class="mt-2 text-sm text-slate-400">
+        Central dashboard to mark quest completions, bench upgrades, and owned schematics.
       </p>
     </a>
     <a class="section-card transition-transform duration-200 hover:-translate-y-1" href={withBase('/blueprints')}>

@@ -6,27 +6,34 @@
   import { onDestroy } from 'svelte';
   import { derived, get } from 'svelte/store';
   import { RunTimer, TipsPanel } from '$lib/components';
-  import { blueprints, quests, runs, settings } from '$lib/stores/app';
+  import { blueprints, projectProgress, quests, runs, settings } from '$lib/stores/app';
   import { buildRecommendationContext, recommendItemsMatching } from '$lib/recommend';
   import { createRunTipContext, generateRunTips } from '$lib/tips';
   import type { PageData } from './$types';
 
   export let data: PageData;
+  export let form: unknown;
+  export let params: Record<string, string>;
 
-  const { items, quests: questDefs, upgrades } = data;
+  const { items, quests: questDefs, upgrades, projects } = data;
 
-  const recommendationContextStore = derived([quests, blueprints], ([$quests, $blueprints]) =>
+  const recommendationContextStore = derived([quests, blueprints, projectProgress], ([$quests, $blueprints, $projectProgress]) =>
     buildRecommendationContext({
       items,
       quests: questDefs,
       questProgress: $quests,
       upgrades,
-      blueprints: $blueprints
+      blueprints: $blueprints,
+      projects,
+      projectProgress: $projectProgress
     })
   );
 
   const outstandingNeedsStore = derived(recommendationContextStore, (context) =>
-    recommendItemsMatching('', context).reduce((total, rec) => total + rec.needs.quests + rec.needs.workshop, 0)
+    recommendItemsMatching('', context).reduce(
+      (total, rec) => total + rec.needs.quests + rec.needs.workshop + rec.needs.projects,
+      0
+    )
   );
 
   const activeRunStore = derived(runs, ($runs) => $runs.find((run) => !run.endedAt) ?? null);
@@ -109,15 +116,17 @@
     runs.updateEntry(active.id, { endedAt: nowIso() });
   };
 
-  const createDefaultForm = (freeLoadout: boolean) => ({
-    xp: '',
-    value: '',
-    extracted: '',
-    deaths: '',
-    notes: '',
-    crew: '',
-    freeLoadout
-  });
+  function createDefaultForm(freeLoadout: boolean) {
+    return {
+      xp: '',
+      value: '',
+      extracted: '',
+      deaths: '',
+      notes: '',
+      crew: '',
+      freeLoadout
+    };
+  }
 
   $: tips = $tipsStore;
   $: {

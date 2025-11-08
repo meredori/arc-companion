@@ -1,0 +1,2019 @@
+[
+  {
+    "id": "item-lance-s-mixtape-5th-edition",
+    "name": "Lance's Mixtape (5th Edition)",
+    "slug": "lance-s-mixtape-5th-edition",
+    "rarity": "Epic",
+    "category": "Trinket",
+    "sell": 10000,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Lance's_Mixtape_(5th_Edition)",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 101,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/1/15/Lance%27s_Mixtape_%285th_Edition%29.png/348px-Lance%27s_Mixtape_%285th_Edition%29.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-lemon",
+    "name": "Lemon",
+    "slug": "lemon",
+    "rarity": "Common",
+    "category": "Nature",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-assorted-seeds",
+        "name": "Assorted Seeds",
+        "qty": 3
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Lemon",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 102,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/3/35/Lemon.png/348px-Lemon.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-leaper-pulse-unit",
+    "name": "Leaper Pulse Unit",
+    "slug": "leaper-pulse-unit",
+    "rarity": "Epic",
+    "category": "Recyclable",
+    "sell": 5000,
+    "recycle": [
+      {
+        "itemId": "mat-advanced-mechanical-components",
+        "name": "Advanced Mechanical Components",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 3
+      }
+    ],
+    "needs": {
+      "quests": 3,
+      "workshop": 4
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Leaper_Pulse_Unit",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 103,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/a/a0/Leaper_Pulse_Unit.png/348px-Leaper_Pulse_Unit.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-light-bulb",
+    "name": "Light Bulb",
+    "slug": "light-bulb",
+    "rarity": "Uncommon",
+    "category": "Trinket",
+    "sell": 2000,
+    "recycle": [],
+    "needs": {
+      "quests": 5,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Light_Bulb",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 104,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/2/2c/Light_Bulb.png/348px-Light_Bulb.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-light-gun-parts",
+    "name": "Light Gun Parts",
+    "slug": "light-gun-parts",
+    "rarity": "Rare",
+    "category": "Topside Material",
+    "sell": 700,
+    "recycle": [
+      {
+        "itemId": "mat-simple-gun-parts",
+        "name": "Simple Gun Parts",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Light_Gun_Parts",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 105,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/c/c9/Light_Gun_Parts.png/348px-Light_Gun_Parts.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-magnet",
+    "name": "Magnet",
+    "slug": "magnet",
+    "rarity": "Uncommon",
+    "category": "Topside Material",
+    "sell": 300,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 3
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Magnet",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 106,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/8/8c/Magnet.png/348px-Magnet.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-magnetic-accelerator",
+    "name": "Magnetic Accelerator",
+    "slug": "magnetic-accelerator",
+    "rarity": "Epic",
+    "category": "Refined Material",
+    "sell": 5500,
+    "recycle": [
+      {
+        "itemId": "mat-advanced-mechanical-components",
+        "name": "Advanced Mechanical Components",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-arc-motion-core",
+        "name": "ARC Motion Core",
+        "qty": 1
+      }
+    ],
+    "needs": {
+      "quests": 3,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Magnetic_Accelerator",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 107,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/5/5e/Magnetic_Accelerator.png/348px-Magnetic_Accelerator.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-mechanical-components",
+    "name": "Mechanical Components",
+    "slug": "mechanical-components",
+    "rarity": "Rare",
+    "category": "Refined Material",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 3
+      },
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 5
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Mechanical_Components",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 108,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/9/94/Mechanical_Components.png/348px-Mechanical_Components.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-medium-gun-parts",
+    "name": "Medium Gun Parts",
+    "slug": "medium-gun-parts",
+    "rarity": "Rare",
+    "category": "Topside Material",
+    "sell": 700,
+    "recycle": [
+      {
+        "itemId": "mat-simple-gun-parts",
+        "name": "Simple Gun Parts",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Medium_Gun_Parts",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 109,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/9/9a/Medium_Gun_Parts.png/348px-Medium_Gun_Parts.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-metal-brackets",
+    "name": "Metal Brackets",
+    "slug": "metal-brackets",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 270,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 8
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Metal_Brackets",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 110,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/6/62/Metal_Brackets.png/348px-Metal_Brackets.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-metal-parts",
+    "name": "Metal Parts",
+    "slug": "metal-parts",
+    "rarity": "Common",
+    "category": "Basic Material",
+    "sell": 75,
+    "recycle": [],
+    "needs": {
+      "quests": 150,
+      "workshop": 80
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Metal_Parts",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 111,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/8/89/Metal_Parts.png/348px-Metal_Parts.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-mod-components",
+    "name": "Mod Components",
+    "slug": "mod-components",
+    "rarity": "Epic",
+    "category": "Advanced Material",
+    "sell": 3000,
+    "recycle": [
+      {
+        "itemId": "mat-mechanical-components",
+        "name": "Mechanical Components",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-steel-spring",
+        "name": "Steel Spring",
+        "qty": 1
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Mod_Components",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 112,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/0/0f/Mod_Components.png/348px-Mod_Components.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-moss",
+    "name": "Moss",
+    "slug": "moss",
+    "rarity": "Rare",
+    "category": "Topside Material",
+    "sell": 500,
+    "recycle": [
+      {
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 5
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Moss",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 113,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/6/64/Moss.png/348px-Moss.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-motor",
+    "name": "Motor",
+    "slug": "motor",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-oil",
+        "name": "Oil",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-mechanical-components",
+        "name": "Mechanical Components",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 3
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Motor",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 114,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/0/0f/Motor.png/348px-Motor.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-mushroom",
+    "name": "Mushroom",
+    "slug": "mushroom",
+    "rarity": "Uncommon",
+    "category": "Nature",
+    "sell": 1000,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Mushroom",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 115,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/8/8c/Mushroom.png/348px-Mushroom.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-music-album",
+    "name": "Music Album",
+    "slug": "music-album",
+    "rarity": "Rare",
+    "category": "Trinket",
+    "sell": 3000,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Music_Album",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 116,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/9/90/Music_Album.png/348px-Music_Album.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-music-box",
+    "name": "Music Box",
+    "slug": "music-box",
+    "rarity": "Rare",
+    "category": "Trinket",
+    "sell": 5000,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Music_Box",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 117,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/7/74/Music_Box.png/348px-Music_Box.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-number-plate",
+    "name": "Number Plate",
+    "slug": "number-plate",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 80,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 3
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Number_Plate",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 118,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/5/51/Number_Plate.png/348px-Number_Plate.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-oil",
+    "name": "Oil",
+    "slug": "oil",
+    "rarity": "Uncommon",
+    "category": "Topside Material",
+    "sell": 300,
+    "recycle": [
+      {
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 3
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Oil",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 119,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/0/06/Oil.png/348px-Oil.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-olives",
+    "name": "Olives",
+    "slug": "olives",
+    "rarity": "Common",
+    "category": "Nature",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-assorted-seeds",
+        "name": "Assorted Seeds",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Olives",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 120,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/f/f3/Olives.png/348px-Olives.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-painted-box",
+    "name": "Painted Box",
+    "slug": "painted-box",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 2000,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Painted_Box",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 121,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/5/53/Painted_Box.png/348px-Painted_Box.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-patrol-car-key",
+    "name": "Patrol Car Key",
+    "slug": "patrol-car-key",
+    "rarity": "Uncommon",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Patrol_Car_Key",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 122,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/b/b0/Patrol_Car_Key.png",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-plastic-parts",
+    "name": "Plastic Parts",
+    "slug": "plastic-parts",
+    "rarity": "Common",
+    "category": "Basic Material",
+    "sell": 60,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 75
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Plastic_Parts",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 123,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/c/c9/Plastic_Parts.png/348px-Plastic_Parts.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-playing-cards",
+    "name": "Playing Cards",
+    "slug": "playing-cards",
+    "rarity": "Rare",
+    "category": "Trinket",
+    "sell": 5000,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Playing_Cards",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 124,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/e/e2/Playing_Cards.png/348px-Playing_Cards.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-polluted-air-filter",
+    "name": "Polluted Air Filter",
+    "slug": "polluted-air-filter",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-fabric",
+        "name": "Fabric",
+        "qty": 6
+      },
+      {
+        "itemId": "mat-oil",
+        "name": "Oil",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Polluted_Air_Filter",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 125,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/6/6e/Polluted_Air_Filter.png/348px-Polluted_Air_Filter.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-pop-trigger",
+    "name": "Pop Trigger",
+    "slug": "pop-trigger",
+    "rarity": "Common",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-crude-explosives",
+        "name": "Crude Explosives",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 1
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 5
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Pop_Trigger",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 126,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/c/c6/Pop_Trigger.png/348px-Pop_Trigger.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-portable-tv",
+    "name": "Portable TV",
+    "slug": "portable-tv",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-battery",
+        "name": "Battery",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Portable_TV",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 127,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/5/5f/Portable_TV.png/348px-Portable_TV.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-poster-of-natural-wonders",
+    "name": "Poster of Natural Wonders",
+    "slug": "poster-of-natural-wonders",
+    "rarity": "Uncommon",
+    "category": "Trinket",
+    "sell": 2000,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Poster_Of_Natural_Wonders",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 128,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/f/f2/Poster_of_Natural_Wonders.png/348px-Poster_of_Natural_Wonders.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-pottery",
+    "name": "Pottery",
+    "slug": "pottery",
+    "rarity": "Uncommon",
+    "category": "Trinket",
+    "sell": 2000,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Pottery",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 129,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/c/c0/Pottery.png/348px-Pottery.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-power-bank",
+    "name": "Power Bank",
+    "slug": "power-bank",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-battery",
+        "name": "Battery",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-wires",
+        "name": "Wires",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Power_Bank",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 130,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/7/77/Power_Bank.png/348px-Power_Bank.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-power-cable",
+    "name": "Power Cable",
+    "slug": "power-cable",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-wires",
+        "name": "Wires",
+        "qty": 4
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 3
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Power_Cable",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 131,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/f/f8/Power_Cable.png/348px-Power_Cable.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-power-rod",
+    "name": "Power Rod",
+    "slug": "power-rod",
+    "rarity": "Epic",
+    "category": "Advanced Material",
+    "sell": 5500,
+    "recycle": [
+      {
+        "itemId": "mat-advanced-electrical-components",
+        "name": "Advanced Electrical Components",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-arc-circuitry",
+        "name": "ARC Circuitry",
+        "qty": 1
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Power_Rod",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 132,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/3/31/Power_Rod.png/348px-Power_Rod.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-prickly-pear",
+    "name": "Prickly Pear",
+    "slug": "prickly-pear",
+    "rarity": "Common",
+    "category": "Nature",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-assorted-seeds",
+        "name": "Assorted Seeds",
+        "qty": 3
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Prickly_Pear",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 133,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/8/80/Prickly_Pear.png/348px-Prickly_Pear.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-processor",
+    "name": "Processor",
+    "slug": "processor",
+    "rarity": "Rare",
+    "category": "Topside Material",
+    "sell": 500,
+    "recycle": [
+      {
+        "itemId": "mat-wires",
+        "name": "Wires",
+        "qty": 1
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Processor",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 134,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/4/4e/Processor.png/348px-Processor.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-projector",
+    "name": "Projector",
+    "slug": "projector",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-processor",
+        "name": "Processor",
+        "qty": 1
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Projector",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 135,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/0/04/Projector.png/348px-Projector.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-queen-reactor",
+    "name": "Queen Reactor",
+    "slug": "queen-reactor",
+    "rarity": "Legendary",
+    "category": "Recyclable",
+    "sell": 13000,
+    "recycle": [
+      {
+        "itemId": "mat-power-rod",
+        "name": "Power Rod",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-magnetic-accelerator",
+        "name": "Magnetic Accelerator",
+        "qty": 1
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Queen_Reactor",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 136,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/6/6b/Queen_Reactor.png/348px-Queen_Reactor.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-radio",
+    "name": "Radio",
+    "slug": "radio",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-speaker-component",
+        "name": "Speaker Component",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-sensors",
+        "name": "Sensors",
+        "qty": 1
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Radio",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 137,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/3/31/Radio.png/348px-Radio.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-raider-hatch-key",
+    "name": "Raider Hatch Key",
+    "slug": "raider-hatch-key",
+    "rarity": "Rare",
+    "category": "Key",
+    "sell": 1000,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Raider_Hatch_Key",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 138,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/6/68/Raider_Hatch_Key.png/348px-Raider_Hatch_Key.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-red-coral-jewelry",
+    "name": "Red Coral Jewelry",
+    "slug": "red-coral-jewelry",
+    "rarity": "Rare",
+    "category": "Trinket",
+    "sell": 5000,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Red_Coral_Jewelry",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 139,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/1/1a/Red_Coral_Jewelry.png/348px-Red_Coral_Jewelry.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-remote-control",
+    "name": "Remote Control",
+    "slug": "remote-control",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-sensors",
+        "name": "Sensors",
+        "qty": 1
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Remote_Control",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 140,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/f/f4/Remote_Control.png/348px-Remote_Control.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-resin",
+    "name": "Resin",
+    "slug": "resin",
+    "rarity": "Common",
+    "category": "Nature",
+    "sell": 1000,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Resin",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 141,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/2/2c/Resin.png/348px-Resin.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-rocketeer-driver",
+    "name": "Rocketeer Driver",
+    "slug": "rocketeer-driver",
+    "rarity": "Epic",
+    "category": "Recyclable",
+    "sell": 5000,
+    "recycle": [
+      {
+        "itemId": "mat-advanced-electrical-components",
+        "name": "Advanced Electrical Components",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 3
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 3
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Rocketeer_Driver",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 142,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/e/ef/Rocketeer_Driver.png/348px-Rocketeer_Driver.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-ripped-safety-vest",
+    "name": "Ripped Safety Vest",
+    "slug": "ripped-safety-vest",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-magnet",
+        "name": "Magnet",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-durable-cloth",
+        "name": "Durable Cloth",
+        "qty": 1
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Ripped_Safety_Vest",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 143,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/a/a8/Ripped_Safety_Vest.png/348px-Ripped_Safety_Vest.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-rocket-thruster",
+    "name": "Rocket Thruster",
+    "slug": "rocket-thruster",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-synthesized-fuel",
+        "name": "Synthesized Fuel",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 6
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Rocket_Thruster",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 144,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/8/8a/Rocket_Thruster.png/348px-Rocket_Thruster.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-roots",
+    "name": "Roots",
+    "slug": "roots",
+    "rarity": "Uncommon",
+    "category": "Nature",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-assorted-seeds",
+        "name": "Assorted Seeds",
+        "qty": 1
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Roots",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 145,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/5/57/Roots.png/348px-Roots.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-rope",
+    "name": "Rope",
+    "slug": "rope",
+    "rarity": "Rare",
+    "category": "Topside Material",
+    "sell": 500,
+    "recycle": [
+      {
+        "itemId": "mat-fabric",
+        "name": "Fabric",
+        "qty": 5
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Rope",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 146,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/b/b4/Rope.png/348px-Rope.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-rosary",
+    "name": "Rosary",
+    "slug": "rosary",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 2000,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Rosary",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 147,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/7/77/Rosary.png/348px-Rosary.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-rubber-duck",
+    "name": "Rubber Duck",
+    "slug": "rubber-duck",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 1000,
+    "recycle": [],
+    "needs": {
+      "quests": 2,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Rubber_Duck",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 148,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/d/df/Rubber_Duck.png/348px-Rubber_Duck.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-rubber-pad",
+    "name": "Rubber Pad",
+    "slug": "rubber-pad",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 18
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Rubber_Pad",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 149,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/1/1a/Rubber_Pad.png/348px-Rubber_Pad.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  },
+  {
+    "id": "item-rubber-parts",
+    "name": "Rubber Parts",
+    "slug": "rubber-parts",
+    "rarity": "Common",
+    "category": "Basic Material",
+    "sell": 50,
+    "recycle": [],
+    "needs": {
+      "quests": 200,
+      "workshop": 30
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Rubber_Parts",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 150,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/9/93/Rubber_Parts.png/348px-Rubber_Parts.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": []
+  }
+]

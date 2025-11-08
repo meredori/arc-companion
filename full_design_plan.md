@@ -17,13 +17,14 @@ It is intended for **AI code-generation (Codex)** or human engineers to implemen
 - Allow users to track quests, blueprints, and goals to feed into item recommendations.
 
 ### Core Features
-1. **Item Recommendation Lookup** — Shows what to do with each item and why.
-2. **Quest & Upgrade Tracker** — Mark off completed objectives to update needs.
-3. **Blueprint Management** — Track which blueprints you own.
-4. **Goal Tracker** — Track progress toward crafting or collecting items.
-5. **Run Analyzer** — Record XP, loot value, deaths, and receive dynamic tips during play.
-6. **Run History Dashboard** — Summaries and KPIs: XP/hour, value/hour, success rate, etc.
-7. **Offline Persistence** — Local storage for user data and settings.
+1. **Item Recommendation Lookup** — Shows what to do with each item and why (quests, workbenches, expedition projects, manual overrides).
+2. **What I Have Dashboard** — Centralized controls for quests, workbench levels, blueprint ownership, and expedition project hand-ins (with hide-completed filters).
+3. **Quest & Upgrade Tracker** — Legacy “Track” view for quick checklist-style progress.
+4. **Blueprint Management** — Track which blueprints you own.
+5. **Goal / Project Tracker** — Track workbench upgrades and expedition contributions; partial hand-ins are persisted locally.
+6. **Run Analyzer** — Record XP, loot value, deaths, and receive dynamic tips during play.
+7. **Run History Dashboard** — Summaries and KPIs: XP/hour, value/hour, success rate, etc.
+8. **Offline Persistence** — Local storage for user data and settings.
 
 ---
 
@@ -91,6 +92,22 @@ data/items.json
  data/chains.json
  data/meta/index.json
 ```
+
+### 3.3 Interim merge script (current workflow)
+
+Until the staged passes are fully automated against live endpoints, we maintain a `temp/` directory
+containing the latest dumps from RaidTheory (`items.json`, `quests.json`, `hideoutModules.json`,
+`projects.json`). Running
+
+```bash
+node scripts/data/merge-temp-data.mjs
+```
+
+normalizes those feeds, rewrites image URLs to `/static/images/items`, and regenerates the canonical
+artifacts under `static/data/`. The script also keeps bespoke records (e.g., custom workbench upgrades)
+that are not represented in the temp feed. This bridge workflow mirrors the planned pipeline stages,
+so once Pass A–F are online the script can be replaced by the automated import queue without changing
+the downstream JSON shape.
 
 ---
 
@@ -198,6 +215,37 @@ function recommend(item, context) {
 ---
 
 ## 6. Run Analyzer
+
+_(section unchanged for brevity)_
+
+---
+
+## 7. Inventory & Project Coordination
+
+The **What I Have** page serves as the authoritative source for player-specific state. It exposes:
+
+1. **Quest progression**
+   - Sorted by chain order with gating (a quest only appears once every prior stage in its chain is
+     marked complete).
+   - “Hide completed” toggle reduces noise once a questline is finished.
+
+2. **Workbench upgrades**
+   - Grouped by bench → level with per-level requirements listed.
+   - Bench- and level-level toggles mark ownership; hide-completed works here as well.
+   - Requirements feed directly into the recommendation context (`needs.workshop`).
+
+3. **Blueprint catalog**
+   - Grid view for quick ownership flips across benches/levels without scrolling the full bench
+     hierarchy.
+
+4. **Expedition projects**
+   - Each project phase lists its item requirements plus the currently delivered quantity.
+   - Inputs allow partial hand-ins (e.g., deliver 65 of 80 ARC Alloy today and the rest later).
+   - “Mark complete” fills all requirements; “Reset” clears contributions if you misclick.
+   - Hide-completed toggle keeps the list focused on unfinished phases.
+
+All of the state above is persisted in the Svelte stores (`quests`, `blueprints`, `projectProgress`,
+etc.) so the recommendation engine, Run Analyzer, and Track views see consistent inputs.
 
 ### Fields Recorded
 | Field | Description |

@@ -3,6 +3,8 @@ import { derived, get, writable } from 'svelte/store';
 import type {
   AppSettings,
   BlueprintState,
+  ItemOverride,
+  ProjectProgressState,
   QuestProgress,
   RunHistoryState,
   RunLogEntry
@@ -14,7 +16,9 @@ const STORAGE_KEYS = {
   quests: `quests:${STORAGE_VERSION}`,
   blueprints: `blueprints:${STORAGE_VERSION}`,
   runs: `runs:${STORAGE_VERSION}`,
-  settings: `settings:${STORAGE_VERSION}`
+  settings: `settings:${STORAGE_VERSION}`,
+  itemOverrides: `item-overrides:${STORAGE_VERSION}`,
+  projects: `projects:${STORAGE_VERSION}`
 } as const;
 
 const DEBOUNCE_MS = 3000;
@@ -80,7 +84,8 @@ const defaultSettings: AppSettings = {
   freeLoadoutDefault: false,
   showExperimental: false,
   approvalsEnabled: false,
-  approvalToken: undefined
+  approvalToken: undefined,
+  alwaysKeepCategories: []
 };
 
 const questStore = createPersistentStore<QuestProgress[]>(STORAGE_KEYS.quests, []);
@@ -90,6 +95,29 @@ const runStore = createPersistentStore<RunHistoryState>(STORAGE_KEYS.runs, {
   lastRemoved: null
 });
 const settingsStore = createPersistentStore<AppSettings>(STORAGE_KEYS.settings, defaultSettings);
+const itemOverrideStore = createPersistentStore<Record<string, ItemOverride>>(
+  STORAGE_KEYS.itemOverrides,
+  {}
+);
+const projectProgressStore = createPersistentStore<ProjectProgressState>(STORAGE_KEYS.projects, {});
+
+function pruneOverride(override: ItemOverride | undefined): ItemOverride | null {
+  if (!override) return null;
+  const next: ItemOverride = {};
+  if (typeof override.category === 'string' && override.category.trim()) {
+    next.category = override.category.trim();
+  }
+  if (typeof override.rarity === 'string' && override.rarity.trim()) {
+    next.rarity = override.rarity.trim();
+  }
+  if (typeof override.imageUrl === 'string' && override.imageUrl.trim()) {
+    next.imageUrl = override.imageUrl.trim();
+  }
+  if (typeof override.notes === 'string' && override.notes.trim()) {
+    next.notes = override.notes.trim();
+  }
+  return Object.keys(next).length > 0 ? next : null;
+}
 
 export const quests = {
   subscribe: questStore.subscribe,
@@ -200,12 +228,83 @@ export const runHistory = runStore;
 export const recentRuns = derived(runStore, (state) => sortRuns(state.entries).slice(0, 5));
 export const lastRemovedRun = derived(runStore, (state) => state.lastRemoved ?? null);
 export const settings = settingsStore;
+export const itemOverrides = {
+  subscribe: itemOverrideStore.subscribe,
+  upsert(id: string, override: ItemOverride) {
+    itemOverrideStore.update((map) => {
+      const current = map[id] ?? {};
+      const merged = { ...current, ...override };
+      const cleaned = pruneOverride(merged);
+      if (!cleaned) {
+        if (!map[id]) return map;
+        const { [id]: _, ...rest } = map;
+        return rest;
+      }
+      return { ...map, [id]: cleaned };
+    });
+  },
+  remove(id: string) {
+    itemOverrideStore.update((map) => {
+      if (!map[id]) return map;
+      const { [id]: _, ...rest } = map;
+      return rest;
+    });
+  },
+  reset: itemOverrideStore.reset
+};
+
+export const projectProgress = {
+  subscribe: projectProgressStore.subscribe,
+  setContribution(projectId: string, phaseId: string, itemId: string, qty: number) {
+    const normalizedQty = Math.max(0, qty);
+    projectProgressStore.update((state) => {
+      const next: ProjectProgressState = { ...state };
+      const projectEntry = { ...(next[projectId] ?? {}) };
+      const phaseEntry = { ...(projectEntry[phaseId] ?? {}) };
+      if (normalizedQty === 0) {
+        delete phaseEntry[itemId];
+      } else {
+        phaseEntry[itemId] = normalizedQty;
+      }
+      if (Object.keys(phaseEntry).length === 0) {
+        delete projectEntry[phaseId];
+      } else {
+        projectEntry[phaseId] = phaseEntry;
+      }
+      if (Object.keys(projectEntry).length === 0) {
+        delete next[projectId];
+      } else {
+        next[projectId] = projectEntry;
+      }
+      return next;
+    });
+  },
+  clearPhase(projectId: string, phaseId: string) {
+    projectProgressStore.update((state) => {
+      const next: ProjectProgressState = { ...state };
+      if (!next[projectId]) return next;
+      const projectEntry = { ...next[projectId] };
+      if (projectEntry[phaseId]) {
+        delete projectEntry[phaseId];
+      }
+      if (Object.keys(projectEntry).length === 0) {
+        delete next[projectId];
+      } else {
+        next[projectId] = projectEntry;
+      }
+      return next;
+    });
+  },
+  reset: projectProgressStore.reset
+};
 
 export function resetAllStores() {
   quests.reset();
   blueprints.reset();
   runs.clear();
   settings.reset();
+  itemOverrides.reset();
+  projectProgress.reset();
 }
 
 export function hydrateFromCanonical(questsData: QuestProgress[], blueprintData: BlueprintState[]) {

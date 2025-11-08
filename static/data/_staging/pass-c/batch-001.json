@@ -1,146 +1,34 @@
 [
   {
-    "id": "item-recovered-arc-battery",
-    "name": "Recovered ARC Battery",
-    "slug": "recovered-arc-battery",
-    "rarity": "Rare Component",
-    "category": "Power",
-    "sell": 700,
-    "recycle": [
-      {
-        "itemId": "mat-conductor-wire",
-        "name": "Conductor Wire",
-        "qty": 6
-      },
-      {
-        "itemId": "mat-spare-cells",
-        "name": "Spare Cells",
-        "qty": 2
-      }
-    ],
-    "needs": {
-      "quests": 2,
-      "workshop": 1
-    },
-    "wikiUrl": "https://arcraiders.wiki/wiki/Recovered_ARC_Battery",
-    "notes": "Used to calibrate uplink towers during seasonal questlines.",
-    "stageHistory": [
-      {
-        "pass": "A",
-        "indexedAt": "2025-11-07T14:59:10.668Z",
-        "rowNumber": 1,
-        "source": "wiki-loot"
-      },
-      {
-        "pass": "B",
-        "indexedAt": "2025-11-07T14:59:12.300Z",
-        "source": "wiki-item",
-        "sections": [
-          "Sources",
-          "Crafting",
-          "Vendors"
-        ]
-      },
-      {
-        "pass": "C",
-        "indexedAt": "2025-11-07T14:59:13.904Z",
-        "source": "metaforge",
-        "apiId": "mf-1138"
-      }
-    ],
-    "sources": [
-      {
-        "type": "quest",
-        "ref": "quest-signal-recovery",
-        "note": "Quest reward"
-      },
-      {
-        "type": "enemy",
-        "ref": "arc-sentinel",
-        "note": "High-tier patrols"
-      }
-    ],
-    "vendors": [
-      {
-        "vendorId": "vendor-laila",
-        "name": "Laila (Dam Outpost)",
-        "price": 980
-      }
-    ],
-    "craftsFrom": [
-      {
-        "itemId": "mat-conductor-wire",
-        "name": "Conductor Wire",
-        "qty": 6
-      },
-      {
-        "itemId": "mat-spare-cells",
-        "name": "Spare Cells",
-        "qty": 3
-      }
-    ],
-    "craftsInto": [
-      {
-        "productId": "upgrade-uplink-relay",
-        "productName": "Uplink Relay",
-        "qty": 1
-      }
-    ],
-    "zones": [
-      "dam",
-      "spaceport"
-    ],
-    "metaforgeId": "mf-1138",
-    "provenance": {
-      "wiki": true,
-      "api": true
-    },
-    "conflicts": [
-      {
-        "field": "sell",
-        "wikiValue": 680,
-        "apiValue": 700,
-        "resolvedTo": 700,
-        "resolvedAt": "2025-11-07T14:59:13.904Z",
-        "strategy": "prefer-api"
-      }
-    ]
-  },
-  {
     "id": "item-advanced-arc-powercell",
     "name": "Advanced ARC Powercell",
     "slug": "advanced-arc-powercell",
-    "rarity": "Epic Component",
-    "category": "Power",
+    "rarity": "Rare",
+    "category": "Misc",
     "sell": 840,
     "recycle": [
       {
-        "itemId": "mat-arc-sparks",
-        "name": "ARC Sparks",
-        "qty": 4
-      },
-      {
-        "itemId": "mat-energy-coil",
-        "name": "Energy Coil",
+        "itemId": "mat-arc-powercell",
+        "name": "ARC Powercell",
         "qty": 2
       }
     ],
     "needs": {
-      "quests": 3,
-      "workshop": 2
+      "quests": 0,
+      "workshop": 0
     },
     "wikiUrl": "https://arcraiders.wiki/wiki/Advanced_ARC_Powercell",
     "notes": "Primary ingredient for late-game ARC weapon upgrades.",
     "stageHistory": [
       {
         "pass": "A",
-        "indexedAt": "2025-11-07T14:59:10.668Z",
-        "rowNumber": 2,
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 1,
         "source": "wiki-loot"
       },
       {
         "pass": "B",
-        "indexedAt": "2025-11-07T14:59:12.300Z",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
         "source": "wiki-item",
         "sections": [
           "Sources",
@@ -150,11 +38,12 @@
       },
       {
         "pass": "C",
-        "indexedAt": "2025-11-07T14:59:13.904Z",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
         "source": "metaforge",
         "apiId": "mf-1422"
       }
     ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/3/31/Advanced_ARC_Powercell.png/348px-Advanced_ARC_Powercell.png.webp",
     "sources": [
       {
         "type": "enemy",
@@ -201,6 +90,2575 @@
     "provenance": {
       "wiki": true,
       "api": true
+    },
+    "conflicts": [
+      {
+        "field": "sell",
+        "wikiValue": 640,
+        "apiValue": 840,
+        "resolvedTo": 840,
+        "resolvedAt": "2025-11-08T02:54:04.703Z",
+        "strategy": "prefer-api"
+      }
+    ]
+  },
+  {
+    "id": "item-advanced-electrical-components",
+    "name": "Advanced Electrical Components",
+    "slug": "advanced-electrical-components",
+    "rarity": "Rare",
+    "category": "Advanced Material",
+    "sell": 1750,
+    "recycle": [
+      {
+        "itemId": "mat-electrical-components",
+        "name": "Electrical Components",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-wires",
+        "name": "Wires",
+        "qty": 1
+      }
+    ],
+    "needs": {
+      "quests": 5,
+      "workshop": 5
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Advanced_Electrical_Components",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 2,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/9/9b/Advanced_Electrical_Components.png/348px-Advanced_Electrical_Components.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-advanced-mechanical-components",
+    "name": "Advanced Mechanical Components",
+    "slug": "advanced-mechanical-components",
+    "rarity": "Rare",
+    "category": "Advanced Material",
+    "sell": 1750,
+    "recycle": [
+      {
+        "itemId": "mat-mechanical-components",
+        "name": "Mechanical Components",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-wires",
+        "name": "Wires",
+        "qty": 1
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 5
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Advanced_Mechanical_Components",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 3,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/2/25/Advanced_Mechanical_Components.png/348px-Advanced_Mechanical_Components.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-agave",
+    "name": "Agave",
+    "slug": "agave",
+    "rarity": "Uncommon",
+    "category": "Nature",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-assorted-seeds",
+        "name": "Assorted Seeds",
+        "qty": 3
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Agave",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 4,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/4/47/Agave.png/348px-Agave.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-air-freshener",
+    "name": "Air Freshener",
+    "slug": "air-freshener",
+    "rarity": "Uncommon",
+    "category": "Trinket",
+    "sell": 2000,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Air_Freshener",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 5,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/0/03/Air_Freshener.png/348px-Air_Freshener.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-alarm-clock",
+    "name": "Alarm Clock",
+    "slug": "alarm-clock",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-processor",
+        "name": "Processor",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
+        "qty": 6
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Alarm_Clock",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 6,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/9/95/Alarm_Clock.png/348px-Alarm_Clock.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-antiseptic",
+    "name": "Antiseptic",
+    "slug": "antiseptic",
+    "rarity": "Rare",
+    "category": "Refined Material",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 10
+      }
+    ],
+    "needs": {
+      "quests": 2,
+      "workshop": 8
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Antiseptic",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 7,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/f/f5/Antiseptic.png/348px-Antiseptic.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-apricot",
+    "name": "Apricot",
+    "slug": "apricot",
+    "rarity": "Uncommon",
+    "category": "Nature",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-assorted-seeds",
+        "name": "Assorted Seeds",
+        "qty": 3
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Apricot",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 8,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/f/fc/Apricot.png/348px-Apricot.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-arc-alloy",
+    "name": "ARC Alloy",
+    "slug": "arc-alloy",
+    "rarity": "Uncommon",
+    "category": "Topside Material",
+    "sell": 200,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 80,
+      "workshop": 18
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/ARC_Alloy",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 9,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/a/a6/ARC_Alloy.png/348px-ARC_Alloy.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-arc-circuitry",
+    "name": "ARC Circuitry",
+    "slug": "arc-circuitry",
+    "rarity": "Rare",
+    "category": "Topside Material",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 10
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/ARC_Circuitry",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 10,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/d/dc/ARC_Circuitry.png/348px-ARC_Circuitry.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-arc-coolant",
+    "name": "ARC Coolant",
+    "slug": "arc-coolant",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 16
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/ARC_Coolant",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 11,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/e/e9/ARC_Coolant.png/348px-ARC_Coolant.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-arc-flex-rubber",
+    "name": "ARC Flex Rubber",
+    "slug": "arc-flex-rubber",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 16
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/ARC_Flex_Rubber",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 12,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/2/29/ARC_Flex_Rubber.png/348px-ARC_Flex_Rubber.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-arc-motion-core",
+    "name": "ARC Motion Core",
+    "slug": "arc-motion-core",
+    "rarity": "Rare",
+    "category": "Topside Material",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 5
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/ARC_Motion_Core",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 13,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/a/ad/ARC_Motion_Core.png/348px-ARC_Motion_Core.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-arc-performance-steel",
+    "name": "ARC Performance Steel",
+    "slug": "arc-performance-steel",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 12
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/ARC_Performance_Steel",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 14,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/0/02/ARC_Performance_Steel.png/348px-ARC_Performance_Steel.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-arc-powercell",
+    "name": "ARC Powercell",
+    "slug": "arc-powercell",
+    "rarity": "Common",
+    "category": "Topside Material",
+    "sell": 640,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 5
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/ARC_Powercell",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 15,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/d/df/ARC_Powercell.png/348px-ARC_Powercell.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-arc-synthetic-resin",
+    "name": "ARC Synthetic Resin",
+    "slug": "arc-synthetic-resin",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
+        "qty": 14
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/ARC_Synthetic_Resin",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 16,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/7/72/ARC_Synthetic_Resin.png/348px-ARC_Synthetic_Resin.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-arc-thermo-lining",
+    "name": "ARC Thermo Lining",
+    "slug": "arc-thermo-lining",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-fabric",
+        "name": "Fabric",
+        "qty": 16
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/ARC_Thermo_Lining",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 17,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/0/0f/ARC_Thermo_Lining.png/348px-ARC_Thermo_Lining.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-assorted-seeds",
+    "name": "Assorted Seeds",
+    "slug": "assorted-seeds",
+    "rarity": "Common",
+    "category": "Nature",
+    "sell": 100,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Assorted_Seeds",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 18,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/5/51/Assorted_Seeds.png/348px-Assorted_Seeds.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-bastion-cell",
+    "name": "Bastion Cell",
+    "slug": "bastion-cell",
+    "rarity": "Epic",
+    "category": "Recyclable",
+    "sell": 5000,
+    "recycle": [
+      {
+        "itemId": "mat-arc-motion-core",
+        "name": "ARC Motion Core",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-advanced-mechanical-components",
+        "name": "Advanced Mechanical Components",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 6
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Bastion_Cell",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 19,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/0/06/Bastion_Cell.png/348px-Bastion_Cell.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-battery",
+    "name": "Battery",
+    "slug": "battery",
+    "rarity": "Uncommon",
+    "category": "Topside Material",
+    "sell": 250,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Battery",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 20,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/6/6d/Battery.png/348px-Battery.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-bicycle-pump",
+    "name": "Bicycle Pump",
+    "slug": "bicycle-pump",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-canister",
+        "name": "Canister",
+        "qty": 4
+      },
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 10
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Bicycle_Pump",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 21,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/f/fa/Bicycle_Pump.png/348px-Bicycle_Pump.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-bloated-tuna-can",
+    "name": "Bloated Tuna Can",
+    "slug": "bloated-tuna-can",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 1000,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Bloated_Tuna_Can",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 22,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/0/01/Bloated_Tuna_Can.png/348px-Bloated_Tuna_Can.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-blown-fuses",
+    "name": "Blown Fuses",
+    "slug": "blown-fuses",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 0,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Blown_Fuses",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 23,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/c/c1/Kettle-Level1.png/348px-Kettle-Level1.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-blue-gate-communication-tower-key",
+    "name": "Blue Gate Communication Tower Key",
+    "slug": "blue-gate-communication-tower-key",
+    "rarity": "Rare",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Blue_Gate_Communication_Tower_Key",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 24,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/5/5f/Blue_Gate_Village_Key.png/348px-Blue_Gate_Village_Key.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-blue-gate-confiscation-room-key",
+    "name": "Blue Gate Confiscation Room Key",
+    "slug": "blue-gate-confiscation-room-key",
+    "rarity": "Epic",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Blue_Gate_Confiscation_Room_Key",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 25,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/5/51/Blue_Gate_Confiscation_Room_Key.png/348px-Blue_Gate_Confiscation_Room_Key.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-blue-gate-cellar-key",
+    "name": "Blue Gate Cellar Key",
+    "slug": "blue-gate-cellar-key",
+    "rarity": "Uncommon",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Blue_Gate_Cellar_Key",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 26,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/5/5f/Blue_Gate_Village_Key.png/348px-Blue_Gate_Village_Key.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-blue-gate-village-key",
+    "name": "Blue Gate Village Key",
+    "slug": "blue-gate-village-key",
+    "rarity": "Uncommon",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Blue_Gate_Village_Key",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 27,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/5/5f/Blue_Gate_Village_Key.png/348px-Blue_Gate_Village_Key.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-bombardier-cell",
+    "name": "Bombardier Cell",
+    "slug": "bombardier-cell",
+    "rarity": "Epic",
+    "category": "Recyclable",
+    "sell": 5000,
+    "recycle": [
+      {
+        "itemId": "mat-advanced-mechanical-components",
+        "name": "Advanced Mechanical Components",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 6
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Bombardier_Cell",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 28,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/4/46/Bombardier_Cell.png/348px-Bombardier_Cell.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-breathtaking-snow-globe",
+    "name": "Breathtaking Snow Globe",
+    "slug": "breathtaking-snow-globe",
+    "rarity": "Epic",
+    "category": "Trinket",
+    "sell": 7000,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Breathtaking_Snow_Globe",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 29,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/6/63/Breathtaking_Snow_Globe.png/348px-Breathtaking_Snow_Globe.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-broken-flashlight",
+    "name": "Broken Flashlight",
+    "slug": "broken-flashlight",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-battery",
+        "name": "Battery",
+        "qty": 3
+      },
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 7
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Broken_Flashlight",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 30,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/1/17/Broken_Flashlight.png/348px-Broken_Flashlight.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-broken-guidance-system",
+    "name": "Broken Guidance System",
+    "slug": "broken-guidance-system",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-processor",
+        "name": "Processor",
+        "qty": 4
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Broken_Guidance_System",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 31,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/9/93/Broken_Guidance_System.png/348px-Broken_Guidance_System.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-broken-handheld-radio",
+    "name": "Broken Handheld Radio",
+    "slug": "broken-handheld-radio",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-sensors",
+        "name": "Sensors",
+        "qty": 3
+      },
+      {
+        "itemId": "mat-wires",
+        "name": "Wires",
+        "qty": 3
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Broken_Handheld_Radio",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 32,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/3/3b/Broken_Handheld_Radio.png/348px-Broken_Handheld_Radio.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-broken-taser",
+    "name": "Broken Taser",
+    "slug": "broken-taser",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-battery",
+        "name": "Battery",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-wires",
+        "name": "Wires",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Broken_Taser",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 33,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/1/18/Broken_Taser.png/348px-Broken_Taser.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-buried-city-hospital-key",
+    "name": "Buried City Hospital Key",
+    "slug": "buried-city-hospital-key",
+    "rarity": "Rare",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Buried_City_Hospital_Key",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 34,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/1/11/Buried_City_Key.png/348px-Buried_City_Key.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-buried-city-jkv-employee-access-card",
+    "name": "Buried City JKV Employee Access Card",
+    "slug": "buried-city-jkv-employee-access-card",
+    "rarity": "Uncommon",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Buried_City_JKV_Employee_Access_Card",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 35,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/1/11/Buried_City_Key.png/348px-Buried_City_Key.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-buried-city-residential-mastery-key",
+    "name": "Buried City Residential Mastery Key",
+    "slug": "buried-city-residential-mastery-key",
+    "rarity": "Uncommon",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Buried_City_Residential_Mastery_Key",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 36,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/1/11/Buried_City_Key.png/348px-Buried_City_Key.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-buried-city-town-hall-key",
+    "name": "Buried City Town Hall Key",
+    "slug": "buried-city-town-hall-key",
+    "rarity": "Epic",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Buried_City_Town_Hall_Key",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 37,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/1/11/Buried_City_Key.png/348px-Buried_City_Key.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-burned-arc-circuitry",
+    "name": "Burned ARC Circuitry",
+    "slug": "burned-arc-circuitry",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Burned_ARC_Circuitry",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 38,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/3/35/Burned_ARC_Circuitry.png/348px-Burned_ARC_Circuitry.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-burned-tick-pod",
+    "name": "Burned Tick Pod",
+    "slug": "burned-tick-pod",
+    "rarity": "Common",
+    "category": "Recyclable",
+    "sell": 0,
+    "recycle": [
+      {
+        "itemId": "mat-",
+        "name": "?",
+        "qty": 1
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Burned_Tick_Pod",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 39,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/6/61/Icon_Loot_ARC.png/20px-Icon_Loot_ARC.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-camera-lens",
+    "name": "Camera Lens",
+    "slug": "camera-lens",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
+        "qty": 8
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Camera_Lens",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 40,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/a/a6/Camera_Lens.png/348px-Camera_Lens.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-candle-holder",
+    "name": "Candle Holder",
+    "slug": "candle-holder",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 270,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 8
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Candle_Holder",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 41,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/5/58/Candle_Holder.png/348px-Candle_Holder.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-canister",
+    "name": "Canister",
+    "slug": "canister",
+    "rarity": "Uncommon",
+    "category": "Topside Material",
+    "sell": 300,
+    "recycle": [
+      {
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
+        "qty": 3
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Canister",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 42,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/5/5f/Canister.png/348px-Canister.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-cat-bed",
+    "name": "Cat Bed",
+    "slug": "cat-bed",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 1000,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Cat_Bed",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 43,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/8/82/Cat_Bed.png/348px-Cat_Bed.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-chemicals",
+    "name": "Chemicals",
+    "slug": "chemicals",
+    "rarity": "Common",
+    "category": "Basic Material",
+    "sell": 50,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 50
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Chemicals",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 44,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/9/92/Chemicals.png/348px-Chemicals.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-coffee-pot",
+    "name": "Coffee Pot",
+    "slug": "coffee-pot",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 1000,
+    "recycle": [],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Coffee_Pot",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 45,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/3/33/Coffee_Pot.png/348px-Coffee_Pot.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-complex-gun-parts",
+    "name": "Complex Gun Parts",
+    "slug": "complex-gun-parts",
+    "rarity": "Epic",
+    "category": "Topside Material",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-simple-gun-parts",
+        "name": "Simple Gun Parts",
+        "qty": 3
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Complex_Gun_Parts",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 46,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/3/3d/Complex_Gun_Parts.png/348px-Complex_Gun_Parts.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-coolant",
+    "name": "Coolant",
+    "slug": "coolant",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 5
+      },
+      {
+        "itemId": "mat-oil",
+        "name": "Oil",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Coolant",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 47,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/4/40/Coolant.png/348px-Coolant.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-cooling-coil",
+    "name": "Cooling Coil",
+    "slug": "cooling-coil",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 6
+      },
+      {
+        "itemId": "mat-steel-spring",
+        "name": "Steel Spring",
+        "qty": 2
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Cooling_Coil",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 48,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/7/7f/Cooling_Coil.png/348px-Cooling_Coil.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-cooling-fan",
+    "name": "Cooling Fan",
+    "slug": "cooling-fan",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
+        "qty": 14
+      },
+      {
+        "itemId": "mat-battery",
+        "name": "Battery",
+        "qty": 4
+      }
+    ],
+    "needs": {
+      "quests": 5,
+      "workshop": 0
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Cooling_Fan",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 49,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/1/13/Cooling_Fan.png/348px-Cooling_Fan.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
+    },
+    "conflicts": []
+  },
+  {
+    "id": "item-cracked-bioscanner",
+    "name": "Cracked Bioscanner",
+    "slug": "cracked-bioscanner",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 3
+      },
+      {
+        "itemId": "mat-battery",
+        "name": "Battery",
+        "qty": 5
+      }
+    ],
+    "needs": {
+      "quests": 0,
+      "workshop": 2
+    },
+    "wikiUrl": "https://arcraiders.wiki/wiki/Cracked_Bioscanner",
+    "notes": null,
+    "stageHistory": [
+      {
+        "pass": "A",
+        "indexedAt": "2025-11-08T02:06:04.998Z",
+        "rowNumber": 50,
+        "source": "wiki-loot"
+      },
+      {
+        "pass": "B",
+        "indexedAt": "2025-11-08T02:53:06.422Z",
+        "source": "wiki-item",
+        "sections": []
+      },
+      {
+        "pass": "C",
+        "indexedAt": "2025-11-08T02:54:04.703Z",
+        "source": "metaforge",
+        "apiId": null
+      }
+    ],
+    "imageUrl": "https://arcraiders.wiki/w/images/thumb/9/9a/Cracked_Bioscanner.png/348px-Cracked_Bioscanner.png.webp",
+    "sources": [],
+    "vendors": [],
+    "craftsFrom": [],
+    "craftsInto": [],
+    "zones": [],
+    "metaforgeId": null,
+    "provenance": {
+      "wiki": true,
+      "api": false
     },
     "conflicts": []
   }

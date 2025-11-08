@@ -6,14 +6,23 @@
   import { derived } from 'svelte/store';
   import { onMount } from 'svelte';
   import { RecommendationCard, SearchBar, TipsPanel } from '$lib/components';
-  import { blueprints, hydrateFromCanonical, quests } from '$lib/stores/app';
+  import {
+    blueprints,
+    hydrateFromCanonical,
+    itemOverrides,
+    projectProgress,
+    quests,
+    settings
+  } from '$lib/stores/app';
   import { buildRecommendationContext, recommendItemsMatching } from '$lib/recommend';
   import { tipsForWhatToDo } from '$lib/tips';
   import type { PageData } from './$types';
 
   export let data: PageData;
+  export let form: unknown;
+  export let params: Record<string, string>;
 
-  const { items, quests: questDefs, upgrades } = data;
+  const { items, quests: questDefs, upgrades, projects } = data;
 
   onMount(() => {
     hydrateFromCanonical(
@@ -30,14 +39,23 @@
 
   let query = '';
 
-  const contextStore = derived([quests, blueprints], ([$quests, $blueprints]) =>
-    buildRecommendationContext({
-      items,
-      quests: questDefs,
-      questProgress: $quests,
-      upgrades,
-      blueprints: $blueprints
-    })
+  const itemsWithOverrides = derived(itemOverrides, ($overrides) =>
+    items.map((item) => ({ ...item, ...($overrides[item.id] ?? {}) }))
+  );
+
+  const contextStore = derived(
+    [quests, blueprints, settings, itemsWithOverrides, projectProgress],
+    ([$quests, $blueprints, $settings, $items, $projectProgress]) =>
+      buildRecommendationContext({
+        items: $items,
+        quests: questDefs,
+        questProgress: $quests,
+        upgrades,
+        blueprints: $blueprints,
+        projects,
+        projectProgress: $projectProgress,
+        alwaysKeepCategories: $settings.alwaysKeepCategories ?? []
+      })
   );
 
   let recommendations = [];
@@ -48,13 +66,16 @@
     quests: questDefs,
     questProgress: [],
     upgrades,
-    blueprints: []
+    blueprints: [],
+    projects,
+    projectProgress: {},
+    alwaysKeepCategories: []
   });
 
   $: recommendationContext = $contextStore;
   $: recommendations = recommendItemsMatching(query, recommendationContext);
   $: outstandingNeeds = recommendItemsMatching('', recommendationContext).reduce(
-    (total, rec) => total + rec.needs.quests + rec.needs.workshop,
+    (total, rec) => total + rec.needs.quests + rec.needs.workshop + rec.needs.projects,
     0
   );
   $: focusTips = tipsForWhatToDo(outstandingNeeds);
@@ -78,20 +99,38 @@
     />
     <div class="content-grid">
       <div class="space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-800/70 bg-slate-950/60 px-4 py-3 text-[11px] uppercase tracking-[0.3em] text-slate-400">
+          <span>{recommendations.length} matches</span>
+          <span class="text-slate-300">Sorted · Category → Rarity → Name</span>
+        </div>
         {#if recommendations.length === 0}
           <div class="rounded-2xl border border-dashed border-slate-700/60 bg-slate-950/50 p-6 text-sm text-slate-400">
             Start typing to filter the canonical loot list. Quest and upgrade states adjust the action
             and rationale automatically.
           </div>
         {:else}
-          {#each recommendations as recommendation}
-            <RecommendationCard
-              name={recommendation.name}
-              action={recommendation.action}
-              rarity={recommendation.rarity}
-              reason={recommendation.rationale}
-            />
-          {/each}
+          <div class="grid gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+            {#each recommendations as recommendation}
+              <RecommendationCard
+                variant="token"
+                name={recommendation.name}
+                action={recommendation.action}
+                rarity={recommendation.rarity}
+                reason={recommendation.rationale}
+                category={recommendation.category}
+                slug={recommendation.slug}
+                imageUrl={recommendation.imageUrl}
+                sellPrice={recommendation.sellPrice}
+                salvageValue={recommendation.salvageValue}
+                salvageBreakdown={recommendation.salvageBreakdown}
+                questNeeds={recommendation.questNeeds}
+                upgradeNeeds={recommendation.upgradeNeeds}
+                projectNeeds={recommendation.projectNeeds}
+                needs={recommendation.needs}
+                alwaysKeepCategory={recommendation.alwaysKeepCategory}
+              />
+            {/each}
+          </div>
         {/if}
       </div>
       <TipsPanel heading="How recommendations adapt" tips={focusTips} />
