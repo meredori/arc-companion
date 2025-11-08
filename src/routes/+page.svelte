@@ -12,6 +12,8 @@
   export let data;
   export let form;
   export let params;
+  const __rootPageProps = { data, form, params };
+  void __rootPageProps;
 
   const withBase = (href: string) => (base ? `${base}${href}` : href);
 </script>

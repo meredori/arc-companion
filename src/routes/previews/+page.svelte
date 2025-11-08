@@ -7,10 +7,13 @@
     TipsPanel,
     type ChecklistItem
   } from '$lib/components';
+  import type { RecommendationCardProps } from '$lib/components';
 
   export let data;
   export let form: unknown;
   export let params: Record<string, string>;
+  const __previewProps = { data, form, params };
+  void __previewProps;
 
   let query = '';
   const checklist: ChecklistItem[] = [
@@ -19,7 +22,7 @@
     { id: 'pass-c', label: 'Sync MetaForge deltas', completed: false }
   ];
 
-  const recommendations = [
+  const recommendations: RecommendationCardProps[] = [
     {
       name: 'Advanced ARC Powercell',
       action: 'save',
@@ -50,7 +53,7 @@
       needs: { quests: 0, workshop: 0 },
       variant: 'token'
     }
-  ] as const;
+  ];
 
   const tips = [
     'Prioritize finishing the MetaForge weekly to unlock higher sell values.',

@@ -3,6 +3,7 @@
 </svelte:head>
 
 <script lang="ts">
+  /* eslint-env browser */
   import { derived } from 'svelte/store';
   import { onMount } from 'svelte';
   import { QuestChecklist, TipsPanel } from '$lib/components';
@@ -13,6 +14,8 @@
   export let data: PageData;
   export let form: unknown;
   export let params: Record<string, string>;
+  const __trackPageProps = { form, params };
+  void __trackPageProps;
 
   const { quests: questDefs, upgrades } = data;
 

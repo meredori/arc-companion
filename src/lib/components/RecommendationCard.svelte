@@ -64,10 +64,11 @@
 </script>
 
 {#if variant === 'token'}
-  <article
-    class="group relative rounded-xl border border-slate-900/60 bg-slate-950/50 p-2.5 text-center outline-none transition hover:border-slate-300/60 focus-visible:border-slate-200/70 focus-visible:ring-2 focus-visible:ring-slate-200/30"
-    tabindex="0"
+  <button
+    type="button"
+    class="group relative w-full rounded-xl border border-slate-900/60 bg-slate-950/50 p-2.5 text-center outline-none transition hover:border-slate-300/60 focus-visible:border-slate-200/70 focus-visible:ring-2 focus-visible:ring-slate-200/30"
     aria-describedby={tooltipId}
+    aria-label={`Details for ${name}`}
   >
     <div class="flex flex-col items-center gap-2">
       <div
@@ -195,7 +196,7 @@
         {/if}
       </div>
     </div>
-  </article>
+  </button>
 {:else}
   <article class="recommendation-card">
     <header class="flex flex-wrap items-baseline justify-between gap-2">

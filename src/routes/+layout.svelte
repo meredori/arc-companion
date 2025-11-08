@@ -6,6 +6,8 @@
   export let data;
   export let form;
   export let params;
+  const __layoutProps = { data, form, params };
+  void __layoutProps;
 
   const links = [
     { href: '/what-to-do', label: 'What To Do' },

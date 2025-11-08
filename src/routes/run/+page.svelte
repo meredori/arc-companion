@@ -3,6 +3,7 @@
 </svelte:head>
 
 <script lang="ts">
+  /* eslint-env browser */
   import { onDestroy } from 'svelte';
   import { derived, get } from 'svelte/store';
   import { RunTimer, TipsPanel } from '$lib/components';
@@ -14,6 +15,8 @@
   export let data: PageData;
   export let form: unknown;
   export let params: Record<string, string>;
+  const __runPageProps = { form, params };
+  void __runPageProps;
 
   const { items, quests: questDefs, upgrades, projects } = data;
 
@@ -54,11 +57,11 @@
   let runForm = createDefaultForm(get(settings).freeLoadoutDefault);
   let tips = [];
   let elapsedSeconds = 0;
-  let timer: ReturnType<typeof setInterval> | null = null;
+  let timer: ReturnType<typeof globalThis.setInterval> | null = null;
 
   const stopTimer = () => {
     if (timer) {
-      clearInterval(timer);
+      globalThis.clearInterval(timer);
       timer = null;
     }
   };
@@ -70,7 +73,7 @@
       elapsedSeconds = Math.max(0, Math.floor((Date.now() - startTime) / 1000));
     };
     tick();
-    timer = setInterval(tick, 1000);
+    timer = globalThis.setInterval(tick, 1000);
   };
 
   const nowIso = () => new Date().toISOString();

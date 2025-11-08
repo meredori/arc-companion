@@ -13,6 +13,8 @@
   export let data: PageData;
   export let form: unknown;
   export let params: Record<string, string>;
+  const __blueprintPageProps = { form, params };
+  void __blueprintPageProps;
 
   const { upgrades, items } = data;
 

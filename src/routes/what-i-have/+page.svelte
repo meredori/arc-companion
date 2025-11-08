@@ -3,6 +3,7 @@
 </svelte:head>
 
 <script lang="ts">
+  /* eslint-env browser */
   import { derived } from 'svelte/store';
   import { onMount } from 'svelte';
   import { QuestChecklist, SearchBar, TipsPanel } from '$lib/components';
@@ -21,6 +22,8 @@
   export let data: PageData;
   export let form: unknown;
   export let params: Record<string, string>;
+  const __whatIHaveProps = { form, params };
+  void __whatIHaveProps;
 
   const questDefs = data.quests ?? [];
   const upgrades: UpgradePack[] = data.upgrades ?? [];
@@ -175,6 +178,29 @@
       owned: entry.state.owned
     }))
   );
+
+  const setOwnership = (entry: BlueprintEntry, owned: boolean) =>
+    blueprints.upsert({
+      id: entry.upgrade.id,
+      name: entry.upgrade.name,
+      bench: entry.upgrade.bench,
+      level: entry.upgrade.level,
+      owned
+    });
+
+  const toggleLevel = (level: LevelGroup) => {
+    const next = !level.owned;
+    level.entries.forEach((entry) => setOwnership(entry, next));
+  };
+
+  const toggleBench = (bench: BenchGroup) => {
+    const next = !bench.owned;
+    bench.levels.forEach((level) => level.entries.forEach((entry) => setOwnership(entry, next)));
+  };
+
+  const toggleUpgrade = (entry: BlueprintEntry) => {
+    setOwnership(entry, !entry.state.owned);
+  };
 
   let workshopFilter = '';
   let blueprintQuery = '';

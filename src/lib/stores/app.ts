@@ -212,7 +212,8 @@ export const runs = {
       if (!state.lastRemoved) {
         return state;
       }
-      const { removedAt, ...entry } = state.lastRemoved;
+      const { removedAt: _removedAt, ...entry } = state.lastRemoved;
+      void _removedAt;
       return {
         entries: sortRuns([...state.entries, entry]),
         lastRemoved: null
@@ -237,8 +238,9 @@ export const itemOverrides = {
       const cleaned = pruneOverride(merged);
       if (!cleaned) {
         if (!map[id]) return map;
-        const { [id]: _, ...rest } = map;
-        return rest;
+        const next = { ...map };
+        delete next[id];
+        return next;
       }
       return { ...map, [id]: cleaned };
     });
@@ -246,8 +248,9 @@ export const itemOverrides = {
   remove(id: string) {
     itemOverrideStore.update((map) => {
       if (!map[id]) return map;
-      const { [id]: _, ...rest } = map;
-      return rest;
+      const next = { ...map };
+      delete next[id];
+      return next;
     });
   },
   reset: itemOverrideStore.reset

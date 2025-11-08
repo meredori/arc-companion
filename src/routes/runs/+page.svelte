@@ -3,6 +3,7 @@
 </svelte:head>
 
 <script lang="ts">
+  /* eslint-env browser */
   import { derived, get } from 'svelte/store';
   import { RecommendationCard, TipsPanel } from '$lib/components';
   import { lastRemovedRun, runs } from '$lib/stores/app';
@@ -10,6 +11,8 @@
   export let data;
   export let form: unknown;
   export let params: Record<string, string>;
+  const __runsPageProps = { data, form, params };
+  void __runsPageProps;
 
   const highlightRuns = derived(runs, ($runs) =>
     [...$runs]
@@ -18,7 +21,7 @@
       .slice(0, 2)
       .map((run) => ({
         name: run.notes || new Date(run.startedAt).toLocaleString(),
-        action: 'save',
+        action: 'save' as const,
         rarity: run.crew ? `${run.crew} · ${formatDuration(run)}` : formatDuration(run),
         reason: `Extracted ${run.extractedValue?.toLocaleString() ?? 0} coins.`
       }))

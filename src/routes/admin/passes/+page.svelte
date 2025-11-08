@@ -3,16 +3,18 @@
 </svelte:head>
 
 <script lang="ts">
+  /* eslint-env browser */
   import { itemOverrides, settings } from '$lib/stores/app';
   import type { ItemOverride, ItemRecord } from '$lib/types';
   import type { PageData } from './$types';
 
   export let data: PageData;
-  export let form: unknown;
-  export let params: Record<string, string>;
   export let form:
     | { success?: boolean; output?: string; entry?: unknown; message?: string }
     | null = null;
+  export let params: Record<string, string>;
+  const __adminPassProps = params;
+  void __adminPassProps;
 
   const passEntries = Object.entries(data.meta.passes);
   const stageInspectorEntries = Object.entries(data.stageRecords ?? {});
@@ -23,7 +25,13 @@
     'pass-d': 'Pass D — Quests & Chains'
   };
 
-  function labelRecord(record: Record<string, any>, index: number) {
+  type StageRecord = {
+    name?: string;
+    data?: { name?: string };
+    id?: string;
+  };
+
+  function labelRecord(record: StageRecord, index: number) {
     return record?.name ?? record?.data?.name ?? record?.id ?? `Record ${index + 1}`;
   }
 
