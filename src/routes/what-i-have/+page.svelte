@@ -677,7 +677,7 @@
                 ? 'border-emerald-500/50 bg-emerald-500/10 text-white'
                 : 'border-slate-800 bg-slate-900/50 text-slate-300 hover:border-slate-600'
             }`}
-            on:click={() => setBlueprintOwnership(blueprint.entry, !blueprint.owned)}
+            on:click={() => toggleBlueprint(blueprint.entry)}
           >
             <p class="text-base font-semibold">{blueprint.name}</p>
             <p class="text-xs uppercase tracking-widest text-slate-400">
