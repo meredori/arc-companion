@@ -189,7 +189,12 @@ mergedQuests.sort((a, b) => a.name.localeCompare(b.name));
 await writeJson(existingQuestsPath, mergedQuests);
 
 const existingUpgrades = await readJson(existingUpgradesPath);
-const existingUpgradeMap = new Map(existingUpgrades.map((upgrade) => [upgrade.id, upgrade]));
+const normalizedUpgradeIdPattern = /^upgrade-[a-z0-9-]+-level-[0-9]+$/;
+const existingUpgradeMap = new Map(
+  existingUpgrades
+    .filter((upgrade) => normalizedUpgradeIdPattern.test(upgrade.id))
+    .map((upgrade) => [upgrade.id, upgrade])
+);
 
 const moduleRecords = [];
 for (const module of tempModules) {
