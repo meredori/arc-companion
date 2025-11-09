@@ -240,43 +240,7 @@
     ]
   },
   {
-    "id": "upgrade-med_station-1",
-    "name": "Medical Lab · Level 1",
-    "bench": "Medical Lab",
-    "level": 1,
-    "items": [
-      {
-        "itemId": "item-fabric",
-        "qty": 50
-      },
-      {
-        "itemId": "item-arc-alloy",
-        "qty": 6
-      }
-    ]
-  },
-  {
     "id": "upgrade-medical-lab-level-2",
-    "name": "Medical Lab · Level 2",
-    "bench": "Medical Lab",
-    "level": 2,
-    "items": [
-      {
-        "itemId": "item-cracked-bioscanner",
-        "qty": 2
-      },
-      {
-        "itemId": "item-durable-cloth",
-        "qty": 5
-      },
-      {
-        "itemId": "item-tick-pod",
-        "qty": 8
-      }
-    ]
-  },
-  {
-    "id": "upgrade-med_station-2",
     "name": "Medical Lab · Level 2",
     "bench": "Medical Lab",
     "level": 2,
@@ -316,26 +280,6 @@
     ]
   },
   {
-    "id": "upgrade-med_station-3",
-    "name": "Medical Lab · Level 3",
-    "bench": "Medical Lab",
-    "level": 3,
-    "items": [
-      {
-        "itemId": "item-rusted-shut-medical-kit",
-        "qty": 3
-      },
-      {
-        "itemId": "item-antiseptic",
-        "qty": 8
-      },
-      {
-        "itemId": "item-surveyor-vault",
-        "qty": 5
-      }
-    ]
-  },
-  {
     "id": "upgrade-refiner-level-1",
     "name": "Refiner · Level 1",
     "bench": "Refiner",
@@ -352,43 +296,7 @@
     ]
   },
   {
-    "id": "upgrade-refiner-1",
-    "name": "Refiner · Level 1",
-    "bench": "Refiner",
-    "level": 1,
-    "items": [
-      {
-        "itemId": "item-metal-parts",
-        "qty": 60
-      },
-      {
-        "itemId": "item-arc-powercell",
-        "qty": 5
-      }
-    ]
-  },
-  {
     "id": "upgrade-refiner-level-2",
-    "name": "Refiner · Level 2",
-    "bench": "Refiner",
-    "level": 2,
-    "items": [
-      {
-        "itemId": "item-toaster",
-        "qty": 3
-      },
-      {
-        "itemId": "item-arc-motion-core",
-        "qty": 5
-      },
-      {
-        "itemId": "item-fireball-burner",
-        "qty": 8
-      }
-    ]
-  },
-  {
-    "id": "upgrade-refiner-2",
     "name": "Refiner · Level 2",
     "bench": "Refiner",
     "level": 2,
@@ -428,26 +336,6 @@
     ]
   },
   {
-    "id": "upgrade-refiner-3",
-    "name": "Refiner · Level 3",
-    "bench": "Refiner",
-    "level": 3,
-    "items": [
-      {
-        "itemId": "item-motor",
-        "qty": 3
-      },
-      {
-        "itemId": "item-arc-circuitry",
-        "qty": 10
-      },
-      {
-        "itemId": "item-bombardier-cell",
-        "qty": 6
-      }
-    ]
-  },
-  {
     "id": "upgrade-scrappy-level-1",
     "name": "Scrappy · Level 1",
     "bench": "Scrappy",
@@ -455,26 +343,7 @@
     "items": []
   },
   {
-    "id": "upgrade-scrappy-1",
-    "name": "Scrappy · Level 1",
-    "bench": "Scrappy",
-    "level": 1,
-    "items": []
-  },
-  {
     "id": "upgrade-scrappy-level-2",
-    "name": "Scrappy · Level 2",
-    "bench": "Scrappy",
-    "level": 2,
-    "items": [
-      {
-        "itemId": "item-dog-collar",
-        "qty": 1
-      }
-    ]
-  },
-  {
-    "id": "upgrade-scrappy-2",
     "name": "Scrappy · Level 2",
     "bench": "Scrappy",
     "level": 2,
@@ -502,43 +371,7 @@
     ]
   },
   {
-    "id": "upgrade-scrappy-3",
-    "name": "Scrappy · Level 3",
-    "bench": "Scrappy",
-    "level": 3,
-    "items": [
-      {
-        "itemId": "item-lemon",
-        "qty": 3
-      },
-      {
-        "itemId": "item-apricot",
-        "qty": 3
-      }
-    ]
-  },
-  {
     "id": "upgrade-scrappy-level-4",
-    "name": "Scrappy · Level 4",
-    "bench": "Scrappy",
-    "level": 4,
-    "items": [
-      {
-        "itemId": "item-prickly-pear",
-        "qty": 6
-      },
-      {
-        "itemId": "item-olives",
-        "qty": 6
-      },
-      {
-        "itemId": "item-cat-bed",
-        "qty": 1
-      }
-    ]
-  },
-  {
-    "id": "upgrade-scrappy-4",
     "name": "Scrappy · Level 4",
     "bench": "Scrappy",
     "level": 4,
@@ -578,34 +411,7 @@
     ]
   },
   {
-    "id": "upgrade-scrappy-5",
-    "name": "Scrappy · Level 5",
-    "bench": "Scrappy",
-    "level": 5,
-    "items": [
-      {
-        "itemId": "item-mushroom",
-        "qty": 12
-      },
-      {
-        "itemId": "item-apricot",
-        "qty": 12
-      },
-      {
-        "itemId": "item-very-comfortable-pillow",
-        "qty": 3
-      }
-    ]
-  },
-  {
     "id": "upgrade-stash-level-1",
-    "name": "Stash · Level 1",
-    "bench": "Stash",
-    "level": 1,
-    "items": []
-  },
-  {
-    "id": "upgrade-stash-1",
     "name": "Stash · Level 1",
     "bench": "Stash",
     "level": 1,
@@ -619,21 +425,7 @@
     "items": []
   },
   {
-    "id": "upgrade-stash-2",
-    "name": "Stash · Level 2",
-    "bench": "Stash",
-    "level": 2,
-    "items": []
-  },
-  {
     "id": "upgrade-stash-level-3",
-    "name": "Stash · Level 3",
-    "bench": "Stash",
-    "level": 3,
-    "items": []
-  },
-  {
-    "id": "upgrade-stash-3",
     "name": "Stash · Level 3",
     "bench": "Stash",
     "level": 3,
@@ -647,21 +439,7 @@
     "items": []
   },
   {
-    "id": "upgrade-stash-4",
-    "name": "Stash · Level 4",
-    "bench": "Stash",
-    "level": 4,
-    "items": []
-  },
-  {
     "id": "upgrade-stash-level-5",
-    "name": "Stash · Level 5",
-    "bench": "Stash",
-    "level": 5,
-    "items": []
-  },
-  {
-    "id": "upgrade-stash-5",
     "name": "Stash · Level 5",
     "bench": "Stash",
     "level": 5,
@@ -675,21 +453,7 @@
     "items": []
   },
   {
-    "id": "upgrade-stash-6",
-    "name": "Stash · Level 6",
-    "bench": "Stash",
-    "level": 6,
-    "items": []
-  },
-  {
     "id": "upgrade-stash-level-7",
-    "name": "Stash · Level 7",
-    "bench": "Stash",
-    "level": 7,
-    "items": []
-  },
-  {
-    "id": "upgrade-stash-7",
     "name": "Stash · Level 7",
     "bench": "Stash",
     "level": 7,
@@ -703,13 +467,6 @@
     "items": []
   },
   {
-    "id": "upgrade-stash-8",
-    "name": "Stash · Level 8",
-    "bench": "Stash",
-    "level": 8,
-    "items": []
-  },
-  {
     "id": "upgrade-stash-level-9",
     "name": "Stash · Level 9",
     "bench": "Stash",
@@ -717,21 +474,7 @@
     "items": []
   },
   {
-    "id": "upgrade-stash-9",
-    "name": "Stash · Level 9",
-    "bench": "Stash",
-    "level": 9,
-    "items": []
-  },
-  {
     "id": "upgrade-stash-level-10",
-    "name": "Stash · Level 10",
-    "bench": "Stash",
-    "level": 10,
-    "items": []
-  },
-  {
-    "id": "upgrade-stash-10",
     "name": "Stash · Level 10",
     "bench": "Stash",
     "level": 10,

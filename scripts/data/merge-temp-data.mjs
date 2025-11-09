@@ -189,10 +189,10 @@ mergedQuests.sort((a, b) => a.name.localeCompare(b.name));
 await writeJson(existingQuestsPath, mergedQuests);
 
 const existingUpgrades = await readJson(existingUpgradesPath);
-const legacyBenchIdPattern = /_bench-/i;
+const normalizedUpgradeIdPattern = /^upgrade-[a-z0-9-]+-level-[0-9]+$/;
 const existingUpgradeMap = new Map(
   existingUpgrades
-    .filter((upgrade) => !legacyBenchIdPattern.test(upgrade.id))
+    .filter((upgrade) => normalizedUpgradeIdPattern.test(upgrade.id))
     .map((upgrade) => [upgrade.id, upgrade])
 );
 
