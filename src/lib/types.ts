@@ -196,6 +196,16 @@ export interface QuestProgress {
 
 export interface BlueprintState {
   id: string;
+  owned: boolean;
+  name?: string;
+  slug?: string;
+  rarity?: string | null;
+  category?: string | null;
+  imageUrl?: string | null;
+}
+
+export interface WorkbenchUpgradeState {
+  id: string;
   name: string;
   bench: string;
   level: number;
@@ -234,6 +244,7 @@ export interface RecommendationContext {
   questProgress: QuestProgress[];
   upgrades: UpgradePack[];
   blueprints: BlueprintState[];
+  workbenchUpgrades: WorkbenchUpgradeState[];
   projects: Project[];
   projectProgress: ProjectProgressState;
   alwaysKeepCategories: string[];

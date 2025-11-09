@@ -95,13 +95,13 @@ The script:
 2. Points images at `/static/images/items/<filename>` when a matching file exists.
 3. Merges recycle data, quest rewards/objectives, workbench upgrade levels, and expedition projects.
 4. Writes the consolidated results to `static/data/items.json`, `static/data/quests.json`,
-   `static/data/upgrades.json`, and `static/data/projects.json`.
+   `static/data/workbench-upgrades.json`, and `static/data/projects.json`.
 
 ### Workbench upgrade capture
 
 When new bench levels appear on the wiki, paste their requirement tables into
 `docs/workbench-upgrades.md`. That guide explains the JSON structure expected by the merge script so
-it can ingest `static/data/upgrades.json` reliably.
+it can ingest `static/data/workbench-upgrades.json` reliably.
 
 ### Expedition projects
 

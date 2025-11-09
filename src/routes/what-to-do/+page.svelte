@@ -12,7 +12,8 @@
     itemOverrides,
     projectProgress,
     quests,
-    settings
+    settings,
+    workbenchUpgrades
   } from '$lib/stores/app';
   import { buildRecommendationContext, recommendItemsMatching } from '$lib/recommend';
   import { tipsForWhatToDo } from '$lib/tips';
@@ -24,19 +25,19 @@
   const __whatToDoProps = { form, params };
   void __whatToDoProps;
 
-  const { items, quests: questDefs, upgrades, projects } = data;
+  const { items, quests: questDefs, workbenchUpgrades: upgradeDefs, projects } = data;
 
   onMount(() => {
-    hydrateFromCanonical(
-      questDefs.map((quest) => ({ id: quest.id, completed: false })),
-      upgrades.map((upgrade) => ({
+    hydrateFromCanonical({
+      quests: questDefs.map((quest) => ({ id: quest.id, completed: false })),
+      workbenchUpgrades: upgradeDefs.map((upgrade) => ({
         id: upgrade.id,
         name: upgrade.name,
         bench: upgrade.bench,
         level: upgrade.level,
         owned: false
       }))
-    );
+    });
   });
 
   let query = '';
@@ -46,14 +47,15 @@
   );
 
   const contextStore = derived(
-    [quests, blueprints, settings, itemsWithOverrides, projectProgress],
-    ([$quests, $blueprints, $settings, $items, $projectProgress]) =>
+    [quests, blueprints, settings, itemsWithOverrides, projectProgress, workbenchUpgrades],
+    ([$quests, $blueprints, $settings, $items, $projectProgress, $workbench]) =>
       buildRecommendationContext({
         items: $items,
         quests: questDefs,
         questProgress: $quests,
-        upgrades,
+        upgrades: upgradeDefs,
         blueprints: $blueprints,
+        workbenchUpgrades: $workbench,
         projects,
         projectProgress: $projectProgress,
         alwaysKeepCategories: $settings.alwaysKeepCategories ?? []
@@ -67,8 +69,9 @@
     items,
     quests: questDefs,
     questProgress: [],
-    upgrades,
+    upgrades: upgradeDefs,
     blueprints: [],
+    workbenchUpgrades: [],
     projects,
     projectProgress: {},
     alwaysKeepCategories: []

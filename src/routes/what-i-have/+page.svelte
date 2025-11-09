@@ -7,7 +7,13 @@
   import { derived } from 'svelte/store';
   import { onMount } from 'svelte';
   import { QuestChecklist, SearchBar, TipsPanel } from '$lib/components';
-  import { blueprints, hydrateFromCanonical, projectProgress, quests } from '$lib/stores/app';
+  import {
+    blueprints,
+    hydrateFromCanonical,
+    projectProgress,
+    quests,
+    workbenchUpgrades
+  } from '$lib/stores/app';
   import { tipsForBlueprints, tipsForWorkshop } from '$lib/tips';
   import type {
     ItemRecord,
@@ -26,22 +32,32 @@
   void __whatIHaveProps;
 
   const questDefs = data.quests ?? [];
-  const upgrades: UpgradePack[] = data.upgrades ?? [];
+  const benchUpgrades: UpgradePack[] = data.workbenchUpgrades ?? [];
   const items: ItemRecord[] = data.items ?? [];
   const projects: Project[] = data.projects ?? [];
   const chains: QuestChain[] = data.chains ?? [];
+  const blueprintRecords: ItemRecord[] = data.blueprints ?? [];
 
   onMount(() => {
-    hydrateFromCanonical(
-      questDefs.map((quest) => ({ id: quest.id, completed: false })),
-      upgrades.map((upgrade) => ({
+    hydrateFromCanonical({
+      quests: questDefs.map((quest) => ({ id: quest.id, completed: false })),
+      workbenchUpgrades: benchUpgrades.map((upgrade) => ({
         id: upgrade.id,
         name: upgrade.name,
         bench: upgrade.bench,
         level: upgrade.level,
         owned: false
+      })),
+      blueprints: blueprintRecords.map((blueprint) => ({
+        id: blueprint.id,
+        name: blueprint.name,
+        slug: blueprint.slug,
+        rarity: blueprint.rarity ?? null,
+        category: blueprint.category ?? null,
+        imageUrl: blueprint.imageUrl ?? null,
+        owned: false
       }))
-    );
+    });
   });
 
   const itemName = (id: string) => items.find((item) => item.id === id)?.name ?? id;
@@ -82,7 +98,7 @@
     quests.toggle(event.detail.id);
   };
 
-  type BlueprintEntry = {
+  type WorkbenchEntry = {
     upgrade: UpgradePack;
     state: {
       id: string;
@@ -93,9 +109,9 @@
     };
   };
 
-  const blueprintEntries = derived(blueprints, ($blueprints) => {
-    const map = new Map($blueprints.map((entry) => [entry.id, entry]));
-    return upgrades.map<BlueprintEntry>((upgrade) => {
+  const workbenchEntries = derived(workbenchUpgrades, ($entries) => {
+    const map = new Map($entries.map((entry) => [entry.id, entry]));
+    return benchUpgrades.map<WorkbenchEntry>((upgrade) => {
       const state =
         map.get(upgrade.id) ??
         ({
@@ -109,18 +125,9 @@
     });
   });
 
-  const blueprintSummary = derived(blueprints, ($blueprints) => {
-    const owned = $blueprints.filter((bp) => bp.owned).length;
-    return {
-      owned,
-      total: upgrades.length,
-      tips: tipsForBlueprints(owned, upgrades.length)
-    };
-  });
-
   type LevelGroup = {
     level: number;
-    entries: BlueprintEntry[];
+    entries: WorkbenchEntry[];
     owned: boolean;
     requirements: { id: string; name: string; qty: number }[];
   };
@@ -131,7 +138,7 @@
     owned: boolean;
   };
 
-  const benchGroups = derived(blueprintEntries, ($entries) => {
+  const benchGroups = derived(workbenchEntries, ($entries) => {
     const benchMap = new Map<string, Map<number, LevelGroup>>();
     for (const entry of $entries) {
       const benchName = entry.upgrade.bench || 'Workshop';
@@ -169,18 +176,8 @@
     });
   });
 
-  const blueprintCatalog = derived(blueprintEntries, ($entries) =>
-    $entries.map((entry) => ({
-      id: entry.upgrade.id,
-      name: entry.upgrade.name,
-      bench: entry.upgrade.bench,
-      level: entry.upgrade.level,
-      owned: entry.state.owned
-    }))
-  );
-
-  const setOwnership = (entry: BlueprintEntry, owned: boolean) =>
-    blueprints.upsert({
+  const setWorkbenchOwnership = (entry: WorkbenchEntry, owned: boolean) =>
+    workbenchUpgrades.upsert({
       id: entry.upgrade.id,
       name: entry.upgrade.name,
       bench: entry.upgrade.bench,
@@ -190,17 +187,85 @@
 
   const toggleLevel = (level: LevelGroup) => {
     const next = !level.owned;
-    level.entries.forEach((entry) => setOwnership(entry, next));
+    level.entries.forEach((entry) => setWorkbenchOwnership(entry, next));
   };
 
   const toggleBench = (bench: BenchGroup) => {
     const next = !bench.owned;
-    bench.levels.forEach((level) => level.entries.forEach((entry) => setOwnership(entry, next)));
+    bench.levels.forEach((level) => level.entries.forEach((entry) => setWorkbenchOwnership(entry, next)));
   };
 
-  const toggleUpgrade = (entry: BlueprintEntry) => {
-    setOwnership(entry, !entry.state.owned);
+  const toggleUpgrade = (entry: WorkbenchEntry) => {
+    setWorkbenchOwnership(entry, !entry.state.owned);
   };
+
+  type BlueprintEntry = {
+    record: ItemRecord;
+    state: {
+      id: string;
+      owned: boolean;
+      name?: string;
+      slug?: string;
+      rarity?: string | null;
+      category?: string | null;
+      imageUrl?: string | null;
+    };
+  };
+
+  const blueprintEntries = derived(blueprints, ($blueprints) => {
+    const map = new Map($blueprints.map((entry) => [entry.id, entry]));
+    return blueprintRecords.map<BlueprintEntry>((record) => {
+      const state =
+        map.get(record.id) ??
+        ({
+          id: record.id,
+          owned: false,
+          name: record.name,
+          slug: record.slug,
+          rarity: record.rarity ?? null,
+          category: record.category ?? null,
+          imageUrl: record.imageUrl ?? null
+        } as const);
+      return { record, state };
+    });
+  });
+
+  const blueprintCatalog = derived(blueprintEntries, ($entries) =>
+    $entries.map((entry) => ({
+      entry,
+      id: entry.record.id,
+      name: entry.record.name,
+      slug: entry.record.slug,
+      rarity: entry.record.rarity,
+      sell: entry.record.sell,
+      category: entry.record.category,
+      owned: entry.state.owned,
+      imageUrl: entry.record.imageUrl ?? null,
+      notes: entry.record.notes ?? null
+    }))
+  );
+
+  const setBlueprintOwnership = (entry: BlueprintEntry, owned: boolean) =>
+    blueprints.upsert({
+      id: entry.record.id,
+      name: entry.record.name,
+      slug: entry.record.slug,
+      rarity: entry.record.rarity ?? null,
+      category: entry.record.category ?? null,
+      imageUrl: entry.record.imageUrl ?? null,
+      owned
+    });
+
+  const toggleBlueprint = (entry: BlueprintEntry) => setBlueprintOwnership(entry, !entry.state.owned);
+
+  const blueprintSummary = derived(blueprints, ($blueprints) => {
+    const owned = $blueprints.filter((bp) => bp.owned).length;
+    return {
+      owned,
+      total: blueprintRecords.length,
+      tips: tipsForBlueprints(owned, blueprintRecords.length)
+    };
+  });
 
   let workshopFilter = '';
   let blueprintQuery = '';
@@ -227,8 +292,9 @@
     const term = blueprintQuery.toLowerCase();
     return (
       entry.name.toLowerCase().includes(term) ||
-      entry.bench.toLowerCase().includes(term) ||
-      `level ${entry.level}`.includes(term)
+      (entry.slug ?? '').toLowerCase().includes(term) ||
+      (entry.rarity ?? '').toLowerCase().includes(term) ||
+      (entry.category ?? '').toLowerCase().includes(term)
     );
   });
 
@@ -593,7 +659,7 @@
     </header>
     <SearchBar
       label="Find blueprint"
-      placeholder="Search by name, bench, or level"
+      placeholder="Search by name, rarity, or slug"
       value={blueprintQuery}
       on:input={({ detail }) => (blueprintQuery = detail.value)}
     />
@@ -611,20 +677,22 @@
                 ? 'border-emerald-500/50 bg-emerald-500/10 text-white'
                 : 'border-slate-800 bg-slate-900/50 text-slate-300 hover:border-slate-600'
             }`}
-            on:click={() =>
-              blueprints.upsert({
-                id: blueprint.id,
-                name: blueprint.name,
-                bench: blueprint.bench,
-                level: blueprint.level,
-                owned: !blueprint.owned
-              })}
+            on:click={() => setBlueprintOwnership(blueprint.entry, !blueprint.owned)}
           >
             <p class="text-base font-semibold">{blueprint.name}</p>
             <p class="text-xs uppercase tracking-widest text-slate-400">
-              {blueprint.bench} · Level {blueprint.level}
+              {(blueprint.rarity ?? 'Unknown rarity')} · {(blueprint.category ?? 'Blueprint')}
             </p>
-            <p class="mt-1 text-[11px] uppercase tracking-widest">
+            <p class="mt-1 text-xs text-slate-400">
+              {blueprint.slug}
+              {#if typeof blueprint.sell === 'number'}
+                · Sell {blueprint.sell.toLocaleString()} coins
+              {/if}
+            </p>
+            {#if blueprint.notes}
+              <p class="mt-2 text-xs text-slate-400">{blueprint.notes}</p>
+            {/if}
+            <p class="mt-3 text-[11px] uppercase tracking-widest">
               {blueprint.owned ? 'Owned' : 'Not owned'}
             </p>
           </button>

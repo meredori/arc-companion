@@ -7,7 +7,8 @@ import type {
   ProjectProgressState,
   Quest,
   QuestProgress,
-  UpgradePack
+  UpgradePack,
+  WorkbenchUpgradeState
 } from './types';
 
 const ITEMS: ItemRecord[] = [
@@ -146,6 +147,10 @@ const UPGRADES: UpgradePack[] = [
 ];
 
 const BLUEPRINTS: BlueprintState[] = [
+  { id: 'item-anvil-blueprint', owned: true, name: 'Anvil Blueprint' }
+];
+
+const WORKBENCH_UPGRADES: WorkbenchUpgradeState[] = [
   { id: 'upgrade-one', name: 'Upgrade One', bench: 'Workshop', level: 1, owned: true }
 ];
 
@@ -178,16 +183,17 @@ const PROJECT_PROGRESS: ProjectProgressState = {
 };
 
 describe('recommendation logic', () => {
-  const context = buildRecommendationContext({
-    items: ITEMS,
-    quests: QUESTS,
-    questProgress: PROGRESS,
-    upgrades: UPGRADES,
-    blueprints: BLUEPRINTS,
-    projects: PROJECTS,
-    projectProgress: PROJECT_PROGRESS,
-    alwaysKeepCategories: ['Keys']
-  });
+const context = buildRecommendationContext({
+  items: ITEMS,
+  quests: QUESTS,
+  questProgress: PROGRESS,
+  upgrades: UPGRADES,
+  blueprints: BLUEPRINTS,
+  workbenchUpgrades: WORKBENCH_UPGRADES,
+  projects: PROJECTS,
+  projectProgress: PROJECT_PROGRESS,
+  alwaysKeepCategories: ['Keys']
+});
 
   it('prefers save for quest items', () => {
     const result = recommendItem(ITEMS[0], context);
@@ -200,6 +206,7 @@ describe('recommendation logic', () => {
     const result = recommendItem(ITEMS[2], context);
     expect(result.action).toBe('keep');
     expect(result.needs.workshop).toBe(2);
+    expect(result.rationale).toContain('workbench upgrades');
   });
 
   it('falls back to salvage when recycling beats selling', () => {

@@ -10,7 +10,7 @@ when to keep or free up loot.
 - Use the official wiki pages such as <https://arcraiders.wiki/wiki/Workshop>.
 - Each workbench typically has three upgrade levels. Record the level number, the exact requirement
   list, and any crafts/unlocks the level grants (if relevant).
-- Add the data to `static/data/upgrades.json`. Every entry follows the existing `UpgradePack`
+- Add the data to `static/data/workbench-upgrades.json`. Every entry follows the existing `UpgradePack`
   structure:
 
 ```jsonc
@@ -36,7 +36,7 @@ Keep IDs predictable (`upgrade-{bench}-{level}`) so they remain stable between r
 | 2     | 3× Rusted Tools, 5× Mechanical Components, 8× Wasp Driver                    | –      |
 | 3     | 3× Rusted Gear, 5× Advanced Mechanical Components, 4× Sentinel Firing Core   | –      |
 
-Translate the table directly into `upgrades.json` entries. Once saved, refresh the app and open the
+Translate the table directly into `workbench-upgrades.json` entries. Once saved, refresh the app and open the
 **What I Have → Workbench upgrades** section to mark each level as owned.
 
 ## Workflow
@@ -47,13 +47,13 @@ Translate the table directly into `upgrades.json` entries. Once saved, refresh t
 4. Visit **What I Have** and toggle the completed levels/benches. Finished levels immediately stop
    flagging their materials as “keep” on the What To Do page.
 
-If you need to share updates with the team, commit the modified `static/data/upgrades.json` file or
+If you need to share updates with the team, commit the modified `static/data/workbench-upgrades.json` file or
 paste the relevant tables into this chat so Codex can convert them for you.
 
 ## Using the merge script
 
 When new bench data lands in the shared `temp/` folder (for example when we pull a raw dump from
-RaidTheory) you can let the merge helper generate the `upgrades.json` records automatically:
+RaidTheory) you can let the merge helper generate the `workbench-upgrades.json` records automatically:
 
 ```bash
 node scripts/data/merge-temp-data.mjs
@@ -64,7 +64,7 @@ The script reads:
 - `temp/hideoutModules.json` for bench levels and requirements.
 - `static/images/items/` to rewrite image paths (used elsewhere in the UI).
 
-It rewrites `static/data/upgrades.json` with the normalized entries (`upgrade-{bench}-level-{n}`) and
-preserves any bespoke upgrades that are not part of the temp feed. You can still hand-edit
-`static/data/upgrades.json` when a bench appears on the wiki but hasn’t landed in the temp export yet;
+It rewrites `static/data/workbench-upgrades.json` with the normalized entries (`upgrade-{bench}-level-{n}`)
+and preserves any bespoke upgrades that are not part of the temp feed. You can still hand-edit
+`static/data/workbench-upgrades.json` when a bench appears on the wiki but hasn’t landed in the temp export yet;
 just remember to re-run the merge script afterwards so nothing regresses.

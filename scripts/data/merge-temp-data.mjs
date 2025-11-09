@@ -48,7 +48,7 @@ const tempProjects = await readJson(tempDir, 'projects.json').catch(() => []);
 
 const existingItemsPath = path.join(staticDir, 'items.json');
 const existingQuestsPath = path.join(staticDir, 'quests.json');
-const existingUpgradesPath = path.join(staticDir, 'upgrades.json');
+const existingUpgradesPath = path.join(staticDir, 'workbench-upgrades.json');
 const existingProjectsPath = path.join(staticDir, 'projects.json');
 
 const existingItems = await readJson(existingItemsPath);
@@ -254,5 +254,5 @@ await writeJson(existingProjectsPath, mergedProjects);
 console.log('Merge complete:');
 console.log(' Items:', mergedItems.length);
 console.log(' Quests:', mergedQuests.length);
-console.log(' Upgrades:', mergedUpgrades.length);
+console.log(' Workbench upgrades:', mergedUpgrades.length);
 console.log(' Projects:', mergedProjects.length);

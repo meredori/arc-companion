@@ -7,7 +7,8 @@ import type {
   ProjectProgressState,
   QuestProgress,
   RunHistoryState,
-  RunLogEntry
+  RunLogEntry,
+  WorkbenchUpgradeState
 } from '$lib/types';
 import { loadFromStorage, removeFromStorage, saveToStorage } from '$lib/persist';
 
@@ -18,7 +19,8 @@ const STORAGE_KEYS = {
   runs: `runs:${STORAGE_VERSION}`,
   settings: `settings:${STORAGE_VERSION}`,
   itemOverrides: `item-overrides:${STORAGE_VERSION}`,
-  projects: `projects:${STORAGE_VERSION}`
+  projects: `projects:${STORAGE_VERSION}`,
+  workbenchUpgrades: `workbench-upgrades:${STORAGE_VERSION}`
 } as const;
 
 const DEBOUNCE_MS = 3000;
@@ -100,6 +102,10 @@ const itemOverrideStore = createPersistentStore<Record<string, ItemOverride>>(
   {}
 );
 const projectProgressStore = createPersistentStore<ProjectProgressState>(STORAGE_KEYS.projects, {});
+const workbenchUpgradeStore = createPersistentStore<WorkbenchUpgradeState[]>(
+  STORAGE_KEYS.workbenchUpgrades,
+  []
+);
 
 function pruneOverride(override: ItemOverride | undefined): ItemOverride | null {
   if (!override) return null;
@@ -158,6 +164,25 @@ export const blueprints = {
     });
   },
   reset: blueprintStore.reset
+};
+
+export const workbenchUpgrades = {
+  subscribe: workbenchUpgradeStore.subscribe,
+  toggle(id: string) {
+    workbenchUpgradeStore.update((records) =>
+      records.map((upgrade) => (upgrade.id === id ? { ...upgrade, owned: !upgrade.owned } : upgrade))
+    );
+  },
+  upsert(upgrade: WorkbenchUpgradeState) {
+    workbenchUpgradeStore.update((records) => {
+      const exists = records.some((item) => item.id === upgrade.id);
+      if (exists) {
+        return records.map((item) => (item.id === upgrade.id ? { ...item, ...upgrade } : item));
+      }
+      return [...records, upgrade];
+    });
+  },
+  reset: workbenchUpgradeStore.reset
 };
 
 function sortRuns(entries: RunLogEntry[]) {
@@ -304,16 +329,29 @@ export const projectProgress = {
 export function resetAllStores() {
   quests.reset();
   blueprints.reset();
+  workbenchUpgrades.reset();
   runs.clear();
   settings.reset();
   itemOverrides.reset();
   projectProgress.reset();
 }
 
-export function hydrateFromCanonical(questsData: QuestProgress[], blueprintData: BlueprintState[]) {
+export function hydrateFromCanonical(params: {
+  quests?: QuestProgress[];
+  workbenchUpgrades?: WorkbenchUpgradeState[];
+  blueprints?: BlueprintState[];
+}) {
+  const { quests: questsData = [], workbenchUpgrades: workbenchData = [], blueprints: blueprintData = [] } =
+    params;
+
   const existingQuests = get(questStore);
   if (existingQuests.length === 0 && questsData.length > 0) {
     questStore.set(questsData);
+  }
+
+  const existingWorkbench = get(workbenchUpgradeStore);
+  if (existingWorkbench.length === 0 && workbenchData.length > 0) {
+    workbenchUpgradeStore.set(workbenchData);
   }
 
   const existingBlueprints = get(blueprintStore);

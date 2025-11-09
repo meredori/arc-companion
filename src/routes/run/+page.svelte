@@ -9,7 +9,7 @@
   import { onDestroy } from 'svelte';
   import { derived, get } from 'svelte/store';
   import { RunTimer, TipsPanel } from '$lib/components';
-  import { blueprints, projectProgress, quests, runs, settings } from '$lib/stores/app';
+  import { blueprints, projectProgress, quests, runs, settings, workbenchUpgrades } from '$lib/stores/app';
   import { buildRecommendationContext, recommendItemsMatching } from '$lib/recommend';
   import { createRunTipContext, generateRunTips } from '$lib/tips';
   import type { PageData } from './$types';
@@ -20,18 +20,21 @@
   const __runPageProps = { form, params };
   void __runPageProps;
 
-  const { items, quests: questDefs, upgrades, projects } = data;
+  const { items, quests: questDefs, workbenchUpgrades: upgradeDefs, projects } = data;
 
-  const recommendationContextStore = derived([quests, blueprints, projectProgress], ([$quests, $blueprints, $projectProgress]) =>
-    buildRecommendationContext({
-      items,
-      quests: questDefs,
-      questProgress: $quests,
-      upgrades,
-      blueprints: $blueprints,
-      projects,
-      projectProgress: $projectProgress
-    })
+  const recommendationContextStore = derived(
+    [quests, blueprints, projectProgress, workbenchUpgrades],
+    ([$quests, $blueprints, $projectProgress, $workbench]) =>
+      buildRecommendationContext({
+        items,
+        quests: questDefs,
+        questProgress: $quests,
+        upgrades: upgradeDefs,
+        blueprints: $blueprints,
+        workbenchUpgrades: $workbench,
+        projects,
+        projectProgress: $projectProgress
+      })
   );
 
   const outstandingNeedsStore = derived(recommendationContextStore, (context) =>

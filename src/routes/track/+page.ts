@@ -5,7 +5,7 @@ import type { PageLoad } from './$types';
 export const load: PageLoad = async ({ fetch }) => {
   const [questsRes, upgradesRes] = await Promise.all([
     fetch(`${base}/data/quests.json`),
-    fetch(`${base}/data/upgrades.json`)
+    fetch(`${base}/data/workbench-upgrades.json`)
   ]);
 
   const [quests, upgrades] = await Promise.all([
@@ -13,5 +13,8 @@ export const load: PageLoad = async ({ fetch }) => {
     upgradesRes.json() as Promise<UpgradePack[]>
   ]);
 
-  return { quests, upgrades } satisfies { quests: Quest[]; upgrades: UpgradePack[] };
+  return { quests, workbenchUpgrades: upgrades } satisfies {
+    quests: Quest[];
+    workbenchUpgrades: UpgradePack[];
+  };
 };

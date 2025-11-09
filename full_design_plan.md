@@ -87,7 +87,7 @@ It is intended for **AI code-generation (Codex)** or human engineers to implemen
 ```
 data/items.json
  data/quests.json
- data/upgrades.json
+ data/workbench-upgrades.json
  data/vendors.json
  data/chains.json
  data/meta/index.json

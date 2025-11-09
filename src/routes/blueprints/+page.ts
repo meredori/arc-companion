@@ -1,17 +1,11 @@
 import { base } from '$app/paths';
-import type { ItemRecord, UpgradePack } from '$lib/types';
+import type { ItemRecord } from '$lib/types';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ fetch }) => {
-  const [upgradesRes, itemsRes] = await Promise.all([
-    fetch(`${base}/data/upgrades.json`),
-    fetch(`${base}/data/items.json`)
-  ]);
+  const itemsRes = await fetch(`${base}/data/items.json`);
+  const items = (await itemsRes.json()) as ItemRecord[];
+  const blueprints = items.filter((item) => item.category?.toLowerCase() === 'blueprint');
 
-  const [upgrades, items] = await Promise.all([
-    upgradesRes.json() as Promise<UpgradePack[]>,
-    itemsRes.json() as Promise<ItemRecord[]>
-  ]);
-
-  return { upgrades, items } satisfies { upgrades: UpgradePack[]; items: ItemRecord[] };
+  return { blueprints } satisfies { blueprints: ItemRecord[] };
 };
