@@ -69,9 +69,16 @@
     chainOrder.set(chain.id, index);
   });
   const questChainLookup = new Map<string, { chainId: string; chainName: string; index: number }>();
-  chains.forEach((chain) => {
-    chain.stages?.forEach((questId, index) => {
-      questChainLookup.set(questId, { chainId: chain.id, chainName: chain.name, index });
+  questDefs.forEach((quest) => {
+    if (!quest.chainId) return;
+    const chain = chainById.get(quest.chainId);
+    const chainName = chain?.name ?? quest.chainId;
+    const stage = quest.chainStage ?? (chain?.stages?.indexOf(quest.id) ?? -1);
+    const index = stage >= 0 ? stage : Number.MAX_SAFE_INTEGER;
+    questChainLookup.set(quest.id, {
+      chainId: quest.chainId,
+      chainName,
+      index
     });
   });
 
