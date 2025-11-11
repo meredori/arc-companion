@@ -1,6 +1,13 @@
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import { createQuestOrderComparator, sortQuestIds } from './quest-order';
+
+const readJson = <T>(relativePath: string): T => {
+  const absolutePath = path.resolve(relativePath);
+  return JSON.parse(readFileSync(absolutePath, 'utf-8')) as T;
+};
 
 describe('quest ordering helpers', () => {
   it('prioritises chain order before stage index', () => {
@@ -71,5 +78,58 @@ describe('quest ordering helpers', () => {
     );
 
     expect(sorted).toEqual(['quest-b-1', 'quest-a-1', 'quest-a-2']);
+  });
+
+  it('follows the configured chain order when sorting real quest data', () => {
+    type ChainRecord = { id: string; name: string; stages: string[] };
+    type QuestRecord = {
+      id: string;
+      name: string;
+      chainId?: string | null;
+      chainStage?: number | null;
+    };
+
+    const chains = readJson<ChainRecord[]>('static/data/chains.json');
+    const quests = readJson<QuestRecord[]>('static/data/quests.json');
+
+    const chainOrder = new Map(chains.map((chain, index) => [chain.id, index]));
+    const questById = new Map(quests.map((quest) => [quest.id, { name: quest.name }]));
+
+    const questChainLookup = new Map<string, { chainId: string; chainName: string; index: number | null }>();
+    for (const quest of quests) {
+      if (!quest.chainId) continue;
+      const chain = chains.find((entry) => entry.id === quest.chainId);
+      const index = typeof quest.chainStage === 'number' ? quest.chainStage : null;
+      questChainLookup.set(quest.id, {
+        chainId: quest.chainId,
+        chainName: chain?.name ?? quest.chainId,
+        index
+      });
+    }
+
+    const firstChain = chains[0];
+    expect(firstChain?.stages.length ?? 0).toBeGreaterThanOrEqual(2);
+    const secondChainIndex = chains.findIndex((chain, idx) => idx !== 0 && chain.stages.length >= 3);
+    expect(secondChainIndex).toBeGreaterThan(-1);
+    const secondChain = chains[secondChainIndex];
+
+    const sample = [
+      secondChain.stages[2],
+      firstChain.stages[1],
+      secondChain.stages[0],
+      firstChain.stages[0],
+      secondChain.stages[1]
+    ];
+
+    const comparator = createQuestOrderComparator(chainOrder, questChainLookup, questById);
+    const sorted = sample.slice().sort(comparator);
+
+    expect(sorted).toEqual([
+      firstChain.stages[0],
+      firstChain.stages[1],
+      secondChain.stages[0],
+      secondChain.stages[1],
+      secondChain.stages[2]
+    ]);
   });
 });
