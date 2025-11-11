@@ -6,7 +6,7 @@ export const load: PageLoad = async ({ fetch }) => {
   const [itemsRes, questsRes, upgradesRes, vendorsRes, projectsRes] = await Promise.all([
     fetch(`${base}/data/items.json`),
     fetch(`${base}/data/quests.json`),
-    fetch(`${base}/data/upgrades.json`),
+    fetch(`${base}/data/workbench-upgrades.json`),
     fetch(`${base}/data/vendors.json`),
     fetch(`${base}/data/projects.json`)
   ]);
@@ -22,13 +22,13 @@ export const load: PageLoad = async ({ fetch }) => {
   return {
     items,
     quests,
-    upgrades,
+    workbenchUpgrades: upgrades,
     vendors,
     projects
   } satisfies {
     items: ItemRecord[];
     quests: Quest[];
-    upgrades: UpgradePack[];
+    workbenchUpgrades: UpgradePack[];
     vendors: Vendor[];
     projects: Project[];
   };

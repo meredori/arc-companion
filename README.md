@@ -95,13 +95,13 @@ The script:
 2. Points images at `/static/images/items/<filename>` when a matching file exists.
 3. Merges recycle data, quest rewards/objectives, workbench upgrade levels, and expedition projects.
 4. Writes the consolidated results to `static/data/items.json`, `static/data/quests.json`,
-   `static/data/upgrades.json`, and `static/data/projects.json`.
+   `static/data/workbench-upgrades.json`, and `static/data/projects.json`.
 
 ### Workbench upgrade capture
 
 When new bench levels appear on the wiki, paste their requirement tables into
 `docs/workbench-upgrades.md`. That guide explains the JSON structure expected by the merge script so
-it can ingest `static/data/upgrades.json` reliably.
+it can ingest `static/data/workbench-upgrades.json` reliably.
 
 ### Expedition projects
 
@@ -113,6 +113,10 @@ store. Once a phase reaches 100 %, the What To Do recommendations stop flaggin
 
 Drop loot art into `static/images/items/` using snake_case filenames (e.g. `advanced_arc_powercell.png`).
 The merge script automatically rewrites `imageUrl` fields to `/images/items/<file>` when possible.
+
+> **Heads up:** When rendering those assets in Svelte components, resolve the stored path through
+> `$app/paths`’ `base` helper (e.g. ```${base}${url}```) so prerendering in CI finds the images when the
+> site is deployed under a subdirectory (GitHub Pages).
 
 ## TailwindCSS usage
 

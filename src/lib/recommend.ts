@@ -10,7 +10,8 @@ import type {
   RecommendationAction,
   RecommendationContext,
   RunLogEntry,
-  UpgradePack
+  UpgradePack,
+  WorkbenchUpgradeState
 } from '$lib/types';
 
 const CATEGORY_PRIORITY_GROUPS: string[][] = [
@@ -62,8 +63,11 @@ function isQuestComplete(quest: Quest, progress: QuestProgress[]): boolean {
   return record?.completed ?? false;
 }
 
-function ownedBlueprint(upgrade: UpgradePack, blueprints: BlueprintState[]): boolean {
-  const record = blueprints.find((bp) => bp.id === upgrade.id);
+function ownedWorkbenchUpgrade(
+  upgrade: UpgradePack,
+  ownedUpgrades: WorkbenchUpgradeState[]
+): boolean {
+  const record = ownedUpgrades.find((entry) => entry.id === upgrade.id);
   if (!record) {
     return false;
   }
@@ -76,6 +80,7 @@ export function buildRecommendationContext(params: {
   questProgress?: QuestProgress[];
   upgrades?: UpgradePack[];
   blueprints?: BlueprintState[];
+  workbenchUpgrades?: WorkbenchUpgradeState[];
   projects?: Project[];
   projectProgress?: ProjectProgressState;
   alwaysKeepCategories?: string[];
@@ -86,6 +91,7 @@ export function buildRecommendationContext(params: {
     questProgress: params.questProgress ?? [],
     upgrades: params.upgrades ?? [],
     blueprints: params.blueprints ?? [],
+    workbenchUpgrades: params.workbenchUpgrades ?? [],
     projects: params.projects ?? [],
     projectProgress: params.projectProgress ?? {},
     alwaysKeepCategories: params.alwaysKeepCategories ?? []
@@ -127,7 +133,7 @@ function remainingUpgradeNeeds(itemId: string, context: RecommendationContext) {
   }[] = [];
 
   for (const upgrade of context.upgrades) {
-    if (!ownedBlueprint(upgrade, context.blueprints)) {
+    if (!ownedWorkbenchUpgrade(upgrade, context.workbenchUpgrades)) {
       continue;
     }
 
@@ -207,7 +213,9 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
     if (upgradeNeed.total > 0 && projectNeed.total > 0) {
       rationale = `Blueprints and expedition projects will consume ${upgradeNeed.total + projectNeed.total} item${upgradeNeed.total + projectNeed.total > 1 ? 's' : ''}.`;
     } else if (upgradeNeed.total > 0) {
-      rationale = `Owned blueprints will consume ${upgradeNeed.total} item${upgradeNeed.total > 1 ? 's' : ''}.`;
+      rationale = `Owned workbench upgrades will consume ${upgradeNeed.total} item${
+        upgradeNeed.total > 1 ? 's' : ''
+      }.`;
     } else {
       rationale = `Expedition projects still need ${projectNeed.total} item${projectNeed.total > 1 ? 's' : ''}.`;
     }

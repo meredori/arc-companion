@@ -96,7 +96,7 @@ if (dryRun) {
 
 await writeJson(resolveStaticPath('items.json'), finalItems);
 await writeJson(resolveStaticPath('quests.json'), quests);
-await writeJson(resolveStaticPath('upgrades.json'), upgrades);
+await writeJson(resolveStaticPath('workbench-upgrades.json'), upgrades);
 await writeJson(resolveStaticPath('vendors.json'), vendors);
 await writeJson(resolveStaticPath('chains.json'), chains);
 

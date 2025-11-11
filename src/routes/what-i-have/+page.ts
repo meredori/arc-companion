@@ -5,7 +5,7 @@ import type { PageLoad } from './$types';
 export const load: PageLoad = async ({ fetch }) => {
   const [questsRes, upgradesRes, itemsRes, projectsRes, chainsRes] = await Promise.all([
     fetch(`${base}/data/quests.json`),
-    fetch(`${base}/data/upgrades.json`),
+    fetch(`${base}/data/workbench-upgrades.json`),
     fetch(`${base}/data/items.json`),
     fetch(`${base}/data/projects.json`),
     fetch(`${base}/data/chains.json`)
@@ -19,11 +19,14 @@ export const load: PageLoad = async ({ fetch }) => {
     chainsRes.json() as Promise<QuestChain[]>
   ]);
 
-  return { quests, upgrades, items, projects, chains } satisfies {
+  const blueprints = items.filter((item) => item.category?.toLowerCase() === 'blueprint');
+
+  return { quests, workbenchUpgrades: upgrades, items, projects, chains, blueprints } satisfies {
     quests: Quest[];
-    upgrades: UpgradePack[];
+    workbenchUpgrades: UpgradePack[];
     items: ItemRecord[];
     projects: Project[];
     chains: QuestChain[];
+    blueprints: ItemRecord[];
   };
 };
