@@ -3,6 +3,7 @@
 </svelte:head>
 
 <script lang="ts">
+  import { base } from '$app/paths';
   import { derived } from 'svelte/store';
   import { onMount } from 'svelte';
   import { SearchBar, TipsPanel } from '$lib/components';
@@ -17,6 +18,9 @@
   void __blueprintPageProps;
 
   const { blueprints: blueprintRecords } = data;
+
+  const resolveImageUrl = (url: string | null | undefined) =>
+    url?.startsWith('/') ? `${base}${url}`.replace(/\/{2,}/g, '/') : url ?? null;
 
   onMount(() => {
     hydrateFromCanonical({
@@ -71,7 +75,8 @@
       category: entry.blueprint.category,
       sell: entry.blueprint.sell,
       notes: entry.blueprint.notes ?? null,
-      imageUrl: entry.blueprint.imageUrl ?? null,
+      rawImageUrl: entry.blueprint.imageUrl ?? null,
+      imageUrl: resolveImageUrl(entry.blueprint.imageUrl),
       owned: entry.state.owned
     }))
   );
@@ -95,7 +100,7 @@
       slug: entry.slug,
       rarity: entry.rarity ?? null,
       category: entry.category ?? null,
-      imageUrl: entry.imageUrl ?? null,
+      imageUrl: entry.rawImageUrl ?? null,
       owned: !entry.owned
     });
   };
