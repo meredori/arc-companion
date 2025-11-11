@@ -68,13 +68,13 @@
   chains.forEach((chain, index) => {
     chainOrder.set(chain.id, index);
   });
-  const questChainLookup = new Map<string, { chainId: string; chainName: string; index: number }>();
+  const questChainLookup = new Map<string, { chainId: string; chainName: string; index: number | null }>();
   questDefs.forEach((quest) => {
     if (!quest.chainId) return;
     const chain = chainById.get(quest.chainId);
     const chainName = chain?.name ?? quest.chainId;
     const stage = quest.chainStage ?? (chain?.stages?.indexOf(quest.id) ?? -1);
-    const index = stage >= 0 ? stage : Number.MAX_SAFE_INTEGER;
+    const index = stage >= 0 ? stage : null;
     questChainLookup.set(quest.id, {
       chainId: quest.chainId,
       chainName,
@@ -92,7 +92,9 @@
         .join(', ');
       const chainInfo = questChainLookup.get(quest.id);
       const prefix = chainInfo
-        ? `${chainInfo.chainName ?? chainInfo.chainId} · Step ${chainInfo.index + 1}`
+        ? chainInfo.index !== null
+          ? `${chainInfo.chainName ?? chainInfo.chainId} · Step ${chainInfo.index + 1}`
+          : `${chainInfo.chainName ?? chainInfo.chainId}`
         : null;
       const parts = [prefix ? `${prefix}: ${quest.name}` : quest.name];
       if (requirements) {

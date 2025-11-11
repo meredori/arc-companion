@@ -47,4 +47,29 @@ describe('quest ordering helpers', () => {
 
     expect(sorted).toEqual(['quest-a-1', 'quest-x-1', 'quest-x-2']);
   });
+  it('keeps quest name ordering stable when stage information is missing', () => {
+    const chainOrder = new Map([
+      ['chain-a', 0],
+      ['chain-b', 1]
+    ]);
+    const questChainLookup = new Map([
+      ['quest-a-1', { chainId: 'chain-a', chainName: 'Alpha', index: null }],
+      ['quest-a-2', { chainId: 'chain-a', chainName: 'Alpha', index: null }],
+      ['quest-b-1', { chainId: 'chain-b', chainName: 'Beta', index: 0 }]
+    ]);
+    const questById = new Map([
+      ['quest-a-1', { name: 'Alpha 1' }],
+      ['quest-a-2', { name: 'Alpha 2' }],
+      ['quest-b-1', { name: 'Beta 1' }]
+    ]);
+
+    const sorted = sortQuestIds(
+      ['quest-a-2', 'quest-b-1', 'quest-a-1'],
+      chainOrder,
+      questChainLookup,
+      questById
+    );
+
+    expect(sorted).toEqual(['quest-b-1', 'quest-a-1', 'quest-a-2']);
+  });
 });
