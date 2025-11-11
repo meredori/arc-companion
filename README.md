@@ -114,6 +114,10 @@ store. Once a phase reaches 100 %, the What To Do recommendations stop flaggin
 Drop loot art into `static/images/items/` using snake_case filenames (e.g. `advanced_arc_powercell.png`).
 The merge script automatically rewrites `imageUrl` fields to `/images/items/<file>` when possible.
 
+> **Heads up:** When rendering those assets in Svelte components, resolve the stored path through
+> `$app/paths`’ `base` helper (e.g. ```${base}${url}```) so prerendering in CI finds the images when the
+> site is deployed under a subdirectory (GitHub Pages).
+
 ## TailwindCSS usage
 
 Global Tailwind layers are imported through `src/app.postcss` and activated in the root layout. When
