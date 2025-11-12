@@ -10,23 +10,30 @@ when to keep or free up loot.
 - Use the official wiki pages such as <https://arcraiders.wiki/wiki/Workshop>.
 - Each workbench typically has three upgrade levels. Record the level number, the exact requirement
   list, and any crafts/unlocks the level grants (if relevant).
-- Add the data to `static/data/workbench-upgrades.json`. Every entry follows the existing `UpgradePack`
-  structure:
+- Add the data to `static/data/raw/hideout-modules.json`. Each module entry mirrors the upstream
+  export and lists its levels plus item requirements:
 
 ```jsonc
 {
-  "id": "upgrade-gunsmith-level-1",
-  "name": "Gunsmith · Level 1",
-  "bench": "Gunsmith",
-  "level": 1,
-  "items": [
-    { "itemId": "item-metal-parts", "qty": 20 },
-    { "itemId": "item-rubber-parts", "qty": 30 }
+  "id": "gunsmith",
+  "name": { "en": "Gunsmith" },
+  "maxLevel": 3,
+  "levels": [
+    { "level": 1, "requirementItemIds": [] },
+    {
+      "level": 2,
+      "requirementItemIds": [
+        { "itemId": "rusted_tools", "quantity": 3 },
+        { "itemId": "mechanical_components", "quantity": 5 },
+        { "itemId": "wasp_driver", "quantity": 8 }
+      ]
+    }
   ]
 }
 ```
 
-Keep IDs predictable (`upgrade-{bench}-{level}`) so they remain stable between runs.
+Keep the raw `itemId` strings intact (`rusted_tools`, `mechanical_components`, etc.); the runtime
+pipeline handles slugging (`item-rusted-tools`) and joins item names from the raw item feed.
 
 ## Example: Gunsmith
 
@@ -36,8 +43,8 @@ Keep IDs predictable (`upgrade-{bench}-{level}`) so they remain stable between r
 | 2     | 3× Rusted Tools, 5× Mechanical Components, 8× Wasp Driver                    | –      |
 | 3     | 3× Rusted Gear, 5× Advanced Mechanical Components, 4× Sentinel Firing Core   | –      |
 
-Translate the table directly into `workbench-upgrades.json` entries. Once saved, refresh the app and open the
-**What I Have → Workbench upgrades** section to mark each level as owned.
+Translate the table directly into the module entry. Once saved, refresh the app and open the **What I
+Have → Workbench upgrades** section to mark each level as owned.
 
 ## Workflow
 
@@ -47,24 +54,7 @@ Translate the table directly into `workbench-upgrades.json` entries. Once saved,
 4. Visit **What I Have** and toggle the completed levels/benches. Finished levels immediately stop
    flagging their materials as “keep” on the What To Do page.
 
-If you need to share updates with the team, commit the modified `static/data/workbench-upgrades.json` file or
-paste the relevant tables into this chat so Codex can convert them for you.
-
-## Using the merge script
-
-When new bench data lands in the shared `temp/` folder (for example when we pull a raw dump from
-RaidTheory) you can let the merge helper generate the `workbench-upgrades.json` records automatically:
-
-```bash
-node scripts/data/merge-temp-data.mjs
-```
-
-The script reads:
-
-- `temp/hideoutModules.json` for bench levels and requirements.
-- `static/images/items/` to rewrite image paths (used elsewhere in the UI).
-
-It rewrites `static/data/workbench-upgrades.json` with the normalized entries (`upgrade-{bench}-level-{n}`)
-and preserves any bespoke upgrades that are not part of the temp feed. You can still hand-edit
-`static/data/workbench-upgrades.json` when a bench appears on the wiki but hasn’t landed in the temp export yet;
-just remember to re-run the merge script afterwards so nothing regresses.
+If you need to share updates with the team, commit the modified `static/data/raw/hideout-modules.json`
+file or paste the relevant tables into this chat so Codex can convert them for you.
+The SvelteKit loaders now normalize hideout modules through `src/lib/server/pipeline.ts`, so there is
+no separate merge step—updating the raw file is enough.

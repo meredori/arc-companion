@@ -3,6 +3,7 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import { createQuestOrderComparator, sortQuestIds } from './quest-order';
+import { normalizeItems, normalizeQuests } from '$lib/server/pipeline';
 
 const readJson = <T>(relativePath: string): T => {
   const absolutePath = path.resolve(relativePath);
@@ -81,16 +82,10 @@ describe('quest ordering helpers', () => {
   });
 
   it('follows the configured chain order when sorting real quest data', () => {
-    type ChainRecord = { id: string; name: string; stages: string[] };
-    type QuestRecord = {
-      id: string;
-      name: string;
-      chainId?: string | null;
-      chainStage?: number | null;
-    };
-
-    const chains = readJson<ChainRecord[]>('static/data/chains.json');
-    const quests = readJson<QuestRecord[]>('static/data/quests.json');
+    const rawItems = readJson('static/data/raw/items.json') as Parameters<typeof normalizeItems>[0];
+    const items = normalizeItems(rawItems);
+    const rawQuests = readJson('static/data/raw/quests.json') as Parameters<typeof normalizeQuests>[0];
+    const { chains, quests } = normalizeQuests(rawQuests, { rawItems, items });
 
     const chainOrder = new Map(chains.map((chain, index) => [chain.id, index]));
     const questById = new Map(quests.map((quest) => [quest.id, { name: quest.name }]));

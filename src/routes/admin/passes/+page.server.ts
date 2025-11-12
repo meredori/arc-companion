@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Actions, PageServerLoad } from './$types';
+import type { PipelineMeta } from '$lib/types';
 import {
   executePass,
   readPipelineMeta,
@@ -14,7 +15,7 @@ const APPROVAL_TOKEN = process.env.ADMIN_APPROVAL_TOKEN ?? 'let-me-in';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, '../../..');
 const itemsPath = path.join(projectRoot, 'static', 'data', 'items.json');
-const STAGE_KEYS = ['pass-a', 'pass-b', 'pass-c', 'pass-d'];
+const STAGE_KEYS = ['pass-a', 'pass-b', 'pass-c', 'pass-d'] as const;
 
 export const load: PageServerLoad = async () => {
   const meta = await readPipelineMeta();
@@ -45,7 +46,19 @@ export const load: PageServerLoad = async () => {
     )
   ).sort((a, b) => a.localeCompare(b));
 
-  return { meta, stages, stageRecords, categories, items };
+  return {
+    meta,
+    stages,
+    stageRecords,
+    categories,
+    items
+  } satisfies {
+    meta: PipelineMeta;
+    stages: Record<string, Array<{ file: string; count: number }>>;
+    stageRecords: Record<string, Array<{ file: string; count: number; records: unknown[] }>>;
+    categories: string[];
+    items: unknown[];
+  };
 };
 
 export const actions: Actions = {
