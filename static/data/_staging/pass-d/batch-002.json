@@ -1,0 +1,29 @@
+[
+  {
+    "type": "upgrade",
+    "data": {
+      "id": "upgrade-uplink-relay",
+      "name": "Uplink Relay",
+      "bench": "Workshop",
+      "level": 2,
+      "items": [
+        {
+          "itemId": "item-recovered-arc-battery",
+          "qty": 1
+        },
+        {
+          "itemId": "item-frayed-wiring-bundle",
+          "qty": 3
+        }
+      ]
+    },
+    "stageHistory": [
+      {
+        "pass": "D",
+        "indexedAt": "2025-11-08T02:54:06.291Z",
+        "source": "metaforge+wiki",
+        "order": 1
+      }
+    ]
+  }
+]

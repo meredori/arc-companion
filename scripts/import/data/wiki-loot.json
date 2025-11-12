@@ -1,0 +1,4015 @@
+[
+  {
+    "name": "Advanced ARC Powercell",
+    "slug": "advanced-arc-powercell",
+    "rarity": "Rare",
+    "category": "Misc",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-arc-powercell",
+        "name": "ARC Powercell",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Advanced_ARC_Powercell",
+    "notes": "Primary ingredient for late-game ARC weapon upgrades.",
+    "details": {
+      "sources": [
+        {
+          "type": "enemy",
+          "ref": "arc-enforcer",
+          "note": "Boss encounter drop"
+        },
+        {
+          "type": "area",
+          "ref": "blue-gate",
+          "note": "Rare chest reward"
+        }
+      ],
+      "vendors": [
+        {
+          "vendorId": "vendor-dax",
+          "name": "Dax (Metaforge Liaison)",
+          "price": 1320
+        }
+      ],
+      "craftsFrom": [
+        {
+          "itemId": "mat-energy-coil",
+          "name": "Energy Coil",
+          "qty": 2
+        },
+        {
+          "itemId": "mat-arc-sparks",
+          "name": "ARC Sparks",
+          "qty": 6
+        }
+      ],
+      "craftsInto": [
+        {
+          "productId": "upgrade-power-matrix",
+          "productName": "Power Matrix",
+          "qty": 1
+        }
+      ],
+      "zones": [
+        "spaceport",
+        "industrial"
+      ],
+      "wikiSections": [
+        "Sources",
+        "Crafting",
+        "Vendors"
+      ]
+    },
+    "metaforge": {
+      "id": "mf-1422",
+      "sell": 840,
+      "zones": [
+        "spaceport",
+        "industrial"
+      ],
+      "provenance": {
+        "wiki": true,
+        "api": true
+      }
+    }
+  },
+  {
+    "name": "Advanced Electrical Components",
+    "slug": "advanced-electrical-components",
+    "rarity": "Rare",
+    "category": "Advanced Material",
+    "sell": 1750,
+    "recycle": [
+      {
+        "itemId": "mat-electrical-components",
+        "name": "Electrical Components",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-wires",
+        "name": "Wires",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 5,
+      "workshop": 5
+    },
+    "wikiSlug": "Advanced_Electrical_Components",
+    "notes": null
+  },
+  {
+    "name": "Advanced Mechanical Components",
+    "slug": "advanced-mechanical-components",
+    "rarity": "Rare",
+    "category": "Advanced Material",
+    "sell": 1750,
+    "recycle": [
+      {
+        "itemId": "mat-mechanical-components",
+        "name": "Mechanical Components",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-wires",
+        "name": "Wires",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 5
+    },
+    "wikiSlug": "Advanced_Mechanical_Components",
+    "notes": null
+  },
+  {
+    "name": "Agave",
+    "slug": "agave",
+    "rarity": "Uncommon",
+    "category": "Nature",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-assorted-seeds",
+        "name": "Assorted Seeds",
+        "qty": 3
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Agave",
+    "notes": null
+  },
+  {
+    "name": "Air Freshener",
+    "slug": "air-freshener",
+    "rarity": "Uncommon",
+    "category": "Trinket",
+    "sell": 2000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Air_Freshener",
+    "notes": null
+  },
+  {
+    "name": "Alarm Clock",
+    "slug": "alarm-clock",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-processor",
+        "name": "Processor",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
+        "qty": 6
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Alarm_Clock",
+    "notes": null
+  },
+  {
+    "name": "Antiseptic",
+    "slug": "antiseptic",
+    "rarity": "Rare",
+    "category": "Refined Material",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 10
+      }
+    ],
+    "keep": {
+      "quests": 2,
+      "workshop": 8
+    },
+    "wikiSlug": "Antiseptic",
+    "notes": null
+  },
+  {
+    "name": "Apricot",
+    "slug": "apricot",
+    "rarity": "Uncommon",
+    "category": "Nature",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-assorted-seeds",
+        "name": "Assorted Seeds",
+        "qty": 3
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Apricot",
+    "notes": null
+  },
+  {
+    "name": "ARC Alloy",
+    "slug": "arc-alloy",
+    "rarity": "Uncommon",
+    "category": "Topside Material",
+    "sell": 200,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 80,
+      "workshop": 18
+    },
+    "wikiSlug": "ARC_Alloy",
+    "notes": null
+  },
+  {
+    "name": "ARC Circuitry",
+    "slug": "arc-circuitry",
+    "rarity": "Rare",
+    "category": "Topside Material",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 10
+    },
+    "wikiSlug": "ARC_Circuitry",
+    "notes": null
+  },
+  {
+    "name": "ARC Coolant",
+    "slug": "arc-coolant",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 16
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "ARC_Coolant",
+    "notes": null
+  },
+  {
+    "name": "ARC Flex Rubber",
+    "slug": "arc-flex-rubber",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 16
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "ARC_Flex_Rubber",
+    "notes": null
+  },
+  {
+    "name": "ARC Motion Core",
+    "slug": "arc-motion-core",
+    "rarity": "Rare",
+    "category": "Topside Material",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 5
+    },
+    "wikiSlug": "ARC_Motion_Core",
+    "notes": null
+  },
+  {
+    "name": "ARC Performance Steel",
+    "slug": "arc-performance-steel",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 12
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "ARC_Performance_Steel",
+    "notes": null
+  },
+  {
+    "name": "ARC Powercell",
+    "slug": "arc-powercell",
+    "rarity": "Common",
+    "category": "Topside Material",
+    "sell": 640,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 5
+    },
+    "wikiSlug": "ARC_Powercell",
+    "notes": null
+  },
+  {
+    "name": "ARC Synthetic Resin",
+    "slug": "arc-synthetic-resin",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
+        "qty": 14
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "ARC_Synthetic_Resin",
+    "notes": null
+  },
+  {
+    "name": "ARC Thermo Lining",
+    "slug": "arc-thermo-lining",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-fabric",
+        "name": "Fabric",
+        "qty": 16
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "ARC_Thermo_Lining",
+    "notes": null
+  },
+  {
+    "name": "Assorted Seeds",
+    "slug": "assorted-seeds",
+    "rarity": "Common",
+    "category": "Nature",
+    "sell": 100,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Assorted_Seeds",
+    "notes": null
+  },
+  {
+    "name": "Bastion Cell",
+    "slug": "bastion-cell",
+    "rarity": "Epic",
+    "category": "Recyclable",
+    "sell": 5000,
+    "recycle": [
+      {
+        "itemId": "mat-arc-motion-core",
+        "name": "ARC Motion Core",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-advanced-mechanical-components",
+        "name": "Advanced Mechanical Components",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 6
+    },
+    "wikiSlug": "Bastion_Cell",
+    "notes": null
+  },
+  {
+    "name": "Battery",
+    "slug": "battery",
+    "rarity": "Uncommon",
+    "category": "Topside Material",
+    "sell": 250,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Battery",
+    "notes": null
+  },
+  {
+    "name": "Bicycle Pump",
+    "slug": "bicycle-pump",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-canister",
+        "name": "Canister",
+        "qty": 4
+      },
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 10
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Bicycle_Pump",
+    "notes": null
+  },
+  {
+    "name": "Bloated Tuna Can",
+    "slug": "bloated-tuna-can",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 1000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Bloated_Tuna_Can",
+    "notes": null
+  },
+  {
+    "name": "Blown Fuses",
+    "slug": "blown-fuses",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 0,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Blown_Fuses",
+    "notes": null
+  },
+  {
+    "name": "Blue Gate Communication Tower Key",
+    "slug": "blue-gate-communication-tower-key",
+    "rarity": "Rare",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Blue_Gate_Communication_Tower_Key",
+    "notes": null
+  },
+  {
+    "name": "Blue Gate Confiscation Room Key",
+    "slug": "blue-gate-confiscation-room-key",
+    "rarity": "Epic",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Blue_Gate_Confiscation_Room_Key",
+    "notes": null
+  },
+  {
+    "name": "Blue Gate Cellar Key",
+    "slug": "blue-gate-cellar-key",
+    "rarity": "Uncommon",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Blue_Gate_Cellar_Key",
+    "notes": null
+  },
+  {
+    "name": "Blue Gate Village Key",
+    "slug": "blue-gate-village-key",
+    "rarity": "Uncommon",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Blue_Gate_Village_Key",
+    "notes": null
+  },
+  {
+    "name": "Bombardier Cell",
+    "slug": "bombardier-cell",
+    "rarity": "Epic",
+    "category": "Recyclable",
+    "sell": 5000,
+    "recycle": [
+      {
+        "itemId": "mat-advanced-mechanical-components",
+        "name": "Advanced Mechanical Components",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 6
+    },
+    "wikiSlug": "Bombardier_Cell",
+    "notes": null
+  },
+  {
+    "name": "Breathtaking Snow Globe",
+    "slug": "breathtaking-snow-globe",
+    "rarity": "Epic",
+    "category": "Trinket",
+    "sell": 7000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Breathtaking_Snow_Globe",
+    "notes": null
+  },
+  {
+    "name": "Broken Flashlight",
+    "slug": "broken-flashlight",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-battery",
+        "name": "Battery",
+        "qty": 3
+      },
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 7
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Broken_Flashlight",
+    "notes": null
+  },
+  {
+    "name": "Broken Guidance System",
+    "slug": "broken-guidance-system",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-processor",
+        "name": "Processor",
+        "qty": 4
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Broken_Guidance_System",
+    "notes": null
+  },
+  {
+    "name": "Broken Handheld Radio",
+    "slug": "broken-handheld-radio",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-sensors",
+        "name": "Sensors",
+        "qty": 3
+      },
+      {
+        "itemId": "mat-wires",
+        "name": "Wires",
+        "qty": 3
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Broken_Handheld_Radio",
+    "notes": null
+  },
+  {
+    "name": "Broken Taser",
+    "slug": "broken-taser",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-battery",
+        "name": "Battery",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-wires",
+        "name": "Wires",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Broken_Taser",
+    "notes": null
+  },
+  {
+    "name": "Buried City Hospital Key",
+    "slug": "buried-city-hospital-key",
+    "rarity": "Rare",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Buried_City_Hospital_Key",
+    "notes": null
+  },
+  {
+    "name": "Buried City JKV Employee Access Card",
+    "slug": "buried-city-jkv-employee-access-card",
+    "rarity": "Uncommon",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Buried_City_JKV_Employee_Access_Card",
+    "notes": null
+  },
+  {
+    "name": "Buried City Residential Mastery Key",
+    "slug": "buried-city-residential-mastery-key",
+    "rarity": "Uncommon",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Buried_City_Residential_Mastery_Key",
+    "notes": null
+  },
+  {
+    "name": "Buried City Town Hall Key",
+    "slug": "buried-city-town-hall-key",
+    "rarity": "Epic",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Buried_City_Town_Hall_Key",
+    "notes": null
+  },
+  {
+    "name": "Burned ARC Circuitry",
+    "slug": "burned-arc-circuitry",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Burned_ARC_Circuitry",
+    "notes": null
+  },
+  {
+    "name": "Burned Tick Pod",
+    "slug": "burned-tick-pod",
+    "rarity": "Common",
+    "category": "Recyclable",
+    "sell": 0,
+    "recycle": [
+      {
+        "itemId": "mat-",
+        "name": "?",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Burned_Tick_Pod",
+    "notes": null
+  },
+  {
+    "name": "Camera Lens",
+    "slug": "camera-lens",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
+        "qty": 8
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Camera_Lens",
+    "notes": null
+  },
+  {
+    "name": "Candle Holder",
+    "slug": "candle-holder",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 270,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 8
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Candle_Holder",
+    "notes": null
+  },
+  {
+    "name": "Canister",
+    "slug": "canister",
+    "rarity": "Uncommon",
+    "category": "Topside Material",
+    "sell": 300,
+    "recycle": [
+      {
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
+        "qty": 3
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Canister",
+    "notes": null
+  },
+  {
+    "name": "Cat Bed",
+    "slug": "cat-bed",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 1000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Cat_Bed",
+    "notes": null
+  },
+  {
+    "name": "Chemicals",
+    "slug": "chemicals",
+    "rarity": "Common",
+    "category": "Basic Material",
+    "sell": 50,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 50
+    },
+    "wikiSlug": "Chemicals",
+    "notes": null
+  },
+  {
+    "name": "Coffee Pot",
+    "slug": "coffee-pot",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 1000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Coffee_Pot",
+    "notes": null
+  },
+  {
+    "name": "Complex Gun Parts",
+    "slug": "complex-gun-parts",
+    "rarity": "Epic",
+    "category": "Topside Material",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-simple-gun-parts",
+        "name": "Simple Gun Parts",
+        "qty": 3
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Complex_Gun_Parts",
+    "notes": null
+  },
+  {
+    "name": "Coolant",
+    "slug": "coolant",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 5
+      },
+      {
+        "itemId": "mat-oil",
+        "name": "Oil",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Coolant",
+    "notes": null
+  },
+  {
+    "name": "Cooling Coil",
+    "slug": "cooling-coil",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 6
+      },
+      {
+        "itemId": "mat-steel-spring",
+        "name": "Steel Spring",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Cooling_Coil",
+    "notes": null
+  },
+  {
+    "name": "Cooling Fan",
+    "slug": "cooling-fan",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
+        "qty": 14
+      },
+      {
+        "itemId": "mat-battery",
+        "name": "Battery",
+        "qty": 4
+      }
+    ],
+    "keep": {
+      "quests": 5,
+      "workshop": 0
+    },
+    "wikiSlug": "Cooling_Fan",
+    "notes": null
+  },
+  {
+    "name": "Cracked Bioscanner",
+    "slug": "cracked-bioscanner",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 3
+      },
+      {
+        "itemId": "mat-battery",
+        "name": "Battery",
+        "qty": 5
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 2
+    },
+    "wikiSlug": "Cracked_Bioscanner",
+    "notes": null
+  },
+  {
+    "name": "Crude Explosives",
+    "slug": "crude-explosives",
+    "rarity": "Uncommon",
+    "category": "Refined Material",
+    "sell": 270,
+    "recycle": [
+      {
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 3
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 5
+    },
+    "wikiSlug": "Crude_Explosives",
+    "notes": null
+  },
+  {
+    "name": "Crumpled Plastic Bottle",
+    "slug": "crumpled-plastic-bottle",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 80,
+    "recycle": [
+      {
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
+        "qty": 3
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Crumpled_Plastic_Bottle",
+    "notes": null
+  },
+  {
+    "name": "Dam Control Tower Key",
+    "slug": "dam-control-tower-key",
+    "rarity": "Epic",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Dam_Control_Tower_Key",
+    "notes": null
+  },
+  {
+    "name": "Dam Staff Room Key",
+    "slug": "dam-staff-room-key",
+    "rarity": "Uncommon",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Dam_Staff_Room_Key",
+    "notes": null
+  },
+  {
+    "name": "Dam Surveillance Key",
+    "slug": "dam-surveillance-key",
+    "rarity": "Uncommon",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Dam_Surveillance_Key",
+    "notes": null
+  },
+  {
+    "name": "Dam Testing Annex Key",
+    "slug": "dam-testing-annex-key",
+    "rarity": "Rare",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Dam_Testing_Annex_Key",
+    "notes": null
+  },
+  {
+    "name": "Dam Utility Key",
+    "slug": "dam-utility-key",
+    "rarity": "Uncommon",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Dam_Utility_Key",
+    "notes": null
+  },
+  {
+    "name": "Damaged ARC Motion Core",
+    "slug": "damaged-arc-motion-core",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Damaged_ARC_Motion_Core",
+    "notes": null
+  },
+  {
+    "name": "Damaged ARC Powercell",
+    "slug": "damaged-arc-powercell",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 293,
+    "recycle": [
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Damaged_ARC_Powercell",
+    "notes": null
+  },
+  {
+    "name": "Damaged Fireball Burner",
+    "slug": "damaged-fireball-burner",
+    "rarity": "Common",
+    "category": "Recyclable",
+    "sell": 270,
+    "recycle": [
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Damaged_Fireball_Burner",
+    "notes": null
+  },
+  {
+    "name": "Damaged Heat Sink",
+    "slug": "damaged-heat-sink",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 6
+      },
+      {
+        "itemId": "mat-wires",
+        "name": "Wires",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 2
+    },
+    "wikiSlug": "Damaged_Heat_Sink",
+    "notes": null
+  },
+  {
+    "name": "Damaged Hornet Driver",
+    "slug": "damaged-hornet-driver",
+    "rarity": "Common",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Damaged_Hornet_Driver",
+    "notes": null
+  },
+  {
+    "name": "Damaged Rocketeer Driver",
+    "slug": "damaged-rocketeer-driver",
+    "rarity": "Common",
+    "category": "Recyclable",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 3
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Damaged_Rocketeer_Driver",
+    "notes": null
+  },
+  {
+    "name": "Damaged Snitch Scanner",
+    "slug": "damaged-snitch-scanner",
+    "rarity": "Common",
+    "category": "Recyclable",
+    "sell": 659,
+    "recycle": [
+      {
+        "itemId": "mat-",
+        "name": "-",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Damaged_Snitch_Scanner",
+    "notes": null
+  },
+  {
+    "name": "Damaged Wasp Driver",
+    "slug": "damaged-wasp-driver",
+    "rarity": "Common",
+    "category": "Recyclable",
+    "sell": 270,
+    "recycle": [
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Damaged_Wasp_Driver",
+    "notes": null
+  },
+  {
+    "name": "Dart Board",
+    "slug": "dart-board",
+    "rarity": "Uncommon",
+    "category": "Trinket",
+    "sell": 2000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Dart_Board",
+    "notes": null
+  },
+  {
+    "name": "Deflated Football",
+    "slug": "deflated-football",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 15
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Deflated_Football",
+    "notes": null
+  },
+  {
+    "name": "Degraded ARC Rubber",
+    "slug": "degraded-arc-rubber",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 11
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Degraded_ARC_Rubber",
+    "notes": null
+  },
+  {
+    "name": "Diving Goggles",
+    "slug": "diving-goggles",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 12
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Diving_Goggles",
+    "notes": null
+  },
+  {
+    "name": "Dog Collar",
+    "slug": "dog-collar",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 270,
+    "recycle": [
+      {
+        "itemId": "mat-fabric",
+        "name": "Fabric",
+        "qty": 8
+      },
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 1
+    },
+    "wikiSlug": "Dog_Collar",
+    "notes": null
+  },
+  {
+    "name": "Dried-Out ARC Resin",
+    "slug": "dried-out-arc-resin",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
+        "qty": 9
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Dried-Out_ARC_Resin",
+    "notes": null
+  },
+  {
+    "name": "Duct Tape",
+    "slug": "duct-tape",
+    "rarity": "Uncommon",
+    "category": "Topside Material",
+    "sell": 300,
+    "recycle": [
+      {
+        "itemId": "mat-fabric",
+        "name": "Fabric",
+        "qty": 3
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Duct_Tape",
+    "notes": null
+  },
+  {
+    "name": "Durable Cloth",
+    "slug": "durable-cloth",
+    "rarity": "Uncommon",
+    "category": "Refined Material",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-fabric",
+        "name": "Fabric",
+        "qty": 6
+      }
+    ],
+    "keep": {
+      "quests": 36,
+      "workshop": 5
+    },
+    "wikiSlug": "Durable_Cloth",
+    "notes": null
+  },
+  {
+    "name": "Electrical Components",
+    "slug": "electrical-components",
+    "rarity": "Uncommon",
+    "category": "Refined Material",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
+        "qty": 3
+      },
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 3
+      }
+    ],
+    "keep": {
+      "quests": 30,
+      "workshop": 10
+    },
+    "wikiSlug": "Electrical_Components",
+    "notes": null
+  },
+  {
+    "name": "Empty Wine Bottle",
+    "slug": "empty-wine-bottle",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 1000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Empty_Wine_Bottle",
+    "notes": null
+  },
+  {
+    "name": "Exodus Modules",
+    "slug": "exodus-modules",
+    "rarity": "Epic",
+    "category": "Topside Material",
+    "sell": 2750,
+    "recycle": [
+      {
+        "itemId": "mat-magnet",
+        "name": "Magnet",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-mechanical-components",
+        "name": "Mechanical Components",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Exodus_Modules",
+    "notes": null
+  },
+  {
+    "name": "Expired Pasta",
+    "slug": "expired-pasta",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 1000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Expired_Pasta",
+    "notes": null
+  },
+  {
+    "name": "Expired Respirator",
+    "slug": "expired-respirator",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 8
+      },
+      {
+        "itemId": "mat-fabric",
+        "name": "Fabric",
+        "qty": 4
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Expired_Respirator",
+    "notes": null
+  },
+  {
+    "name": "Explosive Compound",
+    "slug": "explosive-compound",
+    "rarity": "Rare",
+    "category": "Refined Material",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-crude-explosives",
+        "name": "Crude Explosives",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 5
+    },
+    "wikiSlug": "Explosive_Compound",
+    "notes": null
+  },
+  {
+    "name": "Fabric",
+    "slug": "fabric",
+    "rarity": "Common",
+    "category": "Basic Material",
+    "sell": 50,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 80
+    },
+    "wikiSlug": "Fabric",
+    "notes": null
+  },
+  {
+    "name": "Faded Photograph",
+    "slug": "faded-photograph",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 640,
+    "recycle": [],
+    "keep": {
+      "quests": 2,
+      "workshop": 0
+    },
+    "wikiSlug": "Faded_Photograph",
+    "notes": null
+  },
+  {
+    "name": "Fertilizer",
+    "slug": "fertilizer",
+    "rarity": "Uncommon",
+    "category": "Nature",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-assorted-seeds",
+        "name": "Assorted Seeds",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Fertilizer",
+    "notes": null
+  },
+  {
+    "name": "Film Reel",
+    "slug": "film-reel",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 2000,
+    "recycle": [],
+    "keep": {
+      "quests": 1,
+      "workshop": 0
+    },
+    "wikiSlug": "Film_Reel",
+    "notes": null
+  },
+  {
+    "name": "Fine Wristwatch",
+    "slug": "fine-wristwatch",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 3000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Fine_Wristwatch",
+    "notes": null
+  },
+  {
+    "name": "Fireball Burner",
+    "slug": "fireball-burner",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 8
+    },
+    "wikiSlug": "Fireball_Burner",
+    "notes": null
+  },
+  {
+    "name": "Fried Motherboard",
+    "slug": "fried-motherboard",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
+        "qty": 5
+      },
+      {
+        "itemId": "mat-electrical-components",
+        "name": "Electrical Components",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 3
+    },
+    "wikiSlug": "Fried_Motherboard",
+    "notes": null
+  },
+  {
+    "name": "Frying Pan",
+    "slug": "frying-pan",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 270,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 8
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Frying_Pan",
+    "notes": null
+  },
+  {
+    "name": "Garlic Press",
+    "slug": "garlic-press",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 12
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Garlic_Press",
+    "notes": null
+  },
+  {
+    "name": "Great Mullein",
+    "slug": "great-mullein",
+    "rarity": "Uncommon",
+    "category": "Topside Material",
+    "sell": 300,
+    "recycle": [
+      {
+        "itemId": "mat-assorted-seeds",
+        "name": "Assorted Seeds",
+        "qty": 4
+      }
+    ],
+    "keep": {
+      "quests": 1,
+      "workshop": 0
+    },
+    "wikiSlug": "Great_Mullein",
+    "notes": null
+  },
+  {
+    "name": "Headphones",
+    "slug": "headphones",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 6
+      },
+      {
+        "itemId": "mat-speaker-component",
+        "name": "Speaker Component",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Headphones",
+    "notes": null
+  },
+  {
+    "name": "Heavy Gun Parts",
+    "slug": "heavy-gun-parts",
+    "rarity": "Rare",
+    "category": "Topside Material",
+    "sell": 700,
+    "recycle": [
+      {
+        "itemId": "mat-simple-gun-parts",
+        "name": "Simple Gun Parts",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Heavy_Gun_Parts",
+    "notes": null
+  },
+  {
+    "name": "Hornet Driver",
+    "slug": "hornet-driver",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-electrical-components",
+        "name": "Electrical Components",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 5
+    },
+    "wikiSlug": "Hornet_Driver",
+    "notes": null
+  },
+  {
+    "name": "Household Cleaner",
+    "slug": "household-cleaner",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 13
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Household_Cleaner",
+    "notes": null
+  },
+  {
+    "name": "Humidifier",
+    "slug": "humidifier",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-canister",
+        "name": "Canister",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-wires",
+        "name": "Wires",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 5,
+      "workshop": 0
+    },
+    "wikiSlug": "Humidifier",
+    "notes": null
+  },
+  {
+    "name": "Ice Cream Scooper",
+    "slug": "ice-cream-scooper",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 7
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Ice_Cream_Scooper",
+    "notes": null
+  },
+  {
+    "name": "Impure ARC Coolant",
+    "slug": "impure-arc-coolant",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 13
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Impure_ARC_Coolant",
+    "notes": null
+  },
+  {
+    "name": "Industrial Battery",
+    "slug": "industrial-battery",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 7
+      },
+      {
+        "itemId": "mat-battery",
+        "name": "Battery",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 3
+    },
+    "wikiSlug": "Industrial_Battery",
+    "notes": null
+  },
+  {
+    "name": "Industrial Charger",
+    "slug": "industrial-charger",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 5
+      },
+      {
+        "itemId": "mat-voltage-converter",
+        "name": "Voltage Converter",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Industrial_Charger",
+    "notes": null
+  },
+  {
+    "name": "Industrial Magnet",
+    "slug": "industrial-magnet",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-magnet",
+        "name": "Magnet",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 4
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Industrial_Magnet",
+    "notes": null
+  },
+  {
+    "name": "Laboratory Reagents",
+    "slug": "laboratory-reagents",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-crude-explosives",
+        "name": "Crude Explosives",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 3
+    },
+    "wikiSlug": "Laboratory_Reagents",
+    "notes": null
+  },
+  {
+    "name": "Lance's Mixtape (5th Edition)",
+    "slug": "lance-s-mixtape-5th-edition",
+    "rarity": "Epic",
+    "category": "Trinket",
+    "sell": 10000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Lance's_Mixtape_(5th_Edition)",
+    "notes": null
+  },
+  {
+    "name": "Lemon",
+    "slug": "lemon",
+    "rarity": "Common",
+    "category": "Nature",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-assorted-seeds",
+        "name": "Assorted Seeds",
+        "qty": 3
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Lemon",
+    "notes": null
+  },
+  {
+    "name": "Leaper Pulse Unit",
+    "slug": "leaper-pulse-unit",
+    "rarity": "Epic",
+    "category": "Recyclable",
+    "sell": 5000,
+    "recycle": [
+      {
+        "itemId": "mat-advanced-mechanical-components",
+        "name": "Advanced Mechanical Components",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 3
+      }
+    ],
+    "keep": {
+      "quests": 3,
+      "workshop": 4
+    },
+    "wikiSlug": "Leaper_Pulse_Unit",
+    "notes": null
+  },
+  {
+    "name": "Light Bulb",
+    "slug": "light-bulb",
+    "rarity": "Uncommon",
+    "category": "Trinket",
+    "sell": 2000,
+    "recycle": [],
+    "keep": {
+      "quests": 5,
+      "workshop": 0
+    },
+    "wikiSlug": "Light_Bulb",
+    "notes": null
+  },
+  {
+    "name": "Light Gun Parts",
+    "slug": "light-gun-parts",
+    "rarity": "Rare",
+    "category": "Topside Material",
+    "sell": 700,
+    "recycle": [
+      {
+        "itemId": "mat-simple-gun-parts",
+        "name": "Simple Gun Parts",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Light_Gun_Parts",
+    "notes": null
+  },
+  {
+    "name": "Magnet",
+    "slug": "magnet",
+    "rarity": "Uncommon",
+    "category": "Topside Material",
+    "sell": 300,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 3
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Magnet",
+    "notes": null
+  },
+  {
+    "name": "Magnetic Accelerator",
+    "slug": "magnetic-accelerator",
+    "rarity": "Epic",
+    "category": "Refined Material",
+    "sell": 5500,
+    "recycle": [
+      {
+        "itemId": "mat-advanced-mechanical-components",
+        "name": "Advanced Mechanical Components",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-arc-motion-core",
+        "name": "ARC Motion Core",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 3,
+      "workshop": 0
+    },
+    "wikiSlug": "Magnetic_Accelerator",
+    "notes": null
+  },
+  {
+    "name": "Mechanical Components",
+    "slug": "mechanical-components",
+    "rarity": "Rare",
+    "category": "Refined Material",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 3
+      },
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 5
+    },
+    "wikiSlug": "Mechanical_Components",
+    "notes": null
+  },
+  {
+    "name": "Medium Gun Parts",
+    "slug": "medium-gun-parts",
+    "rarity": "Rare",
+    "category": "Topside Material",
+    "sell": 700,
+    "recycle": [
+      {
+        "itemId": "mat-simple-gun-parts",
+        "name": "Simple Gun Parts",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Medium_Gun_Parts",
+    "notes": null
+  },
+  {
+    "name": "Metal Brackets",
+    "slug": "metal-brackets",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 270,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 8
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Metal_Brackets",
+    "notes": null
+  },
+  {
+    "name": "Metal Parts",
+    "slug": "metal-parts",
+    "rarity": "Common",
+    "category": "Basic Material",
+    "sell": 75,
+    "recycle": [],
+    "keep": {
+      "quests": 150,
+      "workshop": 80
+    },
+    "wikiSlug": "Metal_Parts",
+    "notes": null
+  },
+  {
+    "name": "Mod Components",
+    "slug": "mod-components",
+    "rarity": "Epic",
+    "category": "Advanced Material",
+    "sell": 3000,
+    "recycle": [
+      {
+        "itemId": "mat-mechanical-components",
+        "name": "Mechanical Components",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-steel-spring",
+        "name": "Steel Spring",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Mod_Components",
+    "notes": null
+  },
+  {
+    "name": "Moss",
+    "slug": "moss",
+    "rarity": "Rare",
+    "category": "Topside Material",
+    "sell": 500,
+    "recycle": [
+      {
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 5
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Moss",
+    "notes": null
+  },
+  {
+    "name": "Motor",
+    "slug": "motor",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-oil",
+        "name": "Oil",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-mechanical-components",
+        "name": "Mechanical Components",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 3
+    },
+    "wikiSlug": "Motor",
+    "notes": null
+  },
+  {
+    "name": "Mushroom",
+    "slug": "mushroom",
+    "rarity": "Uncommon",
+    "category": "Nature",
+    "sell": 1000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Mushroom",
+    "notes": null
+  },
+  {
+    "name": "Music Album",
+    "slug": "music-album",
+    "rarity": "Rare",
+    "category": "Trinket",
+    "sell": 3000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Music_Album",
+    "notes": null
+  },
+  {
+    "name": "Music Box",
+    "slug": "music-box",
+    "rarity": "Rare",
+    "category": "Trinket",
+    "sell": 5000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Music_Box",
+    "notes": null
+  },
+  {
+    "name": "Number Plate",
+    "slug": "number-plate",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 80,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 3
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Number_Plate",
+    "notes": null
+  },
+  {
+    "name": "Oil",
+    "slug": "oil",
+    "rarity": "Uncommon",
+    "category": "Topside Material",
+    "sell": 300,
+    "recycle": [
+      {
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 3
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Oil",
+    "notes": null
+  },
+  {
+    "name": "Olives",
+    "slug": "olives",
+    "rarity": "Common",
+    "category": "Nature",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-assorted-seeds",
+        "name": "Assorted Seeds",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Olives",
+    "notes": null
+  },
+  {
+    "name": "Painted Box",
+    "slug": "painted-box",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 2000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Painted_Box",
+    "notes": null
+  },
+  {
+    "name": "Patrol Car Key",
+    "slug": "patrol-car-key",
+    "rarity": "Uncommon",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Patrol_Car_Key",
+    "notes": null
+  },
+  {
+    "name": "Plastic Parts",
+    "slug": "plastic-parts",
+    "rarity": "Common",
+    "category": "Basic Material",
+    "sell": 60,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 75
+    },
+    "wikiSlug": "Plastic_Parts",
+    "notes": null
+  },
+  {
+    "name": "Playing Cards",
+    "slug": "playing-cards",
+    "rarity": "Rare",
+    "category": "Trinket",
+    "sell": 5000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Playing_Cards",
+    "notes": null
+  },
+  {
+    "name": "Polluted Air Filter",
+    "slug": "polluted-air-filter",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-fabric",
+        "name": "Fabric",
+        "qty": 6
+      },
+      {
+        "itemId": "mat-oil",
+        "name": "Oil",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Polluted_Air_Filter",
+    "notes": null
+  },
+  {
+    "name": "Pop Trigger",
+    "slug": "pop-trigger",
+    "rarity": "Common",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-crude-explosives",
+        "name": "Crude Explosives",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 5
+    },
+    "wikiSlug": "Pop_Trigger",
+    "notes": null
+  },
+  {
+    "name": "Portable TV",
+    "slug": "portable-tv",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-battery",
+        "name": "Battery",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Portable_TV",
+    "notes": null
+  },
+  {
+    "name": "Poster of Natural Wonders",
+    "slug": "poster-of-natural-wonders",
+    "rarity": "Uncommon",
+    "category": "Trinket",
+    "sell": 2000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Poster_Of_Natural_Wonders",
+    "notes": null
+  },
+  {
+    "name": "Pottery",
+    "slug": "pottery",
+    "rarity": "Uncommon",
+    "category": "Trinket",
+    "sell": 2000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Pottery",
+    "notes": null
+  },
+  {
+    "name": "Power Bank",
+    "slug": "power-bank",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-battery",
+        "name": "Battery",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-wires",
+        "name": "Wires",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Power_Bank",
+    "notes": null
+  },
+  {
+    "name": "Power Cable",
+    "slug": "power-cable",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-wires",
+        "name": "Wires",
+        "qty": 4
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 3
+    },
+    "wikiSlug": "Power_Cable",
+    "notes": null
+  },
+  {
+    "name": "Power Rod",
+    "slug": "power-rod",
+    "rarity": "Epic",
+    "category": "Advanced Material",
+    "sell": 5500,
+    "recycle": [
+      {
+        "itemId": "mat-advanced-electrical-components",
+        "name": "Advanced Electrical Components",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-arc-circuitry",
+        "name": "ARC Circuitry",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Power_Rod",
+    "notes": null
+  },
+  {
+    "name": "Prickly Pear",
+    "slug": "prickly-pear",
+    "rarity": "Common",
+    "category": "Nature",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-assorted-seeds",
+        "name": "Assorted Seeds",
+        "qty": 3
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Prickly_Pear",
+    "notes": null
+  },
+  {
+    "name": "Processor",
+    "slug": "processor",
+    "rarity": "Rare",
+    "category": "Topside Material",
+    "sell": 500,
+    "recycle": [
+      {
+        "itemId": "mat-wires",
+        "name": "Wires",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Processor",
+    "notes": null
+  },
+  {
+    "name": "Projector",
+    "slug": "projector",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-processor",
+        "name": "Processor",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Projector",
+    "notes": null
+  },
+  {
+    "name": "Queen Reactor",
+    "slug": "queen-reactor",
+    "rarity": "Legendary",
+    "category": "Recyclable",
+    "sell": 13000,
+    "recycle": [
+      {
+        "itemId": "mat-power-rod",
+        "name": "Power Rod",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-magnetic-accelerator",
+        "name": "Magnetic Accelerator",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Queen_Reactor",
+    "notes": null
+  },
+  {
+    "name": "Radio",
+    "slug": "radio",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-speaker-component",
+        "name": "Speaker Component",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-sensors",
+        "name": "Sensors",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Radio",
+    "notes": null
+  },
+  {
+    "name": "Raider Hatch Key",
+    "slug": "raider-hatch-key",
+    "rarity": "Rare",
+    "category": "Key",
+    "sell": 1000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Raider_Hatch_Key",
+    "notes": null
+  },
+  {
+    "name": "Red Coral Jewelry",
+    "slug": "red-coral-jewelry",
+    "rarity": "Rare",
+    "category": "Trinket",
+    "sell": 5000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Red_Coral_Jewelry",
+    "notes": null
+  },
+  {
+    "name": "Remote Control",
+    "slug": "remote-control",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-sensors",
+        "name": "Sensors",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Remote_Control",
+    "notes": null
+  },
+  {
+    "name": "Resin",
+    "slug": "resin",
+    "rarity": "Common",
+    "category": "Nature",
+    "sell": 1000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Resin",
+    "notes": null
+  },
+  {
+    "name": "Rocketeer Driver",
+    "slug": "rocketeer-driver",
+    "rarity": "Epic",
+    "category": "Recyclable",
+    "sell": 5000,
+    "recycle": [
+      {
+        "itemId": "mat-advanced-electrical-components",
+        "name": "Advanced Electrical Components",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 3
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 3
+    },
+    "wikiSlug": "Rocketeer_Driver",
+    "notes": null
+  },
+  {
+    "name": "Ripped Safety Vest",
+    "slug": "ripped-safety-vest",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-magnet",
+        "name": "Magnet",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-durable-cloth",
+        "name": "Durable Cloth",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Ripped_Safety_Vest",
+    "notes": null
+  },
+  {
+    "name": "Rocket Thruster",
+    "slug": "rocket-thruster",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-synthesized-fuel",
+        "name": "Synthesized Fuel",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 6
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Rocket_Thruster",
+    "notes": null
+  },
+  {
+    "name": "Roots",
+    "slug": "roots",
+    "rarity": "Uncommon",
+    "category": "Nature",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-assorted-seeds",
+        "name": "Assorted Seeds",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Roots",
+    "notes": null
+  },
+  {
+    "name": "Rope",
+    "slug": "rope",
+    "rarity": "Rare",
+    "category": "Topside Material",
+    "sell": 500,
+    "recycle": [
+      {
+        "itemId": "mat-fabric",
+        "name": "Fabric",
+        "qty": 5
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Rope",
+    "notes": null
+  },
+  {
+    "name": "Rosary",
+    "slug": "rosary",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 2000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Rosary",
+    "notes": null
+  },
+  {
+    "name": "Rubber Duck",
+    "slug": "rubber-duck",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 1000,
+    "recycle": [],
+    "keep": {
+      "quests": 2,
+      "workshop": 0
+    },
+    "wikiSlug": "Rubber_Duck",
+    "notes": null
+  },
+  {
+    "name": "Rubber Pad",
+    "slug": "rubber-pad",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 18
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Rubber_Pad",
+    "notes": null
+  },
+  {
+    "name": "Rubber Parts",
+    "slug": "rubber-parts",
+    "rarity": "Common",
+    "category": "Basic Material",
+    "sell": 50,
+    "recycle": [],
+    "keep": {
+      "quests": 200,
+      "workshop": 30
+    },
+    "wikiSlug": "Rubber_Parts",
+    "notes": null
+  },
+  {
+    "name": "Ruined Accordion",
+    "slug": "ruined-accordion",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 18
+      },
+      {
+        "itemId": "mat-steel-spring",
+        "name": "Steel Spring",
+        "qty": 3
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Ruined_Accordion",
+    "notes": null
+  },
+  {
+    "name": "Ruined Augment",
+    "slug": "ruined-augment",
+    "rarity": "-",
+    "category": "Recyclable",
+    "sell": 270,
+    "recycle": [
+      {
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Ruined_Augment",
+    "notes": null
+  },
+  {
+    "name": "Ruined Baton",
+    "slug": "ruined-baton",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 6
+      },
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 3
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Ruined_Baton",
+    "notes": null
+  },
+  {
+    "name": "Ruined Handcuffs",
+    "slug": "ruined-handcuffs",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 270,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 8
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Ruined_Handcuffs",
+    "notes": null
+  },
+  {
+    "name": "Ruined Parachute",
+    "slug": "ruined-parachute",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-fabric",
+        "name": "Fabric",
+        "qty": 10
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Ruined_Parachute",
+    "notes": null
+  },
+  {
+    "name": "Ruined Tactical Vest",
+    "slug": "ruined-tactical-vest",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-fabric",
+        "name": "Fabric",
+        "qty": 5
+      },
+      {
+        "itemId": "mat-magnet",
+        "name": "Magnet",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Ruined_Tactical_Vest",
+    "notes": null
+  },
+  {
+    "name": "Ruined Riot Shield",
+    "slug": "ruined-riot-shield",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
+        "qty": 10
+      },
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 6
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Ruined_Riot_Shield",
+    "notes": null
+  },
+  {
+    "name": "Rusted Bolts",
+    "slug": "rusted-bolts",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 8
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Rusted_Bolts",
+    "notes": null
+  },
+  {
+    "name": "Rusted Gear",
+    "slug": "rusted-gear",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 4
+      },
+      {
+        "itemId": "mat-mechanical-components",
+        "name": "Mechanical Components",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 3
+    },
+    "wikiSlug": "Rusted_Gear",
+    "notes": null
+  },
+  {
+    "name": "Rusted Shut Medical Kit",
+    "slug": "rusted-shut-medical-kit",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-syringe",
+        "name": "Syringe",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-antiseptic",
+        "name": "Antiseptic",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 3
+    },
+    "wikiSlug": "Rusted_Shut_Medical_Kit",
+    "notes": null
+  },
+  {
+    "name": "Rusted Tools",
+    "slug": "rusted-tools",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 8
+      },
+      {
+        "itemId": "mat-steel-spring",
+        "name": "Steel Spring",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 3
+    },
+    "wikiSlug": "Rusted_Tools",
+    "notes": "Quest givers in Dam and Spaceport require these for repairs.",
+    "details": {
+      "sources": [
+        {
+          "type": "scavenge",
+          "ref": "spaceport",
+          "note": "Containers near docking area"
+        }
+      ],
+      "vendors": [],
+      "craftsFrom": [],
+      "craftsInto": [
+        {
+          "productId": "upgrade-field-maintenance",
+          "productName": "Field Maintenance Kit",
+          "qty": 1
+        }
+      ],
+      "zones": [
+        "spaceport",
+        "dam"
+      ]
+    },
+    "metaforge": {
+      "id": "mf-0904",
+      "sell": 115,
+      "zones": [
+        "spaceport",
+        "dam"
+      ],
+      "provenance": {
+        "wiki": true,
+        "api": true
+      }
+    }
+  },
+  {
+    "name": "Rusty ARC Steel",
+    "slug": "rusty-arc-steel",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 8
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Rusty_ARC_Steel",
+    "notes": null
+  },
+  {
+    "name": "Sensors",
+    "slug": "sensors",
+    "rarity": "Rare",
+    "category": "Topside Material",
+    "sell": 500,
+    "recycle": [
+      {
+        "itemId": "mat-wires",
+        "name": "Wires",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Sensors",
+    "notes": null
+  },
+  {
+    "name": "Sentinel Firing Core",
+    "slug": "sentinel-firing-core",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 3000,
+    "recycle": [
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-mechanical-components",
+        "name": "Mechanical Components",
+        "qty": 3
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 4
+    },
+    "wikiSlug": "Sentinel_Firing_Core",
+    "notes": null
+  },
+  {
+    "name": "Silver Teaspoon Set",
+    "slug": "silver-teaspoon-set",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 3000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Silver_Teaspoon_Set",
+    "notes": null
+  },
+  {
+    "name": "Simple Gun Parts",
+    "slug": "simple-gun-parts",
+    "rarity": "Uncommon",
+    "category": "Topside Material",
+    "sell": 330,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Simple_Gun_Parts",
+    "notes": null
+  },
+  {
+    "name": "Snitch Scanner",
+    "slug": "snitch-scanner",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 4
+      },
+      {
+        "itemId": "mat-electrical-components",
+        "name": "Electrical Components",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 6
+    },
+    "wikiSlug": "Snitch_Scanner",
+    "notes": null
+  },
+  {
+    "name": "Spaceport Container Storage Key",
+    "slug": "spaceport-container-storage-key",
+    "rarity": "Rare",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Spaceport_Container_Storage_Key",
+    "notes": null
+  },
+  {
+    "name": "Spaceport Control Tower Key",
+    "slug": "spaceport-control-tower-key",
+    "rarity": "Rare",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Spaceport_Control_Tower_Key",
+    "notes": null
+  },
+  {
+    "name": "Spaceport Trench Tower Key",
+    "slug": "spaceport-trench-tower-key",
+    "rarity": "Uncommon",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Spaceport_Trench_Tower_Key",
+    "notes": null
+  },
+  {
+    "name": "Spaceport Warehouse Key",
+    "slug": "spaceport-warehouse-key",
+    "rarity": "Uncommon",
+    "category": "Key",
+    "sell": 100,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Spaceport_Warehouse_Key",
+    "notes": null
+  },
+  {
+    "name": "Speaker Component",
+    "slug": "speaker-component",
+    "rarity": "Rare",
+    "category": "Topside Material",
+    "sell": 500,
+    "recycle": [
+      {
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Speaker_Component",
+    "notes": null
+  },
+  {
+    "name": "Spring Cushion",
+    "slug": "spring-cushion",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-durable-cloth",
+        "name": "Durable Cloth",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-steel-spring",
+        "name": "Steel Spring",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Spring_Cushion",
+    "notes": null
+  },
+  {
+    "name": "Spotter Relay",
+    "slug": "spotter-relay",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 5000,
+    "recycle": [
+      {
+        "itemId": "mat-electrical-components",
+        "name": "Electrical Components",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Spotter_Relay",
+    "notes": null
+  },
+  {
+    "name": "Statuette",
+    "slug": "statuette",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 3000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Statuette",
+    "notes": null
+  },
+  {
+    "name": "Steel Spring",
+    "slug": "steel-spring",
+    "rarity": "Uncommon",
+    "category": "Topside Material",
+    "sell": 300,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 3
+      }
+    ],
+    "keep": {
+      "quests": 15,
+      "workshop": 0
+    },
+    "wikiSlug": "Steel_Spring",
+    "notes": null
+  },
+  {
+    "name": "Surveyor Vault",
+    "slug": "surveyor-vault",
+    "rarity": "Rare",
+    "category": "Topside Material",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-mechanical-components",
+        "name": "Mechanical Components",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 1,
+      "workshop": 5
+    },
+    "wikiSlug": "Surveyor_Vault",
+    "notes": null
+  },
+  {
+    "name": "Synthesized Fuel",
+    "slug": "synthesized-fuel",
+    "rarity": "Rare",
+    "category": "Topside Material",
+    "sell": 700,
+    "recycle": [
+      {
+        "itemId": "mat-oil",
+        "name": "Oil",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 3
+    },
+    "wikiSlug": "Synthesized_Fuel",
+    "notes": null
+  },
+  {
+    "name": "Syringe",
+    "slug": "syringe",
+    "rarity": "Rare",
+    "category": "Topside Material",
+    "sell": 500,
+    "recycle": [
+      {
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
+        "qty": 3
+      },
+      {
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 1,
+      "workshop": 0
+    },
+    "wikiSlug": "Syringe",
+    "notes": null
+  },
+  {
+    "name": "Tattered ARC Lining",
+    "slug": "tattered-arc-lining",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-fabric",
+        "name": "Fabric",
+        "qty": 12
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Tattered_ARC_Lining",
+    "notes": null
+  },
+  {
+    "name": "Tattered Clothes",
+    "slug": "tattered-clothes",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 270,
+    "recycle": [
+      {
+        "itemId": "mat-fabric",
+        "name": "Fabric",
+        "qty": 11
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Tattered_Clothes",
+    "notes": null
+  },
+  {
+    "name": "Thermostat",
+    "slug": "thermostat",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 6
+      },
+      {
+        "itemId": "mat-sensors",
+        "name": "Sensors",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Thermostat",
+    "notes": null
+  },
+  {
+    "name": "Tick Pod",
+    "slug": "tick-pod",
+    "rarity": "Uncommon",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-chemicals",
+        "name": "Chemicals",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 8
+    },
+    "wikiSlug": "Tick_Pod",
+    "notes": null
+  },
+  {
+    "name": "Toaster",
+    "slug": "toaster",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-plastic-parts",
+        "name": "Plastic Parts",
+        "qty": 5
+      },
+      {
+        "itemId": "mat-wires",
+        "name": "Wires",
+        "qty": 3
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 3
+    },
+    "wikiSlug": "Toaster",
+    "notes": null
+  },
+  {
+    "name": "Torn Book",
+    "slug": "torn-book",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 1000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Torn_Book",
+    "notes": null
+  },
+  {
+    "name": "Torn Blanket",
+    "slug": "torn-blanket",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 640,
+    "recycle": [
+      {
+        "itemId": "mat-fabric",
+        "name": "Fabric",
+        "qty": 12
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Torn_Blanket",
+    "notes": null
+  },
+  {
+    "name": "Turbo Pump",
+    "slug": "turbo-pump",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-mechanical-components",
+        "name": "Mechanical Components",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-oil",
+        "name": "Oil",
+        "qty": 3
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Turbo_Pump",
+    "notes": null
+  },
+  {
+    "name": "Unusable Weapon",
+    "slug": "unusable-weapon",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 2000,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 4
+      },
+      {
+        "itemId": "mat-simple-gun-parts",
+        "name": "Simple Gun Parts",
+        "qty": 5
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Unusable_Weapon",
+    "notes": null
+  },
+  {
+    "name": "Vase",
+    "slug": "vase",
+    "rarity": "Rare",
+    "category": "Trinket",
+    "sell": 3000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Vase",
+    "notes": null
+  },
+  {
+    "name": "Very Comfortable Pillow",
+    "slug": "very-comfortable-pillow",
+    "rarity": "Common",
+    "category": "Trinket",
+    "sell": 2000,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Very_Comfortable_Pillow",
+    "notes": null
+  },
+  {
+    "name": "Volcanic Rock",
+    "slug": "volcanic-rock",
+    "rarity": "Common",
+    "category": "Misc",
+    "sell": 270,
+    "recycle": [],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Volcanic_Rock",
+    "notes": null
+  },
+  {
+    "name": "Voltage Converter",
+    "slug": "voltage-converter",
+    "rarity": "Rare",
+    "category": "Topside Material",
+    "sell": 500,
+    "recycle": [
+      {
+        "itemId": "mat-wires",
+        "name": "Wires",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Voltage_Converter",
+    "notes": null
+  },
+  {
+    "name": "Wasp Driver",
+    "slug": "wasp-driver",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-arc-alloy",
+        "name": "ARC Alloy",
+        "qty": 1
+      },
+      {
+        "itemId": "mat-electrical-components",
+        "name": "Electrical Components",
+        "qty": 1
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 8
+    },
+    "wikiSlug": "Wasp_Driver",
+    "notes": null
+  },
+  {
+    "name": "Water Filter",
+    "slug": "water-filter",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 2
+      },
+      {
+        "itemId": "mat-canister",
+        "name": "Canister",
+        "qty": 3
+      }
+    ],
+    "keep": {
+      "quests": 0,
+      "workshop": 0
+    },
+    "wikiSlug": "Water_Filter",
+    "notes": null
+  },
+  {
+    "name": "Water Pump",
+    "slug": "water-pump",
+    "rarity": "Rare",
+    "category": "Recyclable",
+    "sell": 1000,
+    "recycle": [
+      {
+        "itemId": "mat-metal-parts",
+        "name": "Metal Parts",
+        "qty": 4
+      },
+      {
+        "itemId": "mat-oil",
+        "name": "Oil",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 2,
+      "workshop": 0
+    },
+    "wikiSlug": "Water_Pump",
+    "notes": null
+  },
+  {
+    "name": "Wires",
+    "slug": "wires",
+    "rarity": "Uncommon",
+    "category": "Topside Material",
+    "sell": 200,
+    "recycle": [
+      {
+        "itemId": "mat-rubber-parts",
+        "name": "Rubber Parts",
+        "qty": 2
+      }
+    ],
+    "keep": {
+      "quests": 33,
+      "workshop": 0
+    },
+    "wikiSlug": "Wires",
+    "notes": null
+  }
+]

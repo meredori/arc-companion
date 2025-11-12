@@ -1,0 +1,80 @@
+[
+  {
+    "type": "upgrade",
+    "data": {
+      "id": "upgrade-power-matrix",
+      "name": "Power Matrix",
+      "bench": "MetaForge",
+      "level": 3,
+      "items": [
+        {
+          "itemId": "item-advanced-arc-powercell",
+          "qty": 1
+        },
+        {
+          "itemId": "item-frayed-wiring-bundle",
+          "qty": 2
+        }
+      ]
+    },
+    "stageHistory": [
+      {
+        "pass": "D",
+        "indexedAt": "2025-11-08T02:54:06.291Z",
+        "source": "metaforge+wiki",
+        "order": 7
+      }
+    ]
+  },
+  {
+    "type": "upgrade",
+    "data": {
+      "id": "upgrade-field-maintenance",
+      "name": "Field Maintenance Kit",
+      "bench": "Workshop",
+      "level": 1,
+      "items": [
+        {
+          "itemId": "item-rusted-tools",
+          "qty": 2
+        }
+      ]
+    },
+    "stageHistory": [
+      {
+        "pass": "D",
+        "indexedAt": "2025-11-08T02:54:06.291Z",
+        "source": "metaforge+wiki",
+        "order": 8
+      }
+    ]
+  },
+  {
+    "type": "vendor",
+    "data": {
+      "id": "vendor-laila",
+      "name": "Laila",
+      "location": "Dam Outpost",
+      "stock": [
+        {
+          "itemId": "item-frayed-wiring-bundle",
+          "name": "Frayed Wiring Bundle",
+          "price": 140
+        },
+        {
+          "itemId": "item-recovered-arc-battery",
+          "name": "Recovered ARC Battery",
+          "price": 980
+        }
+      ]
+    },
+    "stageHistory": [
+      {
+        "pass": "D",
+        "indexedAt": "2025-11-08T02:54:06.291Z",
+        "source": "metaforge+wiki",
+        "order": 9
+      }
+    ]
+  }
+]
