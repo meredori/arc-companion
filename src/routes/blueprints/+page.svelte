@@ -9,6 +9,7 @@
   import { SearchBar, TipsPanel } from '$lib/components';
   import { blueprints, hydrateFromCanonical } from '$lib/stores/app';
   import { tipsForBlueprints } from '$lib/tips';
+  import type { ItemRecord } from '$lib/types';
   import type { PageData } from './$types';
 
   export let data: PageData;
