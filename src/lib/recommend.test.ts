@@ -101,6 +101,50 @@ const ITEMS: ItemRecord[] = [
     provenance: { wiki: true, api: true }
   },
   {
+    id: 'item-kettle-i',
+    name: 'Kettle I',
+    slug: 'kettle-i',
+    category: 'Assault Rifle',
+    rarity: 'Common Weapon',
+    sell: 90,
+    recycle: [],
+    needsTotals: { quests: 0, workshop: 0 },
+    provenance: { wiki: true, api: true }
+  },
+  {
+    id: 'item-kettle-ii',
+    name: 'Kettle II',
+    slug: 'kettle-ii',
+    category: 'Weapon',
+    rarity: 'Common Weapon',
+    sell: 90,
+    recycle: [],
+    needsTotals: { quests: 0, workshop: 0 },
+    provenance: { wiki: true, api: true }
+  },
+  {
+    id: 'item-kettle-iii',
+    name: 'Kettle III',
+    slug: 'kettle-iii',
+    category: 'Weapon',
+    rarity: 'Common Weapon',
+    sell: 90,
+    recycle: [],
+    needsTotals: { quests: 0, workshop: 0 },
+    provenance: { wiki: true, api: true }
+  },
+  {
+    id: 'item-kettle-iv',
+    name: 'Kettle IV',
+    slug: 'kettle-iv',
+    category: 'Weapon',
+    rarity: 'Common Weapon',
+    sell: 90,
+    recycle: [],
+    needsTotals: { quests: 0, workshop: 0 },
+    provenance: { wiki: true, api: true }
+  },
+  {
     id: 'item-keycard',
     name: 'Ruined Keycard',
     slug: 'ruined-keycard',
@@ -365,21 +409,30 @@ const context = buildRecommendationContext({
     const results = recommendItemsMatching('', context);
     const modIndex = results.findIndex((entry) => entry.category === 'Modification');
     const weaponGroup = results.filter((entry) =>
-      ['Weapon', 'Shotgun', 'Pistol', 'LMG', 'Hand Cannon'].includes(entry.category ?? '')
+      ['Weapon', 'Shotgun', 'Pistol', 'LMG', 'Hand Cannon', 'Assault Rifle'].includes(
+        entry.category ?? ''
+      )
     );
-    expect(weaponGroup).toHaveLength(5);
+    expect(weaponGroup).toHaveLength(6);
     expect(weaponGroup.map((entry) => entry.name)).toEqual([
       'Nova Cannon',
       'Cyclone Shotgun',
       'Warden Pistol',
       'Parallax Hand Cannon',
-      'Tempest LMG'
+      'Tempest LMG',
+      'Kettle I'
     ]);
     weaponGroup.forEach((entry) => {
       const index = results.findIndex((candidate) => candidate.itemId === entry.itemId);
       expect(index).toBeGreaterThan(-1);
       expect(index).toBeLessThan(modIndex);
     });
+  });
+
+  it('hides higher-tier weapon variants when base exists', () => {
+    const results = recommendItemsMatching('kettle', context);
+    const kettleNames = results.map((entry) => entry.name);
+    expect(kettleNames).toEqual(['Kettle I']);
   });
 
   it('orders quick use items by craft bench priority', () => {

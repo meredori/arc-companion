@@ -106,6 +106,13 @@ const categoryGroupKey = (label?: string) => {
   return CATEGORY_GROUP_LOOKUP.get(label.toLowerCase());
 };
 
+const WEAPON_GROUP_KEY = categoryGroupKey('Weapon');
+
+const isWeaponCategory = (label?: string) => {
+  if (!label || !WEAPON_GROUP_KEY) return false;
+  return categoryGroupKey(label) === WEAPON_GROUP_KEY;
+};
+
 const RARITY_PRIORITY = ['legendary', 'epic', 'rare', 'uncommon', 'common'] as const;
 
 function computeSalvageValue(item: ItemRecord): number {
@@ -318,7 +325,21 @@ export function recommendItemsMatching(
       )
     : context.items;
 
-  const recommendations = filtered.map((item) => recommendItem(item, context));
+  const weaponVariantPattern = /-([ivxlcdm]+)$/;
+
+  const filteredWeapons = filtered.filter((item) => {
+    if (!isWeaponCategory(item.category)) {
+      return true;
+    }
+    const match = item.slug.match(weaponVariantPattern);
+    if (!match) {
+      return true;
+    }
+    const numeral = match[1];
+    return numeral === 'i';
+  });
+
+  const recommendations = filteredWeapons.map((item) => recommendItem(item, context));
 
   const rarityRank = (rarity?: string) => {
     if (!rarity) return RARITY_PRIORITY.length;
