@@ -35,10 +35,10 @@
         Item recommendations driven by synced data and personalized player goals.
       </p>
     </a>
-    <a class="section-card transition-transform duration-200 hover:-translate-y-1" href={withBase('/track')}>
-      <h2 class="text-xl font-semibold">Track</h2>
+    <a class="section-card transition-transform duration-200 hover:-translate-y-1" href={withBase('/previews')}>
+      <h2 class="text-xl font-semibold">Previews</h2>
       <p class="mt-2 text-sm text-slate-400">
-        Quest, upgrade, and goal tracking that informs future loot decisions.
+        Explore concept flows and upcoming features before they land in the live companion.
       </p>
     </a>
     <a class="section-card transition-transform duration-200 hover:-translate-y-1" href={withBase('/what-i-have')}>
