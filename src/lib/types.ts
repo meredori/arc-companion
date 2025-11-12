@@ -301,6 +301,7 @@ export interface RecommendationContext {
   projects: Project[];
   projectProgress: ProjectProgressState;
   alwaysKeepCategories: string[];
+  ignoredCategories: string[];
   wantList: WantListEntry[];
   wantListDependencies: WantListResolvedEntry[];
   wishlistSourcesByItem: Record<string, RecommendationWishlistSource[]>;

@@ -44,6 +44,7 @@
         projects,
         projectProgress: $projectProgress,
         alwaysKeepCategories: $settings.alwaysKeepCategories ?? [],
+        ignoredCategories: $settings.ignoredWantCategories ?? [],
         wantList: $wantList,
         wantListDependencies: expandWantList($wantList, items, {
           ignoredCategories: $settings.ignoredWantCategories ?? []

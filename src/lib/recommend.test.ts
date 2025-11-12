@@ -367,7 +367,8 @@ const context = buildRecommendationContext({
   workbenchUpgrades: WORKBENCH_UPGRADES,
   projects: PROJECTS,
   projectProgress: PROJECT_PROGRESS,
-  alwaysKeepCategories: ['Key']
+  alwaysKeepCategories: ['Key'],
+  ignoredCategories: []
 });
 
   it('prefers save for quest items', () => {
@@ -451,6 +452,51 @@ const context = buildRecommendationContext({
     ]);
   });
 
+  it('omits ignored categories from recommendations', () => {
+    const ignoreContext = buildRecommendationContext({
+      items: ITEMS,
+      quests: QUESTS,
+      questProgress: PROGRESS,
+      upgrades: UPGRADES,
+      blueprints: BLUEPRINTS,
+      workbenchUpgrades: WORKBENCH_UPGRADES,
+      projects: PROJECTS,
+      projectProgress: PROJECT_PROGRESS,
+      alwaysKeepCategories: [],
+      ignoredCategories: ['Quick Use']
+    });
+    const quickUseEntries = recommendItemsMatching('', ignoreContext).filter(
+      (entry) => entry.category === 'Quick Use'
+    );
+    expect(quickUseEntries).toHaveLength(0);
+  });
+
+  it('retains ignored category items that are on the wishlist', () => {
+    const bandageEntry: WantListEntry = {
+      itemId: 'item-bandage',
+      qty: 1,
+      createdAt: '2024-01-01T00:00:00.000Z'
+    };
+    const wishlistContext = buildRecommendationContext({
+      items: ITEMS,
+      quests: QUESTS,
+      questProgress: PROGRESS,
+      upgrades: UPGRADES,
+      blueprints: BLUEPRINTS,
+      workbenchUpgrades: WORKBENCH_UPGRADES,
+      projects: PROJECTS,
+      projectProgress: PROJECT_PROGRESS,
+      alwaysKeepCategories: [],
+      ignoredCategories: ['Quick Use'],
+      wantList: [bandageEntry],
+      wantListDependencies: []
+    });
+    const recommendations = recommendItemsMatching('', wishlistContext);
+    const bandage = recommendations.find((entry) => entry.itemId === 'item-bandage');
+    expect(bandage).toBeDefined();
+    expect(bandage?.category).toBe('Quick Use');
+  });
+
   it('sorts higher rarity items ahead within the same category', () => {
     const results = recommendItemsMatching('mod', context);
     expect(results.map((rec) => rec.name)).toEqual(['Mod Apex', 'Mod Ridge']);
@@ -523,13 +569,14 @@ describe('wishlist promotions', () => {
     materials: []
   };
 
-  it('elevates wishlist targets to keep with rationale and chip data', () => {
-    const context = buildRecommendationContext({
-      items: ITEMS,
-      quests: [],
-      wantList: [TARGET_ENTRY],
-      wantListDependencies: [TARGET_DEPENDENCY]
-    });
+    it('elevates wishlist targets to keep with rationale and chip data', () => {
+      const context = buildRecommendationContext({
+        items: ITEMS,
+        quests: [],
+        wantList: [TARGET_ENTRY],
+        wantListDependencies: [TARGET_DEPENDENCY],
+        ignoredCategories: []
+      });
     const recommendation = recommendItem(
       ITEMS.find((item) => item.id === 'item-beta')!,
       context
@@ -542,13 +589,14 @@ describe('wishlist promotions', () => {
     });
   });
 
-  it('promotes prerequisite materials referenced by wishlist dependencies', () => {
-    const context = buildRecommendationContext({
-      items: ITEMS,
-      quests: [],
-      wantList: [MATERIAL_DEPENDENCY.entry],
-      wantListDependencies: [MATERIAL_DEPENDENCY]
-    });
+    it('promotes prerequisite materials referenced by wishlist dependencies', () => {
+      const context = buildRecommendationContext({
+        items: ITEMS,
+        quests: [],
+        wantList: [MATERIAL_DEPENDENCY.entry],
+        wantListDependencies: [MATERIAL_DEPENDENCY],
+        ignoredCategories: []
+      });
     const recommendation = recommendItem(
       ITEMS.find((item) => item.id === 'item-beta')!,
       context

@@ -118,6 +118,8 @@ const isWeaponCategory = (label?: string) => {
 
 const RARITY_PRIORITY = ['legendary', 'epic', 'rare', 'uncommon', 'common'] as const;
 
+const normalizeCategory = (value?: string | null) => (value ? value.toLowerCase().trim() : '');
+
 function computeSalvageValue(item: ItemRecord): number {
   return item.recycle.reduce((total, entry) => total + entry.qty * 35, 0);
 }
@@ -202,6 +204,7 @@ export function buildRecommendationContext(params: {
   alwaysKeepCategories?: string[];
   wantList?: WantListEntry[];
   wantListDependencies?: WantListResolvedEntry[];
+  ignoredCategories?: string[];
 }): RecommendationContext {
   const wantList = params.wantList ?? [];
   const wantListDependencies = params.wantListDependencies ?? [];
@@ -220,6 +223,7 @@ export function buildRecommendationContext(params: {
     projects: params.projects ?? [],
     projectProgress: params.projectProgress ?? {},
     alwaysKeepCategories: params.alwaysKeepCategories ?? [],
+    ignoredCategories: params.ignoredCategories ?? [],
     wantList,
     wantListDependencies,
     wishlistSourcesByItem
@@ -413,6 +417,21 @@ export function recommendItemsMatching(
   context: RecommendationContext
 ): ItemRecommendation[] {
   const normalized = query.trim().toLowerCase();
+  const ignoredCategorySet = new Set(
+    context.ignoredCategories
+      .map((entry) => normalizeCategory(entry))
+      .filter((value) => value.length > 0)
+  );
+  const wantListAllowSet = new Set(context.wantList.map((entry) => entry.itemId));
+
+  const passesIgnoreFilter = (item: ItemRecord) => {
+    const category = normalizeCategory(item.category);
+    if (!category) return true;
+    if (!ignoredCategorySet.has(category)) return true;
+    if (wantListAllowSet.has(item.id)) return true;
+    return false;
+  };
+
   const filtered = normalized
     ? context.items.filter((item) =>
         item.name.toLowerCase().includes(normalized) ||
@@ -421,9 +440,11 @@ export function recommendItemsMatching(
       )
     : context.items;
 
+  const categoryFiltered = filtered.filter(passesIgnoreFilter);
+
   const weaponVariantPattern = /-([ivxlcdm]+)$/;
 
-  const filteredWeapons = filtered.filter((item) => {
+  const filteredWeapons = categoryFiltered.filter((item) => {
     if (!isWeaponCategory(item.category)) {
       return true;
     }
