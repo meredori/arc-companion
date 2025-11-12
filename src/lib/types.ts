@@ -65,6 +65,47 @@ export interface ItemRecord {
 export type ItemOverride = Partial<Pick<ItemRecord, 'category' | 'rarity' | 'notes' | 'imageUrl'>>;
 export type ItemOverrideMap = Record<string, ItemOverride>;
 
+export interface WantListEntry {
+  itemId: string;
+  qty: number;
+  reason?: string;
+  createdAt: string;
+}
+
+export interface WantListRequirement {
+  itemId: string;
+  name: string;
+  qty: number;
+  depth: number;
+}
+
+export interface WantListProductLink {
+  itemId: string;
+  name: string;
+  qty: number;
+}
+
+export type WantListMaterialLinkKind = 'yield' | 'satisfies';
+
+export interface WantListMaterialLink {
+  materialId: string;
+  materialName: string;
+  requiredQty: number;
+  producedQty: number;
+  sourcesNeeded: number;
+  sourceItemId: string;
+  sourceName: string;
+  kind: WantListMaterialLinkKind;
+}
+
+export interface WantListResolvedEntry {
+  entry: WantListEntry;
+  item?: ItemRecord;
+  requirements: WantListRequirement[];
+  products: WantListProductLink[];
+  materials: WantListMaterialLink[];
+}
+
 export interface QuestRequirement {
   itemId: string;
   qty: number;
@@ -188,6 +229,14 @@ export interface ItemRecommendation {
     workshop: number;
     projects: number;
   };
+  wishlistSources?: RecommendationWishlistSource[];
+}
+
+export interface RecommendationWishlistSource {
+  targetItemId: string;
+  targetName: string;
+  note?: string;
+  kind: 'target' | 'requirement';
 }
 
 export interface QuestProgress {
@@ -251,6 +300,9 @@ export interface RecommendationContext {
   projects: Project[];
   projectProgress: ProjectProgressState;
   alwaysKeepCategories: string[];
+  wantList: WantListEntry[];
+  wantListDependencies: WantListResolvedEntry[];
+  wishlistSourcesByItem: Record<string, RecommendationWishlistSource[]>;
 }
 
 export interface RunTip {

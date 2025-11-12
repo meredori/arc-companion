@@ -9,8 +9,11 @@ import type {
   QuestProgress,
   RecommendationAction,
   RecommendationContext,
+  RecommendationWishlistSource,
   RunLogEntry,
   UpgradePack,
+  WantListEntry,
+  WantListResolvedEntry,
   WorkbenchUpgradeState
 } from '$lib/types';
 
@@ -135,6 +138,58 @@ function ownedWorkbenchUpgrade(
   return record.owned;
 }
 
+function deriveWishlistSources(
+  items: ItemRecord[],
+  wantList: WantListEntry[],
+  dependencies: WantListResolvedEntry[]
+): Record<string, RecommendationWishlistSource[]> {
+  const nameLookup = new Map(items.map((item) => [item.id, item.name]));
+  const sources = new Map<string, RecommendationWishlistSource[]>();
+
+  const register = (itemId: string, source: RecommendationWishlistSource) => {
+    const existing = sources.get(itemId) ?? [];
+    existing.push(source);
+    sources.set(itemId, existing);
+  };
+
+  for (const detail of dependencies) {
+    const targetName =
+      detail.item?.name ?? nameLookup.get(detail.entry.itemId) ?? detail.entry.itemId;
+    const note = detail.entry.reason;
+    register(detail.entry.itemId, {
+      targetItemId: detail.entry.itemId,
+      targetName,
+      note,
+      kind: 'target'
+    });
+    for (const requirement of detail.requirements) {
+      register(requirement.itemId, {
+        targetItemId: detail.entry.itemId,
+        targetName,
+        note,
+        kind: 'requirement'
+      });
+    }
+  }
+
+  for (const entry of wantList) {
+    if (sources.has(entry.itemId)) continue;
+    const targetName = nameLookup.get(entry.itemId) ?? entry.itemId;
+    register(entry.itemId, {
+      targetItemId: entry.itemId,
+      targetName,
+      note: entry.reason,
+      kind: 'target'
+    });
+  }
+
+  const result: Record<string, RecommendationWishlistSource[]> = {};
+  for (const [itemId, list] of sources.entries()) {
+    result[itemId] = list;
+  }
+  return result;
+}
+
 export function buildRecommendationContext(params: {
   items: ItemRecord[];
   quests: Quest[];
@@ -145,7 +200,16 @@ export function buildRecommendationContext(params: {
   projects?: Project[];
   projectProgress?: ProjectProgressState;
   alwaysKeepCategories?: string[];
+  wantList?: WantListEntry[];
+  wantListDependencies?: WantListResolvedEntry[];
 }): RecommendationContext {
+  const wantList = params.wantList ?? [];
+  const wantListDependencies = params.wantListDependencies ?? [];
+  const wishlistSourcesByItem = deriveWishlistSources(
+    params.items,
+    wantList,
+    wantListDependencies
+  );
   return {
     items: params.items,
     quests: params.quests,
@@ -155,7 +219,10 @@ export function buildRecommendationContext(params: {
     workbenchUpgrades: params.workbenchUpgrades ?? [],
     projects: params.projects ?? [],
     projectProgress: params.projectProgress ?? {},
-    alwaysKeepCategories: params.alwaysKeepCategories ?? []
+    alwaysKeepCategories: params.alwaysKeepCategories ?? [],
+    wantList,
+    wantListDependencies,
+    wishlistSourcesByItem
   };
 }
 
@@ -288,6 +355,34 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
     rationale = 'Recycling yields higher composite value than selling outright.';
   }
 
+  const wishlistSources = context.wishlistSourcesByItem[item.id] ?? [];
+  if (wishlistSources.length > 0) {
+    if (action === 'sell' || action === 'salvage') {
+      action = 'keep';
+    }
+    const uniqueTargets = Array.from(
+      new Set(wishlistSources.map((source) => source.targetName))
+    );
+    const wishlistReason =
+      uniqueTargets.length === 1
+        ? `Wishlist target ${uniqueTargets[0]} needs this item`
+        : `Wishlist targets ${uniqueTargets.join(', ')} need this item`;
+    const notes = Array.from(
+      new Set(
+        wishlistSources
+          .map((source) => source.note?.trim())
+          .filter((value): value is string => Boolean(value))
+      )
+    );
+    const messageBase = notes.length > 0 ? `${wishlistReason} (${notes.join('; ')})` : wishlistReason;
+    const sentence = messageBase.endsWith('.') ? messageBase : `${messageBase}.`;
+    if (rationale) {
+      rationale = rationale.endsWith('.') ? `${rationale} ${sentence}` : `${rationale}. ${sentence}`;
+    } else {
+      rationale = sentence;
+    }
+  }
+
   return {
     itemId: item.id,
     name: item.name,
@@ -308,7 +403,8 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
       quests: questNeed.total,
       workshop: upgradeNeed.total,
       projects: projectNeed.total
-    }
+    },
+    wishlistSources
   };
 }
 

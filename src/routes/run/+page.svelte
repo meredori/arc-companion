@@ -9,7 +9,16 @@
   import { onDestroy } from 'svelte';
   import { derived, get } from 'svelte/store';
   import { RunTimer, TipsPanel } from '$lib/components';
-  import { blueprints, projectProgress, quests, runs, settings, workbenchUpgrades } from '$lib/stores/app';
+  import {
+    blueprints,
+    expandWantList,
+    projectProgress,
+    quests,
+    runs,
+    settings,
+    wantList,
+    workbenchUpgrades
+  } from '$lib/stores/app';
   import { buildRecommendationContext, recommendItemsMatching } from '$lib/recommend';
   import { createRunTipContext, generateRunTips } from '$lib/tips';
   import type { PageData } from './$types';
@@ -23,8 +32,8 @@
   const { items, quests: questDefs, workbenchUpgrades: upgradeDefs, projects } = data;
 
   const recommendationContextStore = derived(
-    [quests, blueprints, projectProgress, workbenchUpgrades],
-    ([$quests, $blueprints, $projectProgress, $workbench]) =>
+    [quests, blueprints, projectProgress, workbenchUpgrades, wantList],
+    ([$quests, $blueprints, $projectProgress, $workbench, $wantList]) =>
       buildRecommendationContext({
         items,
         quests: questDefs,
@@ -33,7 +42,9 @@
         blueprints: $blueprints,
         workbenchUpgrades: $workbench,
         projects,
-        projectProgress: $projectProgress
+        projectProgress: $projectProgress,
+        wantList: $wantList,
+        wantListDependencies: expandWantList($wantList, items)
       })
   );
 

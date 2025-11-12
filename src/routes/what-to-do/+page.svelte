@@ -8,11 +8,13 @@
   import { RecommendationCard, SearchBar, TipsPanel } from '$lib/components';
   import {
     blueprints,
+    expandWantList,
     hydrateFromCanonical,
     itemOverrides,
     projectProgress,
     quests,
     settings,
+    wantList,
     workbenchUpgrades
   } from '$lib/stores/app';
   import { buildRecommendationContext, recommendItemsMatching } from '$lib/recommend';
@@ -47,8 +49,8 @@
   );
 
   const contextStore = derived(
-    [quests, blueprints, settings, itemsWithOverrides, projectProgress, workbenchUpgrades],
-    ([$quests, $blueprints, $settings, $items, $projectProgress, $workbench]) =>
+    [quests, blueprints, settings, itemsWithOverrides, projectProgress, workbenchUpgrades, wantList],
+    ([$quests, $blueprints, $settings, $items, $projectProgress, $workbench, $wantList]) =>
       buildRecommendationContext({
         items: $items,
         quests: questDefs,
@@ -58,7 +60,9 @@
         workbenchUpgrades: $workbench,
         projects,
         projectProgress: $projectProgress,
-        alwaysKeepCategories: $settings.alwaysKeepCategories ?? []
+        alwaysKeepCategories: $settings.alwaysKeepCategories ?? [],
+        wantList: $wantList,
+        wantListDependencies: expandWantList($wantList, $items)
       })
   );
 
@@ -74,7 +78,9 @@
     workbenchUpgrades: [],
     projects,
     projectProgress: {},
-    alwaysKeepCategories: []
+    alwaysKeepCategories: [],
+    wantList: [],
+    wantListDependencies: []
   });
 
   $: recommendationContext = $contextStore;
@@ -133,6 +139,7 @@
                 projectNeeds={recommendation.projectNeeds}
                 needs={recommendation.needs}
                 alwaysKeepCategory={recommendation.alwaysKeepCategory}
+                wishlistSources={recommendation.wishlistSources}
               />
             {/each}
           </div>
