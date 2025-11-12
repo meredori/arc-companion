@@ -75,33 +75,26 @@ Artifacts generated on pull requests can be previewed using GitHub Pages environ
 
 ### Base data
 
-The canonical JSON artifacts under `static/data/` (items, quests, upgrades, projects, vendors, chains)
-are generated from the richer temp feeds checked into `temp/`:
+Raw multilingual exports from RaidTheory now live under `static/data/raw/` so the app can hydrate
+directly from the source dumps:
 
-- `temp/items.json`
-- `temp/quests.json`
-- `temp/hideoutModules.json`
-- `temp/projects.json`
+- `static/data/raw/items.json`
+- `static/data/raw/quests.json`
+- `static/data/raw/hideoutModules.json`
+- `static/data/raw/projects.json`
 
-Use the helper script whenever those files (or `/static/images/items/*`) are refreshed:
-
-```bash
-node scripts/data/merge-temp-data.mjs
-```
-
-The script:
-
-1. Normalises IDs (`item-…`, `upgrade-…`, `project-…`).
-2. Points images at `/static/images/items/<filename>` when a matching file exists.
-3. Merges recycle data, quest rewards/objectives, workbench upgrade levels, and expedition projects.
-4. Writes the consolidated results to `static/data/items.json`, `static/data/quests.json`,
-   `static/data/workbench-upgrades.json`, and `static/data/projects.json`.
+The server-side loaders call `loadCanonicalData` from `src/lib/server/pipeline.ts` to normalize
+those feeds at request time (slugging IDs, wiring up recipes, enriching rewards, etc.). The
+canonical artifacts under `static/data/` remain as fallbacks for fields that are still curated by
+hand (vendors, quest objectives, bespoke upgrades). Refresh the raw files when new dumps land—no
+separate merge script is required.
 
 ### Workbench upgrade capture
 
 When new bench levels appear on the wiki, paste their requirement tables into
-`docs/workbench-upgrades.md`. That guide explains the JSON structure expected by the merge script so
-it can ingest `static/data/workbench-upgrades.json` reliably.
+`docs/workbench-upgrades.md`. That guide explains the JSON structure expected by
+`static/data/workbench-upgrades.json`, which now serves as the manual fallback merged with the raw
+`static/data/raw/hideoutModules.json` feed at runtime.
 
 ### Expedition projects
 
@@ -112,7 +105,8 @@ store. Once a phase reaches 100 %, the What To Do recommendations stop flaggin
 ### Images
 
 Drop loot art into `static/images/items/` using snake_case filenames (e.g. `advanced_arc_powercell.png`).
-The merge script automatically rewrites `imageUrl` fields to `/images/items/<file>` when possible.
+The runtime pipeline automatically rewrites `imageUrl` fields to `/images/items/<file>` when
+possible.
 
 > **Heads up:** When rendering those assets in Svelte components, resolve the stored path through
 > `$app/paths`’ `base` helper (e.g. ```${base}${url}```) so prerendering in CI finds the images when the
@@ -125,6 +119,5 @@ adding new components, reference the Tailwind configuration in `tailwind.config.
 
 ## Import pipeline stubs
 
-`scripts/import/` still mirrors the planned staged importer (Pass A–F). The data merge script
-described above is a stopgap until the import pipeline is wired to the same feeds. Replace the console
-output in `scripts/import/*.mjs` with the real fetch/transform/approve logic as backend work progresses.
+`scripts/import/` still mirrors the planned staged importer (Pass A–F). Replace the console output in
+`scripts/import/*.mjs` with the real fetch/transform/approve logic as backend work progresses.

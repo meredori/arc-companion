@@ -93,21 +93,15 @@ data/items.json
  data/meta/index.json
 ```
 
-### 3.3 Interim merge script (current workflow)
+### 3.3 Runtime normalization (current workflow)
 
-Until the staged passes are fully automated against live endpoints, we maintain a `temp/` directory
-containing the latest dumps from RaidTheory (`items.json`, `quests.json`, `hideoutModules.json`,
-`projects.json`). Running
-
-```bash
-node scripts/data/merge-temp-data.mjs
-```
-
-normalizes those feeds, rewrites image URLs to `/static/images/items`, and regenerates the canonical
-artifacts under `static/data/`. The script also keeps bespoke records (e.g., custom workbench upgrades)
-that are not represented in the temp feed. This bridge workflow mirrors the planned pipeline stages,
-so once Pass A–F are online the script can be replaced by the automated import queue without changing
-the downstream JSON shape.
+Until the staged passes are fully automated against live endpoints, we maintain a
+`static/data/raw/` directory containing the latest dumps from RaidTheory (`items.json`, `quests.json`,
+`hideoutModules.json`, `projects.json`). The SvelteKit loaders normalize those feeds at request time
+via `loadCanonicalData`, rewriting image URLs to `/static/images/items` and merging in the curated
+records under `static/data/` (vendors, bespoke upgrades, quest objectives). This keeps the bridge
+workflow aligned with the planned pipeline stages so the automated import queue can eventually slot
+in without changing the downstream JSON shape.
 
 ---
 
