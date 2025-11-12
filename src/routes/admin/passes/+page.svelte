@@ -16,19 +16,24 @@
   const __adminPassProps = params;
   void __adminPassProps;
 
+  type StageRecord = {
+    name?: string;
+    data?: { id?: string; name?: string };
+    id?: string;
+    [key: string]: unknown;
+  };
+
+  type StageBatch = { file: string; count: number; records: StageRecord[] };
+
   const passEntries = Object.entries(data.meta.passes);
-  const stageInspectorEntries = Object.entries(data.stageRecords ?? {});
+  const stageInspectorEntries = Object.entries(data.stageRecords ?? {}) as Array<
+    [string, StageBatch[]]
+  >;
   const stageLabelMap: Record<string, string> = {
     'pass-a': 'Pass A — Wiki Loot Seed',
     'pass-b': 'Pass B — Wiki Enrichment',
     'pass-c': 'Pass C — MetaForge Merge',
     'pass-d': 'Pass D — Quests & Chains'
-  };
-
-  type StageRecord = {
-    name?: string;
-    data?: { name?: string };
-    id?: string;
   };
 
   function labelRecord(record: StageRecord, index: number) {

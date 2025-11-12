@@ -48,7 +48,7 @@
       "records": 206,
       "lastRunAt": "2025-11-08T02:54:07.270Z",
       "approved": true,
-      "notes": "Canonical artifacts written to static/data"
+      "notes": "Legacy canonical snapshot retained for runtime fallbacks"
     }
   },
   "final": {
