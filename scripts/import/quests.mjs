@@ -14,54 +14,9 @@ const approve = Boolean(args.approve);
 
 const importedAt = isoNow();
 
-const quests = [
-  {
-    id: 'quest-signal-recovery',
-    name: 'Signal Recovery',
-    chainId: 'chain-resistance-support',
-    giver: 'Ana Bray',
-    items: [
-      { itemId: 'item-recovered-arc-battery', qty: 2 },
-      { itemId: 'item-frayed-wiring-bundle', qty: 4 }
-    ],
-    rewards: [{ coins: 420 }],
-    mapHints: ['Dam uplink array', 'Spaceport mezzanine']
-  },
-  {
-    id: 'quest-rust-and-shine',
-    name: 'Rust and Shine',
-    chainId: 'chain-resistance-support',
-    giver: 'Mechanic Taja',
-    items: [
-      { itemId: 'item-rusted-tools', qty: 3 },
-      { itemId: 'item-frayed-wiring-bundle', qty: 2 }
-    ],
-    rewards: [{ itemId: 'item-recovered-arc-battery', qty: 1 }],
-    mapHints: ['Spaceport docks', 'Industrial scrapyard']
-  },
-  {
-    id: 'quest-power-surge',
-    name: 'Power Surge',
-    chainId: 'chain-matrix-calibration',
-    giver: 'Dr. Sima',
-    items: [{ itemId: 'item-advanced-arc-powercell', qty: 1 }],
-    rewards: [{ itemId: 'upgrade-power-matrix', name: 'Power Matrix Blueprint', qty: 1 }],
-    mapHints: ['Blue Gate incursion zone']
-  }
-];
+const quests = [];
 
-const chains = [
-  {
-    id: 'chain-resistance-support',
-    name: 'Resistance Support',
-    stages: ['quest-signal-recovery', 'quest-rust-and-shine']
-  },
-  {
-    id: 'chain-matrix-calibration',
-    name: 'Matrix Calibration',
-    stages: ['quest-power-surge']
-  }
-];
+const chains = [];
 
 const upgrades = [
   {

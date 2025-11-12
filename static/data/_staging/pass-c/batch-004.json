@@ -615,11 +615,6 @@
         "type": "scavenge",
         "ref": "spaceport",
         "note": "Containers near docking area"
-      },
-      {
-        "type": "quest",
-        "ref": "quest-rust-and-shine",
-        "note": "Turn-in requirement"
       }
     ],
     "vendors": [],
