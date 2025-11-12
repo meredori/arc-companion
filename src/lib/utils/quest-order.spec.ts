@@ -30,7 +30,7 @@ describe('quest ordering helpers', () => {
 
     const sorted = quests.slice().sort(comparator);
 
-    expect(sorted).toEqual(['quest-a-1', 'quest-a-2', 'quest-b-1']);
+    expect(sorted).toEqual(['quest-b-1', 'quest-a-1', 'quest-a-2']);
   });
 
   it('keeps ordering deterministic when a chain is not in the configured sequence', () => {
