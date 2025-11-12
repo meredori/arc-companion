@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { tick } from 'svelte';
+import { base } from '$app/paths';
 import Page from './+page.svelte';
 import { wantList } from '$lib/stores/app';
 import type { ItemRecord, UpgradePack } from '$lib/types';
@@ -92,7 +93,10 @@ describe('what-i-want page', () => {
 
     const link = target.querySelector('a[href*="/blueprints#"]');
     expect(link?.textContent).toContain('View recipe');
-    expect(link?.getAttribute('href')).toBe('/blueprints#blueprint-wishlist-item-blueprint');
+    const expectedHref = `${base}/blueprints#blueprint-wishlist-item-blueprint`
+      .replace(/\/{2,}/g, '/')
+      .replace(':/', '://');
+    expect(link?.getAttribute('href')).toBe(expectedHref);
 
     component.$destroy();
   });
