@@ -23,6 +23,7 @@
   export let needs: RecommendationCardProps['needs'] = { quests: 0, workshop: 0, projects: 0 };
   export let alwaysKeepCategory: RecommendationCardProps['alwaysKeepCategory'] = false;
   export let variant: RecommendationCardProps['variant'] = 'simple';
+  export let wishlistSources: RecommendationCardProps['wishlistSources'] = [];
 
   const ACTION_COPY = {
     save: 'Save',
@@ -66,6 +67,26 @@
       : imageUrl;
   $: formattedSell = sellPrice !== undefined ? sellPrice.toLocaleString() : null;
   $: formattedSalvage = salvageValue !== undefined ? salvageValue.toLocaleString() : null;
+  $: wishlistSummary = (() => {
+    if (!wishlistSources || wishlistSources.length === 0) return [] as { name: string; notes: string[] }[];
+    const map = new Map<string, { name: string; notes: Set<string> }>();
+    for (const source of wishlistSources) {
+      const note = source.note?.trim();
+      const entry = map.get(source.targetItemId);
+      if (entry) {
+        if (note) entry.notes.add(note);
+      } else {
+        map.set(source.targetItemId, {
+          name: source.targetName,
+          notes: note ? new Set([note]) : new Set()
+        });
+      }
+    }
+    return Array.from(map.values()).map((entry) => ({
+      name: entry.name,
+      notes: Array.from(entry.notes)
+    }));
+  })();
 </script>
 
 {#if variant === 'token'}
@@ -108,6 +129,16 @@
           </div>
           <p class="text-base font-semibold text-white">{name}</p>
         </header>
+
+        {#if wishlistSummary.length > 0}
+          <div class="mt-2 flex flex-wrap gap-2">
+            {#each wishlistSummary as target}
+              <span class="rounded-full border border-sky-500/40 bg-sky-500/10 px-2 py-0.5 text-[11px] font-semibold text-sky-100">
+                Wanted for {target.name}{target.notes.length > 0 ? ` — ${target.notes.join('; ')}` : ''}
+              </span>
+            {/each}
+          </div>
+        {/if}
 
         {#if reason}
           <p class="text-slate-300">{reason}</p>
@@ -212,6 +243,15 @@
       <p class="text-xs uppercase tracking-widest text-slate-500">
         {[category, rarity].filter(Boolean).join(' · ')}
       </p>
+    {/if}
+    {#if wishlistSummary.length > 0}
+      <div class="mt-2 flex flex-wrap gap-2">
+        {#each wishlistSummary as target}
+          <span class="rounded-full border border-sky-500/40 bg-sky-500/10 px-2 py-0.5 text-[11px] font-semibold text-sky-100">
+            Wanted for {target.name}{target.notes.length > 0 ? ` — ${target.notes.join('; ')}` : ''}
+          </span>
+        {/each}
+      </div>
     {/if}
     {#if reason}
       <p class="text-sm text-slate-300">{reason}</p>

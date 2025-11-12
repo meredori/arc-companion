@@ -3,11 +3,17 @@ import { derived, get, writable } from 'svelte/store';
 import type {
   AppSettings,
   BlueprintState,
+  ItemRecord,
   ItemOverride,
   ProjectProgressState,
   QuestProgress,
   RunHistoryState,
   RunLogEntry,
+  WantListEntry,
+  WantListMaterialLink,
+  WantListProductLink,
+  WantListResolvedEntry,
+  WantListRequirement,
   WorkbenchUpgradeState
 } from '$lib/types';
 import { loadFromStorage, removeFromStorage, saveToStorage } from '$lib/persist';
@@ -20,7 +26,8 @@ const STORAGE_KEYS = {
   settings: `settings:${STORAGE_VERSION}`,
   itemOverrides: `item-overrides:${STORAGE_VERSION}`,
   projects: `projects:${STORAGE_VERSION}`,
-  workbenchUpgrades: `workbench-upgrades:${STORAGE_VERSION}`
+  workbenchUpgrades: `workbench-upgrades:${STORAGE_VERSION}`,
+  wantList: `want-list:${STORAGE_VERSION}`
 } as const;
 
 const DEBOUNCE_MS = 3000;
@@ -106,6 +113,192 @@ const workbenchUpgradeStore = createPersistentStore<WorkbenchUpgradeState[]>(
   STORAGE_KEYS.workbenchUpgrades,
   []
 );
+const wantListStore = createPersistentStore<WantListEntry[]>(STORAGE_KEYS.wantList, []);
+
+type MaterialAccumulator = {
+  materialId: string;
+  materialName: string;
+  requiredQty: number;
+  producedPerSource: number;
+  sourceItemId: string;
+  sourceName: string;
+  kind: WantListMaterialLink['kind'];
+  sourcesNeededOverride?: number;
+};
+
+function sanitizeReason(value?: string) {
+  if (!value) return undefined;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
+function collectRequirements(
+  item: ItemRecord | undefined,
+  multiplier: number,
+  depth: number,
+  itemLookup: Map<string, ItemRecord>,
+  visited: Set<string>,
+  acc: Map<string, WantListRequirement>
+) {
+  if (!item || !item.craftsFrom || item.craftsFrom.length === 0) {
+    return;
+  }
+
+  for (const requirement of item.craftsFrom) {
+    const totalQty = requirement.qty * multiplier;
+    const existing = acc.get(requirement.itemId);
+    if (existing) {
+      existing.qty += totalQty;
+      existing.depth = Math.min(existing.depth, depth);
+    } else {
+      acc.set(requirement.itemId, {
+        itemId: requirement.itemId,
+        name: requirement.name ?? requirement.itemId,
+        qty: totalQty,
+        depth
+      });
+    }
+
+    if (visited.has(requirement.itemId)) {
+      continue;
+    }
+
+    const next = itemLookup.get(requirement.itemId);
+    if (!next) {
+      continue;
+    }
+    visited.add(requirement.itemId);
+    collectRequirements(next, totalQty, depth + 1, itemLookup, visited, acc);
+    visited.delete(requirement.itemId);
+  }
+}
+
+export function expandWantList(
+  entries: WantListEntry[],
+  items: ItemRecord[]
+): WantListResolvedEntry[] {
+  const itemLookup = new Map(items.map((item) => [item.id, item] as const));
+  const producersByProduct = new Map<string, { item: ItemRecord; product: WantListProductLink }[]>();
+  const recyclersByMaterial = new Map<string, { item: ItemRecord; qty: number; name: string }[]>();
+
+  for (const item of items) {
+    for (const product of item.craftsInto ?? []) {
+      const entry = {
+        itemId: product.productId,
+        name: product.productName ?? product.productId,
+        qty: product.qty ?? 1
+      } satisfies WantListProductLink;
+      const bucket = producersByProduct.get(product.productId) ?? [];
+      bucket.push({ item, product: entry });
+      producersByProduct.set(product.productId, bucket);
+    }
+
+    for (const recycle of item.recycle ?? []) {
+      if (!recycle || recycle.qty <= 0) continue;
+      const bucket = recyclersByMaterial.get(recycle.itemId) ?? [];
+      bucket.push({ item, qty: recycle.qty, name: recycle.name ?? recycle.itemId });
+      recyclersByMaterial.set(recycle.itemId, bucket);
+    }
+  }
+
+  return entries.map<WantListResolvedEntry>((entry) => {
+    const item = itemLookup.get(entry.itemId);
+    const requirementMap = new Map<string, WantListRequirement>();
+    if (item) {
+      collectRequirements(item, entry.qty, 1, itemLookup, new Set([item.id]), requirementMap);
+    }
+    const requirements = [...requirementMap.values()].sort((a, b) => {
+      if (a.depth !== b.depth) return a.depth - b.depth;
+      return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
+    });
+
+    const products = item
+      ? (producersByProduct.get(item.id) ?? []).map(({ item: producer, product }) => ({
+          itemId: producer.id,
+          name: producer.name,
+          qty: product.qty * entry.qty
+        }))
+      : [];
+
+    const materialMap = new Map<string, MaterialAccumulator>();
+
+    if (item) {
+      for (const recycle of item.recycle ?? []) {
+        if (!recycle || recycle.qty <= 0) continue;
+        const key = `${item.id}::${recycle.itemId}::yield`;
+        materialMap.set(key, {
+          materialId: recycle.itemId,
+          materialName: recycle.name ?? recycle.itemId,
+          requiredQty: recycle.qty * entry.qty,
+          producedPerSource: recycle.qty,
+          sourceItemId: item.id,
+          sourceName: item.name,
+          kind: 'yield',
+          sourcesNeededOverride: entry.qty
+        });
+      }
+    }
+
+    for (const requirement of requirements) {
+      const recyclers = recyclersByMaterial.get(requirement.itemId) ?? [];
+      for (const recycler of recyclers) {
+        if (recycler.qty <= 0) continue;
+        const key = `${recycler.item.id}::${requirement.itemId}::satisfies`;
+        const existing = materialMap.get(key);
+        const requiredQty = (existing?.requiredQty ?? 0) + requirement.qty;
+        materialMap.set(key, {
+          materialId: requirement.itemId,
+          materialName: requirement.name,
+          requiredQty,
+          producedPerSource: recycler.qty,
+          sourceItemId: recycler.item.id,
+          sourceName: recycler.item.name,
+          kind: 'satisfies'
+        });
+      }
+    }
+
+    const materials: WantListMaterialLink[] = [...materialMap.values()].map((value) => {
+      const { producedPerSource } = value;
+      const sourcesNeeded = value.sourcesNeededOverride
+        ? value.sourcesNeededOverride
+        : producedPerSource > 0
+          ? Math.max(1, Math.ceil(value.requiredQty / producedPerSource))
+          : 0;
+      const producedQty = producedPerSource * sourcesNeeded;
+      return {
+        materialId: value.materialId,
+        materialName: value.materialName,
+        requiredQty: value.requiredQty,
+        producedQty,
+        sourcesNeeded,
+        sourceItemId: value.sourceItemId,
+        sourceName: value.sourceName,
+        kind: value.kind
+      } satisfies WantListMaterialLink;
+    });
+
+    materials.sort((a, b) => {
+      if (a.kind !== b.kind) {
+        return a.kind === 'satisfies' ? -1 : 1;
+      }
+      if (a.materialName !== b.materialName) {
+        return a.materialName.localeCompare(b.materialName, undefined, { sensitivity: 'base' });
+      }
+      return a.sourceName.localeCompare(b.sourceName, undefined, { sensitivity: 'base' });
+    });
+
+    products.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+
+    return {
+      entry,
+      item,
+      requirements,
+      products,
+      materials
+    } satisfies WantListResolvedEntry;
+  });
+}
 
 function pruneOverride(override: ItemOverride | undefined): ItemOverride | null {
   if (!override) return null;
@@ -281,6 +474,65 @@ export const itemOverrides = {
   reset: itemOverrideStore.reset
 };
 
+export const wantList = {
+  subscribe: wantListStore.subscribe,
+  add(payload: { itemId: string; qty?: number; reason?: string }) {
+    const qty = Math.max(1, payload.qty ?? 1);
+    const reason = sanitizeReason(payload.reason);
+    wantListStore.update((entries) => {
+      const existing = entries.find((entry) => entry.itemId === payload.itemId);
+      if (existing) {
+        return entries.map((entry) =>
+          entry.itemId === payload.itemId
+            ? {
+                ...entry,
+                qty: entry.qty + qty,
+                reason: reason ?? entry.reason
+              }
+            : entry
+        );
+      }
+      const createdAt = new Date().toISOString();
+      const next: WantListEntry = {
+        itemId: payload.itemId,
+        qty,
+        reason,
+        createdAt
+      };
+      return [...entries, next];
+    });
+  },
+  update(itemId: string, updates: Partial<Omit<WantListEntry, 'itemId'>>) {
+    wantListStore.update((entries) =>
+      entries
+        .map((entry) => {
+          if (entry.itemId !== itemId) return entry;
+          const next: WantListEntry = {
+            ...entry,
+            ...updates,
+            qty:
+              updates.qty !== undefined
+                ? Math.max(0, Math.floor(updates.qty))
+                : entry.qty,
+            reason: updates.reason !== undefined ? sanitizeReason(updates.reason) : entry.reason,
+            createdAt: updates.createdAt ?? entry.createdAt
+          };
+          return next;
+        })
+        .filter((entry) => entry.qty > 0)
+    );
+  },
+  remove(itemId: string) {
+    wantListStore.update((entries) => entries.filter((entry) => entry.itemId !== itemId));
+  },
+  clear() {
+    wantListStore.reset();
+  },
+  expand(items: ItemRecord[]) {
+    return expandWantList(get(wantListStore), items);
+  }
+};
+
 export const projectProgress = {
   subscribe: projectProgressStore.subscribe,
   setContribution(projectId: string, phaseId: string, itemId: string, qty: number) {
@@ -334,6 +586,7 @@ export function resetAllStores() {
   settings.reset();
   itemOverrides.reset();
   projectProgress.reset();
+  wantList.clear();
 }
 
 export function hydrateFromCanonical(params: {

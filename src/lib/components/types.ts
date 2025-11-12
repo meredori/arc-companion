@@ -3,6 +3,7 @@ import type {
   ProjectNeedDetail,
   QuestNeedDetail,
   RecommendationAction,
+  RecommendationWishlistSource,
   UpgradeNeedDetail
 } from '$lib/types';
 
@@ -31,6 +32,7 @@ export type RecommendationCardProps = {
   };
   alwaysKeepCategory?: boolean;
   variant?: 'simple' | 'token';
+  wishlistSources?: RecommendationWishlistSource[];
 };
 
 export type ChecklistItem = {

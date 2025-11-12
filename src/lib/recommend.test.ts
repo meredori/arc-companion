@@ -8,6 +8,8 @@ import type {
   Quest,
   QuestProgress,
   UpgradePack,
+  WantListEntry,
+  WantListResolvedEntry,
   WorkbenchUpgradeState
 } from './types';
 
@@ -483,5 +485,78 @@ const context = buildRecommendationContext({
     const results = recommendItemsMatching('gamma', context);
     expect(results).toHaveLength(1);
     expect(results[0].itemId).toBe('item-gamma');
+  });
+});
+
+describe('wishlist promotions', () => {
+  const TARGET_ENTRY: WantListEntry = {
+    itemId: 'item-beta',
+    qty: 2,
+    reason: 'Craft upgrade',
+    createdAt: '2024-01-01T00:00:00.000Z'
+  };
+
+  const TARGET_DEPENDENCY: WantListResolvedEntry = {
+    entry: TARGET_ENTRY,
+    item: ITEMS.find((item) => item.id === 'item-beta'),
+    requirements: [],
+    products: [],
+    materials: []
+  };
+
+  const MATERIAL_DEPENDENCY: WantListResolvedEntry = {
+    entry: {
+      itemId: 'item-alpha',
+      qty: 1,
+      createdAt: '2024-01-02T00:00:00.000Z'
+    },
+    item: ITEMS.find((item) => item.id === 'item-alpha'),
+    requirements: [
+      {
+        itemId: 'item-beta',
+        name: 'Beta Spool',
+        qty: 3,
+        depth: 1
+      }
+    ],
+    products: [],
+    materials: []
+  };
+
+  it('elevates wishlist targets to keep with rationale and chip data', () => {
+    const context = buildRecommendationContext({
+      items: ITEMS,
+      quests: [],
+      wantList: [TARGET_ENTRY],
+      wantListDependencies: [TARGET_DEPENDENCY]
+    });
+    const recommendation = recommendItem(
+      ITEMS.find((item) => item.id === 'item-beta')!,
+      context
+    );
+    expect(recommendation.action).toBe('keep');
+    expect(recommendation.rationale).toMatch(/Wishlist target/);
+    expect(recommendation.wishlistSources?.[0]).toMatchObject({
+      targetItemId: 'item-beta',
+      kind: 'target'
+    });
+  });
+
+  it('promotes prerequisite materials referenced by wishlist dependencies', () => {
+    const context = buildRecommendationContext({
+      items: ITEMS,
+      quests: [],
+      wantList: [MATERIAL_DEPENDENCY.entry],
+      wantListDependencies: [MATERIAL_DEPENDENCY]
+    });
+    const recommendation = recommendItem(
+      ITEMS.find((item) => item.id === 'item-beta')!,
+      context
+    );
+    expect(recommendation.action).toBe('keep');
+    expect(recommendation.rationale).toMatch(/Wishlist target/);
+    expect(
+      recommendation.wishlistSources?.some((source) => source.kind === 'requirement')
+    ).toBe(true);
   });
 });

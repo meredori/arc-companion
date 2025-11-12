@@ -47,6 +47,12 @@
         Central dashboard to mark quest completions, bench upgrades, and owned schematics.
       </p>
     </a>
+    <a class="section-card transition-transform duration-200 hover:-translate-y-1" href={withBase('/what-i-want')}>
+      <h2 class="text-xl font-semibold">What I Want</h2>
+      <p class="mt-2 text-sm text-slate-400">
+        Build a wishlist of future crafts and inspect the materials needed to complete them.
+      </p>
+    </a>
     <a class="section-card transition-transform duration-200 hover:-translate-y-1" href={withBase('/blueprints')}>
       <h2 class="text-xl font-semibold">Blueprints</h2>
       <p class="mt-2 text-sm text-slate-400">
