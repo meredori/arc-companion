@@ -12,7 +12,6 @@
   const links = [
     { href: '/what-to-do', label: 'What To Do' },
     { href: '/what-i-have', label: 'What I Have' },
-    { href: '/track', label: 'Track' },
     { href: '/blueprints', label: 'Blueprints' },
     { href: '/run', label: 'Run' },
     { href: '/runs', label: 'Runs' },
