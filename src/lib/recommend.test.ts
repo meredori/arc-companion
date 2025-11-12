@@ -79,10 +79,32 @@ const ITEMS: ItemRecord[] = [
     provenance: { wiki: true, api: true }
   },
   {
+    id: 'item-lmg-uncommon',
+    name: 'Tempest LMG',
+    slug: 'tempest-lmg',
+    category: 'LMG',
+    rarity: 'Uncommon Weapon',
+    sell: 105,
+    recycle: [],
+    needsTotals: { quests: 0, workshop: 0 },
+    provenance: { wiki: true, api: true }
+  },
+  {
+    id: 'item-handcannon',
+    name: 'Parallax Hand Cannon',
+    slug: 'parallax-hand-cannon',
+    category: 'Hand Cannon',
+    rarity: 'Uncommon Weapon',
+    sell: 100,
+    recycle: [],
+    needsTotals: { quests: 0, workshop: 0 },
+    provenance: { wiki: true, api: true }
+  },
+  {
     id: 'item-keycard',
     name: 'Ruined Keycard',
     slug: 'ruined-keycard',
-    category: 'Keys',
+    category: 'Key',
     rarity: 'Uncommon Key',
     sell: 20,
     recycle: [],
@@ -93,7 +115,7 @@ const ITEMS: ItemRecord[] = [
     id: 'item-mod-epic',
     name: 'Mod Apex',
     slug: 'mod-apex',
-    category: 'Mod',
+    category: 'Modification',
     rarity: 'Epic Component',
     sell: 60,
     recycle: [],
@@ -104,7 +126,7 @@ const ITEMS: ItemRecord[] = [
     id: 'item-mod-rare',
     name: 'Mod Ridge',
     slug: 'mod-ridge',
-    category: 'Mod',
+    category: 'Modification',
     rarity: 'Rare Component',
     sell: 55,
     recycle: [],
@@ -154,8 +176,82 @@ const ITEMS: ItemRecord[] = [
     recycle: [],
     needsTotals: { quests: 0, workshop: 0 },
     provenance: { wiki: true, api: true }
+  },
+  {
+    id: 'item-cloak',
+    name: 'Photoelectric Cloak',
+    slug: 'photoelectric-cloak',
+    category: 'Quick Use',
+    rarity: 'Epic Utility',
+    sell: 150,
+    recycle: [],
+    needsTotals: { quests: 0, workshop: 0 },
+    provenance: { wiki: true, api: true }
+  },
+  {
+    id: 'item-gas-grenade',
+    name: 'Gas Grenade',
+    slug: 'gas-grenade',
+    category: 'Quick Use',
+    rarity: 'Rare Utility',
+    sell: 120,
+    recycle: [],
+    needsTotals: { quests: 0, workshop: 0 },
+    provenance: { wiki: true, api: true }
+  },
+  {
+    id: 'item-adrenaline',
+    name: 'Adrenaline Shot',
+    slug: 'adrenaline-shot',
+    category: 'Quick Use',
+    rarity: 'Uncommon Utility',
+    sell: 90,
+    recycle: [],
+    needsTotals: { quests: 0, workshop: 0 },
+    provenance: { wiki: true, api: true }
+  },
+  {
+    id: 'item-vita-spray',
+    name: 'Vita Spray',
+    slug: 'vita-spray',
+    category: 'Quick Use',
+    rarity: 'Uncommon Utility',
+    sell: 85,
+    recycle: [],
+    needsTotals: { quests: 0, workshop: 0 },
+    provenance: { wiki: true, api: true }
+  },
+  {
+    id: 'item-bandage',
+    name: 'Bandage',
+    slug: 'bandage',
+    category: 'Quick Use',
+    rarity: 'Common Utility',
+    sell: 50,
+    recycle: [],
+    needsTotals: { quests: 0, workshop: 0 },
+    provenance: { wiki: true, api: true }
+  },
+  {
+    id: 'item-barricade-kit',
+    name: 'Barricade Kit',
+    slug: 'barricade-kit',
+    category: 'Quick Use',
+    rarity: 'Uncommon Utility',
+    sell: 70,
+    recycle: [],
+    needsTotals: { quests: 0, workshop: 0 },
+    provenance: { wiki: true, api: true }
   }
 ];
+
+const getItem = (id: string) => {
+  const match = ITEMS.find((entry) => entry.id === id);
+  if (!match) {
+    throw new Error(`expected fixture for ${id}`);
+  }
+  return match;
+};
 
 const QUESTS: Quest[] = [
   {
@@ -225,30 +321,30 @@ const context = buildRecommendationContext({
   workbenchUpgrades: WORKBENCH_UPGRADES,
   projects: PROJECTS,
   projectProgress: PROJECT_PROGRESS,
-  alwaysKeepCategories: ['Keys']
+  alwaysKeepCategories: ['Key']
 });
 
   it('prefers save for quest items', () => {
-    const result = recommendItem(ITEMS[0], context);
+    const result = recommendItem(getItem('item-alpha'), context);
     expect(result.action).toBe('save');
     expect(result.needs.quests).toBe(2);
     expect(result.rationale).toContain('Required');
   });
 
   it('suggests keep when blueprint needs the item', () => {
-    const result = recommendItem(ITEMS[2], context);
+    const result = recommendItem(getItem('item-gamma'), context);
     expect(result.action).toBe('keep');
     expect(result.needs.workshop).toBe(2);
     expect(result.rationale).toContain('workbench upgrades');
   });
 
   it('falls back to salvage when recycling beats selling', () => {
-    const result = recommendItem(ITEMS[1], context);
+    const result = recommendItem(getItem('item-beta'), context);
     expect(result.action).toBe('salvage');
   });
 
   it('forces keep for admin-selected categories', () => {
-    const keyItem = ITEMS.find((entry) => entry.category === 'Keys');
+    const keyItem = ITEMS.find((entry) => entry.category === 'Key');
     if (!keyItem) throw new Error('expected key fixture');
     const result = recommendItem(keyItem, context);
     expect(result.action).toBe('keep');
@@ -258,8 +354,8 @@ const context = buildRecommendationContext({
 
   it('orders results by custom category priority before rarity and name', () => {
     const results = recommendItemsMatching('', context);
-    const modIndex = results.findIndex((entry) => entry.category === 'Mod');
-    const keyIndex = results.findIndex((entry) => entry.category === 'Keys');
+    const modIndex = results.findIndex((entry) => entry.category === 'Modification');
+    const keyIndex = results.findIndex((entry) => entry.category === 'Key');
     expect(modIndex).toBeGreaterThan(-1);
     expect(keyIndex).toBeGreaterThan(-1);
     expect(modIndex).toBeLessThan(keyIndex);
@@ -267,18 +363,37 @@ const context = buildRecommendationContext({
 
   it('sorts weapon subcategories alongside main weapon priority', () => {
     const results = recommendItemsMatching('', context);
-    const modIndex = results.findIndex((entry) => entry.category === 'Mod');
+    const modIndex = results.findIndex((entry) => entry.category === 'Modification');
     const weaponGroup = results.filter((entry) =>
-      ['Weapon', 'Shotgun', 'Pistol'].includes(entry.category ?? '')
+      ['Weapon', 'Shotgun', 'Pistol', 'LMG', 'Hand Cannon'].includes(entry.category ?? '')
     );
-    expect(weaponGroup).toHaveLength(3);
-    const weaponNames = weaponGroup.map((entry) => entry.name);
-    expect(weaponNames).toEqual(['Nova Cannon', 'Cyclone Shotgun', 'Warden Pistol']);
+    expect(weaponGroup).toHaveLength(5);
+    expect(weaponGroup.map((entry) => entry.name)).toEqual([
+      'Nova Cannon',
+      'Cyclone Shotgun',
+      'Warden Pistol',
+      'Parallax Hand Cannon',
+      'Tempest LMG'
+    ]);
     weaponGroup.forEach((entry) => {
       const index = results.findIndex((candidate) => candidate.itemId === entry.itemId);
       expect(index).toBeGreaterThan(-1);
       expect(index).toBeLessThan(modIndex);
     });
+  });
+
+  it('orders quick use items by craft bench priority', () => {
+    const quickUseOrder = recommendItemsMatching('', context)
+      .filter((entry) => entry.category === 'Quick Use')
+      .map((entry) => entry.name);
+    expect(quickUseOrder).toEqual([
+      'Photoelectric Cloak',
+      'Gas Grenade',
+      'Adrenaline Shot',
+      'Vita Spray',
+      'Bandage',
+      'Barricade Kit'
+    ]);
   });
 
   it('sorts higher rarity items ahead within the same category', () => {
@@ -288,7 +403,7 @@ const context = buildRecommendationContext({
 
   it('treats material subcategories as one group sorted by rarity', () => {
     const materialResults = recommendItemsMatching('', context).filter((rec) =>
-      ['Topside Material', 'Refined Material', 'Recyclable', 'Material (Topside, Refined, Recyclable)'].includes(
+      ['Topside Material', 'Refined Material', 'Material', 'Basic Material', 'Recyclable'].includes(
         rec.category ?? ''
       )
     );
@@ -297,7 +412,7 @@ const context = buildRecommendationContext({
 
   it('combines nature and trinket categories before rarity ordering', () => {
     const natureResults = recommendItemsMatching('', context).filter((rec) =>
-      ['Nature', 'Trinket', 'Nature + Trinket'].includes(rec.category ?? '')
+      ['Nature', 'Trinket'].includes(rec.category ?? '')
     );
     expect(natureResults.map((rec) => rec.name)).toEqual(['Trinket Charm', 'Nature Root']);
   });
