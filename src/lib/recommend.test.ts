@@ -248,7 +248,9 @@ const context = buildRecommendationContext({
   });
 
   it('forces keep for admin-selected categories', () => {
-    const result = recommendItem(ITEMS[3], context);
+    const keyItem = ITEMS.find((entry) => entry.category === 'Keys');
+    if (!keyItem) throw new Error('expected key fixture');
+    const result = recommendItem(keyItem, context);
     expect(result.action).toBe('keep');
     expect(result.alwaysKeepCategory).toBe(true);
     expect(result.rationale).toContain('always keep');
@@ -301,7 +303,9 @@ const context = buildRecommendationContext({
   });
 
   it('flags items required for expedition projects', () => {
-    const result = recommendItem(ITEMS[6], context);
+    const projectItem = ITEMS.find((entry) => entry.id === 'item-topside-rare');
+    if (!projectItem) throw new Error('expected project fixture');
+    const result = recommendItem(projectItem, context);
     expect(result.action).toBe('keep');
     expect(result.needs.projects).toBe(1);
     expect(result.projectNeeds[0].projectId).toBe('project-expedition');
