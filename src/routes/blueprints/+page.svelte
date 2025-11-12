@@ -22,6 +22,18 @@
   const resolveImageUrl = (url: string | null | undefined) =>
     url?.startsWith('/') ? `${base}${url}`.replace(/\/{2,}/g, '/') : url ?? null;
 
+  const anchorIdForBlueprint = (blueprint: ItemRecord) => {
+    if (blueprint.slug && blueprint.slug.trim()) {
+      return `blueprint-${blueprint.slug}`;
+    }
+    const fallback = blueprint.name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .replace(/-{2,}/g, '-');
+    return `blueprint-${fallback || blueprint.id}`;
+  };
+
   onMount(() => {
     hydrateFromCanonical({
       blueprints: blueprintRecords.map((blueprint) => ({
@@ -130,7 +142,10 @@
           </div>
         {:else}
           {#each filteredBlueprints as blueprint}
-            <article class="rounded-2xl border border-slate-800 bg-slate-900/70 p-5 shadow-card">
+            <article
+              id={anchorIdForBlueprint(blueprint)}
+              class="rounded-2xl border border-slate-800 bg-slate-900/70 p-5 shadow-card"
+            >
               <header class="flex items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
                   {#if blueprint.imageUrl}

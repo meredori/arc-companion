@@ -15,6 +15,17 @@ const BASE_ITEM: ItemRecord = {
   provenance: { wiki: true, api: true }
 };
 
+const BLUEPRINT_ITEM: ItemRecord = {
+  id: 'wishlist-item-blueprint',
+  name: 'Wishlist Item Blueprint',
+  slug: 'wishlist-item-blueprint',
+  category: 'Blueprint',
+  sell: 0,
+  recycle: [],
+  needsTotals: { quests: 0, workshop: 0 },
+  provenance: { wiki: true, api: true }
+};
+
 const UPGRADE: UpgradePack = {
   id: 'upgrade-1',
   name: 'Workbench Mk I',
@@ -56,6 +67,32 @@ describe('what-i-want page', () => {
 
     expect(addButton?.textContent).toContain('Added');
     expect(target.textContent).toContain('Wishlist entries');
+
+    component.$destroy();
+  });
+
+  it('links craftable items to their blueprint recipes', async () => {
+    const target = document.createElement('div');
+    document.body.appendChild(target);
+
+    const component = new Page({
+      target,
+      props: {
+        data: {
+          items: [BASE_ITEM, BLUEPRINT_ITEM],
+          blueprints: [BLUEPRINT_ITEM],
+          workbenchUpgrades: [UPGRADE]
+        },
+        form: undefined,
+        params: {}
+      }
+    });
+
+    await tick();
+
+    const link = target.querySelector('a[href*="/blueprints#"]');
+    expect(link?.textContent).toContain('View recipe');
+    expect(link?.getAttribute('href')).toBe('/blueprints#blueprint-wishlist-item-blueprint');
 
     component.$destroy();
   });

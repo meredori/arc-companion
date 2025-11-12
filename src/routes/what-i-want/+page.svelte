@@ -3,6 +3,7 @@
 </svelte:head>
 
 <script lang="ts">
+  import { base } from '$app/paths';
   import { derived } from 'svelte/store';
   import { onMount } from 'svelte';
   import { SearchBar } from '$lib/components';
@@ -69,6 +70,28 @@
     blueprintNameLookup.set(normalizedName.replace(/\s+blueprint$/, ''), blueprint);
     blueprintNameLookup.set(`${normalizedName} blueprint`, blueprint);
   }
+
+  const anchorForBlueprint = (blueprint: ItemRecord) => {
+    if (blueprint.slug && blueprint.slug.trim()) {
+      return `#blueprint-${blueprint.slug}`;
+    }
+    const fallback = blueprint.name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .replace(/-{2,}/g, '-');
+    return `#blueprint-${fallback || blueprint.id}`;
+  };
+
+  const recipeLinkForItem = (item: ItemRecord) => {
+    const blueprint = findBlueprintForItem(item);
+    if (!blueprint) return null;
+    const anchor = anchorForBlueprint(blueprint);
+    return {
+      href: `${base}/blueprints${anchor}`.replace(/\/{2,}/g, '/').replace(':/', '://'),
+      blueprint
+    };
+  };
 
   const QUICK_USE_BENCH_BY_SLUG = new Map<string, string>([
     ['adrenaline-shot', 'med_station'],
@@ -296,6 +319,7 @@
         </p>
         <ul class="space-y-3">
           {#each filteredItems.slice(0, 60) as item}
+            {@const recipeLink = recipeLinkForItem(item)}
             <li class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-800/60 bg-slate-950/60 p-4 text-sm">
               <div class="space-y-1">
                 <div class="flex items-center gap-2">
@@ -318,6 +342,14 @@
                         Blueprint unknown
                       {/if}
                     </span>
+                  {/if}
+                  {#if recipeLink}
+                    <a
+                      class="font-semibold text-sky-300 hover:text-sky-200"
+                      href={recipeLink.href}
+                    >
+                      View recipe
+                    </a>
                   {/if}
                 </div>
               </div>
@@ -367,12 +399,23 @@
       {:else}
         <div class="space-y-5">
           {#each $resolvedEntries as detail}
+            {@const recipeLink = detail.item ? recipeLinkForItem(detail.item) : null}
             <article class="space-y-4 rounded-2xl border border-slate-800/60 bg-slate-950/60 p-5 text-sm text-slate-200">
               <header class="flex flex-wrap items-center justify-between gap-3">
                 <div class="space-y-1">
-                  <h3 class="text-lg font-semibold text-white">
-                    {detail.item ? detail.item.name : detail.entry.itemId}
-                  </h3>
+                  <div class="flex flex-wrap items-center gap-3">
+                    <h3 class="text-lg font-semibold text-white">
+                      {detail.item ? detail.item.name : detail.entry.itemId}
+                    </h3>
+                    {#if recipeLink}
+                      <a
+                        class="rounded-full border border-sky-700/50 bg-sky-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-sky-200 hover:bg-sky-500/20"
+                        href={recipeLink.href}
+                      >
+                        View recipe
+                      </a>
+                    {/if}
+                  </div>
                   <p class="text-xs uppercase tracking-widest text-slate-500">
                     Added {new Date(detail.entry.createdAt).toLocaleDateString()}
                   </p>
