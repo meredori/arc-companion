@@ -10,8 +10,7 @@
     blueprints,
     expandWantList,
     hydrateFromCanonical,
-    wantList,
-    workbenchUpgrades
+    wantList
   } from '$lib/stores/app';
   import type { ItemRecord, UpgradePack } from '$lib/types';
   import type { PageData } from './$types';
