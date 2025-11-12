@@ -32,8 +32,8 @@
   const { items, quests: questDefs, workbenchUpgrades: upgradeDefs, projects } = data;
 
   const recommendationContextStore = derived(
-    [quests, blueprints, projectProgress, workbenchUpgrades, wantList],
-    ([$quests, $blueprints, $projectProgress, $workbench, $wantList]) =>
+    [quests, blueprints, projectProgress, workbenchUpgrades, wantList, settings],
+    ([$quests, $blueprints, $projectProgress, $workbench, $wantList, $settings]) =>
       buildRecommendationContext({
         items,
         quests: questDefs,
@@ -43,8 +43,12 @@
         workbenchUpgrades: $workbench,
         projects,
         projectProgress: $projectProgress,
+        alwaysKeepCategories: $settings.alwaysKeepCategories ?? [],
+        ignoredCategories: $settings.ignoredWantCategories ?? [],
         wantList: $wantList,
-        wantListDependencies: expandWantList($wantList, items)
+        wantListDependencies: expandWantList($wantList, items, {
+          ignoredCategories: $settings.ignoredWantCategories ?? []
+        })
       })
   );
 

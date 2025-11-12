@@ -6,7 +6,8 @@ const settings: AppSettings = {
   freeLoadoutDefault: true,
   showExperimental: false,
   approvalsEnabled: false,
-  alwaysKeepCategories: []
+  alwaysKeepCategories: [],
+  ignoredWantCategories: []
 };
 
 describe('run tips', () => {

@@ -44,6 +44,35 @@
 
   let query = '';
 
+  const normalizeCategory = (value: string) => value.toLowerCase().trim();
+
+  const ignoredCategories = derived(settings, ($settings) => $settings.ignoredWantCategories ?? []);
+  const ignoredCategorySet = derived(ignoredCategories, ($ignored) => {
+    const entries = $ignored.map((entry) => normalizeCategory(entry)).filter((entry) => entry.length > 0);
+    return new Set(entries);
+  });
+
+  const categoryLookup = new Map<string, string>();
+  for (const item of items) {
+    const category = item.category?.trim();
+    if (!category) continue;
+    const normalized = normalizeCategory(category);
+    if (!normalized) continue;
+    if (!categoryLookup.has(normalized)) {
+      categoryLookup.set(normalized, category);
+    }
+  }
+
+  const categoryOptions = Array.from(categoryLookup.values()).sort((a, b) =>
+    a.localeCompare(b, undefined, { sensitivity: 'base' })
+  );
+
+  const toggleIgnoredCategory = (category: string) => {
+    settings.toggleIgnoredWantCategory(category);
+  };
+
+  const clearIgnoredCategories = () => settings.setIgnoredWantCategories([]);
+
   const itemsWithOverrides = derived(itemOverrides, ($overrides) =>
     items.map((item) => ({ ...item, ...($overrides[item.id] ?? {}) }))
   );
@@ -61,8 +90,11 @@
         projects,
         projectProgress: $projectProgress,
         alwaysKeepCategories: $settings.alwaysKeepCategories ?? [],
+        ignoredCategories: $settings.ignoredWantCategories ?? [],
         wantList: $wantList,
-        wantListDependencies: expandWantList($wantList, $items)
+        wantListDependencies: expandWantList($wantList, $items, {
+          ignoredCategories: $settings.ignoredWantCategories ?? []
+        })
       })
   );
 
@@ -79,6 +111,7 @@
     projects,
     projectProgress: {},
     alwaysKeepCategories: [],
+    ignoredCategories: [],
     wantList: [],
     wantListDependencies: []
   });
@@ -108,6 +141,43 @@
       value={query}
       on:input={({ detail }) => (query = detail.value)}
     />
+    <div class="space-y-2">
+      <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] uppercase tracking-widest text-slate-400">
+        <span class="text-slate-500">Ignore categories</span>
+        {#if $ignoredCategories.length > 0}
+          <button
+            type="button"
+            class="rounded-full border border-slate-700/70 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-300 transition hover:border-slate-500"
+            on:click={clearIgnoredCategories}
+          >
+            Clear
+          </button>
+        {/if}
+      </div>
+      <div class="flex flex-wrap gap-2">
+        {#each categoryOptions as category}
+          {@const normalized = normalizeCategory(category)}
+          <button
+            type="button"
+            class={`rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-wide transition ${
+              $ignoredCategorySet.has(normalized)
+                ? 'border-rose-400/80 bg-rose-500/20 text-rose-100'
+                : 'border-slate-700 bg-slate-900/60 text-slate-300 hover:border-slate-500'
+            }`}
+            on:click={() => toggleIgnoredCategory(category)}
+          >
+            {category}
+          </button>
+        {/each}
+      </div>
+      <p class="text-[11px] uppercase tracking-[0.3em] text-slate-500">
+        {#if $ignoredCategories.length === 0}
+          Showing all categories
+        {:else}
+          Hiding {$ignoredCategories.length} categor{$ignoredCategories.length === 1 ? 'y' : 'ies'}
+        {/if}
+      </p>
+    </div>
     <div class="content-grid">
       <div class="space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-800/70 bg-slate-950/60 px-4 py-3 text-[11px] uppercase tracking-[0.3em] text-slate-400">

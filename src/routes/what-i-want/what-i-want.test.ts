@@ -60,7 +60,7 @@ describe('what-i-want page', () => {
 
     await tick();
 
-    const addButton = target.querySelector('button');
+    const addButton = target.querySelector('[data-testid="add-to-wishlist"]');
     expect(addButton?.textContent).toContain('Add');
 
     addButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));

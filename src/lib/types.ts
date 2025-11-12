@@ -288,6 +288,7 @@ export interface AppSettings {
   approvalsEnabled: boolean;
   approvalToken?: string;
   alwaysKeepCategories: string[];
+  ignoredWantCategories: string[];
 }
 
 export interface RecommendationContext {
@@ -300,6 +301,7 @@ export interface RecommendationContext {
   projects: Project[];
   projectProgress: ProjectProgressState;
   alwaysKeepCategories: string[];
+  ignoredCategories: string[];
   wantList: WantListEntry[];
   wantListDependencies: WantListResolvedEntry[];
   wishlistSourcesByItem: Record<string, RecommendationWishlistSource[]>;

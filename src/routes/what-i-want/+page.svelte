@@ -11,6 +11,7 @@
     blueprints,
     expandWantList,
     hydrateFromCanonical,
+    settings,
     wantList
   } from '$lib/stores/app';
   import type { ItemRecord, UpgradePack } from '$lib/types';
@@ -55,7 +56,13 @@
     return map;
   });
 
-  const resolvedEntries = derived(wantList, ($wantList) => expandWantList($wantList, items));
+  const resolvedEntries = derived(
+    [wantList, settings],
+    ([$wantList, $settings]) =>
+      expandWantList($wantList, items, {
+        ignoredCategories: $settings.ignoredWantCategories ?? []
+      })
+  );
 
   const blueprintSlugLookup = new Map<string, ItemRecord>();
   const blueprintNameLookup = new Map<string, ItemRecord>();
@@ -307,6 +314,7 @@
             </select>
           </label>
         </div>
+
       </header>
 
       <div class="space-y-3">
@@ -363,6 +371,7 @@
                 />
                 <button
                   type="button"
+                  data-testid="add-to-wishlist"
                   class="rounded-full bg-sky-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-sky-200 transition hover:bg-sky-500/30"
                   on:click={() => addToWantList(item)}
                   disabled={$wishlistHasItem.has(item.id)}
