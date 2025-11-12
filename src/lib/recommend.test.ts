@@ -46,6 +46,39 @@ const ITEMS: ItemRecord[] = [
     provenance: { wiki: true, api: true }
   },
   {
+    id: 'item-weapon-legendary',
+    name: 'Nova Cannon',
+    slug: 'nova-cannon',
+    category: 'Weapon',
+    rarity: 'Legendary Weapon',
+    sell: 120,
+    recycle: [],
+    needsTotals: { quests: 0, workshop: 0 },
+    provenance: { wiki: true, api: true }
+  },
+  {
+    id: 'item-shotgun-epic',
+    name: 'Cyclone Shotgun',
+    slug: 'cyclone-shotgun',
+    category: 'Shotgun',
+    rarity: 'Epic Weapon',
+    sell: 110,
+    recycle: [],
+    needsTotals: { quests: 0, workshop: 0 },
+    provenance: { wiki: true, api: true }
+  },
+  {
+    id: 'item-pistol-rare',
+    name: 'Warden Pistol',
+    slug: 'warden-pistol',
+    category: 'Pistol',
+    rarity: 'Rare Weapon',
+    sell: 95,
+    recycle: [],
+    needsTotals: { quests: 0, workshop: 0 },
+    provenance: { wiki: true, api: true }
+  },
+  {
     id: 'item-keycard',
     name: 'Ruined Keycard',
     slug: 'ruined-keycard',
@@ -228,6 +261,22 @@ const context = buildRecommendationContext({
     expect(modIndex).toBeGreaterThan(-1);
     expect(keyIndex).toBeGreaterThan(-1);
     expect(modIndex).toBeLessThan(keyIndex);
+  });
+
+  it('sorts weapon subcategories alongside main weapon priority', () => {
+    const results = recommendItemsMatching('', context);
+    const modIndex = results.findIndex((entry) => entry.category === 'Mod');
+    const weaponGroup = results.filter((entry) =>
+      ['Weapon', 'Shotgun', 'Pistol'].includes(entry.category ?? '')
+    );
+    expect(weaponGroup).toHaveLength(3);
+    const weaponNames = weaponGroup.map((entry) => entry.name);
+    expect(weaponNames).toEqual(['Nova Cannon', 'Cyclone Shotgun', 'Warden Pistol']);
+    weaponGroup.forEach((entry) => {
+      const index = results.findIndex((candidate) => candidate.itemId === entry.itemId);
+      expect(index).toBeGreaterThan(-1);
+      expect(index).toBeLessThan(modIndex);
+    });
   });
 
   it('sorts higher rarity items ahead within the same category', () => {
