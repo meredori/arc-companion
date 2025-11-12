@@ -3,7 +3,6 @@
     "notes": "Used to calibrate uplink towers during seasonal questlines.",
     "details": {
       "sources": [
-        { "type": "quest", "ref": "quest-signal-recovery", "note": "Quest reward" },
         { "type": "enemy", "ref": "arc-sentinel", "note": "High-tier patrols" }
       ],
       "vendors": [
@@ -82,8 +81,7 @@
     "notes": "Quest givers in Dam and Spaceport require these for repairs.",
     "details": {
       "sources": [
-        { "type": "scavenge", "ref": "spaceport", "note": "Containers near docking area" },
-        { "type": "quest", "ref": "quest-rust-and-shine", "note": "Turn-in requirement" }
+        { "type": "scavenge", "ref": "spaceport", "note": "Containers near docking area" }
       ],
       "vendors": [],
       "craftsFrom": [],

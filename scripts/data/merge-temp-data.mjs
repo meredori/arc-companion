@@ -48,6 +48,7 @@ const tempProjects = await readJson(tempDir, 'projects.json').catch(() => []);
 
 const existingItemsPath = path.join(staticDir, 'items.json');
 const existingQuestsPath = path.join(staticDir, 'quests.json');
+const existingChainsPath = path.join(staticDir, 'chains.json');
 const existingUpgradesPath = path.join(staticDir, 'workbench-upgrades.json');
 const existingProjectsPath = path.join(staticDir, 'projects.json');
 
@@ -145,6 +146,193 @@ const getItemName = (rawId) => {
 
 const existingQuests = await readJson(existingQuestsPath);
 const existingQuestMap = new Map(existingQuests.map((quest) => [quest.id, quest]));
+const canonicalQuestId = (value) => {
+  if (!value) return null;
+  if (value.startsWith('quest-')) return value.toLowerCase();
+  return `quest-${slugify(value)}`;
+};
+
+const tempQuestEntries = tempQuests.map((quest) => {
+  const questId = canonicalQuestId(quest.id);
+  return { quest, questId };
+});
+
+const tempQuestLookup = new Map(tempQuestEntries.map(({ questId, quest }) => [questId, quest]));
+
+const questGraph = new Map(
+  tempQuestEntries
+    .filter(({ questId }) => Boolean(questId))
+    .map(({ questId }) => [questId, { prev: new Set(), next: new Set() }])
+);
+
+const normalizeQuestId = (rawId) => {
+  const canonical = canonicalQuestId(rawId);
+  return questGraph.has(canonical) ? canonical : null;
+};
+
+for (const { questId, quest } of tempQuestEntries) {
+  if (!questId || !questGraph.has(questId)) continue;
+  const prevIds = Array.isArray(quest.previousQuestIds) ? quest.previousQuestIds : [];
+  for (const prev of prevIds) {
+    const mapped = normalizeQuestId(prev);
+    if (!mapped) continue;
+    questGraph.get(questId).prev.add(mapped);
+    questGraph.get(mapped).next.add(questId);
+  }
+  const nextIds = Array.isArray(quest.nextQuestIds) ? quest.nextQuestIds : [];
+  for (const next of nextIds) {
+    const mapped = normalizeQuestId(next);
+    if (!mapped) continue;
+    questGraph.get(questId).next.add(mapped);
+    questGraph.get(mapped).prev.add(questId);
+  }
+}
+
+const deriveQuestChains = () => {
+  const visited = new Set();
+  const questIds = Array.from(questGraph.keys()).sort();
+  const usedChainIds = new Set();
+  const chainAssignments = new Map();
+  const stageByQuestId = new Map();
+  const chains = [];
+
+  for (const startId of questIds) {
+    if (visited.has(startId)) continue;
+    const component = new Set();
+    const stack = [startId];
+
+    while (stack.length > 0) {
+      const current = stack.pop();
+      if (visited.has(current)) continue;
+      visited.add(current);
+      component.add(current);
+      const node = questGraph.get(current);
+      if (!node) continue;
+      for (const prev of node.prev) {
+        if (!visited.has(prev)) stack.push(prev);
+      }
+      for (const next of node.next) {
+        if (!visited.has(next)) stack.push(next);
+      }
+    }
+
+    const componentIds = Array.from(component);
+    const componentSet = new Set(componentIds);
+    const inDegree = new Map();
+    for (const id of componentIds) {
+      let degree = 0;
+      for (const prev of questGraph.get(id)?.prev ?? []) {
+        if (componentSet.has(prev)) degree += 1;
+      }
+      inDegree.set(id, degree);
+    }
+
+    const stageMap = new Map();
+    const seed = componentIds
+      .filter((id) => (inDegree.get(id) ?? 0) === 0)
+      .sort((a, b) => a.localeCompare(b));
+    for (const id of seed) {
+      stageMap.set(id, 0);
+    }
+    const queue = [...seed];
+
+    const sortQueue = () => {
+      queue.sort((a, b) => {
+        const stageA = stageMap.get(a) ?? 0;
+        const stageB = stageMap.get(b) ?? 0;
+        if (stageA !== stageB) return stageA - stageB;
+        const nameA = englishText(tempQuestLookup.get(a)?.name, a);
+        const nameB = englishText(tempQuestLookup.get(b)?.name, b);
+        return nameA.localeCompare(nameB);
+      });
+    };
+
+    sortQueue();
+
+    while (queue.length > 0) {
+      const current = queue.shift();
+      const currentStage = stageMap.get(current) ?? 0;
+      for (const next of questGraph.get(current)?.next ?? []) {
+        if (!componentSet.has(next)) continue;
+        const proposedStage = currentStage + 1;
+        const existingStage = stageMap.get(next);
+        if (existingStage === undefined || proposedStage > existingStage) {
+          stageMap.set(next, proposedStage);
+        }
+        const remaining = (inDegree.get(next) ?? 0) - 1;
+        inDegree.set(next, remaining);
+        if (remaining === 0) {
+          queue.push(next);
+          sortQueue();
+        }
+      }
+    }
+
+    for (const id of componentIds) {
+      if (!stageMap.has(id)) stageMap.set(id, 0);
+    }
+
+    const roots = componentIds
+      .filter((id) => {
+        for (const prev of questGraph.get(id)?.prev ?? []) {
+          if (componentSet.has(prev)) return false;
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        const stageA = stageMap.get(a) ?? 0;
+        const stageB = stageMap.get(b) ?? 0;
+        if (stageA !== stageB) return stageA - stageB;
+        const nameA = englishText(tempQuestLookup.get(a)?.name, a);
+        const nameB = englishText(tempQuestLookup.get(b)?.name, b);
+        return nameA.localeCompare(nameB);
+      });
+
+    const fallbackRoot = [...componentIds].sort((a, b) => a.localeCompare(b))[0];
+    const primaryRoot = roots[0] ?? fallbackRoot;
+    const rootQuest = tempQuestLookup.get(primaryRoot);
+    const baseName = englishText(rootQuest?.trader, null) || englishText(rootQuest?.name, primaryRoot) || primaryRoot;
+    const baseSlug = slugify(baseName) || slugify(primaryRoot);
+    let chainId = `chain-${baseSlug || 'questline'}`;
+    let suffix = 1;
+    while (usedChainIds.has(chainId)) {
+      suffix += 1;
+      chainId = `chain-${baseSlug || 'questline'}-${suffix}`;
+    }
+    usedChainIds.add(chainId);
+    const chainName = baseName;
+
+    const stageRecords = componentIds
+      .map((id) => ({
+        id,
+        stage: stageMap.get(id) ?? 0,
+        name: englishText(tempQuestLookup.get(id)?.name, id)
+      }))
+      .sort((a, b) => {
+        if (a.stage !== b.stage) return a.stage - b.stage;
+        return a.name.localeCompare(b.name);
+      });
+
+    chains.push({
+      id: chainId,
+      name: chainName,
+      stages: stageRecords.map((record) => record.id)
+    });
+
+    for (const record of stageRecords) {
+      chainAssignments.set(record.id, { chainId, chainName });
+      stageByQuestId.set(record.id, record.stage);
+    }
+  }
+
+  chains.sort((a, b) => a.name.localeCompare(b.name));
+  return { chains, chainAssignments, stageByQuestId };
+};
+
+const { chains: derivedChains, chainAssignments, stageByQuestId } = deriveQuestChains();
+
+await writeJson(existingChainsPath, derivedChains);
+
 const mergedQuests = [];
 
 for (const quest of tempQuests) {
@@ -168,14 +356,32 @@ for (const quest of tempQuests) {
     ? quest.objectives.map((objective) => englishText(objective)).filter(Boolean)
     : [];
 
+  const previousQuestIds = Array.isArray(quest.previousQuestIds)
+    ? quest.previousQuestIds
+        .map((value) => canonicalQuestId(value))
+        .filter((value) => Boolean(value))
+    : [];
+  const nextQuestIds = Array.isArray(quest.nextQuestIds)
+    ? quest.nextQuestIds
+        .map((value) => canonicalQuestId(value))
+        .filter((value) => Boolean(value))
+    : [];
+
+  const assignment = chainAssignments.get(questId);
+  const chainId = assignment?.chainId ?? base?.chainId ?? null;
+  const chainStage = stageByQuestId.get(questId) ?? base?.chainStage ?? null;
+
   mergedQuests.push({
     id: questId,
     name: englishText(quest.name, base?.name ?? questId),
-    chainId: base?.chainId ?? null,
+    chainId,
     giver: quest.trader ?? base?.giver ?? null,
     items: base?.items ?? [],
     rewards: rewards.length > 0 ? rewards : base?.rewards ?? [],
-    mapHints: objectives.length > 0 ? objectives : base?.mapHints ?? []
+    mapHints: objectives.length > 0 ? objectives : base?.mapHints ?? [],
+    chainStage,
+    previousQuestIds,
+    nextQuestIds
   });
 
   existingQuestMap.delete(questId);

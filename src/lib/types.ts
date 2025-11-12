@@ -81,10 +81,13 @@ export interface Quest {
   id: string;
   name: string;
   chainId?: string;
+  chainStage?: number | null;
   giver?: string;
   items: QuestRequirement[];
   rewards?: QuestReward[];
   mapHints?: string[];
+  previousQuestIds?: string[];
+  nextQuestIds?: string[];
 }
 
 export interface QuestChain {

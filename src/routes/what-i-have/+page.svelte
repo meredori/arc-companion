@@ -15,6 +15,7 @@
     workbenchUpgrades
   } from '$lib/stores/app';
   import { tipsForBlueprints, tipsForWorkshop } from '$lib/tips';
+  import { createQuestOrderComparator } from '$lib/utils/quest-order';
   import type {
     ItemRecord,
     Project,
@@ -63,10 +64,21 @@
   const itemName = (id: string) => items.find((item) => item.id === id)?.name ?? id;
   const questById = new Map(questDefs.map((quest) => [quest.id, quest]));
   const chainById = new Map(chains.map((chain) => [chain.id, chain]));
-  const questChainLookup = new Map<string, { chainId: string; chainName: string; index: number }>();
-  chains.forEach((chain) => {
-    chain.stages?.forEach((questId, index) => {
-      questChainLookup.set(questId, { chainId: chain.id, chainName: chain.name, index });
+  const chainOrder = new Map<string, number>();
+  chains.forEach((chain, index) => {
+    chainOrder.set(chain.id, index);
+  });
+  const questChainLookup = new Map<string, { chainId: string; chainName: string; index: number | null }>();
+  questDefs.forEach((quest) => {
+    if (!quest.chainId) return;
+    const chain = chainById.get(quest.chainId);
+    const chainName = chain?.name ?? quest.chainId;
+    const stage = quest.chainStage ?? (chain?.stages?.indexOf(quest.id) ?? -1);
+    const index = stage >= 0 ? stage : null;
+    questChainLookup.set(quest.id, {
+      chainId: quest.chainId,
+      chainName,
+      index
     });
   });
 
@@ -80,7 +92,9 @@
         .join(', ');
       const chainInfo = questChainLookup.get(quest.id);
       const prefix = chainInfo
-        ? `${chainInfo.chainName ?? chainInfo.chainId} · Step ${chainInfo.index + 1}`
+        ? chainInfo.index !== null
+          ? `${chainInfo.chainName ?? chainInfo.chainId} · Step ${chainInfo.index + 1}`
+          : `${chainInfo.chainName ?? chainInfo.chainId}`
         : null;
       const parts = [prefix ? `${prefix}: ${quest.name}` : quest.name];
       if (requirements) {
@@ -308,21 +322,7 @@
     return stages.slice(0, info.index).every((id) => questCompletionSet.has(id));
   };
 
-  const compareQuestOrder = (aId: string, bId: string) => {
-    const infoA = questChainLookup.get(aId);
-    const infoB = questChainLookup.get(bId);
-    if (infoA && infoB) {
-      if (infoA.chainId === infoB.chainId) {
-        return infoA.index - infoB.index;
-      }
-      return (infoA.chainName ?? infoA.chainId).localeCompare(infoB.chainName ?? infoB.chainId);
-    }
-    if (infoA) return -1;
-    if (infoB) return 1;
-    const questA = questById.get(aId);
-    const questB = questById.get(bId);
-    return (questA?.name ?? aId).localeCompare(questB?.name ?? bId);
-  };
+  const compareQuestOrder = createQuestOrderComparator(chainOrder, questChainLookup, questById);
 
   $: visibleQuestItems = ($questChecklist ?? [])
     .filter((item) => {
