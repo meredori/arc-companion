@@ -23,7 +23,9 @@
   const resolveImageUrl = (url: string | null | undefined) =>
     url?.startsWith('/') ? `${base}${url}`.replace(/\/{2,}/g, '/') : url ?? null;
 
-  const anchorIdForBlueprint = (blueprint: ItemRecord) => {
+  type BlueprintAnchorSource = Pick<ItemRecord, 'id' | 'name'> & { slug?: string | null };
+
+  const anchorIdForBlueprint = (blueprint: BlueprintAnchorSource) => {
     if (blueprint.slug && blueprint.slug.trim()) {
       return `blueprint-${blueprint.slug}`;
     }
