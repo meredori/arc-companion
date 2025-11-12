@@ -502,6 +502,18 @@ const context = buildRecommendationContext({
     expect(results.map((rec) => rec.name)).toEqual(['Mod Apex', 'Mod Ridge']);
   });
 
+  it('supports alphabetical sorting when configured', () => {
+    const defaultOrder = recommendItemsMatching('', context).map((rec) => rec.name);
+    const alphabeticalOrder = recommendItemsMatching('', context, {
+      sortMode: 'alphabetical'
+    }).map((rec) => rec.name);
+    const sortedCopy = [...alphabeticalOrder].sort((a, b) =>
+      a.localeCompare(b, undefined, { sensitivity: 'base' })
+    );
+    expect(alphabeticalOrder).toEqual(sortedCopy);
+    expect(alphabeticalOrder).not.toEqual(defaultOrder);
+  });
+
   it('treats material subcategories as one group sorted by rarity', () => {
     const materialResults = recommendItemsMatching('', context).filter((rec) =>
       ['Topside Material', 'Refined Material', 'Material', 'Basic Material', 'Recyclable'].includes(

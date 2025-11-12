@@ -46,6 +46,14 @@ describe('settings store', () => {
     expect(get(settings).ignoredWantCategories).toEqual(['Ammo', 'Tools']);
     settings.reset();
   });
+
+  it('updates recommendation sort preference', () => {
+    settings.reset();
+    expect(get(settings).recommendationSort).toBe('category');
+    settings.setRecommendationSort('alphabetical');
+    expect(get(settings).recommendationSort).toBe('alphabetical');
+    settings.reset();
+  });
 });
 
 describe('expandWantList', () => {

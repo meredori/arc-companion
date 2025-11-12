@@ -19,6 +19,7 @@
   } from '$lib/stores/app';
   import { buildRecommendationContext, recommendItemsMatching } from '$lib/recommend';
   import { tipsForWhatToDo } from '$lib/tips';
+  import type { RecommendationSort } from '$lib/types';
   import type { PageData } from './$types';
 
   export let data: PageData;
@@ -117,12 +118,22 @@
   });
 
   $: recommendationContext = $contextStore;
-  $: recommendations = recommendItemsMatching(query, recommendationContext);
-  $: outstandingNeeds = recommendItemsMatching('', recommendationContext).reduce(
+  let recommendationSort: RecommendationSort = 'category';
+  $: recommendationSort = $settings.recommendationSort ?? 'category';
+  $: recommendations = recommendItemsMatching(query, recommendationContext, {
+    sortMode: recommendationSort
+  });
+  $: outstandingNeeds = recommendItemsMatching('', recommendationContext, {
+    sortMode: recommendationSort
+  }).reduce(
     (total, rec) => total + rec.needs.quests + rec.needs.workshop + rec.needs.projects,
     0
   );
   $: focusTips = tipsForWhatToDo(outstandingNeeds);
+
+  const setRecommendationSort = (mode: RecommendationSort) => {
+    settings.setRecommendationSort(mode);
+  };
 </script>
 
 <section class="page-stack">
@@ -182,7 +193,39 @@
       <div class="space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-800/70 bg-slate-950/60 px-4 py-3 text-[11px] uppercase tracking-[0.3em] text-slate-400">
           <span>{recommendations.length} matches</span>
-          <span class="text-slate-300">Sorted · Category → Rarity → Name</span>
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="text-slate-300">
+              Sorted · {recommendationSort === 'alphabetical'
+                ? 'Alphabetical'
+                : 'Category → Rarity → Name'}
+            </span>
+            <div class="flex overflow-hidden rounded-full border border-slate-800">
+              <button
+                type="button"
+                class={`px-3 py-1 text-[10px] font-semibold tracking-[0.3em] transition ${
+                  recommendationSort === 'category'
+                    ? 'bg-slate-300 text-slate-900'
+                    : 'bg-slate-950/60 text-slate-300 hover:bg-slate-900'
+                }`}
+                aria-pressed={recommendationSort === 'category'}
+                on:click={() => setRecommendationSort('category')}
+              >
+                Category
+              </button>
+              <button
+                type="button"
+                class={`px-3 py-1 text-[10px] font-semibold tracking-[0.3em] transition ${
+                  recommendationSort === 'alphabetical'
+                    ? 'bg-slate-300 text-slate-900'
+                    : 'bg-slate-950/60 text-slate-300 hover:bg-slate-900'
+                }`}
+                aria-pressed={recommendationSort === 'alphabetical'}
+                on:click={() => setRecommendationSort('alphabetical')}
+              >
+                A → Z
+              </button>
+            </div>
+          </div>
         </div>
         {#if recommendations.length === 0}
           <div class="rounded-2xl border border-dashed border-slate-700/60 bg-slate-950/50 p-6 text-sm text-slate-400">

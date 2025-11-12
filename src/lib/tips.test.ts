@@ -7,7 +7,8 @@ const settings: AppSettings = {
   showExperimental: false,
   approvalsEnabled: false,
   alwaysKeepCategories: [],
-  ignoredWantCategories: []
+  ignoredWantCategories: [],
+  recommendationSort: 'category'
 };
 
 describe('run tips', () => {

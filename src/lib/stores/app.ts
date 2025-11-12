@@ -9,6 +9,7 @@ import type {
   QuestProgress,
   RunHistoryState,
   RunLogEntry,
+  RecommendationSort,
   WantListEntry,
   WantListMaterialLink,
   WantListProductLink,
@@ -95,7 +96,8 @@ const defaultSettings: AppSettings = {
   approvalsEnabled: false,
   approvalToken: undefined,
   alwaysKeepCategories: [],
-  ignoredWantCategories: []
+  ignoredWantCategories: [],
+  recommendationSort: 'category'
 };
 
 const questStore = createPersistentStore<QuestProgress[]>(STORAGE_KEYS.quests, []);
@@ -500,6 +502,12 @@ export const settings = {
   set: settingsStore.set,
   update: settingsStore.update,
   reset: settingsStore.reset,
+  setRecommendationSort(mode: RecommendationSort) {
+    settingsStore.update((current) => ({
+      ...current,
+      recommendationSort: mode
+    }));
+  },
   toggleIgnoredWantCategory(category: string) {
     const normalized = normalizeCategoryValue(category);
     if (!normalized) {
