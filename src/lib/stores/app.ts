@@ -94,7 +94,8 @@ const defaultSettings: AppSettings = {
   showExperimental: false,
   approvalsEnabled: false,
   approvalToken: undefined,
-  alwaysKeepCategories: []
+  alwaysKeepCategories: [],
+  ignoredWantCategories: []
 };
 
 const questStore = createPersistentStore<QuestProgress[]>(STORAGE_KEYS.quests, []);
@@ -132,13 +133,18 @@ function sanitizeReason(value?: string) {
   return trimmed.length > 0 ? trimmed : undefined;
 }
 
+function normalizeCategoryValue(value?: string | null) {
+  return value ? value.toLowerCase().trim() : '';
+}
+
 function collectRequirements(
   item: ItemRecord | undefined,
   multiplier: number,
   depth: number,
   itemLookup: Map<string, ItemRecord>,
   visited: Set<string>,
-  acc: Map<string, WantListRequirement>
+  acc: Map<string, WantListRequirement>,
+  ignoredCategories: Set<string>
 ) {
   if (!item || !item.craftsFrom || item.craftsFrom.length === 0) {
     return;
@@ -146,6 +152,13 @@ function collectRequirements(
 
   for (const requirement of item.craftsFrom) {
     const totalQty = requirement.qty * multiplier;
+    const next = itemLookup.get(requirement.itemId);
+    if (next) {
+      const normalizedCategory = normalizeCategoryValue(next.category);
+      if (normalizedCategory && ignoredCategories.has(normalizedCategory)) {
+        continue;
+      }
+    }
     const existing = acc.get(requirement.itemId);
     if (existing) {
       existing.qty += totalQty;
@@ -163,26 +176,41 @@ function collectRequirements(
       continue;
     }
 
-    const next = itemLookup.get(requirement.itemId);
     if (!next) {
       continue;
     }
     visited.add(requirement.itemId);
-    collectRequirements(next, totalQty, depth + 1, itemLookup, visited, acc);
+    collectRequirements(next, totalQty, depth + 1, itemLookup, visited, acc, ignoredCategories);
     visited.delete(requirement.itemId);
   }
 }
 
 export function expandWantList(
   entries: WantListEntry[],
-  items: ItemRecord[]
+  items: ItemRecord[],
+  options?: { ignoredCategories?: string[] }
 ): WantListResolvedEntry[] {
   const itemLookup = new Map(items.map((item) => [item.id, item] as const));
   const producersByProduct = new Map<string, { item: ItemRecord; product: WantListProductLink }[]>();
   const recyclersByMaterial = new Map<string, { item: ItemRecord; qty: number; name: string }[]>();
+  const ignoredCategories = new Set(
+    (options?.ignoredCategories ?? [])
+      .map((category) => normalizeCategoryValue(category))
+      .filter((value) => value.length > 0)
+  );
+
+  const shouldIgnoreItem = (record?: ItemRecord | null) => {
+    if (!record) return false;
+    const normalized = normalizeCategoryValue(record.category);
+    if (!normalized) return false;
+    return ignoredCategories.has(normalized);
+  };
 
   for (const item of items) {
     for (const product of item.craftsInto ?? []) {
+      if (shouldIgnoreItem(item)) {
+        continue;
+      }
       const entry = {
         itemId: product.productId,
         name: product.productName ?? product.productId,
@@ -191,6 +219,10 @@ export function expandWantList(
       const bucket = producersByProduct.get(product.productId) ?? [];
       bucket.push({ item, product: entry });
       producersByProduct.set(product.productId, bucket);
+    }
+
+    if (shouldIgnoreItem(item)) {
+      continue;
     }
 
     for (const recycle of item.recycle ?? []) {
@@ -205,7 +237,15 @@ export function expandWantList(
     const item = itemLookup.get(entry.itemId);
     const requirementMap = new Map<string, WantListRequirement>();
     if (item) {
-      collectRequirements(item, entry.qty, 1, itemLookup, new Set([item.id]), requirementMap);
+      collectRequirements(
+        item,
+        entry.qty,
+        1,
+        itemLookup,
+        new Set([item.id]),
+        requirementMap,
+        ignoredCategories
+      );
     }
     const requirements = [...requirementMap.values()].sort((a, b) => {
       if (a.depth !== b.depth) return a.depth - b.depth;
@@ -222,9 +262,14 @@ export function expandWantList(
 
     const materialMap = new Map<string, MaterialAccumulator>();
 
-    if (item) {
+    if (item && !shouldIgnoreItem(item)) {
       for (const recycle of item.recycle ?? []) {
         if (!recycle || recycle.qty <= 0) continue;
+        const recycledItem = itemLookup.get(recycle.itemId);
+        const recycledCategory = normalizeCategoryValue(recycledItem?.category);
+        if (recycledCategory && ignoredCategories.has(recycledCategory)) {
+          continue;
+        }
         const key = `${item.id}::${recycle.itemId}::yield`;
         materialMap.set(key, {
           materialId: recycle.itemId,
@@ -243,6 +288,7 @@ export function expandWantList(
       const recyclers = recyclersByMaterial.get(requirement.itemId) ?? [];
       for (const recycler of recyclers) {
         if (recycler.qty <= 0) continue;
+        if (shouldIgnoreItem(recycler.item)) continue;
         const key = `${recycler.item.id}::${requirement.itemId}::satisfies`;
         const existing = materialMap.get(key);
         const requiredQty = (existing?.requiredQty ?? 0) + requirement.qty;
@@ -446,7 +492,49 @@ export const runs = {
 export const runHistory = runStore;
 export const recentRuns = derived(runStore, (state) => sortRuns(state.entries).slice(0, 5));
 export const lastRemovedRun = derived(runStore, (state) => state.lastRemoved ?? null);
-export const settings = settingsStore;
+const sortCategoriesCaseInsensitive = (values: string[]) =>
+  [...values].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+
+export const settings = {
+  subscribe: settingsStore.subscribe,
+  set: settingsStore.set,
+  update: settingsStore.update,
+  reset: settingsStore.reset,
+  toggleIgnoredWantCategory(category: string) {
+    const normalized = normalizeCategoryValue(category);
+    if (!normalized) {
+      return;
+    }
+    settingsStore.update((current) => {
+      const existing = (current.ignoredWantCategories ?? []).filter((entry) =>
+        Boolean(normalizeCategoryValue(entry))
+      );
+      const hasMatch = existing.some(
+        (entry) => normalizeCategoryValue(entry) === normalized
+      );
+      const updated = hasMatch
+        ? existing.filter((entry) => normalizeCategoryValue(entry) !== normalized)
+        : sortCategoriesCaseInsensitive([...existing, category.trim()]);
+      const next = { ...current, ignoredWantCategories: updated } as AppSettings;
+      return next;
+    });
+  },
+  setIgnoredWantCategories(categories: string[]) {
+    const unique = new Map<string, string>();
+    for (const entry of categories) {
+      const normalized = normalizeCategoryValue(entry);
+      if (!normalized) continue;
+      if (!unique.has(normalized)) {
+        unique.set(normalized, entry.trim());
+      }
+    }
+    const ordered = sortCategoriesCaseInsensitive([...unique.values()]);
+    settingsStore.update((current) => {
+      const next = { ...current, ignoredWantCategories: ordered } as AppSettings;
+      return next;
+    });
+  }
+};
 export const itemOverrides = {
   subscribe: itemOverrideStore.subscribe,
   upsert(id: string, override: ItemOverride) {
@@ -528,8 +616,8 @@ export const wantList = {
   clear() {
     wantListStore.reset();
   },
-  expand(items: ItemRecord[]) {
-    return expandWantList(get(wantListStore), items);
+  expand(items: ItemRecord[], options?: { ignoredCategories?: string[] }) {
+    return expandWantList(get(wantListStore), items, options);
   }
 };
 

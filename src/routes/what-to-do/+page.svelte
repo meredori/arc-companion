@@ -62,7 +62,9 @@
         projectProgress: $projectProgress,
         alwaysKeepCategories: $settings.alwaysKeepCategories ?? [],
         wantList: $wantList,
-        wantListDependencies: expandWantList($wantList, $items)
+        wantListDependencies: expandWantList($wantList, $items, {
+          ignoredCategories: $settings.ignoredWantCategories ?? []
+        })
       })
   );
 

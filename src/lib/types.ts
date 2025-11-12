@@ -288,6 +288,7 @@ export interface AppSettings {
   approvalsEnabled: boolean;
   approvalToken?: string;
   alwaysKeepCategories: string[];
+  ignoredWantCategories: string[];
 }
 
 export interface RecommendationContext {

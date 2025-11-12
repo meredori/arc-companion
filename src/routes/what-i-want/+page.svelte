@@ -11,6 +11,7 @@
     blueprints,
     expandWantList,
     hydrateFromCanonical,
+    settings,
     wantList
   } from '$lib/stores/app';
   import type { ItemRecord, UpgradePack } from '$lib/types';
@@ -25,6 +26,8 @@
   const items: ItemRecord[] = data.items ?? [];
   const blueprintItems: ItemRecord[] = data.blueprints ?? [];
   const benchUpgrades: UpgradePack[] = data.workbenchUpgrades ?? [];
+
+  const normalizeCategory = (value: string) => value.toLowerCase().trim();
 
   onMount(() => {
     hydrateFromCanonical({
@@ -55,7 +58,27 @@
     return map;
   });
 
-  const resolvedEntries = derived(wantList, ($wantList) => expandWantList($wantList, items));
+  const ignoredCategories = derived(settings, ($settings) => $settings.ignoredWantCategories ?? []);
+  const ignoredCategorySet = derived(ignoredCategories, ($ignored) => {
+    const entries = $ignored.map((entry) => normalizeCategory(entry)).filter((entry) => entry.length > 0);
+    return new Set(entries);
+  });
+
+  const resolvedEntries = derived(
+    [wantList, settings],
+    ([$wantList, $settings]) =>
+      expandWantList($wantList, items, {
+        ignoredCategories: $settings.ignoredWantCategories ?? []
+      })
+  );
+
+  const visibleResolvedEntries = derived([resolvedEntries, ignoredCategorySet], ([$entries, $ignored]) =>
+    $entries.filter((detail) => {
+      const category = detail.item?.category ? normalizeCategory(detail.item.category) : '';
+      if (!category) return true;
+      return !$ignored.has(category);
+    })
+  );
 
   const blueprintSlugLookup = new Map<string, ItemRecord>();
   const blueprintNameLookup = new Map<string, ItemRecord>();
@@ -157,6 +180,19 @@
   );
 
   const nonBlueprintItems = items.filter((item) => item.category?.toLowerCase() !== 'blueprint');
+  const categoryLookup = new Map<string, string>();
+  for (const item of nonBlueprintItems) {
+    const category = item.category?.trim();
+    if (!category) continue;
+    const normalized = normalizeCategory(category);
+    if (!normalized) continue;
+    if (!categoryLookup.has(normalized)) {
+      categoryLookup.set(normalized, category);
+    }
+  }
+  const categoryOptions = Array.from(categoryLookup.values()).sort((a, b) =>
+    a.localeCompare(b, undefined, { sensitivity: 'base' })
+  );
 
   let search = '';
   let benchFilter = 'all';
@@ -202,6 +238,12 @@
     quantityDrafts = next;
   };
 
+  const toggleIgnoredCategory = (category: string) => {
+    settings.toggleIgnoredWantCategory(category);
+  };
+
+  const clearIgnoredCategories = () => settings.setIgnoredWantCategories([]);
+
   const blueprintStatusForItem = (item: ItemRecord, stateMap: Map<string, { owned: boolean }>) => {
     const blueprint = findBlueprintForItem(item);
     if (!blueprint) return 'unknown';
@@ -223,7 +265,12 @@
   $: {
     const normalizedSearch = search.trim().toLowerCase();
     const blueprintStates = $blueprintStateMap;
+    const ignored = $ignoredCategorySet;
     filteredItems = nonBlueprintItems.filter((item) => {
+      const normalizedCategory = item.category ? normalizeCategory(item.category) : '';
+      if (normalizedCategory && ignored.has(normalizedCategory)) {
+        return false;
+      }
       if (normalizedSearch) {
         const haystack = `${item.name} ${item.slug} ${item.category ?? ''}`.toLowerCase();
         if (!haystack.includes(normalizedSearch)) {
@@ -307,6 +354,44 @@
             </select>
           </label>
         </div>
+
+        <div class="space-y-2">
+          <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] uppercase tracking-widest text-slate-400">
+            <span class="text-slate-500">Ignore categories</span>
+            {#if $ignoredCategories.length > 0}
+              <button
+                type="button"
+                class="rounded-full border border-slate-700/70 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-300 transition hover:border-slate-500"
+                on:click={clearIgnoredCategories}
+              >
+                Clear
+              </button>
+            {/if}
+          </div>
+          <div class="flex flex-wrap gap-2">
+            {#each categoryOptions as category}
+              {@const normalized = normalizeCategory(category)}
+              <button
+                type="button"
+                class={`rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-wide transition ${
+                  $ignoredCategorySet.has(normalized)
+                    ? 'border-rose-400/80 bg-rose-500/20 text-rose-100'
+                    : 'border-slate-700 bg-slate-900/60 text-slate-300 hover:border-slate-500'
+                }`}
+                on:click={() => toggleIgnoredCategory(category)}
+              >
+                {category}
+              </button>
+            {/each}
+          </div>
+          <p class="text-[11px] uppercase tracking-[0.3em] text-slate-500">
+            {#if $ignoredCategories.length === 0}
+              All categories visible
+            {:else}
+              Ignoring {$ignoredCategories.length} categor{$ignoredCategories.length === 1 ? 'y' : 'ies'}
+            {/if}
+          </p>
+        </div>
       </header>
 
       <div class="space-y-3">
@@ -363,6 +448,7 @@
                 />
                 <button
                   type="button"
+                  data-testid="add-to-wishlist"
                   class="rounded-full bg-sky-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-sky-200 transition hover:bg-sky-500/30"
                   on:click={() => addToWantList(item)}
                   disabled={$wishlistHasItem.has(item.id)}
@@ -398,7 +484,12 @@
         </div>
       {:else}
         <div class="space-y-5">
-          {#each $resolvedEntries as detail}
+          {#if $visibleResolvedEntries.length === 0}
+            <div class="rounded-2xl border border-dashed border-slate-800/60 bg-slate-950/50 p-6 text-sm text-slate-400">
+              All wishlist entries are hidden by the ignored category filter.
+            </div>
+          {:else}
+            {#each $visibleResolvedEntries as detail}
             {@const recipeLink = detail.item ? recipeLinkForItem(detail.item) : null}
             <article class="space-y-4 rounded-2xl border border-slate-800/60 bg-slate-950/60 p-5 text-sm text-slate-200">
               <header class="flex flex-wrap items-center justify-between gap-3">
@@ -510,6 +601,7 @@
               {/if}
             </article>
           {/each}
+          {/if}
         </div>
       {/if}
     </section>
