@@ -11,9 +11,7 @@ const BASE_ITEM: ItemRecord = {
   slug: 'wishlist-item',
   category: 'Quick Use',
   sell: 100,
-  recycle: [],
-  needsTotals: { quests: 0, workshop: 0 },
-  provenance: { wiki: true, api: true }
+  recycle: []
 };
 
 const BLUEPRINT_ITEM: ItemRecord = {
@@ -22,9 +20,7 @@ const BLUEPRINT_ITEM: ItemRecord = {
   slug: 'wishlist-item-blueprint',
   category: 'Blueprint',
   sell: 0,
-  recycle: [],
-  needsTotals: { quests: 0, workshop: 0 },
-  provenance: { wiki: true, api: true }
+  recycle: []
 };
 
 const UPGRADE: UpgradePack = {

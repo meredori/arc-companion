@@ -65,18 +65,13 @@ describe('expandWantList', () => {
       category: 'Craftable',
       sell: 0,
       recycle: [],
-      provenance: {
-        wiki: false,
-        api: false
-      },
       craftsFrom: [
         {
           itemId: 'screw',
           name: 'Screw',
           qty: 2
         }
-      ],
-      needsTotals: { quests: 0, workshop: 0 }
+      ]
     },
     {
       id: 'screw',
@@ -84,12 +79,7 @@ describe('expandWantList', () => {
       slug: 'screw',
       category: 'Hardware',
       sell: 0,
-      recycle: [],
-      provenance: {
-        wiki: false,
-        api: false
-      },
-      needsTotals: { quests: 0, workshop: 0 }
+      recycle: []
     },
     {
       id: 'junk',
@@ -103,12 +93,7 @@ describe('expandWantList', () => {
           name: 'Screw',
           qty: 1
         }
-      ],
-      provenance: {
-        wiki: false,
-        api: false
-      },
-      needsTotals: { quests: 0, workshop: 0 }
+      ]
     }
   ];
 
