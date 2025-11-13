@@ -1,12 +1,12 @@
 import { base } from '$app/paths';
 import type { PageServerLoad } from './$types';
 import { loadCanonicalData } from '$lib/server/pipeline';
-import type { ItemRecord, Project, Quest, UpgradePack, Vendor } from '$lib/types';
+import type { ItemRecord, Project, Quest, UpgradePack } from '$lib/types';
 
 export const load: PageServerLoad = async ({ fetch }) => {
-  const { items = [], quests = [], workbenchUpgrades = [], vendors = [], projects = [] } = await loadCanonicalData(
+  const { items = [], quests = [], workbenchUpgrades = [], projects = [] } = await loadCanonicalData(
     fetch,
-    { items: true, quests: true, upgrades: true, vendors: true, projects: true },
+    { items: true, quests: true, upgrades: true, projects: true },
     base
   );
 
@@ -14,13 +14,11 @@ export const load: PageServerLoad = async ({ fetch }) => {
     items,
     quests,
     workbenchUpgrades,
-    vendors,
     projects
   } satisfies {
     items: ItemRecord[];
     quests: Quest[];
     workbenchUpgrades: UpgradePack[];
-    vendors: Vendor[];
     projects: Project[];
   };
 };

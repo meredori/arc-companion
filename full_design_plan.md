@@ -98,8 +98,8 @@ data/items.json
 Until the staged passes are fully automated against live endpoints, we commit the latest RaidTheory
 dumps directly under `static/data/raw/` (`items.json`, `quests.json`, `hideout-modules.json`,
 `projects.json`). `src/lib/server/pipeline.ts` performs the normalization work inside SvelteKit
-loaders—slugging IDs, resolving images, deriving quest chains, and merging in bespoke overrides from
-`src/lib/server/fallback/`. This keeps the UI in sync with the raw schema without a separate build
+loaders—slugging IDs, resolving images, deriving quest chains, and applying bespoke overrides directly.
+This keeps the UI in sync with the raw schema without a separate build
 step, and it mirrors the planned pipeline stages so the automated importer can later feed the same raw
 directory.
 
