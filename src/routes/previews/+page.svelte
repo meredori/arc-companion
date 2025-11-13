@@ -17,9 +17,9 @@
 
   let query = '';
   const checklist: ChecklistItem[] = [
-    { id: 'pass-a', label: 'Approve Pass A loot seed', completed: true },
-    { id: 'pass-b', label: 'Review enrichment conflicts', completed: false },
-    { id: 'pass-c', label: 'Sync MetaForge deltas', completed: false }
+    { id: 'raw-a', label: 'Spot-check new items.json entries', completed: true },
+    { id: 'raw-b', label: 'Validate quest requirements normalization', completed: false },
+    { id: 'raw-c', label: 'Document overrides applied in admin sandbox', completed: false }
   ];
 
   const recommendations: RecommendationCardProps[] = [
@@ -56,8 +56,8 @@
   ];
 
   const tips = [
-    'Prioritize finishing the MetaForge weekly to unlock higher sell values.',
-    'Coordinate blueprints with your crew to reduce duplicate grinding.',
+    'Capture notes when raw exports change so overrides stay explainable.',
+    'Coordinate blueprint tracking with your crew to reduce duplicate grinding.',
     'Track recycler yields after each run to calibrate recommendations.'
   ];
 </script>

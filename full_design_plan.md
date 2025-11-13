@@ -3,7 +3,7 @@
 ## Overview
 This document defines the complete technical design, data architecture, and feature scope for the **ARC Raiders Companion Tool**, a personal web app that helps players optimize gameplay, manage loot, and analyze run performance.
 
-It is intended for **AI code-generation (Codex)** or human engineers to implement directly. It includes the deterministic data logic, import pipeline, UI structure, and system behavior required for an offline-first single-page app (SPA) using a single tech stack (SvelteKit, Next.js, or Nuxt).
+It is intended for **AI code-generation (Codex)** or human engineers to implement directly. It includes the deterministic data logic, raw-data ingestion workflow, UI structure, and system behavior required for an offline-first single-page app (SPA) using a single tech stack (SvelteKit, Next.js, or Nuxt).
 
 ---
 
@@ -51,7 +51,7 @@ It is intended for **AI code-generation (Codex)** or human engineers to implemen
 ### 3.2 Data Flow
 - New exports from RaidTheory are committed directly to `static/data/raw/` (`items.json`, `quests.json`, `hideout-modules.json`, `projects.json`).
 - `src/lib/server/pipeline.ts` normalizes those feeds at runtime—slugging IDs, resolving images, deriving quest chains, and mapping crafting inputs/outputs.
-- The SvelteKit routes depend exclusively on the normalized result; there are no staged passes, wiki fallbacks, or manual approval checkpoints.
+- The SvelteKit routes depend exclusively on the normalized result; there are no staged review passes or merge gates.
 
 ### 3.3 Future enhancements
 - Reintroduce automated ingestion once upstream APIs stabilize, feeding the same raw directory used in development.
@@ -253,22 +253,16 @@ etc.) so the recommendation engine, Run Analyzer, and Track views see consistent
 ---
 
 ## 9. File Structure Example
-The SPA reserves a dedicated admin workspace that is not exposed in the primary navigation; admin routes live under `src/routes/admin/` with their own layout guard and data loaders for the protected tooling referenced in the pipeline passes.
+The SPA reserves a dedicated admin workspace that is not exposed in the primary navigation; admin routes live under `src/routes/admin/` with their own layout guard and data loaders for tools that inspect and validate the raw datasets.
 ```
-scripts/import/
-  wiki-loot.mjs
-  wiki-item.mjs
-  metaforge.mjs
-  quests.mjs
-  finalize.mjs
-
-static/data/
+static/data/raw/
   items.json
   quests.json
-  upgrades.json
-  vendors.json
-  chains.json
-  meta/index.json
+  hideout-modules.json
+  projects.json
+
+static/data/
+  normalized.json
 
 src/lib/
   types.ts
@@ -276,6 +270,7 @@ src/lib/
   stores/app.ts
   recommend.ts
   tips.ts
+  server/pipeline.ts
 
 src/routes/
   what-to-do/+page.svelte
@@ -285,14 +280,14 @@ src/routes/
   runs/+page.svelte
   admin/
     +layout.svelte
-    passes/+page.svelte
+    datasets/+page.svelte
 ```
 
 ---
 
 ## 10. Acceptance Criteria
-1. Data importers produce enriched JSON files with merged wiki + MetaForge data.
-2. Items have verified **sell**, **recycle**, **sources**, **vendors**, **crafting uses**.
+1. Raw JSON exports are stored in `static/data/raw/` and successfully normalized at runtime.
+2. Items have verified **sell**, **recycle**, **sources**, **vendors**, **crafting uses** within the normalized payload.
 3. Deterministic recommendation logic yields consistent results for each item.
 4. Run Analyzer correctly records, persists, and displays metrics.
 5. Tips adapt to current quests, free loadout, and goals.
