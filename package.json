@@ -44,7 +44,6 @@
     "rollup": "npm:@rollup/wasm-node"
   },
   "dependencies": {
-    "@types/node": "^24.10.0",
-    "node-html-parser": "^6.1.13"
+    "@types/node": "^24.10.0"
   }
 }
