@@ -36,10 +36,9 @@ The project is configured for SvelteKit with TypeScript, TailwindCSS, ESLint, Pr
 ## Project Structure
 
 ```
-├── scripts/import/          # Import pipeline placeholders for passes A–F
 ├── src/lib/                 # Shared types, persistence utilities, and stores
 ├── src/routes/              # Route placeholders that mirror the design document
-├── static/data/             # Canonical data artifacts emitted by importers (placeholders for now)
+├── static/data/             # Raw and normalized data artifacts committed with the app
 └── static/                  # Static assets served directly (e.g. favicon)
 ```
 
@@ -50,7 +49,7 @@ Key routes (`src/routes/`) now include:
 - `/track` — streamlined quest + upgrade checklist (legacy view).
 - `/blueprints` — focused blueprint ownership manager.
 - `/run` / `/runs` — live run logger + historical dashboard.
-- `/admin/passes` — import pipeline controls (rerun/approve/stage inspection).
+
 
 Each section is wired to the shared stores so toggling a quest, bench, or project immediately influences the What To Do page.
 
@@ -84,10 +83,9 @@ and the wiki dumps:
 - `static/data/raw/projects.json`
 
 At runtime, `src/lib/server/pipeline.ts` normalizes these feeds (slugging IDs, mapping recipes to
-`craftsFrom`, resolving local image paths, deriving quest chains, etc.). Any SvelteKit load that
-previously fetched `static/data/*.json` now calls the pipeline helper so the UI always works directly
-off the raw dumps.
-Commit updates to the raw files whenever a new export arrives.
+`craftsFrom`, resolving local image paths, deriving quest chains, etc.). SvelteKit loads call the
+pipeline helper so the UI always works directly off the raw dumps. Commit updates to the raw files
+whenever a new export arrives.
 
 ### Workbench upgrade capture
 
@@ -104,7 +102,7 @@ store. Once a phase reaches 100 %, the What To Do recommendations stop flaggin
 ### Images
 
 Drop loot art into `static/images/items/` using snake_case filenames (e.g. `advanced_arc_powercell.png`).
-The merge script automatically rewrites `imageUrl` fields to `/images/items/<file>` when possible.
+The normalization pipeline automatically rewrites `imageUrl` fields to `/images/items/<file>` when possible.
 
 > **Heads up:** When rendering those assets in Svelte components, resolve the stored path through
 > `$app/paths`’ `base` helper (e.g. ```${base}${url}```) so prerendering in CI finds the images when the
@@ -115,8 +113,3 @@ The merge script automatically rewrites `imageUrl` fields to `/images/items/<fil
 Global Tailwind layers are imported through `src/app.postcss` and activated in the root layout. When
 adding new components, reference the Tailwind configuration in `tailwind.config.cjs`.
 
-## Import pipeline stubs
-
-`scripts/import/` still mirrors the planned staged importer (Pass A–F). With the runtime pipeline in
-place the merge helper is no longer required; once backend automation lands, replace the console
-output in `scripts/import/*.mjs` with the real fetch/transform/approve logic.

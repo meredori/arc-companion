@@ -45,63 +45,17 @@ It is intended for **AI code-generation (Codex)** or human engineers to implemen
 ### 3.1 Source Integration
 | Source | Role | Example |
 |--------|------|----------|
-| **Wiki Loot Page** | Seed items (name, sell, recycle, quest/workshop use) | `https://arcraiders.wiki/wiki/Loot` |
-| **Wiki Item Pages** | Enrichment: sources, vendors, salvage, crafting | `https://arcraiders.wiki/wiki/Advanced_ARC_Powercell` |
-| **MetaForge API** | Canonical structured data: items, quests, vendors, maps | `https://metaforge.app/arc-raiders/api/items` |
+| **RaidTheory Dumps** | Canonical structured data: items, quests, upgrades, projects | `static/data/raw/*.json` |
+| **MetaForge API (future)** | Supplemental metadata when available | `https://metaforge.app/arc-raiders/api/items` |
 
+### 3.2 Data Flow
+- New exports from RaidTheory are committed directly to `static/data/raw/` (`items.json`, `quests.json`, `hideout-modules.json`, `projects.json`).
+- `src/lib/server/pipeline.ts` normalizes those feeds at runtime—slugging IDs, resolving images, deriving quest chains, and mapping crafting inputs/outputs.
+- The SvelteKit routes depend exclusively on the normalized result; there are no staged passes, wiki fallbacks, or manual approval checkpoints.
 
-### 3.2 Pipeline Stages
-
-**Pass A — Seed from Loot Table**
-- Parse all rows from the Loot wiki page using a manual batching script that respects rate limits (configurable batch size with retry).
-- Extract columns: Name, Category, Rarity, Sell Price, Recycles To, Keep for Quests/Workshop, and stage each batch to a temporary `staging/pass-a/` directory for preview in the protected admin tooling.
-- Add `wikiItemUrl` for enrichment and surface deltas for admin approval before promotion to Pass B.
-
-**Pass B — Wiki Item Enrichment**
-- For each item, crawl its wiki page using the approved Pass A staging list (manual approval gate in admin dashboard).
-- Parse structured sections:
-  - **Sources** (enemy, zone, vendor)
-  - **Crafting** (input/output)
-  - **Recycle/Salvage** (outputs, yields, base vs in-raid)
-  - **Vendors** (names, locations)
-  - **Sell Price** (verify)
-- Output structured item enrichment JSON batches, log fetch anomalies, and allow admins to review/override parsed values before merging.
-
-**Pass C — MetaForge Merge**
-- Fetch MetaForge data for items, quests, vendors using the admin-configured API keys.
-- Merge and normalize fields with wiki data with a preview diff shown in the admin tooling to resolve mismatches.
-- Prefer MetaForge IDs; keep provenance flags and record manual overrides during approval.
-
-**Pass D — Quest & Quest Chain Importer**
-- Use MetaForge and wiki quest data with manual batching controls identical to Pass A to prevent API exhaustion.
-- Build `quests.json` and `chains.json` with ordered questline structure and present draft quest trees for admin validation.
-- Extract required items per quest and flag missing items for admin decision in the protected tooling.
-- Include upgrades/workbench packs with an approval checklist before they enter the canonical dataset.
-
-**Pass E — Conflict Resolution & Versioning**
-- Resolve field conflicts (e.g., sell price, salvage outputs) via the admin conflict-resolution UI that stores accepted resolutions.
-- Add metadata: `{ generatedAt, sourceURLs, conflicts[] }` and record the approving admin plus timestamps for audit history.
-
-**Pass F — Output Files**
-- Generate final JSON artifacts only after admin approval, keeping rejected drafts stored under `data/_pending/` for re-review.
-```
-data/items.json
- data/quests.json
- data/workbench-upgrades.json
- data/vendors.json
- data/chains.json
- data/meta/index.json
-```
-
-### 3.3 Runtime normalization pipeline (current workflow)
-
-Until the staged passes are fully automated against live endpoints, we commit the latest RaidTheory
-dumps directly under `static/data/raw/` (`items.json`, `quests.json`, `hideout-modules.json`,
-`projects.json`). `src/lib/server/pipeline.ts` performs the normalization work inside SvelteKit
-loaders—slugging IDs, resolving images, deriving quest chains, and applying bespoke overrides directly.
-This keeps the UI in sync with the raw schema without a separate build
-step, and it mirrors the planned pipeline stages so the automated importer can later feed the same raw
-directory.
+### 3.3 Future enhancements
+- Reintroduce automated ingestion once upstream APIs stabilize, feeding the same raw directory used in development.
+- Layer optional validation tooling onto the admin workspace without blocking the core data refresh loop.
 
 ---
 
