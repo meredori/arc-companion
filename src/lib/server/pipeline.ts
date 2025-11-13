@@ -286,20 +286,9 @@ export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
       category: raw.type ?? fallback?.category ?? null,
       sell: typeof raw.value === 'number' ? raw.value : fallback?.sell ?? 0,
       recycle: [],
-      sources: fallback?.sources ?? [],
-      vendors: fallback?.vendors ?? [],
       craftsFrom: fallback?.craftsFrom ?? [],
       craftsInto: fallback?.craftsInto ?? [],
-      needsTotals: fallback?.needsTotals ?? { quests: 0, workshop: 0 },
-      wikiUrl: fallback?.wikiUrl ?? null,
       notes: fallback?.notes ?? null,
-      metaforgeId: fallback?.metaforgeId ?? null,
-      zones: fallback?.zones ?? [],
-      provenance: {
-        wiki: fallback?.provenance?.wiki ?? false,
-        api: true,
-        manual: fallback?.provenance?.manual
-      },
       imageUrl: imageFor(raw.imageFilename, fallback?.imageUrl)
     });
   }
@@ -326,20 +315,9 @@ export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
       imageUrl: imageFor(raw.imageFilename, fallback?.imageUrl),
       sell: typeof raw.value === 'number' ? raw.value : fallback?.sell ?? 0,
       recycle: convertRecycleEntries(recycleSource, nameLookup),
-      sources: fallback?.sources ?? [],
-      vendors: fallback?.vendors ?? [],
       craftsFrom: craftsEntries.length > 0 ? craftsEntries : fallback?.craftsFrom ?? [],
       craftsInto: fallback?.craftsInto ?? [],
-      needsTotals: fallback?.needsTotals ?? { quests: 0, workshop: 0 },
-      wikiUrl: fallback?.wikiUrl ?? null,
-      notes: notes || fallback?.notes || null,
-      metaforgeId: fallback?.metaforgeId ?? null,
-      zones: fallback?.zones ?? [],
-      provenance: {
-        wiki: fallback?.provenance?.wiki ?? false,
-        api: true,
-        manual: fallback?.provenance?.manual
-      }
+      notes: notes || fallback?.notes || null
     };
 
     normalized.push(record);

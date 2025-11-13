@@ -1,29 +1,9 @@
 export type RecommendationAction = 'save' | 'keep' | 'salvage' | 'sell';
 
-export interface DataProvenance {
-  wiki: boolean;
-  api: boolean;
-  manual?: boolean;
-}
-
 export interface ItemRecycleEntry {
   itemId: string;
   name: string;
   qty: number;
-}
-
-export type ItemSourceType = 'enemy' | 'scavenge' | 'vendor' | 'craft' | 'quest' | 'area';
-
-export interface ItemSource {
-  type: ItemSourceType;
-  ref?: string;
-  note?: string;
-}
-
-export interface ItemVendorStock {
-  vendorId: string;
-  name: string;
-  price?: number;
 }
 
 export interface ItemCraftRequirement {
@@ -47,19 +27,9 @@ export interface ItemRecord {
   imageUrl?: string | null;
   sell: number;
   recycle: ItemRecycleEntry[];
-  sources?: ItemSource[];
-  vendors?: ItemVendorStock[];
   craftsFrom?: ItemCraftRequirement[];
   craftsInto?: ItemCraftProduct[];
-  needsTotals: {
-    quests: number;
-    workshop: number;
-  };
-  wikiUrl?: string;
   notes?: string;
-  metaforgeId?: string | null;
-  zones?: string[];
-  provenance: DataProvenance;
 }
 
 export type ItemOverride = Partial<Pick<ItemRecord, 'category' | 'rarity' | 'notes' | 'imageUrl'>>;

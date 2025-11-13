@@ -22,8 +22,6 @@ const ITEMS: ItemRecord[] = [
     rarity: 'Epic Component',
     sell: 200,
     recycle: [{ itemId: 'mat-a', name: 'Material A', qty: 6 }],
-    needsTotals: { quests: 2, workshop: 1 },
-    provenance: { wiki: true, api: true }
   },
   {
     id: 'item-beta',
@@ -33,8 +31,6 @@ const ITEMS: ItemRecord[] = [
     rarity: 'Common Salvage',
     sell: 90,
     recycle: [{ itemId: 'mat-b', name: 'Material B', qty: 4 }],
-    needsTotals: { quests: 0, workshop: 0 },
-    provenance: { wiki: true, api: false }
   },
   {
     id: 'item-gamma',
@@ -44,8 +40,6 @@ const ITEMS: ItemRecord[] = [
     rarity: 'Rare Component',
     sell: 50,
     recycle: [{ itemId: 'mat-c', name: 'Material C', qty: 5 }],
-    needsTotals: { quests: 0, workshop: 2 },
-    provenance: { wiki: true, api: true }
   },
   {
     id: 'item-weapon-legendary',
@@ -55,8 +49,6 @@ const ITEMS: ItemRecord[] = [
     rarity: 'Legendary Weapon',
     sell: 120,
     recycle: [],
-    needsTotals: { quests: 0, workshop: 0 },
-    provenance: { wiki: true, api: true }
   },
   {
     id: 'item-shotgun-epic',
@@ -66,8 +58,6 @@ const ITEMS: ItemRecord[] = [
     rarity: 'Epic Weapon',
     sell: 110,
     recycle: [],
-    needsTotals: { quests: 0, workshop: 0 },
-    provenance: { wiki: true, api: true }
   },
   {
     id: 'item-pistol-rare',
@@ -77,8 +67,6 @@ const ITEMS: ItemRecord[] = [
     rarity: 'Rare Weapon',
     sell: 95,
     recycle: [],
-    needsTotals: { quests: 0, workshop: 0 },
-    provenance: { wiki: true, api: true }
   },
   {
     id: 'item-lmg-uncommon',
@@ -88,8 +76,6 @@ const ITEMS: ItemRecord[] = [
     rarity: 'Uncommon Weapon',
     sell: 105,
     recycle: [],
-    needsTotals: { quests: 0, workshop: 0 },
-    provenance: { wiki: true, api: true }
   },
   {
     id: 'item-handcannon',
@@ -99,8 +85,6 @@ const ITEMS: ItemRecord[] = [
     rarity: 'Uncommon Weapon',
     sell: 100,
     recycle: [],
-    needsTotals: { quests: 0, workshop: 0 },
-    provenance: { wiki: true, api: true }
   },
   {
     id: 'item-kettle-i',
@@ -110,8 +94,6 @@ const ITEMS: ItemRecord[] = [
     rarity: 'Common Weapon',
     sell: 90,
     recycle: [],
-    needsTotals: { quests: 0, workshop: 0 },
-    provenance: { wiki: true, api: true }
   },
   {
     id: 'item-kettle-ii',
@@ -121,8 +103,6 @@ const ITEMS: ItemRecord[] = [
     rarity: 'Common Weapon',
     sell: 90,
     recycle: [],
-    needsTotals: { quests: 0, workshop: 0 },
-    provenance: { wiki: true, api: true }
   },
   {
     id: 'item-kettle-iii',
@@ -132,8 +112,6 @@ const ITEMS: ItemRecord[] = [
     rarity: 'Common Weapon',
     sell: 90,
     recycle: [],
-    needsTotals: { quests: 0, workshop: 0 },
-    provenance: { wiki: true, api: true }
   },
   {
     id: 'item-kettle-iv',
@@ -143,8 +121,6 @@ const ITEMS: ItemRecord[] = [
     rarity: 'Common Weapon',
     sell: 90,
     recycle: [],
-    needsTotals: { quests: 0, workshop: 0 },
-    provenance: { wiki: true, api: true }
   },
   {
     id: 'item-keycard',
@@ -154,8 +130,6 @@ const ITEMS: ItemRecord[] = [
     rarity: 'Uncommon Key',
     sell: 20,
     recycle: [],
-    needsTotals: { quests: 0, workshop: 0 },
-    provenance: { wiki: true, api: true }
   },
   {
     id: 'item-mod-epic',
@@ -165,8 +139,6 @@ const ITEMS: ItemRecord[] = [
     rarity: 'Epic Component',
     sell: 60,
     recycle: [],
-    needsTotals: { quests: 0, workshop: 0 },
-    provenance: { wiki: true, api: true }
   },
   {
     id: 'item-mod-rare',
@@ -176,8 +148,6 @@ const ITEMS: ItemRecord[] = [
     rarity: 'Rare Component',
     sell: 55,
     recycle: [],
-    needsTotals: { quests: 0, workshop: 0 },
-    provenance: { wiki: true, api: true }
   },
   {
     id: 'item-topside-rare',
@@ -187,8 +157,6 @@ const ITEMS: ItemRecord[] = [
     rarity: 'Rare Material',
     sell: 40,
     recycle: [],
-    needsTotals: { quests: 0, workshop: 0 },
-    provenance: { wiki: true, api: true }
   },
   {
     id: 'item-refined-epic',
@@ -198,8 +166,6 @@ const ITEMS: ItemRecord[] = [
     rarity: 'Epic Material',
     sell: 60,
     recycle: [],
-    needsTotals: { quests: 0, workshop: 0 },
-    provenance: { wiki: true, api: true }
   },
   {
     id: 'item-nature-common',
@@ -209,8 +175,6 @@ const ITEMS: ItemRecord[] = [
     rarity: 'Common Trinket',
     sell: 15,
     recycle: [],
-    needsTotals: { quests: 0, workshop: 0 },
-    provenance: { wiki: true, api: true }
   },
   {
     id: 'item-trinket-rare',
@@ -220,8 +184,6 @@ const ITEMS: ItemRecord[] = [
     rarity: 'Rare Trinket',
     sell: 25,
     recycle: [],
-    needsTotals: { quests: 0, workshop: 0 },
-    provenance: { wiki: true, api: true }
   },
   {
     id: 'item-cloak',
@@ -231,8 +193,6 @@ const ITEMS: ItemRecord[] = [
     rarity: 'Epic Utility',
     sell: 150,
     recycle: [],
-    needsTotals: { quests: 0, workshop: 0 },
-    provenance: { wiki: true, api: true }
   },
   {
     id: 'item-gas-grenade',
@@ -242,8 +202,6 @@ const ITEMS: ItemRecord[] = [
     rarity: 'Rare Utility',
     sell: 120,
     recycle: [],
-    needsTotals: { quests: 0, workshop: 0 },
-    provenance: { wiki: true, api: true }
   },
   {
     id: 'item-adrenaline',
@@ -253,8 +211,6 @@ const ITEMS: ItemRecord[] = [
     rarity: 'Uncommon Utility',
     sell: 90,
     recycle: [],
-    needsTotals: { quests: 0, workshop: 0 },
-    provenance: { wiki: true, api: true }
   },
   {
     id: 'item-vita-spray',
@@ -264,8 +220,6 @@ const ITEMS: ItemRecord[] = [
     rarity: 'Uncommon Utility',
     sell: 85,
     recycle: [],
-    needsTotals: { quests: 0, workshop: 0 },
-    provenance: { wiki: true, api: true }
   },
   {
     id: 'item-bandage',
@@ -275,8 +229,6 @@ const ITEMS: ItemRecord[] = [
     rarity: 'Common Utility',
     sell: 50,
     recycle: [],
-    needsTotals: { quests: 0, workshop: 0 },
-    provenance: { wiki: true, api: true }
   },
   {
     id: 'item-barricade-kit',
@@ -286,8 +238,6 @@ const ITEMS: ItemRecord[] = [
     rarity: 'Uncommon Utility',
     sell: 70,
     recycle: [],
-    needsTotals: { quests: 0, workshop: 0 },
-    provenance: { wiki: true, api: true }
   }
 ];
 
