@@ -275,6 +275,7 @@ export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
 
   const nameLookup = buildItemNameLookup(rawItems, provisionalItems);
   const normalizedMap = new Map<string, ItemRecord>();
+  const craftDependencies = new Map<string, Set<string>>();
 
   for (const raw of rawItems) {
     const itemId = toItemId(raw.id);
@@ -285,6 +286,10 @@ export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
     const craftsRecipe = raw.recipe ?? raw.craftMaterials ?? raw.crafting;
     const notes = englishText(raw.description)?.trim();
     const craftsEntries = convertRecipeEntries(craftsRecipe, nameLookup);
+    const dependencySet = new Set<string>();
+    for (const entry of craftsEntries) {
+      dependencySet.add(entry.itemId);
+    }
 
     const record: ItemRecord = {
       id: itemId,
@@ -301,6 +306,78 @@ export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
     };
 
     normalizedMap.set(itemId, record);
+    craftDependencies.set(itemId, dependencySet);
+  }
+
+  const missingCraftReferences: Array<{ productId: string; materialId: string }> = [];
+  for (const [productId, dependencies] of craftDependencies.entries()) {
+    for (const materialId of dependencies) {
+      if (!normalizedMap.has(materialId)) {
+        missingCraftReferences.push({ productId, materialId });
+      }
+    }
+  }
+
+  if (missingCraftReferences.length > 0) {
+    const sample = missingCraftReferences
+      .slice(0, 5)
+      .map(({ productId, materialId }) => `${productId} -> ${materialId}`);
+    console.warn(
+      `[pipeline] Missing craft material references detected for ${missingCraftReferences.length} item(s).`,
+      sample
+    );
+  }
+
+  const cycleSignatures = new Set<string>();
+  const cyclePaths: string[][] = [];
+  const visitState = new Map<string, 'visiting' | 'visited'>();
+
+  const dfs = (node: string, path: string[]) => {
+    const state = visitState.get(node);
+    if (state === 'visiting') {
+      const cycleStart = path.indexOf(node);
+      if (cycleStart !== -1) {
+        const cycle = [...path.slice(cycleStart), node];
+        const signature = cycle.join(' -> ');
+        if (!cycleSignatures.has(signature)) {
+          cycleSignatures.add(signature);
+          cyclePaths.push(cycle);
+        }
+      }
+      return;
+    }
+    if (state === 'visited') {
+      return;
+    }
+
+    visitState.set(node, 'visiting');
+    path.push(node);
+
+    for (const dependency of craftDependencies.get(node) ?? []) {
+      if (!normalizedMap.has(dependency)) continue;
+      dfs(dependency, path);
+    }
+
+    path.pop();
+    visitState.set(node, 'visited');
+  };
+
+  for (const itemId of craftDependencies.keys()) {
+    if (!visitState.has(itemId)) {
+      dfs(itemId, []);
+    }
+  }
+
+  if (cyclePaths.length > 0) {
+    const sample = cyclePaths
+      .slice(0, 5)
+      .map((cycle) => cycle.join(' -> '));
+    console.warn(
+      `[pipeline] Detected ${cyclePaths.length} circular crafting dependenc${
+        cyclePaths.length === 1 ? 'y' : 'ies'
+      }.`,
+      sample
+    );
   }
 
   const normalized = Array.from(normalizedMap.values());
@@ -308,6 +385,9 @@ export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
   const craftsIntoMap = new Map<string, { productId: string; productName: string }[]>();
   for (const item of normalized) {
     for (const requirement of item.craftsFrom ?? []) {
+      if (!normalizedMap.has(requirement.itemId)) {
+        continue;
+      }
       const list = craftsIntoMap.get(requirement.itemId) ?? [];
       if (!list.some((entry) => entry.productId === item.id)) {
         list.push({ productId: item.id, productName: item.name });
@@ -766,6 +846,8 @@ export const loadCanonicalData = async (
     if (request.chains || request.quests) {
       result.chains = chains;
     }
+  } else if (request.chains) {
+    result.chains = [];
   }
 
   if (includeUpgrades && rawModules) {

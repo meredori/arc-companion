@@ -305,7 +305,6 @@ export interface PipelineFinalSummary {
   items: number;
   quests: number;
   upgrades: number;
-  vendors: number;
   chains: number;
   updatedAt: string | null;
 }

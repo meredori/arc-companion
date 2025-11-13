@@ -29,7 +29,7 @@ const auxiliary = await readStage('pass-d');
 const quests = [];
 const chains = [];
 const upgrades = [];
-const vendors = [];
+let ignoredVendors = 0;
 
 for (const record of auxiliary) {
   if (record.type === 'quest') {
@@ -39,7 +39,7 @@ for (const record of auxiliary) {
   } else if (record.type === 'upgrade') {
     upgrades.push(record.data);
   } else if (record.type === 'vendor') {
-    vendors.push(record.data);
+    ignoredVendors += 1;
   }
 }
 
@@ -83,7 +83,6 @@ const summary = {
   items: finalItems.length,
   quests: quests.length,
   upgrades: upgrades.length,
-  vendors: vendors.length,
   chains: chains.length
 };
 
@@ -91,13 +90,15 @@ if (dryRun) {
   console.log('Finalization dry run complete. Summary:');
   console.table(summary);
   console.log(`Conflicts resolved: ${conflictLog.length}`);
+  if (ignoredVendors > 0) {
+    console.warn(`Ignored ${ignoredVendors} vendor record(s) during finalization.`);
+  }
   process.exit(0);
 }
 
 await writeJson(resolveStaticPath('items.json'), finalItems);
 await writeJson(resolveStaticPath('quests.json'), quests);
 await writeJson(resolveStaticPath('workbench-upgrades.json'), upgrades);
-await writeJson(resolveStaticPath('vendors.json'), vendors);
 await writeJson(resolveStaticPath('chains.json'), chains);
 
 await updatePassMeta('E', {
@@ -110,7 +111,7 @@ await updatePassMeta('E', {
 
 await updatePassMeta('F', {
   batches: 1,
-  records: finalItems.length + quests.length + upgrades.length + vendors.length + chains.length,
+  records: finalItems.length + quests.length + upgrades.length + chains.length,
   lastRunAt: finalizedAt,
   approved: true,
   notes: 'Canonical artifacts written to static/data'
@@ -120,3 +121,6 @@ await updateFinalMeta({ ...summary });
 
 console.log('Pass F complete. Final artifacts written to static/data/.');
 console.log(`Conflicts resolved: ${conflictLog.length}`);
+if (ignoredVendors > 0) {
+  console.warn(`Ignored ${ignoredVendors} vendor record(s) during finalization.`);
+}
