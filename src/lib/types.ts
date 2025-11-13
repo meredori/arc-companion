@@ -292,26 +292,3 @@ export interface RunTipContext {
   outstandingNeeds: number;
 }
 
-export interface ImportPassStatus {
-  label: string;
-  batches: number;
-  records: number;
-  lastRunAt: string | null;
-  approved: boolean;
-  notes: string | null;
-}
-
-export interface PipelineFinalSummary {
-  items: number;
-  quests: number;
-  upgrades: number;
-  chains: number;
-  updatedAt: string | null;
-}
-
-export interface PipelineMeta {
-  version: number;
-  generatedAt: string | null;
-  passes: Record<string, ImportPassStatus>;
-  final: PipelineFinalSummary;
-}

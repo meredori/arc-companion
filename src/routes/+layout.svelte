@@ -16,8 +16,7 @@
     { href: '/blueprints', label: 'Blueprints' },
     { href: '/run', label: 'Run' },
     { href: '/runs', label: 'Runs' },
-    { href: '/previews', label: 'Previews' },
-    { href: '/admin', label: 'Admin' }
+    { href: '/previews', label: 'Previews' }
   ];
 
   const stripBase = (pathname: string) => {
