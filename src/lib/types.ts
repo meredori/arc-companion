@@ -1,4 +1,5 @@
 export type RecommendationAction = 'save' | 'keep' | 'salvage' | 'sell';
+export type RecommendationSort = 'category' | 'alphabetical';
 
 export interface DataProvenance {
   wiki: boolean;
@@ -289,6 +290,7 @@ export interface AppSettings {
   approvalToken?: string;
   alwaysKeepCategories: string[];
   ignoredWantCategories: string[];
+  recommendationSort: RecommendationSort;
 }
 
 export interface RecommendationContext {

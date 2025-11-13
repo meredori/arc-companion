@@ -9,6 +9,7 @@ import type {
   QuestProgress,
   RecommendationAction,
   RecommendationContext,
+  RecommendationSort,
   RecommendationWishlistSource,
   RunLogEntry,
   UpgradePack,
@@ -414,8 +415,10 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
 
 export function recommendItemsMatching(
   query: string,
-  context: RecommendationContext
+  context: RecommendationContext,
+  options?: { sortMode?: RecommendationSort }
 ): ItemRecommendation[] {
+  const sortMode = options?.sortMode ?? 'category';
   const normalized = query.trim().toLowerCase();
   const ignoredCategorySet = new Set(
     context.ignoredCategories
@@ -483,6 +486,12 @@ export function recommendItemsMatching(
     const benchKey = QUICK_USE_BENCH_BY_SLUG.get(recommendation.slug) ?? 'none';
     return QUICK_USE_BENCH_LOOKUP.get(benchKey) ?? QUICK_USE_BENCH_PRIORITY.length;
   };
+
+  if (sortMode === 'alphabetical') {
+    return recommendations.sort((a, b) =>
+      a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+    );
+  }
 
   return recommendations.sort((a, b) => {
     const rankDiff = categoryRank(a.category) - categoryRank(b.category);
