@@ -84,9 +84,9 @@ and the wiki dumps:
 - `static/data/raw/projects.json`
 
 At runtime, `src/lib/server/pipeline.ts` normalizes these feeds (slugging IDs, mapping recipes to
-`craftsFrom`, resolving local image paths, deriving quest chains, etc.) and combines them with the
-legacy fallbacks in `src/lib/server/fallback/`. Any SvelteKit load that previously fetched
-`static/data/*.json` now calls the pipeline helper so the UI always works directly off the raw dumps.
+`craftsFrom`, resolving local image paths, deriving quest chains, etc.). Any SvelteKit load that
+previously fetched `static/data/*.json` now calls the pipeline helper so the UI always works directly
+off the raw dumps.
 Commit updates to the raw files whenever a new export arrives.
 
 ### Workbench upgrade capture

@@ -13,18 +13,8 @@ import type {
   Quest,
   QuestChain,
   UpgradePack,
-  Vendor,
   PipelineMeta
 } from '$lib/types';
-
-import {
-  fallbackChains,
-  fallbackItems,
-  fallbackProjects,
-  fallbackQuests,
-  fallbackUpgradePacks,
-  fallbackVendors
-} from './fallback';
 
 const execFileAsync = promisify(execFile);
 
@@ -139,15 +129,13 @@ const localImageNames: Set<string> = (() => {
   }
 })();
 
-const imageFor = (source: string | null | undefined, fallback: string | null | undefined): string | null => {
-  if (source) {
-    const filename = path.basename(source);
-    if (localImageNames.has(filename)) {
-      return `/images/items/${filename}`;
-    }
-    return source;
+const resolveImageUrl = (source: string | null | undefined): string | null => {
+  if (!source) return null;
+  const filename = path.basename(source);
+  if (localImageNames.has(filename)) {
+    return `/images/items/${filename}`;
   }
-  return fallback ?? null;
+  return source;
 };
 
 interface RawItem {
@@ -219,10 +207,6 @@ const buildItemNameLookup = (rawItems: RawItem[], normalizedItems: ItemRecord[])
     lookup.set(item.id, item.name);
     lookup.set(item.id.replace(/^item[_-]/, ''), item.name);
   }
-  for (const item of fallbackItems) {
-    lookup.set(item.id, item.name);
-    lookup.set(item.id.replace(/^item[_-]/, ''), item.name);
-  }
   return lookup;
 };
 
@@ -266,67 +250,157 @@ const convertRecycleEntries = (
 };
 
 export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
-  const fallbackMap = new Map(fallbackItems.map((item) => [item.id, item]));
-  const normalized: ItemRecord[] = [];
-
-  // First pass to build lookup
   const provisionalItems: ItemRecord[] = [];
+
   for (const raw of rawItems) {
     const itemId = toItemId(raw.id);
     if (!itemId) continue;
-    const fallback = fallbackMap.get(itemId);
-    const englishName = englishText(raw.name, fallback?.name ?? raw.id);
-    const slug = slugify(raw.id.replace(/_/g, '-')) || slugify(englishName) || fallback?.slug || englishName;
+    const englishName = englishText(raw.name, raw.id);
+    const slug = slugify(raw.id.replace(/_/g, '-')) || slugify(englishName) || englishName;
 
     provisionalItems.push({
       id: itemId,
       name: englishName,
       slug,
-      rarity: raw.rarity ?? fallback?.rarity ?? null,
-      category: raw.type ?? fallback?.category ?? null,
-      sell: typeof raw.value === 'number' ? raw.value : fallback?.sell ?? 0,
+      rarity: raw.rarity ?? null,
+      category: raw.type ?? null,
+      sell: typeof raw.value === 'number' ? raw.value : 0,
       recycle: [],
-      craftsFrom: fallback?.craftsFrom ?? [],
-      craftsInto: fallback?.craftsInto ?? [],
-      notes: fallback?.notes ?? null,
-      imageUrl: imageFor(raw.imageFilename, fallback?.imageUrl)
+      craftsFrom: [],
+      craftsInto: [],
+      notes: englishText(raw.description)?.trim() || null,
+      imageUrl: resolveImageUrl(raw.imageFilename)
     });
   }
 
   const nameLookup = buildItemNameLookup(rawItems, provisionalItems);
+  const normalizedMap = new Map<string, ItemRecord>();
+  const craftDependencies = new Map<string, Set<string>>();
 
   for (const raw of rawItems) {
     const itemId = toItemId(raw.id);
     if (!itemId) continue;
-    const fallback = fallbackMap.get(itemId);
-    const englishName = englishText(raw.name, fallback?.name ?? raw.id);
-    const slug = slugify(raw.id.replace(/_/g, '-')) || slugify(englishName) || fallback?.slug || englishName;
+    const englishName = englishText(raw.name, raw.id);
+    const slug = slugify(raw.id.replace(/_/g, '-')) || slugify(englishName) || englishName;
     const recycleSource = raw.recyclesInto ?? raw.recyleInto ?? raw.salvagesInto;
     const craftsRecipe = raw.recipe ?? raw.craftMaterials ?? raw.crafting;
-    const notes = englishText(raw.description, fallback?.notes ?? null)?.trim();
+    const notes = englishText(raw.description)?.trim();
     const craftsEntries = convertRecipeEntries(craftsRecipe, nameLookup);
+    const dependencySet = new Set<string>();
+    for (const entry of craftsEntries) {
+      dependencySet.add(entry.itemId);
+    }
 
     const record: ItemRecord = {
       id: itemId,
       name: englishName,
       slug,
-      rarity: raw.rarity ?? fallback?.rarity ?? null,
-      category: raw.type ?? fallback?.category ?? null,
-      imageUrl: imageFor(raw.imageFilename, fallback?.imageUrl),
-      sell: typeof raw.value === 'number' ? raw.value : fallback?.sell ?? 0,
+      rarity: raw.rarity ?? null,
+      category: raw.type ?? null,
+      imageUrl: resolveImageUrl(raw.imageFilename),
+      sell: typeof raw.value === 'number' ? raw.value : 0,
       recycle: convertRecycleEntries(recycleSource, nameLookup),
-      craftsFrom: craftsEntries.length > 0 ? craftsEntries : fallback?.craftsFrom ?? [],
-      craftsInto: fallback?.craftsInto ?? [],
-      notes: notes || fallback?.notes || null
+      craftsFrom: craftsEntries,
+      craftsInto: [],
+      notes: notes || null
     };
 
-    normalized.push(record);
+    normalizedMap.set(itemId, record);
+    craftDependencies.set(itemId, dependencySet);
   }
 
-  // Ensure fallback-only records remain available
-  for (const fallback of fallbackItems) {
-    if (normalized.some((item) => item.id === fallback.id)) continue;
-    normalized.push(fallback);
+  const missingCraftReferences: Array<{ productId: string; materialId: string }> = [];
+  for (const [productId, dependencies] of craftDependencies.entries()) {
+    for (const materialId of dependencies) {
+      if (!normalizedMap.has(materialId)) {
+        missingCraftReferences.push({ productId, materialId });
+      }
+    }
+  }
+
+  if (missingCraftReferences.length > 0) {
+    const sample = missingCraftReferences
+      .slice(0, 5)
+      .map(({ productId, materialId }) => `${productId} -> ${materialId}`);
+    console.warn(
+      `[pipeline] Missing craft material references detected for ${missingCraftReferences.length} item(s).`,
+      sample
+    );
+  }
+
+  const cycleSignatures = new Set<string>();
+  const cyclePaths: string[][] = [];
+  const visitState = new Map<string, 'visiting' | 'visited'>();
+
+  const dfs = (node: string, path: string[]) => {
+    const state = visitState.get(node);
+    if (state === 'visiting') {
+      const cycleStart = path.indexOf(node);
+      if (cycleStart !== -1) {
+        const cycle = [...path.slice(cycleStart), node];
+        const signature = cycle.join(' -> ');
+        if (!cycleSignatures.has(signature)) {
+          cycleSignatures.add(signature);
+          cyclePaths.push(cycle);
+        }
+      }
+      return;
+    }
+    if (state === 'visited') {
+      return;
+    }
+
+    visitState.set(node, 'visiting');
+    path.push(node);
+
+    for (const dependency of craftDependencies.get(node) ?? []) {
+      if (!normalizedMap.has(dependency)) continue;
+      dfs(dependency, path);
+    }
+
+    path.pop();
+    visitState.set(node, 'visited');
+  };
+
+  for (const itemId of craftDependencies.keys()) {
+    if (!visitState.has(itemId)) {
+      dfs(itemId, []);
+    }
+  }
+
+  if (cyclePaths.length > 0) {
+    const sample = cyclePaths
+      .slice(0, 5)
+      .map((cycle) => cycle.join(' -> '));
+    console.warn(
+      `[pipeline] Detected ${cyclePaths.length} circular crafting dependenc${
+        cyclePaths.length === 1 ? 'y' : 'ies'
+      }.`,
+      sample
+    );
+  }
+
+  const normalized = Array.from(normalizedMap.values());
+
+  const craftsIntoMap = new Map<string, { productId: string; productName: string }[]>();
+  for (const item of normalized) {
+    for (const requirement of item.craftsFrom ?? []) {
+      if (!normalizedMap.has(requirement.itemId)) {
+        continue;
+      }
+      const list = craftsIntoMap.get(requirement.itemId) ?? [];
+      if (!list.some((entry) => entry.productId === item.id)) {
+        list.push({ productId: item.id, productName: item.name });
+      }
+      craftsIntoMap.set(requirement.itemId, list);
+    }
+  }
+
+  for (const item of normalized) {
+    item.craftsInto = (craftsIntoMap.get(item.id) ?? []).map((entry) => ({
+      productId: entry.productId,
+      productName: entry.productName
+    }));
   }
 
   normalized.sort((a, b) => a.name.localeCompare(b.name));
@@ -358,8 +432,7 @@ export const normalizeQuests = (
   options: NormalizeQuestOptions = {}
 ): QuestNormalizationResult => {
   const itemNameLookup =
-    options.itemNameLookup ?? buildItemNameLookup(options.rawItems ?? [], options.items ?? fallbackItems);
-  const fallbackMap = new Map(fallbackQuests.map((quest) => [quest.id, quest]));
+    options.itemNameLookup ?? buildItemNameLookup(options.rawItems ?? [], options.items ?? []);
 
   const questEntries = rawQuests
     .map((quest) => ({ quest, questId: canonicalQuestId(quest.id) }))
@@ -567,7 +640,6 @@ export const normalizeQuests = (
   const quests: Quest[] = [];
 
   for (const { quest, questId } of questEntries) {
-    const fallback = fallbackMap.get(questId);
     const rewards: Quest['rewards'] = [];
 
     if (Array.isArray(quest.rewardItemIds)) {
@@ -607,39 +679,32 @@ export const normalizeQuests = (
 
     quests.push({
       id: questId,
-      name: englishText(quest.name, fallback?.name ?? questId),
-      chainId: chainAssignments.get(questId)?.chainId ?? fallback?.chainId,
-      chainStage: stageByQuestId.get(questId) ?? fallback?.chainStage ?? null,
-      giver: quest.trader ?? fallback?.giver ?? null,
-      items: items.length > 0 ? items : fallback?.items ?? [],
-      rewards: rewards.length > 0 ? rewards : fallback?.rewards ?? [],
-      mapHints: objectives.length > 0 ? objectives : fallback?.mapHints ?? [],
+      name: englishText(quest.name, questId),
+      chainId: chainAssignments.get(questId)?.chainId,
+      chainStage: stageByQuestId.get(questId) ?? null,
+      giver: quest.trader ?? null,
+      items,
+      rewards,
+      mapHints: objectives,
       previousQuestIds: Array.isArray(quest.previousQuestIds)
         ? quest.previousQuestIds
             .map((value) => canonicalQuestId(value))
             .filter((value): value is string => Boolean(value))
-        : fallback?.previousQuestIds ?? [],
+        : [],
       nextQuestIds: Array.isArray(quest.nextQuestIds)
         ? quest.nextQuestIds
             .map((value) => canonicalQuestId(value))
             .filter((value): value is string => Boolean(value))
-        : fallback?.nextQuestIds ?? []
+        : []
     });
-
-    fallbackMap.delete(questId);
-  }
-
-  for (const leftover of fallbackMap.values()) {
-    quests.push(leftover);
   }
 
   quests.sort((a, b) => a.name.localeCompare(b.name));
 
-  return { quests, chains: chains.length > 0 ? chains : fallbackChains };
+  return { quests, chains };
 };
 
 export const normalizeUpgrades = (rawModules: RawModule[]): UpgradePack[] => {
-  const fallbackMap = new Map(fallbackUpgradePacks.map((upgrade) => [upgrade.id, upgrade]));
   const modules: UpgradePack[] = [];
 
   for (const module of rawModules) {
@@ -668,13 +733,7 @@ export const normalizeUpgrades = (rawModules: RawModule[]): UpgradePack[] => {
         level: level.level ?? 0,
         items
       });
-
-      fallbackMap.delete(upgradeId);
     }
-  }
-
-  for (const leftover of fallbackMap.values()) {
-    modules.push(leftover);
   }
 
   modules.sort((a, b) => {
@@ -688,7 +747,6 @@ export const normalizeUpgrades = (rawModules: RawModule[]): UpgradePack[] => {
 };
 
 export const normalizeProjects = (rawProjects: RawProject[]): Project[] => {
-  const fallbackMap = new Map(fallbackProjects.map((project) => [project.id, project]));
   const projects: Project[] = [];
 
   for (const project of rawProjects ?? []) {
@@ -720,12 +778,6 @@ export const normalizeProjects = (rawProjects: RawProject[]): Project[] => {
       description: englishText(project.description, null) || null,
       phases: normalizedPhases
     });
-
-    fallbackMap.delete(projectId);
-  }
-
-  for (const leftover of fallbackMap.values()) {
-    projects.push(leftover);
   }
 
   projects.sort((a, b) => a.name.localeCompare(b.name));
@@ -738,7 +790,6 @@ export interface PipelineRequest {
   chains?: boolean;
   upgrades?: boolean;
   projects?: boolean;
-  vendors?: boolean;
 }
 
 export interface PipelineResult {
@@ -747,7 +798,6 @@ export interface PipelineResult {
   chains?: QuestChain[];
   workbenchUpgrades?: UpgradePack[];
   projects?: Project[];
-  vendors?: Vendor[];
 }
 
 export const loadCanonicalData = async (
@@ -759,7 +809,6 @@ export const loadCanonicalData = async (
   const includeQuests = request.quests || request.chains || false;
   const includeUpgrades = request.upgrades ?? false;
   const includeProjects = request.projects ?? false;
-  const includeVendors = request.vendors ?? false;
 
   const [rawItems, rawQuests, rawModules, rawProjects] = await Promise.all([
     includeItems
@@ -789,7 +838,7 @@ export const loadCanonicalData = async (
   if (includeQuests && rawQuests) {
     const { quests, chains } = normalizeQuests(rawQuests, {
       rawItems: rawItems ?? undefined,
-      items: items ?? fallbackItems
+      items: items ?? []
     });
     if (request.quests) {
       result.quests = quests;
@@ -798,28 +847,16 @@ export const loadCanonicalData = async (
       result.chains = chains;
     }
   } else if (request.chains) {
-    result.chains = fallbackChains;
+    result.chains = [];
   }
 
   if (includeUpgrades && rawModules) {
     result.workbenchUpgrades = normalizeUpgrades(rawModules);
-  } else if (request.upgrades) {
-    result.workbenchUpgrades = fallbackUpgradePacks;
   }
 
   if (includeProjects && rawProjects) {
     result.projects = normalizeProjects(rawProjects);
-  } else if (request.projects) {
-    result.projects = fallbackProjects;
-  }
-
-  if (includeVendors) {
-    result.vendors = fallbackVendors;
-  } else if (request.vendors) {
-    result.vendors = fallbackVendors;
   }
 
   return result;
 };
-
-export const getVendors = (): Vendor[] => fallbackVendors;

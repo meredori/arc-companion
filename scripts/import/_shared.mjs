@@ -24,7 +24,6 @@ const defaultMeta = {
     items: 0,
     quests: 0,
     upgrades: 0,
-    vendors: 0,
     chains: 0,
     updatedAt: null
   }
