@@ -84,6 +84,41 @@
 
   let hideCompleted = false;
 
+  const sectionControls = [
+    { id: 'quests', label: 'Quest checklist' },
+    { id: 'workbench-upgrades', label: 'Workbench upgrades' },
+    { id: 'expedition-projects', label: 'Expedition projects' },
+    { id: 'blueprint-catalog', label: 'Blueprint catalog' }
+  ] as const;
+
+  type SectionKey = (typeof sectionControls)[number]['id'];
+
+  let collapsedSections: Record<SectionKey, boolean> = {
+    quests: false,
+    'workbench-upgrades': false,
+    'expedition-projects': false,
+    'blueprint-catalog': false
+  };
+
+  let jumpTarget: SectionKey | '' = '';
+
+  const scrollToSection = (id: SectionKey) => {
+    if (typeof document === 'undefined') return;
+    const node = document.getElementById(id);
+    node?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const toggleSectionVisibility = (id: SectionKey) => {
+    collapsedSections = { ...collapsedSections, [id]: !collapsedSections[id] };
+  };
+
+  const handleJumpChange = (event: Event & { currentTarget: HTMLSelectElement }) => {
+    const value = event.currentTarget.value as SectionKey | '';
+    if (!value) return;
+    scrollToSection(value);
+    jumpTarget = '';
+  };
+
   const questChecklist = derived(quests, ($quests) =>
     questDefs.map((quest) => {
       const progress = $quests.find((entry) => entry.id === quest.id);
@@ -419,7 +454,7 @@
     </p>
   </header>
 
-  <div class="mb-6 flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-slate-400">
+  <div class="mb-6 flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.3em] text-slate-400">
     <label class="inline-flex items-center gap-2">
       <input
         type="checkbox"
@@ -430,36 +465,80 @@
     </label>
   </div>
 
-  <section class="section-card space-y-6">
-    <div class="content-grid">
-      <QuestChecklist title="Quest completions" items={visibleQuestItems} on:toggle={toggleQuest} />
-      <TipsPanel heading="Quest tracking tips" tips={[
-        'Toggle objectives as soon as you hand in a quest to free up the required loot.',
-        'Use this checklist alongside the Workshop section to know what still needs crafting.'
-      ]} />
-    </div>
+  <div class="mb-6 flex flex-wrap items-center gap-3 text-sm text-slate-300">
+    <label for="jump-to-section" class="text-xs uppercase tracking-[0.3em] text-slate-400">
+      Jump to section
+    </label>
+    <select
+      id="jump-to-section"
+      class="min-w-[200px] rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white focus:border-sky-500 focus:outline-none"
+      bind:value={jumpTarget}
+      on:change={handleJumpChange}
+    >
+      <option value="">Select…</option>
+      {#each sectionControls as section}
+        <option value={section.id}>{section.label}</option>
+      {/each}
+    </select>
+  </div>
+
+  <section id="quests" class="section-card space-y-6">
+    <header class="flex flex-wrap items-center justify-between gap-3">
+      <h2 class="text-2xl font-semibold text-white">Quest checklist</h2>
+      <button
+        type="button"
+        class="rounded-full border border-slate-700 px-3 py-1 text-[11px] uppercase tracking-widest text-slate-300 transition hover:border-slate-500"
+        on:click={() => toggleSectionVisibility('quests')}
+        aria-expanded={!collapsedSections.quests}
+        aria-controls="quests-content"
+      >
+        {collapsedSections.quests ? 'Show section' : 'Hide section'}
+      </button>
+    </header>
+    {#if !collapsedSections.quests}
+      <div id="quests-content" class="content-grid">
+        <QuestChecklist title="Quest completions" items={visibleQuestItems} on:toggle={toggleQuest} />
+        <TipsPanel heading="Quest tracking tips" tips={[
+          'Toggle objectives as soon as you hand in a quest to free up the required loot.',
+          'Use this checklist alongside the Workshop section to know what still needs crafting.'
+        ]} />
+      </div>
+    {/if}
   </section>
 
-  <section class="section-card space-y-6">
-    <header>
-      <h2 class="text-2xl font-semibold text-white">Workbench upgrades</h2>
-      <p class="text-sm text-slate-400">
-        Mark each workbench and level as soon as it finishes upgrading. Completed levels remove their
-        materials from keep or save recommendations.
-      </p>
+  <section id="workbench-upgrades" class="section-card space-y-6">
+    <header class="flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <h2 class="text-2xl font-semibold text-white">Workbench upgrades</h2>
+        <p class="text-sm text-slate-400">
+          Mark each workbench and level as soon as it finishes upgrading. Completed levels remove their
+          materials from keep or save recommendations.
+        </p>
+      </div>
+      <button
+        type="button"
+        class="rounded-full border border-slate-700 px-3 py-1 text-[11px] uppercase tracking-widest text-slate-300 transition hover:border-slate-500"
+        on:click={() => toggleSectionVisibility('workbench-upgrades')}
+        aria-expanded={!collapsedSections['workbench-upgrades']}
+        aria-controls="workbench-upgrades-content"
+      >
+        {collapsedSections['workbench-upgrades'] ? 'Show section' : 'Hide section'}
+      </button>
     </header>
-    <SearchBar
-      label="Find workbench or level"
-      placeholder="Search benches, levels, or required items"
-      value={workshopFilter}
-      on:input={({ detail }) => (workshopFilter = detail.value)}
-    />
-    <div class="space-y-4">
-      {#if filteredBenchGroups.length === 0}
-        <div class="rounded-2xl border border-dashed border-slate-800/70 bg-slate-950/60 p-6 text-sm text-slate-400">
-          No workbenches match “{workshopFilter}”. Try searching by bench name or component.
-        </div>
-      {:else}
+    {#if !collapsedSections['workbench-upgrades']}
+      <div id="workbench-upgrades-content" class="space-y-6">
+        <SearchBar
+          label="Find workbench or level"
+          placeholder="Search benches, levels, or required items"
+          value={workshopFilter}
+          on:input={({ detail }) => (workshopFilter = detail.value)}
+        />
+        <div class="space-y-4">
+          {#if filteredBenchGroups.length === 0}
+            <div class="rounded-2xl border border-dashed border-slate-800/70 bg-slate-950/60 p-6 text-sm text-slate-400">
+              No workbenches match “{workshopFilter}”. Try searching by bench name or component.
+            </div>
+          {:else}
         {#each filteredBenchGroups as bench}
           {#if bench.levels.filter((level) => !hideCompleted || !level.owned).length > 0}
           <article class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
@@ -533,172 +612,204 @@
           </article>
           {/if}
         {/each}
-      {/if}
-    </div>
-    <div class="rounded-2xl border border-slate-800/70 bg-slate-950/60 p-6 text-sm text-slate-300">
-      <p class="font-semibold text-white">Workbench progress</p>
-      {#if workshopSummary.totalLevels === 0}
-        <p class="mt-2 text-slate-400">No workbench upgrade data available. Paste new levels using the docs below.</p>
-      {:else}
-        <p class="mt-2">
-          {workshopSummary.ownedLevels} of {workshopSummary.totalLevels} levels marked as owned.
-        </p>
-        <p class="text-slate-400">
-          Highest owned level: {workshopSummary.highestOwned > 0 ? workshopSummary.highestOwned : 'None yet'}
-        </p>
-      {/if}
-    </div>
-    <TipsPanel heading="Workbench reminders" tips={workshopSummary.tips} />
-  </section>
-
-  <section class="section-card space-y-6">
-    <header>
-      <h2 class="text-2xl font-semibold text-white">Expedition projects</h2>
-      <p class="text-sm text-slate-400">
-        Track partial hand-ins for expedition phases. Items remain on the keep list until their phase
-        reaches full contribution.
-      </p>
-    </header>
-    {#if projects.length === 0}
-      <div class="rounded-2xl border border-dashed border-slate-800/70 bg-slate-950/60 p-6 text-sm text-slate-400">
-        No expedition project data available yet. Paste the latest feed via the import scripts to see
-        contribution tracking.
-      </div>
-    {:else}
-      <div class="space-y-4">
-        {#each projects as project}
-          {#if !hideCompleted || !projectCompleted($projectProgress, project)}
-            <article class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
-              <header class="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <h3 class="text-xl font-semibold text-white">{project.name}</h3>
-                  {#if project.description}
-                    <p class="text-sm text-slate-400">{project.description}</p>
-                  {/if}
-                </div>
-                <span class={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${projectCompleted($projectProgress, project) ? 'bg-emerald-500/20 text-emerald-200' : 'bg-slate-800 text-slate-200'}`}>
-                  {projectCompleted($projectProgress, project) ? 'Project complete' : 'In progress'}
-                </span>
-              </header>
-              <div class="mt-4 space-y-3">
-                {#each project.phases as phase}
-                  {#if !hideCompleted || !phaseCompleted($projectProgress, project.id, phase)}
-                    <div class="rounded-xl border border-slate-800/70 bg-slate-950/50 p-4 space-y-3">
-                      <div class="flex flex-wrap items-center justify-between gap-3">
-                        <div>
-                          <p class="text-sm uppercase tracking-widest text-slate-400">Phase {phase.order}</p>
-                          <p class="text-base font-semibold text-white">{phase.name}</p>
-                          {#if phase.description}
-                            <p class="text-xs text-slate-500">{phase.description}</p>
-                          {/if}
-                        </div>
-                        <div class="flex flex-wrap gap-2">
-                          <button
-                            type="button"
-                            class="rounded-full border border-slate-700 px-3 py-1 text-[11px] uppercase tracking-widest text-slate-300 hover:border-slate-500"
-                            on:click={() => resetPhaseProgress(project.id, phase)}
-                          >
-                            Reset
-                          </button>
-                          <button
-                            type="button"
-                            class="rounded-full border border-emerald-400/40 bg-emerald-500/10 px-3 py-1 text-[11px] uppercase tracking-widest text-emerald-200 hover:bg-emerald-500/20"
-                            on:click={() => markPhaseComplete(project.id, phase)}
-                          >
-                            Mark complete
-                          </button>
-                        </div>
-                      </div>
-                      <ul class="space-y-2 text-sm text-slate-300">
-                        {#each phase.requirements as requirement}
-                          {#if !hideCompleted || deliveredAmount($projectProgress, project.id, phase.id, requirement.itemId) < requirement.qty}
-                            <li class="flex flex-wrap items-center gap-3">
-                              <div class="flex-1">
-                                <p class="font-semibold text-white">{itemName(requirement.itemId)}</p>
-                                <p class="text-xs text-slate-500">
-                                  {deliveredAmount($projectProgress, project.id, phase.id, requirement.itemId)} / {requirement.qty}
-                                </p>
-                              </div>
-                              <input
-                                class="w-24 rounded-lg border border-slate-700 bg-slate-900 px-2 py-1 text-sm text-white focus:border-sky-500 focus:outline-none"
-                                type="number"
-                                min="0"
-                                max={requirement.qty}
-                                value={deliveredAmount($projectProgress, project.id, phase.id, requirement.itemId)}
-                                on:input={(event) =>
-                                  handleContributionInput(event, project.id, phase.id, requirement.itemId, requirement.qty)}
-                              />
-                            </li>
-                          {/if}
-                        {/each}
-                      </ul>
-                    </div>
-                  {/if}
-                {/each}
-              </div>
-            </article>
           {/if}
-        {/each}
-      </div>
-      <div class="rounded-2xl border border-slate-800/70 bg-slate-950/60 p-6 text-sm text-slate-300">
-        <p class="font-semibold text-white">Expedition progress</p>
-        <p class="mt-2">
-          {projectSummary.completedPhases} of {projectSummary.totalPhases} phases marked as complete.
-        </p>
+        </div>
+        <div class="rounded-2xl border border-slate-800/70 bg-slate-950/60 p-6 text-sm text-slate-300">
+          <p class="font-semibold text-white">Workbench progress</p>
+          {#if workshopSummary.totalLevels === 0}
+            <p class="mt-2 text-slate-400">No workbench upgrade data available. Paste new levels using the docs below.</p>
+          {:else}
+            <p class="mt-2">
+              {workshopSummary.ownedLevels} of {workshopSummary.totalLevels} levels marked as owned.
+            </p>
+            <p class="text-slate-400">
+              Highest owned level: {workshopSummary.highestOwned > 0 ? workshopSummary.highestOwned : 'None yet'}
+            </p>
+          {/if}
+        </div>
+        <TipsPanel heading="Workbench reminders" tips={workshopSummary.tips} />
       </div>
     {/if}
   </section>
 
-  <section class="section-card space-y-6">
-    <header>
-      <h2 class="text-2xl font-semibold text-white">Blueprint catalog</h2>
-      <p class="text-sm text-slate-400">
-        Ownership toggles mirror the workbench section above, but you can use this list to quickly
-        flip individual schematics across every bench.
-      </p>
+  <section id="expedition-projects" class="section-card space-y-6">
+    <header class="flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <h2 class="text-2xl font-semibold text-white">Expedition projects</h2>
+        <p class="text-sm text-slate-400">
+          Track partial hand-ins for expedition phases. Items remain on the keep list until their phase
+          reaches full contribution.
+        </p>
+      </div>
+      <button
+        type="button"
+        class="rounded-full border border-slate-700 px-3 py-1 text-[11px] uppercase tracking-widest text-slate-300 transition hover:border-slate-500"
+        on:click={() => toggleSectionVisibility('expedition-projects')}
+        aria-expanded={!collapsedSections['expedition-projects']}
+        aria-controls="expedition-projects-content"
+      >
+        {collapsedSections['expedition-projects'] ? 'Show section' : 'Hide section'}
+      </button>
     </header>
-    <SearchBar
-      label="Find blueprint"
-      placeholder="Search by name, rarity, or slug"
-      value={blueprintQuery}
-      on:input={({ detail }) => (blueprintQuery = detail.value)}
-    />
-    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      {#if filteredBlueprints.length === 0}
-        <div class="sm:col-span-2 lg:col-span-3 rounded-2xl border border-dashed border-slate-800/70 bg-slate-950/60 p-6 text-sm text-slate-400">
-          No blueprints match “{blueprintQuery}”.
-        </div>
-      {:else}
-        {#each filteredBlueprints as blueprint}
-          <button
-            type="button"
-            class={`rounded-2xl border px-4 py-3 text-left text-sm transition ${
-              blueprint.owned
-                ? 'border-emerald-500/50 bg-emerald-500/10 text-white'
-                : 'border-slate-800 bg-slate-900/50 text-slate-300 hover:border-slate-600'
-            }`}
-            on:click={() => toggleBlueprint(blueprint.entry)}
-          >
-            <p class="text-base font-semibold">{blueprint.name}</p>
-            <p class="text-xs uppercase tracking-widest text-slate-400">
-              {(blueprint.rarity ?? 'Unknown rarity')} · {(blueprint.category ?? 'Blueprint')}
-            </p>
-            <p class="mt-1 text-xs text-slate-400">
-              {blueprint.slug}
-              {#if typeof blueprint.sell === 'number'}
-                · Sell {blueprint.sell.toLocaleString()} coins
+    {#if !collapsedSections['expedition-projects']}
+      <div id="expedition-projects-content" class="space-y-6">
+        {#if projects.length === 0}
+          <div class="rounded-2xl border border-dashed border-slate-800/70 bg-slate-950/60 p-6 text-sm text-slate-400">
+            No expedition project data available yet. Paste the latest feed via the import scripts to see
+            contribution tracking.
+          </div>
+        {:else}
+          <div class="space-y-4">
+            {#each projects as project}
+              {#if !hideCompleted || !projectCompleted($projectProgress, project)}
+                <article class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+                  <header class="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <h3 class="text-xl font-semibold text-white">{project.name}</h3>
+                      {#if project.description}
+                        <p class="text-sm text-slate-400">{project.description}</p>
+                      {/if}
+                    </div>
+                    <span class={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${projectCompleted($projectProgress, project) ? 'bg-emerald-500/20 text-emerald-200' : 'bg-slate-800 text-slate-200'}`}>
+                      {projectCompleted($projectProgress, project) ? 'Project complete' : 'In progress'}
+                    </span>
+                  </header>
+                  <div class="mt-4 space-y-3">
+                    {#each project.phases as phase}
+                      {#if !hideCompleted || !phaseCompleted($projectProgress, project.id, phase)}
+                        <div class="rounded-xl border border-slate-800/70 bg-slate-950/50 p-4 space-y-3">
+                          <div class="flex flex-wrap items-center justify-between gap-3">
+                            <div>
+                              <p class="text-sm uppercase tracking-widest text-slate-400">Phase {phase.order}</p>
+                              <p class="text-base font-semibold text-white">{phase.name}</p>
+                              {#if phase.description}
+                                <p class="text-xs text-slate-500">{phase.description}</p>
+                              {/if}
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                              <button
+                                type="button"
+                                class="rounded-full border border-slate-700 px-3 py-1 text-[11px] uppercase tracking-widest text-slate-300 hover:border-slate-500"
+                                on:click={() => resetPhaseProgress(project.id, phase)}
+                              >
+                                Reset
+                              </button>
+                              <button
+                                type="button"
+                                class="rounded-full border border-emerald-400/40 bg-emerald-500/10 px-3 py-1 text-[11px] uppercase tracking-widest text-emerald-200 hover:bg-emerald-500/20"
+                                on:click={() => markPhaseComplete(project.id, phase)}
+                              >
+                                Mark complete
+                              </button>
+                            </div>
+                          </div>
+                          <ul class="space-y-2 text-sm text-slate-300">
+                            {#each phase.requirements as requirement}
+                              {#if !hideCompleted || deliveredAmount($projectProgress, project.id, phase.id, requirement.itemId) < requirement.qty}
+                                <li class="flex flex-wrap items-center gap-3">
+                                  <div class="flex-1">
+                                    <p class="font-semibold text-white">{itemName(requirement.itemId)}</p>
+                                    <p class="text-xs text-slate-500">
+                                      {deliveredAmount($projectProgress, project.id, phase.id, requirement.itemId)} / {requirement.qty}
+                                    </p>
+                                  </div>
+                                  <input
+                                    class="w-24 rounded-lg border border-slate-700 bg-slate-900 px-2 py-1 text-sm text-white focus:border-sky-500 focus:outline-none"
+                                    type="number"
+                                    min="0"
+                                    max={requirement.qty}
+                                    value={deliveredAmount($projectProgress, project.id, phase.id, requirement.itemId)}
+                                    on:input={(event) =>
+                                      handleContributionInput(event, project.id, phase.id, requirement.itemId, requirement.qty)}
+                                  />
+                                </li>
+                              {/if}
+                            {/each}
+                          </ul>
+                        </div>
+                      {/if}
+                    {/each}
+                  </div>
+                </article>
               {/if}
+            {/each}
+          </div>
+          <div class="rounded-2xl border border-slate-800/70 bg-slate-950/60 p-6 text-sm text-slate-300">
+            <p class="font-semibold text-white">Expedition progress</p>
+            <p class="mt-2">
+              {projectSummary.completedPhases} of {projectSummary.totalPhases} phases marked as complete.
             </p>
-            {#if blueprint.notes}
-              <p class="mt-2 text-xs text-slate-400">{blueprint.notes}</p>
-            {/if}
-            <p class="mt-3 text-[11px] uppercase tracking-widest">
-              {blueprint.owned ? 'Owned' : 'Not owned'}
-            </p>
-          </button>
-        {/each}
-      {/if}
-    </div>
-    <TipsPanel heading="Blueprint notes" tips={$blueprintSummary.tips} />
+          </div>
+        {/if}
+      </div>
+    {/if}
+  </section>
+
+  <section id="blueprint-catalog" class="section-card space-y-6">
+    <header class="flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <h2 class="text-2xl font-semibold text-white">Blueprint catalog</h2>
+        <p class="text-sm text-slate-400">
+          Ownership toggles mirror the workbench section above, but you can use this list to quickly
+          flip individual schematics across every bench.
+        </p>
+      </div>
+      <button
+        type="button"
+        class="rounded-full border border-slate-700 px-3 py-1 text-[11px] uppercase tracking-widest text-slate-300 transition hover:border-slate-500"
+        on:click={() => toggleSectionVisibility('blueprint-catalog')}
+        aria-expanded={!collapsedSections['blueprint-catalog']}
+        aria-controls="blueprint-catalog-content"
+      >
+        {collapsedSections['blueprint-catalog'] ? 'Show section' : 'Hide section'}
+      </button>
+    </header>
+    {#if !collapsedSections['blueprint-catalog']}
+      <div id="blueprint-catalog-content" class="space-y-6">
+        <SearchBar
+          label="Find blueprint"
+          placeholder="Search by name, rarity, or slug"
+          value={blueprintQuery}
+          on:input={({ detail }) => (blueprintQuery = detail.value)}
+        />
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {#if filteredBlueprints.length === 0}
+            <div class="sm:col-span-2 lg:col-span-3 rounded-2xl border border-dashed border-slate-800/70 bg-slate-950/60 p-6 text-sm text-slate-400">
+              No blueprints match “{blueprintQuery}”.
+            </div>
+          {:else}
+            {#each filteredBlueprints as blueprint}
+              <button
+                type="button"
+                class={`rounded-2xl border px-4 py-3 text-left text-sm transition ${
+                  blueprint.owned
+                    ? 'border-emerald-500/50 bg-emerald-500/10 text-white'
+                    : 'border-slate-800 bg-slate-900/50 text-slate-300 hover:border-slate-600'
+                }`}
+                on:click={() => toggleBlueprint(blueprint.entry)}
+              >
+                <p class="text-base font-semibold">{blueprint.name}</p>
+                <p class="text-xs uppercase tracking-widest text-slate-400">
+                  {(blueprint.rarity ?? 'Unknown rarity')} · {(blueprint.category ?? 'Blueprint')}
+                </p>
+                <p class="mt-1 text-xs text-slate-400">
+                  {blueprint.slug}
+                  {#if typeof blueprint.sell === 'number'}
+                    · Sell {blueprint.sell.toLocaleString()} coins
+                  {/if}
+                </p>
+                {#if blueprint.notes}
+                  <p class="mt-2 text-xs text-slate-400">{blueprint.notes}</p>
+                {/if}
+                <p class="mt-3 text-[11px] uppercase tracking-widest">
+                  {blueprint.owned ? 'Owned' : 'Not owned'}
+                </p>
+              </button>
+            {/each}
+          {/if}
+        </div>
+        <TipsPanel heading="Blueprint notes" tips={$blueprintSummary.tips} />
+      </div>
+    {/if}
   </section>
 </section>
