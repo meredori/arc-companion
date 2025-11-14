@@ -1,7 +1,7 @@
 export type RecommendationAction = 'save' | 'keep' | 'salvage' | 'sell';
 export type RecommendationSort = 'category' | 'alphabetical';
 
-export interface ItemRecycleEntry {
+export interface ItemSalvageEntry {
   itemId: string;
   name: string;
   qty: number;
@@ -27,7 +27,8 @@ export interface ItemRecord {
   category?: string;
   imageUrl?: string | null;
   sell: number;
-  recycle: ItemRecycleEntry[];
+  salvagesInto: ItemSalvageEntry[];
+  recyclesInto?: ItemSalvageEntry[];
   craftsFrom?: ItemCraftRequirement[];
   craftsInto?: ItemCraftProduct[];
   notes?: string;
@@ -56,25 +57,28 @@ export interface WantListProductLink {
   qty: number;
 }
 
-export type WantListMaterialLinkKind = 'yield' | 'satisfies';
-
-export interface WantListMaterialLink {
-  materialId: string;
-  materialName: string;
-  requiredQty: number;
-  producedQty: number;
-  sourcesNeeded: number;
-  sourceItemId: string;
-  sourceName: string;
-  kind: WantListMaterialLinkKind;
-}
-
 export interface WantListResolvedEntry {
   entry: WantListEntry;
   item?: ItemRecord;
   requirements: WantListRequirement[];
-  products: WantListProductLink[];
-  materials: WantListMaterialLink[];
+  craftProducts: WantListProductLink[];
+  salvageResults: WantListSalvageResult[];
+  salvageSources: WantListSalvageSource[];
+}
+
+export interface WantListSalvageResult {
+  itemId: string;
+  name: string;
+  qtyPerItem: number;
+  totalQty: number;
+}
+
+export interface WantListSalvageSource {
+  itemId: string;
+  name: string;
+  qtyPerSalvage: number;
+  sourcesNeeded: number;
+  totalQty: number;
 }
 
 export interface QuestRequirement {
@@ -190,7 +194,7 @@ export interface ItemRecommendation {
   rationale: string;
   sellPrice: number;
   salvageValue: number;
-  salvageBreakdown: ItemRecycleEntry[];
+  salvageBreakdown: ItemSalvageEntry[];
   questNeeds: QuestNeedDetail[];
   upgradeNeeds: UpgradeNeedDetail[];
   projectNeeds: ProjectNeedDetail[];
