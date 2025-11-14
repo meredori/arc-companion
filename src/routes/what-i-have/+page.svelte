@@ -112,6 +112,11 @@
     collapsedSections = { ...collapsedSections, [id]: !collapsedSections[id] };
   };
 
+  const scrollToTop = () => {
+    if (typeof window === 'undefined') return;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleJumpChange = (event: Event & { currentTarget: HTMLSelectElement }) => {
     const value = event.currentTarget.value as SectionKey | '';
     if (!value) return;
@@ -480,14 +485,26 @@
         <option value={section.id}>{section.label}</option>
       {/each}
     </select>
+    <button
+      type="button"
+      class="rounded-full border border-slate-700 px-3 py-1 text-[11px] uppercase tracking-widest text-slate-300 transition hover:border-slate-500"
+      on:click={scrollToTop}
+    >
+      Return to top
+    </button>
   </div>
 
   <section id="quests" class="section-card space-y-6">
-    <header class="flex flex-wrap items-center justify-between gap-3">
-      <h2 class="text-2xl font-semibold text-white">Quest checklist</h2>
+    <header class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+      <div class="space-y-1">
+        <h2 class="text-2xl font-semibold text-white">Quest checklist</h2>
+        <p class="text-sm text-slate-400">
+          Toggle quests as you finish them to keep tabs on outstanding objectives and required loot.
+        </p>
+      </div>
       <button
         type="button"
-        class="rounded-full border border-slate-700 px-3 py-1 text-[11px] uppercase tracking-widest text-slate-300 transition hover:border-slate-500"
+        class="shrink-0 rounded-full border border-slate-700 px-3 py-1 text-[11px] uppercase tracking-widest text-slate-300 transition hover:border-slate-500"
         on:click={() => toggleSectionVisibility('quests')}
         aria-expanded={!collapsedSections.quests}
         aria-controls="quests-content"
@@ -507,8 +524,8 @@
   </section>
 
   <section id="workbench-upgrades" class="section-card space-y-6">
-    <header class="flex flex-wrap items-center justify-between gap-3">
-      <div>
+    <header class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+      <div class="space-y-2">
         <h2 class="text-2xl font-semibold text-white">Workbench upgrades</h2>
         <p class="text-sm text-slate-400">
           Mark each workbench and level as soon as it finishes upgrading. Completed levels remove their
@@ -517,7 +534,7 @@
       </div>
       <button
         type="button"
-        class="rounded-full border border-slate-700 px-3 py-1 text-[11px] uppercase tracking-widest text-slate-300 transition hover:border-slate-500"
+        class="shrink-0 rounded-full border border-slate-700 px-3 py-1 text-[11px] uppercase tracking-widest text-slate-300 transition hover:border-slate-500"
         on:click={() => toggleSectionVisibility('workbench-upgrades')}
         aria-expanded={!collapsedSections['workbench-upgrades']}
         aria-controls="workbench-upgrades-content"
@@ -633,8 +650,8 @@
   </section>
 
   <section id="expedition-projects" class="section-card space-y-6">
-    <header class="flex flex-wrap items-center justify-between gap-3">
-      <div>
+    <header class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+      <div class="space-y-2">
         <h2 class="text-2xl font-semibold text-white">Expedition projects</h2>
         <p class="text-sm text-slate-400">
           Track partial hand-ins for expedition phases. Items remain on the keep list until their phase
@@ -643,7 +660,7 @@
       </div>
       <button
         type="button"
-        class="rounded-full border border-slate-700 px-3 py-1 text-[11px] uppercase tracking-widest text-slate-300 transition hover:border-slate-500"
+        class="shrink-0 rounded-full border border-slate-700 px-3 py-1 text-[11px] uppercase tracking-widest text-slate-300 transition hover:border-slate-500"
         on:click={() => toggleSectionVisibility('expedition-projects')}
         aria-expanded={!collapsedSections['expedition-projects']}
         aria-controls="expedition-projects-content"
@@ -746,8 +763,8 @@
   </section>
 
   <section id="blueprint-catalog" class="section-card space-y-6">
-    <header class="flex flex-wrap items-center justify-between gap-3">
-      <div>
+    <header class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+      <div class="space-y-2">
         <h2 class="text-2xl font-semibold text-white">Blueprint catalog</h2>
         <p class="text-sm text-slate-400">
           Ownership toggles mirror the workbench section above, but you can use this list to quickly
@@ -756,7 +773,7 @@
       </div>
       <button
         type="button"
-        class="rounded-full border border-slate-700 px-3 py-1 text-[11px] uppercase tracking-widest text-slate-300 transition hover:border-slate-500"
+        class="shrink-0 rounded-full border border-slate-700 px-3 py-1 text-[11px] uppercase tracking-widest text-slate-300 transition hover:border-slate-500"
         on:click={() => toggleSectionVisibility('blueprint-catalog')}
         aria-expanded={!collapsedSections['blueprint-catalog']}
         aria-controls="blueprint-catalog-content"
