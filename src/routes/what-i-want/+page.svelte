@@ -409,6 +409,8 @@
         <div class="space-y-5">
           {#each $resolvedEntries as detail}
             {@const recipeLink = detail.item ? recipeLinkForItem(detail.item) : null}
+            {@const yieldMaterials = detail.materials.filter((material) => material.kind === 'yield')}
+            {@const satisfiesMaterials = detail.materials.filter((material) => material.kind === 'satisfies')}
             <article class="space-y-4 rounded-2xl border border-slate-800/60 bg-slate-950/60 p-5 text-sm text-slate-200">
               <header class="flex flex-wrap items-center justify-between gap-3">
                 <div class="space-y-1">
