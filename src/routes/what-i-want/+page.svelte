@@ -483,40 +483,51 @@
                   </ul>
                 </div>
                 <div class="space-y-2">
-                  <h4 class="text-xs uppercase tracking-widest text-slate-400">Recycling sources</h4>
+                  <h4 class="text-xs uppercase tracking-widest text-slate-400">Salvaging sources</h4>
                   <ul class="space-y-1 text-sm text-slate-300">
-                    {#each detail.materials as material}
+                    {#each detail.salvageSources as source}
                       <li class="space-y-1 rounded-lg border border-slate-800/60 bg-slate-900/60 p-2">
                         <div class="flex items-center justify-between gap-3">
-                          <span class="truncate">{material.materialName}</span>
-                          <span class="font-semibold text-white">{material.kind === 'satisfies' ? `Need ${material.requiredQty}` : `Yields ${material.producedQty}`}</span>
+                          <span class="truncate">{source.name}</span>
+                          <span class="font-semibold text-white">Salvage ×{source.sourcesNeeded}</span>
                         </div>
                         <p class="text-[11px] uppercase tracking-widest text-slate-500">
-                          {material.kind === 'satisfies'
-                            ? `Recycle ${material.sourceName} ×${material.sourcesNeeded}`
-                            : `From ${material.sourceName}`}
+                          Yields {source.totalQty} total ({source.qtyPerSalvage} each)
                         </p>
                       </li>
                     {:else}
-                      <li class="text-slate-500">No recycling data available.</li>
+                      <li class="text-slate-500">No salvaging sources recorded.</li>
                     {/each}
                   </ul>
                 </div>
               </div>
 
-              {#if detail.products.length > 0}
-                <div class="space-y-2">
-                  <h4 class="text-xs uppercase tracking-widest text-slate-400">Crafted into</h4>
-                  <ul class="space-y-1 text-sm text-slate-300">
-                    {#each detail.products as product}
-                      <li class="flex items-center justify-between gap-3">
-                        <span class="truncate">{product.name}</span>
-                        <span class="font-semibold text-white">×{product.qty}</span>
+              <div class="space-y-2">
+                <h4 class="text-xs uppercase tracking-widest text-slate-400">Salvaged into</h4>
+                <ul class="space-y-1 text-sm text-slate-300">
+                  {#if detail.salvageResults.length > 0}
+                    {#each detail.salvageResults as result}
+                      <li class="space-y-1 rounded-lg border border-slate-800/60 bg-slate-900/60 p-2">
+                        <div class="flex items-center justify-between gap-3">
+                          <span class="truncate">{result.name}</span>
+                          <span class="font-semibold text-white">×{result.totalQty}</span>
+                        </div>
+                        <p class="text-[11px] uppercase tracking-widest text-slate-500">
+                          Per item: ×{result.qtyPerItem}
+                        </p>
                       </li>
                     {/each}
-                  </ul>
-                </div>
-              {/if}
+                  {:else}
+                    <li class="text-slate-500">
+                      {#if detail.salvageSources.length > 0}
+                        This item appears in other salvage plans but has no recorded salvage outputs.
+                      {:else}
+                        This item has no recorded salvage data.
+                      {/if}
+                    </li>
+                  {/if}
+                </ul>
+              </div>
             </article>
           {/each}
         </div>

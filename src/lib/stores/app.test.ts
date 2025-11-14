@@ -64,7 +64,18 @@ describe('expandWantList', () => {
       slug: 'widget',
       category: 'Craftable',
       sell: 0,
-      recycle: [],
+      salvagesInto: [
+        {
+          itemId: 'scrap',
+          name: 'Scrap',
+          qty: 2
+        },
+        {
+          itemId: 'scrap',
+          name: 'Scrap',
+          qty: 1
+        }
+      ],
       craftsFrom: [
         {
           itemId: 'screw',
@@ -79,7 +90,27 @@ describe('expandWantList', () => {
       slug: 'screw',
       category: 'Hardware',
       sell: 0,
-      recycle: []
+      salvagesInto: []
+    },
+    {
+      id: 'fabricator',
+      name: 'Fabricator',
+      slug: 'fabricator',
+      category: 'Workbench',
+      sell: 0,
+      salvagesInto: [],
+      craftsInto: [
+        {
+          productId: 'widget',
+          productName: 'Widget',
+          qty: 1
+        },
+        {
+          productId: 'widget',
+          productName: 'Widget',
+          qty: 2
+        }
+      ]
     },
     {
       id: 'junk',
@@ -87,11 +118,16 @@ describe('expandWantList', () => {
       slug: 'junk',
       category: 'Hardware',
       sell: 0,
-      recycle: [
+      salvagesInto: [
         {
-          itemId: 'screw',
-          name: 'Screw',
+          itemId: 'widget',
+          name: 'Widget',
           qty: 1
+        },
+        {
+          itemId: 'widget',
+          name: 'Widget',
+          qty: 3
         }
       ]
     }
@@ -107,15 +143,27 @@ describe('expandWantList', () => {
 
   it('includes dependencies when no categories are ignored', () => {
     const expanded = expandWantList(wantEntries, baseItems);
-    expect(expanded[0].requirements.some((req) => req.itemId === 'screw')).toBe(true);
-    expect(expanded[0].materials.some((material) => material.sourceItemId === 'junk')).toBe(true);
+    const detail = expanded[0];
+    expect(detail.requirements.some((req) => req.itemId === 'screw')).toBe(true);
+
+    const craftProducer = detail.craftProducts.find((product) => product.itemId === 'fabricator');
+    expect(craftProducer?.qty).toBe(3);
+
+    const salvageSource = detail.salvageSources.find((source) => source.itemId === 'junk');
+    expect(salvageSource?.qtyPerSalvage).toBe(3);
+    expect(salvageSource?.sourcesNeeded).toBe(1);
+    expect(salvageSource?.totalQty).toBe(3);
+
+    const scrapResult = detail.salvageResults.find((result) => result.itemId === 'scrap');
+    expect(scrapResult?.qtyPerItem).toBe(3);
+    expect(scrapResult?.totalQty).toBe(3);
   });
 
-  it('omits ignored categories from dependencies and materials', () => {
+  it('omits ignored categories from dependencies and salvage sources', () => {
     const expanded = expandWantList(wantEntries, baseItems, {
       ignoredCategories: ['Hardware']
     });
     expect(expanded[0].requirements).toHaveLength(0);
-    expect(expanded[0].materials).toHaveLength(0);
+    expect(expanded[0].salvageSources).toHaveLength(0);
   });
 });
