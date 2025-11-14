@@ -209,10 +209,6 @@
     bench.levels.forEach((level) => level.entries.forEach((entry) => setWorkbenchOwnership(entry, next)));
   };
 
-  const toggleUpgrade = (entry: WorkbenchEntry) => {
-    setWorkbenchOwnership(entry, !entry.state.owned);
-  };
-
   type BlueprintEntry = {
     record: ItemRecord;
     state: {
@@ -497,24 +493,11 @@
                   <div class="mt-3 space-y-3">
                     {#each level.entries as entry}
                       <div class="rounded-lg border border-slate-800/70 bg-slate-900/40 p-3">
-                        <div class="flex flex-wrap items-center justify-between gap-2">
-                          <div>
-                            <p class="text-sm font-semibold text-white">{entry.upgrade.name}</p>
-                            <p class="text-[11px] uppercase tracking-widest text-slate-500">
-                              Level {entry.upgrade.level}
-                            </p>
-                          </div>
-                          <button
-                            type="button"
-                            class={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide transition ${
-                              entry.state.owned
-                                ? 'bg-emerald-500/20 text-emerald-200 hover:bg-emerald-500/30'
-                                : 'bg-slate-800 text-slate-200 hover:bg-slate-700'
-                            }`}
-                            on:click={() => toggleUpgrade(entry)}
-                          >
-                            {entry.state.owned ? 'Owned' : 'Mark owned'}
-                          </button>
+                        <div>
+                          <p class="text-sm font-semibold text-white">{entry.upgrade.name}</p>
+                          <p class="text-[11px] uppercase tracking-widest text-slate-500">
+                            Level {entry.upgrade.level}
+                          </p>
                         </div>
                         <ul class="mt-2 space-y-1 text-sm text-slate-300">
                           {#each entry.upgrade.items as requirement}
