@@ -27,8 +27,7 @@
     { href: '/what-i-have', label: 'What I Have' },
     { href: '/what-i-want', label: 'What I Want' },
     { href: '/blueprints', label: 'Blueprints' },
-    { href: '/run', label: 'Run' },
-    { href: '/runs', label: 'Runs' }
+    { href: '/run', label: 'Run' }
   ];
 
   const incomingLinks = Array.isArray(data?.navigation?.primary)
