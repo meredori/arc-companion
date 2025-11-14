@@ -3,21 +3,41 @@
   import { page } from '$app/stores';
   import { base } from '$app/paths';
 
-  export let data;
+  type LayoutData = {
+    navigation?: {
+      primary?: NavigationLink[];
+    };
+  };
+
+  export let data: LayoutData = {};
   export let form;
   export let params;
   const __layoutProps = { data, form, params };
   void __layoutProps;
 
-  const links = [
+  type NavigationLink = {
+    href: string;
+    label?: string;
+    title?: string;
+    name?: string;
+  };
+
+  const defaultLinks: NavigationLink[] = [
     { href: '/what-to-do', label: 'What To Do' },
     { href: '/what-i-have', label: 'What I Have' },
     { href: '/what-i-want', label: 'What I Want' },
     { href: '/blueprints', label: 'Blueprints' },
     { href: '/run', label: 'Run' },
-    { href: '/runs', label: 'Runs' },
-    { href: '/previews', label: 'Previews' }
+    { href: '/runs', label: 'Runs' }
   ];
+
+  const incomingLinks = Array.isArray(data?.navigation?.primary)
+    ? (data.navigation.primary as NavigationLink[])
+    : defaultLinks;
+
+  const links = incomingLinks.filter((link) => typeof link?.href === 'string' && link.href !== '/previews');
+
+  const linkLabel = (link: NavigationLink) => link.label ?? link.title ?? link.name ?? link.href;
 
   const stripBase = (pathname: string) => {
     if (!base || !pathname.startsWith(base)) {
@@ -49,7 +69,7 @@
             class:active-link={isActive(link.href, $page.url.pathname)}
             href={withBase(link.href)}
             aria-current={isActive(link.href, $page.url.pathname) ? 'page' : undefined}
-            >{link.label}</a
+            >{linkLabel(link)}</a
           >
         {/each}
       </nav>

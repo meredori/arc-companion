@@ -9,13 +9,71 @@
 <script lang="ts">
   import { base } from '$app/paths';
 
-  export let data;
+  type RootPageData = {
+    landing?: {
+      cards?: LandingCard[];
+    };
+    landingCards?: LandingCard[];
+  };
+
+  export let data: RootPageData = {};
   export let form;
   export let params;
   const __rootPageProps = { data, form, params };
   void __rootPageProps;
 
   const withBase = (href: string) => (base ? `${base}${href}` : href);
+
+  type LandingCard = {
+    href: string;
+    title?: string;
+    label?: string;
+    heading?: string;
+    name?: string;
+    description?: string;
+    copy?: string;
+    body?: string;
+  };
+
+  const defaultCards: LandingCard[] = [
+    {
+      href: '/what-to-do',
+      title: 'What To Do',
+      description: 'Item recommendations driven by synced data and personalized player goals.'
+    },
+    {
+      href: '/what-i-have',
+      title: 'What I Have',
+      description: 'Central dashboard to mark quest completions, bench upgrades, and owned schematics.'
+    },
+    {
+      href: '/what-i-want',
+      title: 'What I Want',
+      description: 'Build a wishlist of future crafts and inspect the materials needed to complete them.'
+    },
+    {
+      href: '/blueprints',
+      title: 'Blueprints',
+      description: 'Manage owned schematics to unlock crafting suggestions and salvage guidance.'
+    },
+    {
+      href: '/run',
+      title: 'Run Analyzer',
+      description: 'Live run logging with contextual tips and telemetry overlays.'
+    }
+  ];
+
+  const incomingCards = Array.isArray(data?.landing?.cards)
+    ? (data.landing.cards as LandingCard[])
+    : Array.isArray(data?.landingCards)
+      ? (data.landingCards as LandingCard[])
+      : defaultCards;
+
+  const cards = incomingCards.filter((card) => typeof card?.href === 'string' && card.href !== '/previews');
+
+  const cardTitle = (card: LandingCard) => card.title ?? card.label ?? card.heading ?? card.name ?? card.href;
+
+  const cardDescription = (card: LandingCard) => card.description ?? card.copy ?? card.body ?? '';
 </script>
 
 <div class="page-stack">
@@ -29,41 +87,13 @@
   </header>
 
   <div class="grid gap-5 md:grid-cols-2">
-    <a class="section-card transition-transform duration-200 hover:-translate-y-1" href={withBase('/what-to-do')}>
-      <h2 class="text-xl font-semibold">What To Do</h2>
-      <p class="mt-2 text-sm text-slate-400">
-        Item recommendations driven by synced data and personalized player goals.
-      </p>
-    </a>
-    <a class="section-card transition-transform duration-200 hover:-translate-y-1" href={withBase('/previews')}>
-      <h2 class="text-xl font-semibold">Previews</h2>
-      <p class="mt-2 text-sm text-slate-400">
-        Explore concept flows and upcoming features before they land in the live companion.
-      </p>
-    </a>
-    <a class="section-card transition-transform duration-200 hover:-translate-y-1" href={withBase('/what-i-have')}>
-      <h2 class="text-xl font-semibold">What I Have</h2>
-      <p class="mt-2 text-sm text-slate-400">
-        Central dashboard to mark quest completions, bench upgrades, and owned schematics.
-      </p>
-    </a>
-    <a class="section-card transition-transform duration-200 hover:-translate-y-1" href={withBase('/what-i-want')}>
-      <h2 class="text-xl font-semibold">What I Want</h2>
-      <p class="mt-2 text-sm text-slate-400">
-        Build a wishlist of future crafts and inspect the materials needed to complete them.
-      </p>
-    </a>
-    <a class="section-card transition-transform duration-200 hover:-translate-y-1" href={withBase('/blueprints')}>
-      <h2 class="text-xl font-semibold">Blueprints</h2>
-      <p class="mt-2 text-sm text-slate-400">
-        Manage owned schematics to unlock crafting suggestions and salvage guidance.
-      </p>
-    </a>
-    <a class="section-card transition-transform duration-200 hover:-translate-y-1" href={withBase('/run')}>
-      <h2 class="text-xl font-semibold">Run Analyzer</h2>
-      <p class="mt-2 text-sm text-slate-400">
-        Live run logging with contextual tips and telemetry overlays.
-      </p>
-    </a>
+    {#each cards as card}
+      <a class="section-card transition-transform duration-200 hover:-translate-y-1" href={withBase(card.href)}>
+        <h2 class="text-xl font-semibold">{cardTitle(card)}</h2>
+        {#if cardDescription(card)}
+          <p class="mt-2 text-sm text-slate-400">{cardDescription(card)}</p>
+        {/if}
+      </a>
+    {/each}
   </div>
 </div>
