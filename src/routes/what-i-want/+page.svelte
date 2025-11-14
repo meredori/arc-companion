@@ -504,11 +504,31 @@
                 </div>
               </div>
 
-              {#if detail.products.length > 0}
+              {@const salvageMaterials = (detail.materials ?? []).filter((material) => material.kind === 'yield')}
+              {@const craftOutputs = detail.products ?? []}
+
+              {#if salvageMaterials.length > 0}
                 <div class="space-y-2">
-                  <h4 class="text-xs uppercase tracking-widest text-slate-400">Crafted into</h4>
+                  <h4 class="text-xs uppercase tracking-widest text-slate-400">Salvage materials</h4>
                   <ul class="space-y-1 text-sm text-slate-300">
-                    {#each detail.products as product}
+                    {#each salvageMaterials as material}
+                      <li class="space-y-1 rounded-lg border border-slate-800/60 bg-slate-900/60 p-2">
+                        <div class="flex items-center justify-between gap-3">
+                          <span class="truncate">{material.materialName}</span>
+                          <span class="font-semibold text-white">×{material.producedQty}</span>
+                        </div>
+                        <p class="text-[11px] uppercase tracking-widest text-slate-500">From {material.sourceName}</p>
+                      </li>
+                    {/each}
+                  </ul>
+                </div>
+              {/if}
+
+              {#if craftOutputs.length > 0}
+                <div class="space-y-2">
+                  <h4 class="text-xs uppercase tracking-widest text-slate-400">Craft outputs</h4>
+                  <ul class="space-y-1 text-sm text-slate-300">
+                    {#each craftOutputs as product}
                       <li class="flex items-center justify-between gap-3">
                         <span class="truncate">{product.name}</span>
                         <span class="font-semibold text-white">×{product.qty}</span>
