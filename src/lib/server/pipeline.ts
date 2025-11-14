@@ -4,7 +4,7 @@ import path from 'node:path';
 import type {
   ItemCraftRequirement,
   ItemRecord,
-  ItemRecycleEntry,
+  ItemSalvageEntry,
   Project,
   Quest,
   QuestChain,
@@ -149,24 +149,40 @@ const convertRecipeEntries = (
     .filter((entry): entry is ItemCraftRequirement => entry !== null);
 };
 
-const convertRecycleEntries = (
+const convertOutputEntries = (
   source: Record<string, number> | undefined,
   lookup: Map<string, string>
-): ItemRecycleEntry[] => {
+): ItemSalvageEntry[] => {
   if (!source) return [];
-  return Object.entries(source)
-    .map(([rawId, qty]) => {
-      const itemId = toItemId(rawId);
-      if (!itemId) return null;
-      const stripped = rawId.replace(/^item[_-]/, '');
-      const name = lookup.get(rawId) ?? lookup.get(itemId) ?? lookup.get(stripped) ?? rawId;
-      return {
+
+  const aggregated = new Map<string, ItemSalvageEntry>();
+
+  for (const [rawId, qty] of Object.entries(source)) {
+    const itemId = toItemId(rawId);
+    if (!itemId) continue;
+
+    const stripped = rawId.replace(/^item[_-]/, '');
+    const name = lookup.get(rawId) ?? lookup.get(itemId) ?? lookup.get(stripped) ?? rawId;
+    const normalizedQty = Number.isFinite(qty) ? Number(qty) : 1;
+    const existing = aggregated.get(itemId);
+
+    if (existing) {
+      existing.qty += normalizedQty;
+      if (!existing.name.trim() && name.trim()) {
+        existing.name = name;
+      }
+    } else {
+      aggregated.set(itemId, {
         itemId,
         name,
-        qty: Number.isFinite(qty) ? Number(qty) : 1
-      } satisfies ItemRecycleEntry;
-    })
-    .filter((entry): entry is ItemRecycleEntry => entry !== null);
+        qty: normalizedQty
+      });
+    }
+  }
+
+  return Array.from(aggregated.values()).sort((a, b) =>
+    a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+  );
 };
 
 export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
@@ -185,7 +201,8 @@ export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
       rarity: raw.rarity ?? null,
       category: raw.type ?? null,
       sell: typeof raw.value === 'number' ? raw.value : 0,
-      recycle: [],
+      salvagesInto: [],
+      recyclesInto: [],
       craftsFrom: [],
       craftsInto: [],
       notes: englishText(raw.description)?.trim() || null,
@@ -202,7 +219,8 @@ export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
     if (!itemId) continue;
     const englishName = englishText(raw.name, raw.id);
     const slug = slugify(raw.id.replace(/_/g, '-')) || slugify(englishName) || englishName;
-    const recycleSource = raw.recyclesInto ?? raw.recyleInto ?? raw.salvagesInto;
+    const salvageSource = raw.salvagesInto ?? raw.recyclesInto ?? raw.recyleInto;
+    const recycleSource = raw.recyclesInto ?? raw.recyleInto;
     const craftsRecipe = raw.recipe ?? raw.craftMaterials ?? raw.crafting;
     const notes = englishText(raw.description)?.trim();
     const craftsEntries = convertRecipeEntries(craftsRecipe, nameLookup);
@@ -219,7 +237,8 @@ export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
       category: raw.type ?? null,
       imageUrl: resolveImageUrl(raw.imageFilename),
       sell: typeof raw.value === 'number' ? raw.value : 0,
-      recycle: convertRecycleEntries(recycleSource, nameLookup),
+      salvagesInto: convertOutputEntries(salvageSource, nameLookup),
+      recyclesInto: convertOutputEntries(recycleSource, nameLookup),
       craftsFrom: craftsEntries,
       craftsInto: [],
       notes: notes || null

@@ -10,7 +10,8 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
     sourceType: 'module',
-    ecmaVersion: 'latest'
+    ecmaVersion: 'latest',
+    warnOnUnsupportedTypeScriptVersion: false
   },
   plugins: ['@typescript-eslint'],
   overrides: [

@@ -11,7 +11,7 @@ const BASE_ITEM: ItemRecord = {
   slug: 'wishlist-item',
   category: 'Quick Use',
   sell: 100,
-  recycle: []
+  salvagesInto: []
 };
 
 const BLUEPRINT_ITEM: ItemRecord = {
@@ -20,7 +20,7 @@ const BLUEPRINT_ITEM: ItemRecord = {
   slug: 'wishlist-item-blueprint',
   category: 'Blueprint',
   sell: 0,
-  recycle: []
+  salvagesInto: []
 };
 
 const UPGRADE: UpgradePack = {
