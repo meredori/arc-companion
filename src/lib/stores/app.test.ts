@@ -64,7 +64,13 @@ describe('expandWantList', () => {
       slug: 'widget',
       category: 'Craftable',
       sell: 0,
-      recycle: [],
+      salvagesInto: [
+        {
+          itemId: 'scrap',
+          name: 'Scrap',
+          qty: 2
+        }
+      ],
       craftsFrom: [
         {
           itemId: 'screw',
@@ -79,7 +85,7 @@ describe('expandWantList', () => {
       slug: 'screw',
       category: 'Hardware',
       sell: 0,
-      recycle: []
+      salvagesInto: []
     },
     {
       id: 'junk',
@@ -87,10 +93,10 @@ describe('expandWantList', () => {
       slug: 'junk',
       category: 'Hardware',
       sell: 0,
-      recycle: [
+      salvagesInto: [
         {
-          itemId: 'screw',
-          name: 'Screw',
+          itemId: 'widget',
+          name: 'Widget',
           qty: 1
         }
       ]
@@ -108,14 +114,15 @@ describe('expandWantList', () => {
   it('includes dependencies when no categories are ignored', () => {
     const expanded = expandWantList(wantEntries, baseItems);
     expect(expanded[0].requirements.some((req) => req.itemId === 'screw')).toBe(true);
-    expect(expanded[0].materials.some((material) => material.sourceItemId === 'junk')).toBe(true);
+    expect(expanded[0].salvageSources.some((source) => source.itemId === 'junk')).toBe(true);
+    expect(expanded[0].salvageResults.some((result) => result.itemId === 'scrap')).toBe(true);
   });
 
-  it('omits ignored categories from dependencies and materials', () => {
+  it('omits ignored categories from dependencies and salvage sources', () => {
     const expanded = expandWantList(wantEntries, baseItems, {
       ignoredCategories: ['Hardware']
     });
     expect(expanded[0].requirements).toHaveLength(0);
-    expect(expanded[0].materials).toHaveLength(0);
+    expect(expanded[0].salvageSources).toHaveLength(0);
   });
 });

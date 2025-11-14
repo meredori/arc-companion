@@ -4,7 +4,7 @@ import path from 'node:path';
 import type {
   ItemCraftRequirement,
   ItemRecord,
-  ItemRecycleEntry,
+  ItemSalvageEntry,
   Project,
   Quest,
   QuestChain,
@@ -149,10 +149,10 @@ const convertRecipeEntries = (
     .filter((entry): entry is ItemCraftRequirement => entry !== null);
 };
 
-const convertRecycleEntries = (
+const convertOutputEntries = (
   source: Record<string, number> | undefined,
   lookup: Map<string, string>
-): ItemRecycleEntry[] => {
+): ItemSalvageEntry[] => {
   if (!source) return [];
   return Object.entries(source)
     .map(([rawId, qty]) => {
@@ -164,9 +164,9 @@ const convertRecycleEntries = (
         itemId,
         name,
         qty: Number.isFinite(qty) ? Number(qty) : 1
-      } satisfies ItemRecycleEntry;
+      } satisfies ItemSalvageEntry;
     })
-    .filter((entry): entry is ItemRecycleEntry => entry !== null);
+    .filter((entry): entry is ItemSalvageEntry => entry !== null);
 };
 
 export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
@@ -185,7 +185,8 @@ export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
       rarity: raw.rarity ?? null,
       category: raw.type ?? null,
       sell: typeof raw.value === 'number' ? raw.value : 0,
-      recycle: [],
+      salvagesInto: [],
+      recyclesInto: [],
       craftsFrom: [],
       craftsInto: [],
       notes: englishText(raw.description)?.trim() || null,
@@ -202,7 +203,8 @@ export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
     if (!itemId) continue;
     const englishName = englishText(raw.name, raw.id);
     const slug = slugify(raw.id.replace(/_/g, '-')) || slugify(englishName) || englishName;
-    const recycleSource = raw.recyclesInto ?? raw.recyleInto ?? raw.salvagesInto;
+    const salvageSource = raw.salvagesInto ?? raw.recyclesInto ?? raw.recyleInto;
+    const recycleSource = raw.recyclesInto ?? raw.recyleInto;
     const craftsRecipe = raw.recipe ?? raw.craftMaterials ?? raw.crafting;
     const notes = englishText(raw.description)?.trim();
     const craftsEntries = convertRecipeEntries(craftsRecipe, nameLookup);
@@ -219,7 +221,8 @@ export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
       category: raw.type ?? null,
       imageUrl: resolveImageUrl(raw.imageFilename),
       sell: typeof raw.value === 'number' ? raw.value : 0,
-      recycle: convertRecycleEntries(recycleSource, nameLookup),
+      salvagesInto: convertOutputEntries(salvageSource, nameLookup),
+      recyclesInto: convertOutputEntries(recycleSource, nameLookup),
       craftsFrom: craftsEntries,
       craftsInto: [],
       notes: notes || null

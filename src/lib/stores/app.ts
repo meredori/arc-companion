@@ -11,10 +11,11 @@ import type {
   RunLogEntry,
   RecommendationSort,
   WantListEntry,
-  WantListMaterialLink,
   WantListProductLink,
   WantListResolvedEntry,
   WantListRequirement,
+  WantListSalvageResult,
+  WantListSalvageSource,
   WorkbenchUpgradeState
 } from '$lib/types';
 import { loadFromStorage, removeFromStorage, saveToStorage } from '$lib/persist';
@@ -118,17 +119,6 @@ const workbenchUpgradeStore = createPersistentStore<WorkbenchUpgradeState[]>(
 );
 const wantListStore = createPersistentStore<WantListEntry[]>(STORAGE_KEYS.wantList, []);
 
-type MaterialAccumulator = {
-  materialId: string;
-  materialName: string;
-  requiredQty: number;
-  producedPerSource: number;
-  sourceItemId: string;
-  sourceName: string;
-  kind: WantListMaterialLink['kind'];
-  sourcesNeededOverride?: number;
-};
-
 function sanitizeReason(value?: string) {
   if (!value) return undefined;
   const trimmed = value.trim();
@@ -194,7 +184,7 @@ export function expandWantList(
 ): WantListResolvedEntry[] {
   const itemLookup = new Map(items.map((item) => [item.id, item] as const));
   const producersByProduct = new Map<string, { item: ItemRecord; product: WantListProductLink }[]>();
-  const recyclersByMaterial = new Map<string, { item: ItemRecord; qty: number; name: string }[]>();
+  const salvageSourcesByItem = new Map<string, { item: ItemRecord; qty: number }[]>();
   const ignoredCategories = new Set(
     (options?.ignoredCategories ?? [])
       .map((category) => normalizeCategoryValue(category))
@@ -227,11 +217,11 @@ export function expandWantList(
       continue;
     }
 
-    for (const recycle of item.recycle ?? []) {
-      if (!recycle || recycle.qty <= 0) continue;
-      const bucket = recyclersByMaterial.get(recycle.itemId) ?? [];
-      bucket.push({ item, qty: recycle.qty, name: recycle.name ?? recycle.itemId });
-      recyclersByMaterial.set(recycle.itemId, bucket);
+    for (const salvage of item.salvagesInto ?? []) {
+      if (!salvage || salvage.qty <= 0) continue;
+      const bucket = salvageSourcesByItem.get(salvage.itemId) ?? [];
+      bucket.push({ item, qty: salvage.qty });
+      salvageSourcesByItem.set(salvage.itemId, bucket);
     }
   }
 
@@ -254,7 +244,7 @@ export function expandWantList(
       return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
     });
 
-    const products = item
+    const craftProducts = item
       ? (producersByProduct.get(item.id) ?? []).map(({ item: producer, product }) => ({
           itemId: producer.id,
           name: producer.name,
@@ -262,88 +252,45 @@ export function expandWantList(
         }))
       : [];
 
-    const materialMap = new Map<string, MaterialAccumulator>();
+    craftProducts.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
 
-    if (item && !shouldIgnoreItem(item)) {
-      for (const recycle of item.recycle ?? []) {
-        if (!recycle || recycle.qty <= 0) continue;
-        const recycledItem = itemLookup.get(recycle.itemId);
-        const recycledCategory = normalizeCategoryValue(recycledItem?.category);
-        if (recycledCategory && ignoredCategories.has(recycledCategory)) {
-          continue;
-        }
-        const key = `${item.id}::${recycle.itemId}::yield`;
-        materialMap.set(key, {
-          materialId: recycle.itemId,
-          materialName: recycle.name ?? recycle.itemId,
-          requiredQty: recycle.qty * entry.qty,
-          producedPerSource: recycle.qty,
-          sourceItemId: item.id,
-          sourceName: item.name,
-          kind: 'yield',
-          sourcesNeededOverride: entry.qty
-        });
-      }
-    }
+    const salvageResults: WantListSalvageResult[] = item
+      ? (item.salvagesInto ?? [])
+          .filter((result) => result.qty > 0)
+          .map((result) => ({
+            itemId: result.itemId,
+            name: result.name,
+            qtyPerItem: result.qty,
+            totalQty: result.qty * entry.qty
+          }))
+      : [];
 
-    for (const requirement of requirements) {
-      const recyclers = recyclersByMaterial.get(requirement.itemId) ?? [];
-      for (const recycler of recyclers) {
-        if (recycler.qty <= 0) continue;
-        if (shouldIgnoreItem(recycler.item)) continue;
-        const key = `${recycler.item.id}::${requirement.itemId}::satisfies`;
-        const existing = materialMap.get(key);
-        const requiredQty = (existing?.requiredQty ?? 0) + requirement.qty;
-        materialMap.set(key, {
-          materialId: requirement.itemId,
-          materialName: requirement.name,
-          requiredQty,
-          producedPerSource: recycler.qty,
-          sourceItemId: recycler.item.id,
-          sourceName: recycler.item.name,
-          kind: 'satisfies'
-        });
-      }
-    }
+    salvageResults.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
 
-    const materials: WantListMaterialLink[] = [...materialMap.values()].map((value) => {
-      const { producedPerSource } = value;
-      const sourcesNeeded = value.sourcesNeededOverride
-        ? value.sourcesNeededOverride
-        : producedPerSource > 0
-          ? Math.max(1, Math.ceil(value.requiredQty / producedPerSource))
-          : 0;
-      const producedQty = producedPerSource * sourcesNeeded;
-      return {
-        materialId: value.materialId,
-        materialName: value.materialName,
-        requiredQty: value.requiredQty,
-        producedQty,
-        sourcesNeeded,
-        sourceItemId: value.sourceItemId,
-        sourceName: value.sourceName,
-        kind: value.kind
-      } satisfies WantListMaterialLink;
-    });
+    const salvageSources: WantListSalvageSource[] = item
+      ? (salvageSourcesByItem.get(item.id) ?? [])
+          .filter(({ qty }) => qty > 0)
+          .map(({ item: source, qty }) => {
+            const sourcesNeeded = qty > 0 ? Math.max(1, Math.ceil(entry.qty / qty)) : 0;
+            return {
+              itemId: source.id,
+              name: source.name,
+              qtyPerSalvage: qty,
+              sourcesNeeded,
+              totalQty: qty * sourcesNeeded
+            } satisfies WantListSalvageSource;
+          })
+      : [];
 
-    materials.sort((a, b) => {
-      if (a.kind !== b.kind) {
-        return a.kind === 'satisfies' ? -1 : 1;
-      }
-      if (a.materialName !== b.materialName) {
-        return a.materialName.localeCompare(b.materialName, undefined, { sensitivity: 'base' });
-      }
-      return a.sourceName.localeCompare(b.sourceName, undefined, { sensitivity: 'base' });
-    });
-
-    products.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+    salvageSources.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
 
     return {
       entry,
       item,
       requirements,
-      products,
-      materials
+      craftProducts,
+      salvageResults,
+      salvageSources
     } satisfies WantListResolvedEntry;
   });
 }
