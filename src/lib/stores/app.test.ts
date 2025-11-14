@@ -69,6 +69,11 @@ describe('expandWantList', () => {
           itemId: 'scrap',
           name: 'Scrap',
           qty: 2
+        },
+        {
+          itemId: 'scrap',
+          name: 'Scrap',
+          qty: 1
         }
       ],
       craftsFrom: [
@@ -88,6 +93,26 @@ describe('expandWantList', () => {
       salvagesInto: []
     },
     {
+      id: 'fabricator',
+      name: 'Fabricator',
+      slug: 'fabricator',
+      category: 'Workbench',
+      sell: 0,
+      salvagesInto: [],
+      craftsInto: [
+        {
+          productId: 'widget',
+          productName: 'Widget',
+          qty: 1
+        },
+        {
+          productId: 'widget',
+          productName: 'Widget',
+          qty: 2
+        }
+      ]
+    },
+    {
       id: 'junk',
       name: 'Discarded Junk',
       slug: 'junk',
@@ -98,6 +123,11 @@ describe('expandWantList', () => {
           itemId: 'widget',
           name: 'Widget',
           qty: 1
+        },
+        {
+          itemId: 'widget',
+          name: 'Widget',
+          qty: 3
         }
       ]
     }
@@ -113,9 +143,20 @@ describe('expandWantList', () => {
 
   it('includes dependencies when no categories are ignored', () => {
     const expanded = expandWantList(wantEntries, baseItems);
-    expect(expanded[0].requirements.some((req) => req.itemId === 'screw')).toBe(true);
-    expect(expanded[0].salvageSources.some((source) => source.itemId === 'junk')).toBe(true);
-    expect(expanded[0].salvageResults.some((result) => result.itemId === 'scrap')).toBe(true);
+    const detail = expanded[0];
+    expect(detail.requirements.some((req) => req.itemId === 'screw')).toBe(true);
+
+    const craftProducer = detail.craftProducts.find((product) => product.itemId === 'fabricator');
+    expect(craftProducer?.qty).toBe(3);
+
+    const salvageSource = detail.salvageSources.find((source) => source.itemId === 'junk');
+    expect(salvageSource?.qtyPerSalvage).toBe(3);
+    expect(salvageSource?.sourcesNeeded).toBe(1);
+    expect(salvageSource?.totalQty).toBe(3);
+
+    const scrapResult = detail.salvageResults.find((result) => result.itemId === 'scrap');
+    expect(scrapResult?.qtyPerItem).toBe(3);
+    expect(scrapResult?.totalQty).toBe(3);
   });
 
   it('omits ignored categories from dependencies and salvage sources', () => {

@@ -244,45 +244,80 @@ export function expandWantList(
       return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
     });
 
-    const craftProducts = item
-      ? (producersByProduct.get(item.id) ?? []).map(({ item: producer, product }) => ({
-          itemId: producer.id,
-          name: producer.name,
-          qty: product.qty * entry.qty
-        }))
-      : [];
+    const craftProductMap = new Map<string, WantListProductLink>();
+    if (item) {
+      for (const { item: producer, product } of producersByProduct.get(item.id) ?? []) {
+        const perCraftQty = Math.max(1, product.qty ?? 1);
+        const totalQty = perCraftQty * entry.qty;
+        const existing = craftProductMap.get(producer.id);
+        if (existing) {
+          existing.qty += totalQty;
+        } else {
+          craftProductMap.set(producer.id, {
+            itemId: producer.id,
+            name: producer.name,
+            qty: totalQty
+          });
+        }
+      }
+    }
 
-    craftProducts.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+    const craftProducts = Array.from(craftProductMap.values()).sort((a, b) =>
+      a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+    );
 
-    const salvageResults: WantListSalvageResult[] = item
-      ? (item.salvagesInto ?? [])
-          .filter((result) => result.qty > 0)
-          .map((result) => ({
+    const salvageResultMap = new Map<string, WantListSalvageResult>();
+    if (item) {
+      for (const result of item.salvagesInto ?? []) {
+        if (!result || result.qty <= 0) continue;
+        const totalQty = result.qty * entry.qty;
+        const existing = salvageResultMap.get(result.itemId);
+        if (existing) {
+          existing.qtyPerItem += result.qty;
+          existing.totalQty += totalQty;
+          if (!existing.name.trim() && result.name.trim()) {
+            existing.name = result.name;
+          }
+        } else {
+          salvageResultMap.set(result.itemId, {
             itemId: result.itemId,
             name: result.name,
             qtyPerItem: result.qty,
-            totalQty: result.qty * entry.qty
-          }))
-      : [];
+            totalQty
+          });
+        }
+      }
+    }
 
-    salvageResults.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+    const salvageResults = Array.from(salvageResultMap.values()).sort((a, b) =>
+      a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+    );
 
-    const salvageSources: WantListSalvageSource[] = item
-      ? (salvageSourcesByItem.get(item.id) ?? [])
-          .filter(({ qty }) => qty > 0)
-          .map(({ item: source, qty }) => {
-            const sourcesNeeded = qty > 0 ? Math.max(1, Math.ceil(entry.qty / qty)) : 0;
-            return {
-              itemId: source.id,
-              name: source.name,
-              qtyPerSalvage: qty,
-              sourcesNeeded,
-              totalQty: qty * sourcesNeeded
-            } satisfies WantListSalvageSource;
-          })
-      : [];
+    const salvageSourceMap = new Map<string, WantListSalvageSource>();
+    if (item) {
+      for (const { item: source, qty } of salvageSourcesByItem.get(item.id) ?? []) {
+        if (qty <= 0) continue;
+        const sourcesNeeded = Math.max(1, Math.ceil(entry.qty / qty));
+        const totalQty = qty * sourcesNeeded;
+        const existing = salvageSourceMap.get(source.id);
+        if (!existing || qty > existing.qtyPerSalvage) {
+          salvageSourceMap.set(source.id, {
+            itemId: source.id,
+            name: source.name,
+            qtyPerSalvage: qty,
+            sourcesNeeded,
+            totalQty
+          });
+        } else if (qty === existing.qtyPerSalvage) {
+          existing.sourcesNeeded = Math.min(existing.sourcesNeeded, sourcesNeeded);
+          existing.totalQty = existing.qtyPerSalvage * existing.sourcesNeeded;
+        }
+      }
+    }
 
-    salvageSources.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+    const salvageSources = Array.from(salvageSourceMap.values()).sort((a, b) =>
+      a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+    );
 
     return {
       entry,

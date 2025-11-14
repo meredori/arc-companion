@@ -154,19 +154,35 @@ const convertOutputEntries = (
   lookup: Map<string, string>
 ): ItemSalvageEntry[] => {
   if (!source) return [];
-  return Object.entries(source)
-    .map(([rawId, qty]) => {
-      const itemId = toItemId(rawId);
-      if (!itemId) return null;
-      const stripped = rawId.replace(/^item[_-]/, '');
-      const name = lookup.get(rawId) ?? lookup.get(itemId) ?? lookup.get(stripped) ?? rawId;
-      return {
+
+  const aggregated = new Map<string, ItemSalvageEntry>();
+
+  for (const [rawId, qty] of Object.entries(source)) {
+    const itemId = toItemId(rawId);
+    if (!itemId) continue;
+
+    const stripped = rawId.replace(/^item[_-]/, '');
+    const name = lookup.get(rawId) ?? lookup.get(itemId) ?? lookup.get(stripped) ?? rawId;
+    const normalizedQty = Number.isFinite(qty) ? Number(qty) : 1;
+    const existing = aggregated.get(itemId);
+
+    if (existing) {
+      existing.qty += normalizedQty;
+      if (!existing.name.trim() && name.trim()) {
+        existing.name = name;
+      }
+    } else {
+      aggregated.set(itemId, {
         itemId,
         name,
-        qty: Number.isFinite(qty) ? Number(qty) : 1
-      } satisfies ItemSalvageEntry;
-    })
-    .filter((entry): entry is ItemSalvageEntry => entry !== null);
+        qty: normalizedQty
+      });
+    }
+  }
+
+  return Array.from(aggregated.values()).sort((a, b) =>
+    a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+  );
 };
 
 export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
