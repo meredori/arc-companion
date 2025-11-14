@@ -5,7 +5,7 @@
 <script lang="ts">
   /* eslint-env browser */
   import { derived } from 'svelte/store';
-  import { onMount } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import { QuestChecklist, SearchBar, TipsPanel } from '$lib/components';
   import {
     blueprints,
@@ -39,6 +39,13 @@
   const chains: QuestChain[] = data.chains ?? [];
   const blueprintRecords: ItemRecord[] = data.blueprints ?? [];
 
+  let showReturnToTop = false;
+
+  const updateReturnToTopVisibility = () => {
+    if (typeof window === 'undefined') return;
+    showReturnToTop = window.scrollY > 320;
+  };
+
   onMount(() => {
     hydrateFromCanonical({
       quests: questDefs.map((quest) => ({ id: quest.id, completed: false })),
@@ -59,6 +66,17 @@
         owned: false
       }))
     });
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', updateReturnToTopVisibility, { passive: true });
+      updateReturnToTopVisibility();
+    }
+  });
+
+  onDestroy(() => {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('scroll', updateReturnToTopVisibility);
+    }
   });
 
   const itemName = (id: string) => items.find((item) => item.id === id)?.name ?? id;
@@ -485,13 +503,6 @@
         <option value={section.id}>{section.label}</option>
       {/each}
     </select>
-    <button
-      type="button"
-      class="rounded-full border border-slate-700 px-3 py-1 text-[11px] uppercase tracking-widest text-slate-300 transition hover:border-slate-500"
-      on:click={scrollToTop}
-    >
-      Return to top
-    </button>
   </div>
 
   <section id="quests" class="section-card space-y-6">
@@ -830,3 +841,14 @@
     {/if}
   </section>
 </section>
+
+{#if showReturnToTop}
+  <button
+    type="button"
+    class="fixed bottom-6 right-6 z-40 inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.3em] text-slate-200 shadow-lg backdrop-blur transition hover:border-slate-500 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+    on:click={scrollToTop}
+    aria-label="Return to page top"
+  >
+    ↑ Top
+  </button>
+{/if}
