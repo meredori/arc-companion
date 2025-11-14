@@ -409,6 +409,8 @@
         <div class="space-y-5">
           {#each $resolvedEntries as detail}
             {@const recipeLink = detail.item ? recipeLinkForItem(detail.item) : null}
+            {@const yieldMaterials = detail.materials.filter((material) => material.kind === 'yield')}
+            {@const satisfiesMaterials = detail.materials.filter((material) => material.kind === 'satisfies')}
             <article class="space-y-4 rounded-2xl border border-slate-800/60 bg-slate-950/60 p-5 text-sm text-slate-200">
               <header class="flex flex-wrap items-center justify-between gap-3">
                 <div class="space-y-1">
@@ -485,21 +487,25 @@
                 <div class="space-y-2">
                   <h4 class="text-xs uppercase tracking-widest text-slate-400">Recycling sources</h4>
                   <ul class="space-y-1 text-sm text-slate-300">
-                    {#each detail.materials as material}
-                      <li class="space-y-1 rounded-lg border border-slate-800/60 bg-slate-900/60 p-2">
-                        <div class="flex items-center justify-between gap-3">
-                          <span class="truncate">{material.materialName}</span>
-                          <span class="font-semibold text-white">{material.kind === 'satisfies' ? `Need ${material.requiredQty}` : `Yields ${material.producedQty}`}</span>
-                        </div>
-                        <p class="text-[11px] uppercase tracking-widest text-slate-500">
-                          {material.kind === 'satisfies'
-                            ? `Recycle ${material.sourceName} ×${material.sourcesNeeded}`
-                            : `From ${material.sourceName}`}
-                        </p>
-                      </li>
+                    {#if yieldMaterials.length > 0}
+                      {#each yieldMaterials as material}
+                        <li class="space-y-1 rounded-lg border border-slate-800/60 bg-slate-900/60 p-2">
+                          <div class="flex items-center justify-between gap-3">
+                            <span class="truncate">{material.materialName}</span>
+                            <span class="font-semibold text-white">Yields {material.producedQty}</span>
+                          </div>
+                          <p class="text-[11px] uppercase tracking-widest text-slate-500">From {material.sourceName}</p>
+                        </li>
+                      {/each}
                     {:else}
-                      <li class="text-slate-500">No recycling data available.</li>
-                    {/each}
+                      <li class="text-slate-500">
+                        {#if satisfiesMaterials.length > 0}
+                          This item lists salvage requirements but no recorded outputs.
+                        {:else}
+                          This item has no recorded salvage data.
+                        {/if}
+                      </li>
+                    {/if}
                   </ul>
                 </div>
               </div>
