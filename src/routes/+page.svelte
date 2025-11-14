@@ -35,12 +35,6 @@
         Item recommendations driven by synced data and personalized player goals.
       </p>
     </a>
-    <a class="section-card transition-transform duration-200 hover:-translate-y-1" href={withBase('/previews')}>
-      <h2 class="text-xl font-semibold">Previews</h2>
-      <p class="mt-2 text-sm text-slate-400">
-        Explore concept flows and upcoming features before they land in the live companion.
-      </p>
-    </a>
     <a class="section-card transition-transform duration-200 hover:-translate-y-1" href={withBase('/what-i-have')}>
       <h2 class="text-xl font-semibold">What I Have</h2>
       <p class="mt-2 text-sm text-slate-400">
