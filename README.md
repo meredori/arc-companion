@@ -22,6 +22,8 @@ The project is configured for SvelteKit with TypeScript, TailwindCSS, ESLint, Pr
    npm run check
    npm test
    ```
+   > **Note:** ESLint will warn if the installed TypeScript version falls outside the plugin's
+   > supported range. This is expected with newer TypeScript releases and does not block CI.
 4. Build the static site output:
    ```bash
    npm run build
