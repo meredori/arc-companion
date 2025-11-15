@@ -142,9 +142,6 @@
     ['zipline', 'utility_bench']
   ]);
 
-  const benchKey = (label: string | undefined | null) =>
-    label ? label.toLowerCase().replace(/\s+/g, '_') : 'workbench';
-
   const benchLabels: Record<string, string> = {
     all: 'All benches',
     workbench: 'Workbench',
@@ -154,16 +151,6 @@
     medical_bench: 'Medical Bench',
     none: 'No bench'
   };
-
-  const benchOptions = Array.from(
-    new Set(
-      ['all', 'workbench', 'utility_bench', 'explosives_bench', 'med_station', 'medical_bench', 'none'].concat(
-        benchUpgrades.map((upgrade) => benchKey(upgrade.bench))
-      )
-    )
-  );
-
-  const nonBlueprintItems = items.filter((item) => item.category?.toLowerCase() !== 'blueprint');
 
   let search = '';
   let benchFilter = 'all';
@@ -188,6 +175,31 @@
     }
     return 'workbench';
   };
+
+  const nonBlueprintItems = items.filter((item) => item.category?.toLowerCase() !== 'blueprint');
+
+  const benchUsage = new Map<string, number>();
+  for (const item of nonBlueprintItems) {
+    const key = inferBenchForItem(item);
+    benchUsage.set(key, (benchUsage.get(key) ?? 0) + 1);
+  }
+
+  const DEFAULT_BENCH_ORDER = [
+    'workbench',
+    'utility_bench',
+    'explosives_bench',
+    'med_station',
+    'medical_bench',
+    'none'
+  ];
+
+  const benchOptions = ['all']
+    .concat(DEFAULT_BENCH_ORDER.filter((key) => benchUsage.has(key)))
+    .concat(Array.from(benchUsage.keys()).filter((key) => !DEFAULT_BENCH_ORDER.includes(key)));
+
+  $: if (!benchOptions.includes(benchFilter)) {
+    benchFilter = 'all';
+  }
 
   const labelForBench = (key: string) => {
     if (benchLabels[key]) return benchLabels[key];
