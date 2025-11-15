@@ -122,7 +122,7 @@ const RARITY_PRIORITY = ['legendary', 'epic', 'rare', 'uncommon', 'common'] as c
 const normalizeCategory = (value?: string | null) => (value ? value.toLowerCase().trim() : '');
 
 function computeSalvageValue(item: ItemRecord): number {
-  return item.recycle.reduce((total, entry) => total + entry.qty * 35, 0);
+  return item.salvagesInto.reduce((total, entry) => total + entry.qty * 35, 0);
 }
 
 function isQuestComplete(quest: Quest, progress: QuestProgress[]): boolean {
@@ -399,7 +399,7 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
     rationale,
     sellPrice: item.sell,
     salvageValue,
-    salvageBreakdown: item.recycle,
+    salvageBreakdown: item.salvagesInto,
     questNeeds: questNeed.details,
     upgradeNeeds: upgradeNeed.details,
     projectNeeds: projectNeed.details,

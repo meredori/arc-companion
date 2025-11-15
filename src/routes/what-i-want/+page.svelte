@@ -409,8 +409,8 @@
         <div class="space-y-5">
           {#each $resolvedEntries as detail}
             {@const recipeLink = detail.item ? recipeLinkForItem(detail.item) : null}
-            {@const yieldMaterials = detail.materials.filter((material) => material.kind === 'yield')}
-            {@const satisfiesMaterials = detail.materials.filter((material) => material.kind === 'satisfies')}
+            {@const salvageOutputs = detail.item?.salvagesInto ?? []}
+            {@const salvageSources = detail.salvageSources}
             <article class="space-y-4 rounded-2xl border border-slate-800/60 bg-slate-950/60 p-5 text-sm text-slate-200">
               <header class="flex flex-wrap items-center justify-between gap-3">
                 <div class="space-y-1">
@@ -485,24 +485,21 @@
                   </ul>
                 </div>
                 <div class="space-y-2">
-                  <h4 class="text-xs uppercase tracking-widest text-slate-400">Recycling sources</h4>
+                  <h4 class="text-xs uppercase tracking-widest text-slate-400">Salvaging sources</h4>
                   <ul class="space-y-1 text-sm text-slate-300">
-                    {#if satisfiesMaterials.length > 0}
-                      {#each satisfiesMaterials as material}
+                    {#if salvageSources.length > 0}
+                      {#each salvageSources as source}
                         <li class="space-y-1 rounded-lg border border-slate-800/60 bg-slate-900/60 p-2">
                           <div class="flex items-center justify-between gap-3">
-                            <span class="truncate">{material.sourceName}</span>
-                            <span class="font-semibold text-white">Yields {material.producedQty}</span>
+                            <span class="truncate">{source.sourceName}</span>
+                            <span class="font-semibold text-white">Yields {source.producedQty}</span>
                           </div>
-                          <p class="text-[11px] uppercase tracking-widest text-slate-500">
-                            Covers {material.materialName}
-                          </p>
                         </li>
                       {/each}
                     {:else}
                       <li class="text-slate-500">
-                        {#if yieldMaterials.length > 0}
-                          This item lists salvage outputs but no recorded recycling sources.
+                        {#if salvageOutputs.length > 0}
+                          No other recorded salvage sources produce this item.
                         {:else}
                           This item has no recorded salvage data.
                         {/if}
@@ -513,19 +510,19 @@
               </div>
 
               <div class="space-y-2">
-                <h4 class="text-xs uppercase tracking-widest text-slate-400">Salvage materials</h4>
+                <h4 class="text-xs uppercase tracking-widest text-slate-400">Salvaged into</h4>
                 <ul class="space-y-1 text-sm text-slate-300">
-                  {#if yieldMaterials.length > 0}
-                    {#each yieldMaterials as material}
+                  {#if salvageOutputs.length > 0}
+                    {#each salvageOutputs as output}
                       <li class="flex items-center justify-between gap-3">
-                        <span class="truncate">{material.materialName}</span>
-                        <span class="font-semibold text-white">×{material.producedQty}</span>
+                        <span class="truncate">{output.name}</span>
+                        <span class="font-semibold text-white">×{output.qty}</span>
                       </li>
                     {/each}
                   {:else}
                     <li class="text-slate-500">
-                      {#if satisfiesMaterials.length > 0}
-                        This item lists salvage requirements but no recorded outputs.
+                      {#if salvageSources.length > 0}
+                        This item lists salvage sources but no recorded outputs.
                       {:else}
                         This item has no recorded salvage data.
                       {/if}
@@ -533,20 +530,6 @@
                   {/if}
                 </ul>
               </div>
-
-              {#if detail.products.length > 0}
-                <div class="space-y-2">
-                  <h4 class="text-xs uppercase tracking-widest text-slate-400">Crafted by</h4>
-                  <ul class="space-y-1 text-sm text-slate-300">
-                    {#each detail.products as product}
-                      <li class="flex items-center justify-between gap-3">
-                        <span class="truncate">{product.name}</span>
-                        <span class="font-semibold text-white">×{product.qty}</span>
-                      </li>
-                    {/each}
-                  </ul>
-                </div>
-              {/if}
             </article>
           {/each}
         </div>

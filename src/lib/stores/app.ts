@@ -227,11 +227,11 @@ export function expandWantList(
       continue;
     }
 
-    for (const recycle of item.recycle ?? []) {
-      if (!recycle || recycle.qty <= 0) continue;
-      const bucket = recyclersByMaterial.get(recycle.itemId) ?? [];
-      bucket.push({ item, qty: recycle.qty, name: recycle.name ?? recycle.itemId });
-      recyclersByMaterial.set(recycle.itemId, bucket);
+    for (const salvage of item.salvagesInto ?? []) {
+      if (!salvage || salvage.qty <= 0) continue;
+      const bucket = recyclersByMaterial.get(salvage.itemId) ?? [];
+      bucket.push({ item, qty: salvage.qty, name: salvage.name ?? salvage.itemId });
+      recyclersByMaterial.set(salvage.itemId, bucket);
     }
   }
 
@@ -265,19 +265,19 @@ export function expandWantList(
     const materialMap = new Map<string, MaterialAccumulator>();
 
     if (item && !shouldIgnoreItem(item)) {
-      for (const recycle of item.recycle ?? []) {
-        if (!recycle || recycle.qty <= 0) continue;
-        const recycledItem = itemLookup.get(recycle.itemId);
+      for (const salvage of item.salvagesInto ?? []) {
+        if (!salvage || salvage.qty <= 0) continue;
+        const recycledItem = itemLookup.get(salvage.itemId);
         const recycledCategory = normalizeCategoryValue(recycledItem?.category);
         if (recycledCategory && ignoredCategories.has(recycledCategory)) {
           continue;
         }
-        const key = `${item.id}::${recycle.itemId}::yield`;
+        const key = `${item.id}::${salvage.itemId}::yield`;
         materialMap.set(key, {
-          materialId: recycle.itemId,
-          materialName: recycle.name ?? recycle.itemId,
-          requiredQty: recycle.qty * entry.qty,
-          producedPerSource: recycle.qty,
+          materialId: salvage.itemId,
+          materialName: salvage.name ?? salvage.itemId,
+          requiredQty: salvage.qty * entry.qty,
+          producedPerSource: salvage.qty,
           sourceItemId: item.id,
           sourceName: item.name,
           kind: 'yield',
@@ -338,12 +338,25 @@ export function expandWantList(
 
     products.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
 
+    const salvageSources = item
+      ? (recyclersByMaterial.get(item.id) ?? []).map(({ item: source, qty, name }) => ({
+          sourceItemId: source.id,
+          sourceName: source.name || name,
+          producedQty: qty
+        }))
+      : [];
+
+    salvageSources.sort((a, b) =>
+      a.sourceName.localeCompare(b.sourceName, undefined, { sensitivity: 'base' })
+    );
+
     return {
       entry,
       item,
       requirements,
       products,
-      materials
+      materials,
+      salvageSources
     } satisfies WantListResolvedEntry;
   });
 }

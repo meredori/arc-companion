@@ -27,7 +27,7 @@ export interface ItemRecord {
   category?: string;
   imageUrl?: string | null;
   sell: number;
-  recycle: ItemRecycleEntry[];
+  salvagesInto: ItemRecycleEntry[];
   craftsFrom?: ItemCraftRequirement[];
   craftsInto?: ItemCraftProduct[];
   notes?: string;
@@ -69,12 +69,19 @@ export interface WantListMaterialLink {
   kind: WantListMaterialLinkKind;
 }
 
+export interface WantListSalvageSource {
+  sourceItemId: string;
+  sourceName: string;
+  producedQty: number;
+}
+
 export interface WantListResolvedEntry {
   entry: WantListEntry;
   item?: ItemRecord;
   requirements: WantListRequirement[];
   products: WantListProductLink[];
   materials: WantListMaterialLink[];
+  salvageSources: WantListSalvageSource[];
 }
 
 export interface QuestRequirement {

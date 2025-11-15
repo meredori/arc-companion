@@ -64,7 +64,7 @@ describe('expandWantList', () => {
       slug: 'widget',
       category: 'Craftable',
       sell: 0,
-      recycle: [],
+      salvagesInto: [],
       craftsFrom: [
         {
           itemId: 'screw',
@@ -79,7 +79,7 @@ describe('expandWantList', () => {
       slug: 'screw',
       category: 'Hardware',
       sell: 0,
-      recycle: []
+      salvagesInto: []
     },
     {
       id: 'junk',
@@ -87,7 +87,7 @@ describe('expandWantList', () => {
       slug: 'junk',
       category: 'Hardware',
       sell: 0,
-      recycle: [
+      salvagesInto: [
         {
           itemId: 'screw',
           name: 'Screw',
