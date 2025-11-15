@@ -142,9 +142,6 @@
     ['zipline', 'utility_bench']
   ]);
 
-  const benchKey = (label: string | undefined | null) =>
-    label ? label.toLowerCase().replace(/\s+/g, '_') : 'workbench';
-
   const benchLabels: Record<string, string> = {
     all: 'All benches',
     workbench: 'Workbench',
@@ -154,16 +151,6 @@
     medical_bench: 'Medical Bench',
     none: 'No bench'
   };
-
-  const benchOptions = Array.from(
-    new Set(
-      ['all', 'workbench', 'utility_bench', 'explosives_bench', 'med_station', 'medical_bench', 'none'].concat(
-        benchUpgrades.map((upgrade) => benchKey(upgrade.bench))
-      )
-    )
-  );
-
-  const nonBlueprintItems = items.filter((item) => item.category?.toLowerCase() !== 'blueprint');
 
   let search = '';
   let benchFilter = 'all';
@@ -188,6 +175,31 @@
     }
     return 'workbench';
   };
+
+  const nonBlueprintItems = items.filter((item) => item.category?.toLowerCase() !== 'blueprint');
+
+  const benchUsage = new Map<string, number>();
+  for (const item of nonBlueprintItems) {
+    const key = inferBenchForItem(item);
+    benchUsage.set(key, (benchUsage.get(key) ?? 0) + 1);
+  }
+
+  const DEFAULT_BENCH_ORDER = [
+    'workbench',
+    'utility_bench',
+    'explosives_bench',
+    'med_station',
+    'medical_bench',
+    'none'
+  ];
+
+  const benchOptions = ['all']
+    .concat(DEFAULT_BENCH_ORDER.filter((key) => benchUsage.has(key)))
+    .concat(Array.from(benchUsage.keys()).filter((key) => !DEFAULT_BENCH_ORDER.includes(key)));
+
+  $: if (!benchOptions.includes(benchFilter)) {
+    benchFilter = 'all';
+  }
 
   const labelForBench = (key: string) => {
     if (benchLabels[key]) return benchLabels[key];
@@ -409,8 +421,8 @@
         <div class="space-y-5">
           {#each $resolvedEntries as detail}
             {@const recipeLink = detail.item ? recipeLinkForItem(detail.item) : null}
-            {@const yieldMaterials = detail.materials.filter((material) => material.kind === 'yield')}
-            {@const satisfiesMaterials = detail.materials.filter((material) => material.kind === 'satisfies')}
+            {@const salvageOutputs = detail.item?.salvagesInto ?? []}
+            {@const salvageSources = detail.salvageSources}
             <article class="space-y-4 rounded-2xl border border-slate-800/60 bg-slate-950/60 p-5 text-sm text-slate-200">
               <header class="flex flex-wrap items-center justify-between gap-3">
                 <div class="space-y-1">
@@ -485,22 +497,21 @@
                   </ul>
                 </div>
                 <div class="space-y-2">
-                  <h4 class="text-xs uppercase tracking-widest text-slate-400">Recycling sources</h4>
+                  <h4 class="text-xs uppercase tracking-widest text-slate-400">Salvaging sources</h4>
                   <ul class="space-y-1 text-sm text-slate-300">
-                    {#if yieldMaterials.length > 0}
-                      {#each yieldMaterials as material}
+                    {#if salvageSources.length > 0}
+                      {#each salvageSources as source}
                         <li class="space-y-1 rounded-lg border border-slate-800/60 bg-slate-900/60 p-2">
                           <div class="flex items-center justify-between gap-3">
-                            <span class="truncate">{material.materialName}</span>
-                            <span class="font-semibold text-white">Yields {material.producedQty}</span>
+                            <span class="truncate">{source.sourceName}</span>
+                            <span class="font-semibold text-white">Yields {source.producedQty}</span>
                           </div>
-                          <p class="text-[11px] uppercase tracking-widest text-slate-500">From {material.sourceName}</p>
                         </li>
                       {/each}
                     {:else}
                       <li class="text-slate-500">
-                        {#if satisfiesMaterials.length > 0}
-                          This item lists salvage requirements but no recorded outputs.
+                        {#if salvageOutputs.length > 0}
+                          No other recorded salvage sources produce this item.
                         {:else}
                           This item has no recorded salvage data.
                         {/if}
@@ -510,19 +521,27 @@
                 </div>
               </div>
 
-              {#if detail.products.length > 0}
-                <div class="space-y-2">
-                  <h4 class="text-xs uppercase tracking-widest text-slate-400">Crafted into</h4>
-                  <ul class="space-y-1 text-sm text-slate-300">
-                    {#each detail.products as product}
+              <div class="space-y-2">
+                <h4 class="text-xs uppercase tracking-widest text-slate-400">Salvaged into</h4>
+                <ul class="space-y-1 text-sm text-slate-300">
+                  {#if salvageOutputs.length > 0}
+                    {#each salvageOutputs as output}
                       <li class="flex items-center justify-between gap-3">
-                        <span class="truncate">{product.name}</span>
-                        <span class="font-semibold text-white">×{product.qty}</span>
+                        <span class="truncate">{output.name}</span>
+                        <span class="font-semibold text-white">×{output.qty}</span>
                       </li>
                     {/each}
-                  </ul>
-                </div>
-              {/if}
+                  {:else}
+                    <li class="text-slate-500">
+                      {#if salvageSources.length > 0}
+                        This item lists salvage sources but no recorded outputs.
+                      {:else}
+                        This item has no recorded salvage data.
+                      {/if}
+                    </li>
+                  {/if}
+                </ul>
+              </div>
             </article>
           {/each}
         </div>

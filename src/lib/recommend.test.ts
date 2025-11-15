@@ -21,7 +21,7 @@ const ITEMS: ItemRecord[] = [
     category: 'Power',
     rarity: 'Epic Component',
     sell: 200,
-    recycle: [{ itemId: 'mat-a', name: 'Material A', qty: 6 }],
+    salvagesInto: [{ itemId: 'mat-a', name: 'Material A', qty: 6 }],
   },
   {
     id: 'item-beta',
@@ -30,7 +30,7 @@ const ITEMS: ItemRecord[] = [
     category: 'Scrap',
     rarity: 'Common Salvage',
     sell: 90,
-    recycle: [{ itemId: 'mat-b', name: 'Material B', qty: 4 }],
+    salvagesInto: [{ itemId: 'mat-b', name: 'Material B', qty: 4 }],
   },
   {
     id: 'item-gamma',
@@ -39,7 +39,7 @@ const ITEMS: ItemRecord[] = [
     category: 'Artifacts',
     rarity: 'Rare Component',
     sell: 50,
-    recycle: [{ itemId: 'mat-c', name: 'Material C', qty: 5 }],
+    salvagesInto: [{ itemId: 'mat-c', name: 'Material C', qty: 5 }],
   },
   {
     id: 'item-weapon-legendary',
@@ -48,7 +48,7 @@ const ITEMS: ItemRecord[] = [
     category: 'Weapon',
     rarity: 'Legendary Weapon',
     sell: 120,
-    recycle: [],
+    salvagesInto: [],
   },
   {
     id: 'item-shotgun-epic',
@@ -57,7 +57,7 @@ const ITEMS: ItemRecord[] = [
     category: 'Shotgun',
     rarity: 'Epic Weapon',
     sell: 110,
-    recycle: [],
+    salvagesInto: [],
   },
   {
     id: 'item-pistol-rare',
@@ -66,7 +66,7 @@ const ITEMS: ItemRecord[] = [
     category: 'Pistol',
     rarity: 'Rare Weapon',
     sell: 95,
-    recycle: [],
+    salvagesInto: [],
   },
   {
     id: 'item-lmg-uncommon',
@@ -75,7 +75,7 @@ const ITEMS: ItemRecord[] = [
     category: 'LMG',
     rarity: 'Uncommon Weapon',
     sell: 105,
-    recycle: [],
+    salvagesInto: [],
   },
   {
     id: 'item-handcannon',
@@ -84,7 +84,7 @@ const ITEMS: ItemRecord[] = [
     category: 'Hand Cannon',
     rarity: 'Uncommon Weapon',
     sell: 100,
-    recycle: [],
+    salvagesInto: [],
   },
   {
     id: 'item-kettle-i',
@@ -93,7 +93,7 @@ const ITEMS: ItemRecord[] = [
     category: 'Assault Rifle',
     rarity: 'Common Weapon',
     sell: 90,
-    recycle: [],
+    salvagesInto: [],
   },
   {
     id: 'item-kettle-ii',
@@ -102,7 +102,7 @@ const ITEMS: ItemRecord[] = [
     category: 'Weapon',
     rarity: 'Common Weapon',
     sell: 90,
-    recycle: [],
+    salvagesInto: [],
   },
   {
     id: 'item-kettle-iii',
@@ -111,7 +111,7 @@ const ITEMS: ItemRecord[] = [
     category: 'Weapon',
     rarity: 'Common Weapon',
     sell: 90,
-    recycle: [],
+    salvagesInto: [],
   },
   {
     id: 'item-kettle-iv',
@@ -120,7 +120,7 @@ const ITEMS: ItemRecord[] = [
     category: 'Weapon',
     rarity: 'Common Weapon',
     sell: 90,
-    recycle: [],
+    salvagesInto: [],
   },
   {
     id: 'item-keycard',
@@ -129,7 +129,7 @@ const ITEMS: ItemRecord[] = [
     category: 'Key',
     rarity: 'Uncommon Key',
     sell: 20,
-    recycle: [],
+    salvagesInto: [],
   },
   {
     id: 'item-mod-epic',
@@ -138,7 +138,7 @@ const ITEMS: ItemRecord[] = [
     category: 'Modification',
     rarity: 'Epic Component',
     sell: 60,
-    recycle: [],
+    salvagesInto: [],
   },
   {
     id: 'item-mod-rare',
@@ -147,7 +147,7 @@ const ITEMS: ItemRecord[] = [
     category: 'Modification',
     rarity: 'Rare Component',
     sell: 55,
-    recycle: [],
+    salvagesInto: [],
   },
   {
     id: 'item-topside-rare',
@@ -156,7 +156,7 @@ const ITEMS: ItemRecord[] = [
     category: 'Topside Material',
     rarity: 'Rare Material',
     sell: 40,
-    recycle: [],
+    salvagesInto: [],
   },
   {
     id: 'item-refined-epic',
@@ -165,7 +165,7 @@ const ITEMS: ItemRecord[] = [
     category: 'Refined Material',
     rarity: 'Epic Material',
     sell: 60,
-    recycle: [],
+    salvagesInto: [],
   },
   {
     id: 'item-nature-common',
@@ -174,7 +174,7 @@ const ITEMS: ItemRecord[] = [
     category: 'Nature',
     rarity: 'Common Trinket',
     sell: 15,
-    recycle: [],
+    salvagesInto: [],
   },
   {
     id: 'item-trinket-rare',
@@ -183,7 +183,7 @@ const ITEMS: ItemRecord[] = [
     category: 'Trinket',
     rarity: 'Rare Trinket',
     sell: 25,
-    recycle: [],
+    salvagesInto: [],
   },
   {
     id: 'item-cloak',
@@ -192,7 +192,7 @@ const ITEMS: ItemRecord[] = [
     category: 'Quick Use',
     rarity: 'Epic Utility',
     sell: 150,
-    recycle: [],
+    salvagesInto: [],
   },
   {
     id: 'item-gas-grenade',
@@ -201,7 +201,7 @@ const ITEMS: ItemRecord[] = [
     category: 'Quick Use',
     rarity: 'Rare Utility',
     sell: 120,
-    recycle: [],
+    salvagesInto: [],
   },
   {
     id: 'item-adrenaline',
@@ -210,7 +210,7 @@ const ITEMS: ItemRecord[] = [
     category: 'Quick Use',
     rarity: 'Uncommon Utility',
     sell: 90,
-    recycle: [],
+    salvagesInto: [],
   },
   {
     id: 'item-vita-spray',
@@ -219,7 +219,7 @@ const ITEMS: ItemRecord[] = [
     category: 'Quick Use',
     rarity: 'Uncommon Utility',
     sell: 85,
-    recycle: [],
+    salvagesInto: [],
   },
   {
     id: 'item-bandage',
@@ -228,7 +228,7 @@ const ITEMS: ItemRecord[] = [
     category: 'Quick Use',
     rarity: 'Common Utility',
     sell: 50,
-    recycle: [],
+    salvagesInto: [],
   },
   {
     id: 'item-barricade-kit',
@@ -237,7 +237,7 @@ const ITEMS: ItemRecord[] = [
     category: 'Quick Use',
     rarity: 'Uncommon Utility',
     sell: 70,
-    recycle: [],
+    salvagesInto: [],
   }
 ];
 
@@ -509,7 +509,8 @@ describe('wishlist promotions', () => {
     item: ITEMS.find((item) => item.id === 'item-beta'),
     requirements: [],
     products: [],
-    materials: []
+    materials: [],
+    salvageSources: []
   };
 
   const MATERIAL_DEPENDENCY: WantListResolvedEntry = {
@@ -528,7 +529,8 @@ describe('wishlist promotions', () => {
       }
     ],
     products: [],
-    materials: []
+    materials: [],
+    salvageSources: []
   };
 
     it('elevates wishlist targets to keep with rationale and chip data', () => {
