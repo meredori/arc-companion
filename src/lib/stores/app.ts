@@ -297,18 +297,20 @@ export function expandWantList(
     if (item) {
       for (const { item: source, qty } of salvageSourcesByItem.get(item.id) ?? []) {
         if (qty <= 0) continue;
-        const sourcesNeeded = Math.max(1, Math.ceil(entry.qty / qty));
-        const totalQty = qty * sourcesNeeded;
         const existing = salvageSourceMap.get(source.id);
-        if (!existing || qty > existing.qtyPerSalvage) {
+        const bestQtyPerSalvage = Math.max(qty, existing?.qtyPerSalvage ?? 0);
+        const sourcesNeeded = Math.max(1, Math.ceil(entry.qty / bestQtyPerSalvage));
+        const totalQty = bestQtyPerSalvage * sourcesNeeded;
+
+        if (!existing || bestQtyPerSalvage !== existing.qtyPerSalvage) {
           salvageSourceMap.set(source.id, {
             itemId: source.id,
             name: source.name,
-            qtyPerSalvage: qty,
+            qtyPerSalvage: bestQtyPerSalvage,
             sourcesNeeded,
             totalQty
           });
-        } else if (qty === existing.qtyPerSalvage) {
+        } else {
           existing.sourcesNeeded = Math.min(existing.sourcesNeeded, sourcesNeeded);
           existing.totalQty = existing.qtyPerSalvage * existing.sourcesNeeded;
         }
