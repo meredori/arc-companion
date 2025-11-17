@@ -317,6 +317,11 @@
 
   let workshopFilter = '';
   let blueprintQuery = '';
+  let workbenchView: 'cards' | 'table' = 'cards';
+  let blueprintView: 'gallery' | 'rows' = 'gallery';
+
+  const controlShelfClass =
+    'sticky top-16 z-20 space-y-3 rounded-2xl border border-slate-800/70 bg-slate-950/80 p-4 backdrop-blur';
 
   $: currentBenchGroups = $benchGroups;
   const matchesWorkshopFilter = (group: BenchGroup, term: string) => {
@@ -334,6 +339,30 @@
     (group) => matchesWorkshopFilter(group, workshopFilter) && (!hideCompleted || !group.owned)
   );
 
+  $: visibleWorkbenchLevels = filteredBenchGroups.flatMap((group) =>
+    group.levels
+      .filter((level) => !hideCompleted || !level.owned)
+      .map((level) => ({ bench: group.bench, level }))
+  );
+
+  const summarizedRequirements = (level: LevelGroup) => {
+    const grouped = new Map<string, { name: string; qty: number }>();
+    level.entries.forEach((entry) => {
+      entry.upgrade.items.forEach((item) => {
+        const key = item.itemId;
+        const existing = grouped.get(key) ?? { name: itemName(item.itemId), qty: 0 };
+        grouped.set(key, { name: existing.name, qty: existing.qty + item.qty });
+      });
+    });
+    return [...grouped.values()];
+  };
+
+  const bulkSetWorkbench = (owned: boolean) => {
+    visibleWorkbenchLevels.forEach(({ level }) =>
+      level.entries.forEach((entry) => setWorkbenchOwnership(entry, owned))
+    );
+  };
+
   $: catalog = $blueprintCatalog;
   $: filteredBlueprints = catalog.filter((entry) => {
     if (!blueprintQuery.trim()) return true;
@@ -345,6 +374,22 @@
       (entry.category ?? '').toLowerCase().includes(term)
     );
   });
+
+  $: visibleBlueprints = filteredBlueprints.filter((entry) => !hideCompleted || !entry.owned);
+
+  const blueprintRarityClass = (rarity?: string | null) => {
+    const key = (rarity ?? '').toLowerCase();
+    if (key.includes('legendary')) return 'badge-rarity-legendary';
+    if (key.includes('epic')) return 'badge-rarity-epic';
+    if (key.includes('rare')) return 'badge-rarity-rare';
+    if (key.includes('uncommon')) return 'badge-rarity-uncommon';
+    if (key.includes('common')) return 'badge-rarity-common';
+    return 'badge-soft';
+  };
+
+  const bulkSetBlueprints = (owned: boolean) => {
+    visibleBlueprints.forEach((entry) => setBlueprintOwnership(entry.entry, owned));
+  };
 
   $: questCompletionSet = new Set($quests.filter((entry) => entry.completed).map((entry) => entry.id));
 
@@ -703,78 +748,169 @@
     </header>
     {#if !collapsedSections['workbench-upgrades']}
       <div id="workbench-upgrades-content" class="space-y-6">
-        <SearchBar
-          label="Find workbench or level"
-          placeholder="Search benches, levels, or required items"
-          value={workshopFilter}
-          on:input={({ detail }) => (workshopFilter = detail.value)}
-        />
+        <div class={controlShelfClass}>
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="badge badge-soft">
+                Owned {workshopSummary.ownedLevels}/{workshopSummary.totalLevels}
+              </span>
+              <span class="badge badge-highlight">
+                Highest owned: {workshopSummary.highestOwned > 0 ? `Level ${workshopSummary.highestOwned}` : 'None yet'}
+              </span>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                class={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-widest transition ${
+                  workbenchView === 'cards'
+                    ? 'border-sky-400/60 bg-sky-500/10 text-sky-100'
+                    : 'border-slate-700 bg-slate-900/60 text-slate-300 hover:border-slate-500'
+                }`}
+                on:click={() => (workbenchView = 'cards')}
+              >
+                Card view
+              </button>
+              <button
+                type="button"
+                class={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-widest transition ${
+                  workbenchView === 'table'
+                    ? 'border-sky-400/60 bg-sky-500/10 text-sky-100'
+                    : 'border-slate-700 bg-slate-900/60 text-slate-300 hover:border-slate-500'
+                }`}
+                on:click={() => (workbenchView = 'table')}
+              >
+                Table view
+              </button>
+              <button
+                type="button"
+                class="rounded-full border border-emerald-400/60 bg-emerald-500/10 px-3 py-1 text-[11px] uppercase tracking-widest text-emerald-100 transition hover:bg-emerald-500/20"
+                on:click={() => bulkSetWorkbench(true)}
+                disabled={visibleWorkbenchLevels.length === 0}
+              >
+                Mark visible owned
+              </button>
+              <button
+                type="button"
+                class="rounded-full border border-slate-700 bg-slate-900/60 px-3 py-1 text-[11px] uppercase tracking-widest text-slate-300 transition hover:border-slate-500"
+                on:click={() => bulkSetWorkbench(false)}
+                disabled={visibleWorkbenchLevels.length === 0}
+              >
+                Clear visible
+              </button>
+            </div>
+          </div>
+          <SearchBar
+            label="Find workbench or level"
+            placeholder="Search benches, levels, or required items"
+            value={workshopFilter}
+            on:input={({ detail }) => (workshopFilter = detail.value)}
+          />
+        </div>
         <div class="space-y-4">
-          {#if filteredBenchGroups.length === 0}
+          {#if visibleWorkbenchLevels.length === 0}
             <div class="rounded-2xl border border-dashed border-slate-800/70 bg-slate-950/60 p-6 text-sm text-slate-400">
               No workbenches match “{workshopFilter}”. Try searching by bench name or component.
             </div>
+          {:else if workbenchView === 'table'}
+            <div class="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60">
+              <div class="grid grid-cols-[1.2fr,0.6fr,1.6fr,auto] items-center gap-2 border-b border-slate-800/70 bg-slate-900 px-4 py-3 text-[11px] uppercase tracking-widest text-slate-400">
+                <span>Bench</span>
+                <span>Level</span>
+                <span>Requirements</span>
+                <span class="text-right">Owned</span>
+              </div>
+              <div class="divide-y divide-slate-800/70">
+                {#each visibleWorkbenchLevels as row (row.level.level + row.bench)}
+                  <div class="grid grid-cols-[1.2fr,0.6fr,1.6fr,auto] items-center gap-3 px-4 py-3">
+                    <div>
+                      <p class="text-sm font-semibold text-white">{row.bench}</p>
+                    </div>
+                    <p class="text-xs uppercase tracking-widest text-slate-400">Level {row.level.level}</p>
+                    <div class="flex flex-wrap gap-2 text-sm text-slate-200">
+                      {#each summarizedRequirements(row.level) as requirement (requirement.name)}
+                        <span class="badge badge-muted">
+                          {requirement.qty}× {requirement.name}
+                        </span>
+                      {/each}
+                    </div>
+                    <div class="flex justify-end">
+                      <button
+                        type="button"
+                        class={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide transition ${
+                          row.level.owned
+                            ? 'bg-emerald-500/20 text-emerald-200 hover:bg-emerald-500/30'
+                            : 'bg-slate-800 text-slate-200 hover:bg-slate-700'
+                        }`}
+                        on:click={() => toggleLevel(row.level)}
+                      >
+                        {row.level.owned ? 'Owned' : 'Mark owned'}
+                      </button>
+                    </div>
+                  </div>
+                {/each}
+              </div>
+            </div>
           {:else}
-        {#each filteredBenchGroups as bench}
-          {#if bench.levels.filter((level) => !hideCompleted || !level.owned).length > 0}
-          <article class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
-            <header class="flex flex-wrap items-center justify-between gap-3">
-              <h3 class="text-xl font-semibold text-white">{bench.bench}</h3>
-              <button
-                type="button"
-                class={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide transition ${
-                  bench.owned
-                    ? 'bg-emerald-500/20 text-emerald-200 hover:bg-emerald-500/30'
-                    : 'bg-slate-800 text-slate-200 hover:bg-slate-700'
-                }`}
-                on:click={() => toggleBench(bench)}
-              >
-                {bench.owned ? 'All levels owned' : 'Mark all owned'}
-              </button>
-            </header>
-            <div class="mt-4 space-y-4">
-              {#each bench.levels.filter((level) => !hideCompleted || !level.owned) as level}
-                <div class="rounded-xl border border-slate-800/70 bg-slate-950/50 p-4">
-                  <div class="flex flex-wrap items-center justify-between gap-3">
-                    <p class="text-sm uppercase tracking-widest text-slate-400">Level {level.level}</p>
+            {#each filteredBenchGroups as bench}
+              {#if bench.levels.filter((level) => !hideCompleted || !level.owned).length > 0}
+                <article class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+                  <header class="flex flex-wrap items-center justify-between gap-3">
+                    <h3 class="text-xl font-semibold text-white">{bench.bench}</h3>
                     <button
                       type="button"
                       class={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide transition ${
-                        level.owned
+                        bench.owned
                           ? 'bg-emerald-500/20 text-emerald-200 hover:bg-emerald-500/30'
                           : 'bg-slate-800 text-slate-200 hover:bg-slate-700'
                       }`}
-                      on:click={() => toggleLevel(level)}
+                      on:click={() => toggleBench(bench)}
                     >
-                      {level.owned ? 'Level owned' : 'Mark level owned'}
+                      {bench.owned ? 'All levels owned' : 'Mark all owned'}
                     </button>
-                  </div>
-                  <div class="mt-3 space-y-3">
-                    {#each level.entries as entry}
-                      <div class="rounded-lg border border-slate-800/70 bg-slate-900/40 p-3">
-                        <div>
-                          <p class="text-sm font-semibold text-white">{entry.upgrade.name}</p>
-                          <p class="text-[11px] uppercase tracking-widest text-slate-500">
-                            Level {entry.upgrade.level}
-                          </p>
+                  </header>
+                  <div class="mt-4 space-y-4">
+                    {#each bench.levels.filter((level) => !hideCompleted || !level.owned) as level}
+                      <div class="rounded-xl border border-slate-800/70 bg-slate-950/50 p-4">
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                          <p class="text-sm uppercase tracking-widest text-slate-400">Level {level.level}</p>
+                          <button
+                            type="button"
+                            class={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide transition ${
+                              level.owned
+                                ? 'bg-emerald-500/20 text-emerald-200 hover:bg-emerald-500/30'
+                                : 'bg-slate-800 text-slate-200 hover:bg-slate-700'
+                            }`}
+                            on:click={() => toggleLevel(level)}
+                          >
+                            {level.owned ? 'Level owned' : 'Mark level owned'}
+                          </button>
                         </div>
-                        <ul class="mt-2 space-y-1 text-sm text-slate-300">
-                          {#each entry.upgrade.items as requirement}
-                            <li class="flex items-center justify-between">
-                              <span>{itemName(requirement.itemId)}</span>
-                              <span class="text-slate-400">{requirement.qty}x</span>
-                            </li>
+                        <div class="mt-3 space-y-3">
+                          {#each level.entries as entry}
+                            <div class="rounded-lg border border-slate-800/70 bg-slate-900/40 p-3">
+                              <div>
+                                <p class="text-sm font-semibold text-white">{entry.upgrade.name}</p>
+                                <p class="text-[11px] uppercase tracking-widest text-slate-500">
+                                  Level {entry.upgrade.level}
+                                </p>
+                              </div>
+                              <ul class="mt-2 space-y-1 text-sm text-slate-300">
+                                {#each entry.upgrade.items as requirement}
+                                  <li class="flex items-center justify-between">
+                                    <span>{itemName(requirement.itemId)}</span>
+                                    <span class="text-slate-400">{requirement.qty}x</span>
+                                  </li>
+                                {/each}
+                              </ul>
+                            </div>
                           {/each}
-                        </ul>
+                        </div>
                       </div>
                     {/each}
                   </div>
-                </div>
-              {/each}
-            </div>
-          </article>
-          {/if}
-        {/each}
+                </article>
+              {/if}
+            {/each}
           {/if}
         </div>
         <div class="rounded-2xl border border-slate-800/70 bg-slate-950/60 p-6 text-sm text-slate-300">
@@ -929,46 +1065,138 @@
     </header>
     {#if !collapsedSections['blueprint-catalog']}
       <div id="blueprint-catalog-content" class="space-y-6">
-        <SearchBar
-          label="Find blueprint"
-          placeholder="Search by name, rarity, or slug"
-          value={blueprintQuery}
-          on:input={({ detail }) => (blueprintQuery = detail.value)}
-        />
-        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {#if filteredBlueprints.length === 0}
-            <div class="sm:col-span-2 lg:col-span-3 rounded-2xl border border-dashed border-slate-800/70 bg-slate-950/60 p-6 text-sm text-slate-400">
-              No blueprints match “{blueprintQuery}”.
+        <div class={controlShelfClass}>
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="badge badge-soft">Owned {$blueprintSummary.owned}/{$blueprintSummary.total}</span>
+              <span class="badge badge-highlight">{blueprintView === 'gallery' ? 'Gallery view' : 'Row view'}</span>
             </div>
-          {:else}
-            {#each filteredBlueprints as blueprint}
+            <div class="flex flex-wrap items-center gap-2">
               <button
                 type="button"
-                class={`rounded-2xl border px-4 py-3 text-left text-sm transition ${
-                  blueprint.owned
-                    ? 'border-emerald-500/50 bg-emerald-500/10 text-white'
-                    : 'border-slate-800 bg-slate-900/50 text-slate-300 hover:border-slate-600'
+                class={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-widest transition ${
+                  blueprintView === 'gallery'
+                    ? 'border-sky-400/60 bg-sky-500/10 text-sky-100'
+                    : 'border-slate-700 bg-slate-900/60 text-slate-300 hover:border-slate-500'
                 }`}
-                on:click={() => toggleBlueprint(blueprint.entry)}
+                on:click={() => (blueprintView = 'gallery')}
               >
-                <p class="text-base font-semibold">{blueprint.name}</p>
-                <p class="text-xs uppercase tracking-widest text-slate-400">
-                  {(blueprint.rarity ?? 'Unknown rarity')} · {(blueprint.category ?? 'Blueprint')}
-                </p>
-                <p class="mt-1 text-xs text-slate-400">
-                  {blueprint.slug}
-                  {#if typeof blueprint.sell === 'number'}
-                    · Sell {blueprint.sell.toLocaleString()} coins
-                  {/if}
-                </p>
-                {#if blueprint.notes}
-                  <p class="mt-2 text-xs text-slate-400">{blueprint.notes}</p>
-                {/if}
-                <p class="mt-3 text-[11px] uppercase tracking-widest">
-                  {blueprint.owned ? 'Owned' : 'Not owned'}
-                </p>
+                Gallery
               </button>
-            {/each}
+              <button
+                type="button"
+                class={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-widest transition ${
+                  blueprintView === 'rows'
+                    ? 'border-sky-400/60 bg-sky-500/10 text-sky-100'
+                    : 'border-slate-700 bg-slate-900/60 text-slate-300 hover:border-slate-500'
+                }`}
+                on:click={() => (blueprintView = 'rows')}
+              >
+                Rows
+              </button>
+              <button
+                type="button"
+                class="rounded-full border border-emerald-400/60 bg-emerald-500/10 px-3 py-1 text-[11px] uppercase tracking-widest text-emerald-100 transition hover:bg-emerald-500/20"
+                on:click={() => bulkSetBlueprints(true)}
+                disabled={visibleBlueprints.length === 0}
+              >
+                Mark page owned
+              </button>
+            </div>
+          </div>
+          <SearchBar
+            label="Find blueprint"
+            placeholder="Search by name, rarity, or slug"
+            value={blueprintQuery}
+            on:input={({ detail }) => (blueprintQuery = detail.value)}
+          />
+        </div>
+        <div class="space-y-4">
+          {#if visibleBlueprints.length === 0}
+            <div class="rounded-2xl border border-dashed border-slate-800/70 bg-slate-950/60 p-6 text-sm text-slate-400">
+              No blueprints match “{blueprintQuery}”.
+            </div>
+          {:else if blueprintView === 'rows'}
+            <div class="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60">
+              <div class="grid grid-cols-[1.2fr,0.9fr,0.9fr,auto] items-center gap-2 border-b border-slate-800/70 bg-slate-900 px-4 py-3 text-[11px] uppercase tracking-widest text-slate-400">
+                <span>Name</span>
+                <span>Details</span>
+                <span>Sell value</span>
+                <span class="text-right">Owned</span>
+              </div>
+              <div class="divide-y divide-slate-800/70">
+                {#each visibleBlueprints as blueprint (blueprint.id)}
+                  <div class="grid grid-cols-[1.2fr,0.9fr,0.9fr,auto] items-center gap-3 px-4 py-3">
+                    <div class="space-y-1">
+                      <p class="text-sm font-semibold text-white">{blueprint.name}</p>
+                      <p class="text-xs uppercase tracking-widest text-slate-400">{blueprint.slug}</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2 text-xs uppercase tracking-widest text-slate-400">
+                      <span class={`badge ${blueprintRarityClass(blueprint.rarity)}`}>
+                        {blueprint.rarity ?? 'Unknown rarity'}
+                      </span>
+                      {#if blueprint.category}
+                        <span class="badge badge-muted">{blueprint.category}</span>
+                      {/if}
+                    </div>
+                    <div class="text-sm text-slate-200">
+                      {#if typeof blueprint.sell === 'number'}
+                        Sell {blueprint.sell.toLocaleString()} coins
+                      {:else}
+                        <span class="text-slate-500">No sell data</span>
+                      {/if}
+                    </div>
+                    <div class="flex justify-end">
+                      <label class="inline-flex cursor-pointer items-center gap-2 text-xs uppercase tracking-widest text-slate-400">
+                        <input
+                          type="checkbox"
+                          class="h-4 w-4 rounded border-slate-600 bg-slate-900 text-emerald-400 focus:ring-emerald-500"
+                          checked={blueprint.owned}
+                          on:change={() => toggleBlueprint(blueprint.entry)}
+                        />
+                        {blueprint.owned ? 'Owned' : 'Not owned'}
+                      </label>
+                    </div>
+                  </div>
+                {/each}
+              </div>
+            </div>
+          {:else}
+            <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {#each visibleBlueprints as blueprint}
+                <button
+                  type="button"
+                  class={`relative rounded-2xl border px-4 py-3 text-left text-sm transition ${
+                    blueprint.owned
+                      ? 'border-emerald-500/50 bg-emerald-500/10 text-white'
+                      : 'border-slate-800 bg-slate-900/50 text-slate-300 hover:border-slate-600'
+                  }`}
+                  on:click={() => toggleBlueprint(blueprint.entry)}
+                >
+                  <div class="absolute right-3 top-3 flex items-center gap-2">
+                    <span class={`badge ${blueprintRarityClass(blueprint.rarity)}`}>
+                      {blueprint.rarity ?? 'Unknown rarity'}
+                    </span>
+                  </div>
+                  <p class="text-base font-semibold">{blueprint.name}</p>
+                  <p class="text-xs uppercase tracking-widest text-slate-400">
+                    {(blueprint.category ?? 'Blueprint')}
+                  </p>
+                  <p class="mt-1 text-xs text-slate-400">
+                    {blueprint.slug}
+                    {#if typeof blueprint.sell === 'number'}
+                      · Sell {blueprint.sell.toLocaleString()} coins
+                    {/if}
+                  </p>
+                  {#if blueprint.notes}
+                    <p class="mt-2 text-xs text-slate-400">{blueprint.notes}</p>
+                  {/if}
+                  <p class="mt-3 text-[11px] uppercase tracking-widest">
+                    {blueprint.owned ? 'Owned' : 'Not owned'}
+                  </p>
+                </button>
+              {/each}
+            </div>
           {/if}
         </div>
         <TipsPanel heading="Blueprint notes" tips={$blueprintSummary.tips} />

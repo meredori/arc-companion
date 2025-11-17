@@ -92,7 +92,39 @@
   }
 
   .badge {
-    @apply inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-widest;
+    @apply inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-widest shadow-inner shadow-slate-950;
+  }
+
+  .badge-soft {
+    @apply border-slate-700 bg-slate-900/70 text-slate-200;
+  }
+
+  .badge-muted {
+    @apply border-slate-800 bg-slate-900/60 text-slate-400;
+  }
+
+  .badge-highlight {
+    @apply border-sky-400/60 bg-sky-500/10 text-sky-100;
+  }
+
+  .badge-rarity-common {
+    @apply border-slate-700 bg-slate-900/70 text-slate-200;
+  }
+
+  .badge-rarity-uncommon {
+    @apply border-emerald-500/50 bg-emerald-500/10 text-emerald-100;
+  }
+
+  .badge-rarity-rare {
+    @apply border-sky-500/60 bg-sky-500/10 text-sky-100;
+  }
+
+  .badge-rarity-epic {
+    @apply border-violet-500/60 bg-violet-500/10 text-violet-100;
+  }
+
+  .badge-rarity-legendary {
+    @apply border-amber-400/70 bg-amber-500/10 text-amber-100;
   }
 
   .badge-action-save {
