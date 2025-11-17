@@ -67,7 +67,17 @@
       {@const completedCount = chain.quests.filter((quest) => quest.completed).length}
       {@const totalQuests = chain.totalQuests ?? chain.quests.length}
       {@const completedTotal = chain.completedQuests ?? completedCount}
+      {@const questOrder = new Map(chain.quests.map((quest, index) => [quest.id, index]))}
       {@const visibleQuests = chain.quests.filter((quest) => !(collapseCompleted && quest.completed))}
+      {@const orderedQuests =
+        collapseCompleted
+          ? visibleQuests
+          : [...visibleQuests].sort((a, b) => {
+              if (a.completed === b.completed) {
+                return (questOrder.get(a.id) ?? 0) - (questOrder.get(b.id) ?? 0);
+              }
+              return a.completed ? 1 : -1;
+            })}
       <article class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
         <header class="flex flex-wrap items-center justify-between gap-3">
           <div class="space-y-1">
@@ -87,56 +97,60 @@
         {:else}
           <div class="mt-4 space-y-3">
             <div class="flex gap-3 overflow-x-auto pb-2">
-              {#each visibleQuests as quest (quest.id)}
+              {#each orderedQuests as quest (quest.id)}
                 {@const tooltipId = `${chain.id}-${quest.id}-tooltip`}
                 {@const hasTooltip = quest.requirements.length > 0 || (quest.objectives && quest.objectives.length > 0)}
-                <div class="group relative flex min-h-[140px] min-w-[240px] flex-shrink-0">
-                  <button
-                    type="button"
-                    class={`flex w-full flex-col justify-between gap-3 rounded-2xl border px-4 py-3 text-left shadow-sm transition ${
-                      quest.completed
-                        ? 'border-emerald-500/60 bg-emerald-500/10 text-white hover:border-emerald-500'
-                        : 'border-slate-800/80 bg-slate-900/60 text-slate-200 hover:border-slate-600'
-                    }`}
-                    on:click={() => toggleQuest(quest.id)}
-                    aria-pressed={quest.completed}
-                    aria-label={`Toggle ${quest.name}`}
-                  >
-                    <div class="flex items-start gap-3">
-                      <span
-                        class={`mt-0.5 inline-flex h-5 w-5 flex-none items-center justify-center rounded-full border text-[0.65rem] font-bold uppercase transition ${
-                          quest.completed
-                            ? 'border-emerald-300 bg-emerald-500/20 text-emerald-100'
-                            : 'border-slate-700 bg-slate-950/60 text-slate-500'
-                        }`}
-                      >
-                        {quest.completed ? '✓' : ''}
-                      </span>
-                      <div class="min-w-0 space-y-1">
-                        <p class="truncate text-sm font-semibold">{quest.name}</p>
-                        {#if quest.stepLabel}
-                          <p class="text-[11px] uppercase tracking-[0.25em] text-slate-400">{quest.stepLabel}</p>
+                <div
+                  class={`group relative flex min-h-[140px] min-w-[240px] flex-shrink-0 rounded-2xl border px-4 py-3 shadow-sm transition ${
+                    quest.completed
+                      ? 'border-emerald-500/60 bg-emerald-500/10 text-white hover:border-emerald-500'
+                      : 'border-slate-800/80 bg-slate-900/60 text-slate-200 hover:border-slate-600'
+                  }`}
+                >
+                  <div class="flex w-full flex-col gap-3">
+                    <button
+                      type="button"
+                      class="flex flex-1 flex-col justify-between gap-3 text-left"
+                      on:click={() => toggleQuest(quest.id)}
+                      aria-pressed={quest.completed}
+                      aria-label={`Toggle ${quest.name}`}
+                    >
+                      <div class="flex items-start gap-3">
+                        <span
+                          class={`mt-0.5 inline-flex h-5 w-5 flex-none items-center justify-center rounded-full border text-[0.65rem] font-bold uppercase transition ${
+                            quest.completed
+                              ? 'border-emerald-300 bg-emerald-500/20 text-emerald-100'
+                              : 'border-slate-700 bg-slate-950/60 text-slate-500'
+                          }`}
+                        >
+                          {quest.completed ? '✓' : ''}
+                        </span>
+                        <div class="min-w-0 space-y-1">
+                          <p class="truncate text-sm font-semibold">{quest.name}</p>
+                          {#if quest.stepLabel}
+                            <p class="text-[11px] uppercase tracking-[0.25em] text-slate-400">{quest.stepLabel}</p>
+                          {/if}
+                        </div>
+                      </div>
+                      <div class="min-h-[28px] space-y-1">
+                        {#if quest.rewards && quest.rewards.length > 0}
+                          <div class="flex flex-wrap gap-2 text-xs text-amber-200">
+                            <span class="rounded-full bg-amber-500/15 px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-amber-100">
+                              Rewards
+                            </span>
+                            {#each quest.rewards as reward}
+                              <span class="rounded-full bg-slate-800/70 px-2 py-1 text-[11px] text-amber-100">{reward}</span>
+                            {/each}
+                          </div>
                         {/if}
                       </div>
-                    </div>
-                    <div class="min-h-[28px] space-y-1">
-                      {#if quest.rewards && quest.rewards.length > 0}
-                        <div class="flex flex-wrap gap-2 text-xs text-amber-200">
-                          <span class="rounded-full bg-amber-500/15 px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-amber-100">
-                            Rewards
-                          </span>
-                          {#each quest.rewards as reward}
-                            <span class="rounded-full bg-slate-800/70 px-2 py-1 text-[11px] text-amber-100">{reward}</span>
-                          {/each}
-                        </div>
-                      {/if}
-                    </div>
+                    </button>
                     {#if hasTooltip}
                       <div class="flex justify-end">
                         <button
                           type="button"
                           class="rounded-full border border-slate-700 bg-slate-900/80 px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-200 transition hover:border-slate-500"
-                          on:click|stopPropagation={() => showDetails(chain, quest)}
+                          on:click={() => showDetails(chain, quest)}
                           aria-haspopup="dialog"
                           aria-controls={tooltipId}
                         >
@@ -144,7 +158,7 @@
                         </button>
                       </div>
                     {/if}
-                  </button>
+                  </div>
                 </div>
               {/each}
             </div>

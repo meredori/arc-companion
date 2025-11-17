@@ -487,7 +487,12 @@
     const weightFor = (id: string) => weights.get(id) ?? { chainWeight: weight(id), segmentIndex: 0 };
 
     return [...groups.entries()]
-      .filter(([, group]) => group.quests.length > 0)
+      .filter(([, group]) => {
+        const total = group.totalQuests ?? group.quests.length;
+        const completed = group.completedQuests ?? group.quests.filter((quest) => quest.completed).length;
+        if (total > 0 && completed >= total) return false;
+        return group.quests.length > 0;
+      })
       .sort(([aId, a], [bId, b]) => {
         const aWeight = weightFor(aId);
         const bWeight = weightFor(bId);
