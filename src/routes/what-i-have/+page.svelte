@@ -6,7 +6,7 @@
   /* eslint-env browser */
   import { derived } from 'svelte/store';
   import { onDestroy, onMount } from 'svelte';
-  import { QuestChainCards, SearchBar, TipsPanel } from '$lib/components';
+  import { QuestChainCards, SearchBar, TipsPanel, type QuestChainCard } from '$lib/components';
   import {
     blueprints,
     hydrateFromCanonical,
@@ -111,19 +111,7 @@
 
   type SectionKey = (typeof sectionControls)[number]['id'];
 
-  type QuestTokenDisplay = {
-    id: string;
-    name: string;
-    completed: boolean;
-    requirements: string[];
-    stepLabel: string | null;
-  };
-
-  type QuestChainDisplay = {
-    id: string;
-    name: string;
-    quests: QuestTokenDisplay[];
-  };
+  type QuestChainDisplay = QuestChainCard;
 
   let collapsedSections: Record<SectionKey, boolean> = {
     quests: false,

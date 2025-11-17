@@ -72,6 +72,11 @@
                   [chain.id]: !collapsedCompleted[chain.id]
                 })}
               aria-pressed={collapsedCompleted[chain.id]}
+              aria-label={
+                collapsedCompleted[chain.id]
+                  ? `Show completed quests in ${chain.name}`
+                  : `Hide completed quests in ${chain.name}`
+              }
             >
               {collapsedCompleted[chain.id] ? 'Show completed' : 'Collapse completed'}
             </button>
@@ -86,7 +91,7 @@
               {#each visibleQuests as quest (quest.id)}
                 <button
                   type="button"
-                  class={`min-w-[240px] rounded-2xl border px-4 py-3 text-left shadow-sm transition ${
+                  class={`flex min-h-[140px] min-w-[240px] flex-shrink-0 flex-col justify-between gap-3 rounded-2xl border px-4 py-3 text-left shadow-sm transition ${
                     quest.completed
                       ? 'border-emerald-500/60 bg-emerald-500/10 text-white hover:border-emerald-500'
                       : 'border-slate-800/80 bg-slate-900/60 text-slate-200 hover:border-slate-600'
@@ -112,18 +117,20 @@
                       {/if}
                     </div>
                   </div>
-                  {#if quest.requirements.length > 0}
-                    <div class="mt-3 flex flex-wrap gap-2">
-                      {#each quest.requirements as requirement}
-                        <span
-                          class="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-200"
-                        >
-                          <span class="h-1.5 w-1.5 rounded-full bg-sky-400/80"></span>
-                          {requirement}
-                        </span>
-                      {/each}
-                    </div>
-                  {/if}
+                  <div class="mt-1 min-h-[28px]">
+                    {#if quest.requirements.length > 0}
+                      <div class="flex flex-wrap gap-2">
+                        {#each quest.requirements as requirement}
+                          <span
+                            class="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-200"
+                          >
+                            <span class="h-1.5 w-1.5 rounded-full bg-sky-400/80"></span>
+                            {requirement}
+                          </span>
+                        {/each}
+                      </div>
+                    {/if}
+                  </div>
                 </button>
               {/each}
             </div>
