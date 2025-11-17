@@ -126,96 +126,6 @@ function computeRecycleValue(item: ItemRecord): number {
   return targets.reduce((total, entry) => total + entry.qty * 35, 0);
 }
 
-type NeedResolver = {
-  hasDirectNeed: (itemId: string) => boolean;
-  feedsNeed: (itemId: string) => boolean;
-};
-
-const NEED_RESOLVER_CACHE = new WeakMap<RecommendationContext, NeedResolver>();
-
-function buildNeedResolver(context: RecommendationContext): NeedResolver {
-  const itemLookup = new Map(context.items.map((item) => [item.id, item] as const));
-  const ingredientConsumers = new Map<string, string[]>();
-
-  for (const item of context.items) {
-    for (const requirement of item.craftsFrom ?? []) {
-      const bucket = ingredientConsumers.get(requirement.itemId) ?? [];
-      bucket.push(item.id);
-      ingredientConsumers.set(requirement.itemId, bucket);
-    }
-
-    for (const product of item.craftsInto ?? []) {
-      const bucket = ingredientConsumers.get(product.productId) ?? [];
-      bucket.push(item.id);
-      ingredientConsumers.set(product.productId, bucket);
-    }
-  }
-
-  const directNeedCache = new Map<string, boolean>();
-  const feedCache = new Map<string, boolean>();
-
-  const hasDirectNeed = (itemId: string): boolean => {
-    const cached = directNeedCache.get(itemId);
-    if (cached !== undefined) return cached;
-
-    const need =
-      remainingQuestNeeds(itemId, context).total > 0 ||
-      remainingUpgradeNeeds(itemId, context).total > 0 ||
-      remainingProjectNeeds(itemId, context).total > 0 ||
-      (context.wishlistSourcesByItem[itemId]?.length ?? 0) > 0;
-
-    directNeedCache.set(itemId, need);
-    return need;
-  };
-
-  const feedsNeed = (itemId: string, visited = new Set<string>()): boolean => {
-    if (visited.has(itemId)) return false;
-    const cached = feedCache.get(itemId);
-    if (cached !== undefined) return cached;
-
-    if (hasDirectNeed(itemId)) {
-      feedCache.set(itemId, true);
-      return true;
-    }
-
-    visited.add(itemId);
-    const record = itemLookup.get(itemId);
-    const recycleTargets = record?.recyclesInto ?? record?.salvagesInto ?? [];
-
-    for (const target of recycleTargets) {
-      if (feedsNeed(target.itemId, visited)) {
-        feedCache.set(itemId, true);
-        visited.delete(itemId);
-        return true;
-      }
-    }
-
-    const consumers = ingredientConsumers.get(itemId) ?? [];
-    for (const consumer of consumers) {
-      if (feedsNeed(consumer, visited)) {
-        feedCache.set(itemId, true);
-        visited.delete(itemId);
-        return true;
-      }
-    }
-
-    visited.delete(itemId);
-    feedCache.set(itemId, false);
-    return false;
-  };
-
-  return { hasDirectNeed, feedsNeed };
-}
-
-const needResolverForContext = (context: RecommendationContext) => {
-  let resolver = NEED_RESOLVER_CACHE.get(context);
-  if (!resolver) {
-    resolver = buildNeedResolver(context);
-    NEED_RESOLVER_CACHE.set(context, resolver);
-  }
-  return resolver;
-};
-
 function isQuestComplete(quest: Quest, progress: QuestProgress[]): boolean {
   const record = progress.find((entry) => entry.id === quest.id);
   return record?.completed ?? false;
@@ -357,7 +267,7 @@ function remainingUpgradeNeeds(itemId: string, context: RecommendationContext) {
   }[] = [];
 
   for (const upgrade of context.upgrades) {
-    if (!ownedWorkbenchUpgrade(upgrade, context.workbenchUpgrades)) {
+    if (ownedWorkbenchUpgrade(upgrade, context.workbenchUpgrades)) {
       continue;
     }
 
@@ -426,53 +336,15 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
         )
       : false;
 
-  let action: RecommendationAction = 'sell';
-  let rationale = 'No active quests or owned blueprints require this item. Sell extras for coins.';
-
-  if (questNeed.total > 0) {
-    action = 'save';
-    rationale = `Required for ${questNeed.total} quest objective${questNeed.total > 1 ? 's' : ''}.`;
-  } else if (upgradeNeed.total > 0 || projectNeed.total > 0) {
-    action = 'keep';
-    if (upgradeNeed.total > 0 && projectNeed.total > 0) {
-      rationale = `Blueprints and expedition projects will consume ${upgradeNeed.total + projectNeed.total} item${upgradeNeed.total + projectNeed.total > 1 ? 's' : ''}.`;
-    } else if (upgradeNeed.total > 0) {
-      rationale = `Owned workbench upgrades will consume ${upgradeNeed.total} item${
-        upgradeNeed.total > 1 ? 's' : ''
-      }.`;
-    } else {
-      rationale = `Expedition projects still need ${projectNeed.total} item${projectNeed.total > 1 ? 's' : ''}.`;
-    }
-  } else if (alwaysKeepCategory) {
-    action = 'keep';
-    rationale = 'Category flagged as always keep in admin controls.';
-  } else {
-    const { feedsNeed } = needResolverForContext(context);
-    const recycleTargets = item.recyclesInto ?? item.salvagesInto ?? [];
-    const supportsNeededMaterials = recycleTargets.some((entry) => feedsNeed(entry.itemId));
-
-    if (supportsNeededMaterials) {
-      action = 'recycle';
-      const namedTargets = recycleTargets
-        .filter((entry) => feedsNeed(entry.itemId))
-        .map((entry) => entry.name ?? entry.itemId);
-      const targetList = namedTargets.length > 0 ? ` (${namedTargets.join(', ')})` : '';
-      rationale = `Recycle to recover materials needed for other objectives${targetList}.`;
-    } else if (salvageValue > item.sell) {
-      action = 'recycle';
-      rationale = 'Recycling yields higher composite value than selling outright.';
-    }
-  }
-
   const wishlistSources = context.wishlistSourcesByItem[item.id] ?? [];
-  if (wishlistSources.length > 0) {
-    if (action === 'sell' || action === 'recycle') {
-      action = 'keep';
-    }
-    const uniqueTargets = Array.from(
-      new Set(wishlistSources.map((source) => source.targetName))
-    );
-    const wishlistReason =
+
+  let action: RecommendationAction = 'sell';
+  let rationale = 'Not needed for wishlist targets, upgrades, or projects. Sell extras for coins.';
+
+  const wishlistReason = (() => {
+    if (wishlistSources.length === 0) return '';
+    const uniqueTargets = Array.from(new Set(wishlistSources.map((source) => source.targetName)));
+    const wishlistBase =
       uniqueTargets.length === 1
         ? `Wishlist target ${uniqueTargets[0]} needs this item`
         : `Wishlist targets ${uniqueTargets.join(', ')} need this item`;
@@ -483,13 +355,67 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
           .filter((value): value is string => Boolean(value))
       )
     );
-    const messageBase = notes.length > 0 ? `${wishlistReason} (${notes.join('; ')})` : wishlistReason;
-    const sentence = messageBase.endsWith('.') ? messageBase : `${messageBase}.`;
-    if (rationale) {
-      rationale = rationale.endsWith('.') ? `${rationale} ${sentence}` : `${rationale}. ${sentence}`;
-    } else {
-      rationale = sentence;
+    const messageBase = notes.length > 0 ? `${wishlistBase} (${notes.join('; ')})` : wishlistBase;
+    return messageBase.endsWith('.') ? messageBase : `${messageBase}.`;
+  })();
+
+  if (questNeed.total > 0) {
+    action = 'save';
+    rationale = `Required for ${questNeed.total} quest objective${questNeed.total > 1 ? 's' : ''}.`;
+  } else if (upgradeNeed.total > 0 || projectNeed.total > 0 || wishlistSources.length > 0) {
+    action = 'keep';
+    const keepReasons: string[] = [];
+    if (upgradeNeed.total > 0) {
+      keepReasons.push(
+        `Unowned workbench upgrades will consume ${upgradeNeed.total} item${
+          upgradeNeed.total > 1 ? 's' : ''
+        }.`
+      );
     }
+    if (projectNeed.total > 0) {
+      keepReasons.push(
+        `Incomplete projects still need ${projectNeed.total} item${projectNeed.total > 1 ? 's' : ''}.`
+      );
+    }
+    if (wishlistReason) {
+      keepReasons.push(wishlistReason);
+    }
+    rationale = keepReasons.join(' ');
+  } else if (alwaysKeepCategory) {
+    action = 'keep';
+    rationale = 'Category flagged as always keep in admin controls.';
+  } else {
+    const recycleTargets = item.recyclesInto ?? item.salvagesInto ?? [];
+    const recycleWishlistTargets = recycleTargets.filter(
+      (entry) => (context.wishlistSourcesByItem[entry.itemId]?.length ?? 0) > 0
+    );
+    const recycleUpgradeTargets = recycleTargets.filter(
+      (entry) => remainingUpgradeNeeds(entry.itemId, context).total > 0
+    );
+    const recycleProjectTargets = recycleTargets.filter(
+      (entry) => remainingProjectNeeds(entry.itemId, context).total > 0
+    );
+
+    if (recycleWishlistTargets.length > 0) {
+      action = 'recycle';
+      const targetList = recycleWishlistTargets.map((entry) => entry.name ?? entry.itemId).join(', ');
+      rationale = `Recycle to supply wishlist materials (${targetList}).`;
+    } else if (recycleUpgradeTargets.length > 0) {
+      action = 'recycle';
+      const targetList = recycleUpgradeTargets.map((entry) => entry.name ?? entry.itemId).join(', ');
+      rationale = `Recycle to feed unowned workbench upgrades (${targetList}).`;
+    } else if (recycleProjectTargets.length > 0) {
+      action = 'recycle';
+      const targetList = recycleProjectTargets.map((entry) => entry.name ?? entry.itemId).join(', ');
+      rationale = `Recycle to advance incomplete projects (${targetList}).`;
+    } else if (salvageValue > item.sell) {
+      action = 'recycle';
+      rationale = 'Recycle for better value than selling.';
+    }
+  }
+
+  if (wishlistSources.length > 0 && action !== 'save' && !rationale.includes('Wishlist')) {
+    rationale = rationale.endsWith('.') ? `${rationale} ${wishlistReason}` : `${rationale}. ${wishlistReason}`;
   }
 
   return {

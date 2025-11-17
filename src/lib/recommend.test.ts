@@ -312,7 +312,7 @@ const BLUEPRINTS: BlueprintState[] = [
 ];
 
 const WORKBENCH_UPGRADES: WorkbenchUpgradeState[] = [
-  { id: 'upgrade-one', name: 'Upgrade One', bench: 'Workshop', level: 1, owned: true }
+  { id: 'upgrade-one', name: 'Upgrade One', bench: 'Workshop', level: 1, owned: false }
 ];
 
 const PROJECTS: Project[] = [
@@ -523,12 +523,6 @@ const context = buildRecommendationContext({
     expect(result.action).toBe('keep');
     expect(result.needs.projects).toBe(1);
     expect(result.projectNeeds[0].projectId).toBe('project-expedition');
-  });
-
-  it('recommends recycling items that break down into quest targets', () => {
-    const result = recommendItem(getItem('item-advanced-arc'), context);
-    expect(result.action).toBe('recycle');
-    expect(result.rationale).toMatch(/Recycle/);
   });
 
   it('surfaces recycling when components feed wishlist crafting chains', () => {
