@@ -14,7 +14,7 @@
     settings,
     wantList
   } from '$lib/stores/app';
-  import type { ItemRecord, UpgradePack } from '$lib/types';
+  import type { ItemRecord, UpgradePack, WantListRequirement } from '$lib/types';
   import type { PageData } from './$types';
 
   export let data: PageData;
@@ -215,7 +215,7 @@
     quantityDrafts = { ...quantityDrafts, [itemId]: normalized };
   };
 
-  const getDirectRequirements = (requirements: { depth: number }[]) =>
+  const getDirectRequirements = (requirements: WantListRequirement[] = []) =>
     requirements.filter((requirement) => requirement.depth === 1);
 
   const clearQuantityDraft = (itemId: string) => {
