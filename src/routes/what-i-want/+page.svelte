@@ -421,8 +421,8 @@
         <div class="space-y-5">
           {#each $resolvedEntries as detail}
             {@const recipeLink = detail.item ? recipeLinkForItem(detail.item) : null}
-            {@const salvageOutputs = detail.item?.salvagesInto ?? []}
-            {@const salvageSources = detail.salvageSources}
+            {@const recycleOutputs = detail.item?.recyclesInto ?? detail.item?.salvagesInto ?? []}
+            {@const recycleSources = detail.recycleSources}
             <article class="space-y-4 rounded-2xl border border-slate-800/60 bg-slate-950/60 p-5 text-sm text-slate-200">
               <header class="flex flex-wrap items-center justify-between gap-3">
                 <div class="space-y-1">
@@ -497,10 +497,10 @@
                   </ul>
                 </div>
                 <div class="space-y-2">
-                  <h4 class="text-xs uppercase tracking-widest text-slate-400">Salvaging sources</h4>
+                  <h4 class="text-xs uppercase tracking-widest text-slate-400">Recycle Source</h4>
                   <ul class="space-y-1 text-sm text-slate-300">
-                    {#if salvageSources.length > 0}
-                      {#each salvageSources as source}
+                    {#if recycleSources.length > 0}
+                      {#each recycleSources as source}
                         <li class="space-y-1 rounded-lg border border-slate-800/60 bg-slate-900/60 p-2">
                           <div class="flex items-center justify-between gap-3">
                             <span class="truncate">{source.sourceName}</span>
@@ -510,10 +510,10 @@
                       {/each}
                     {:else}
                       <li class="text-slate-500">
-                        {#if salvageOutputs.length > 0}
-                          No other recorded salvage sources produce this item.
+                        {#if recycleOutputs.length > 0}
+                          No other recorded recycle sources produce this item.
                         {:else}
-                          This item has no recorded salvage data.
+                          This item has no recorded recycle data.
                         {/if}
                       </li>
                     {/if}
@@ -522,10 +522,10 @@
               </div>
 
               <div class="space-y-2">
-                <h4 class="text-xs uppercase tracking-widest text-slate-400">Salvaged into</h4>
+                <h4 class="text-xs uppercase tracking-widest text-slate-400">Recycled into</h4>
                 <ul class="space-y-1 text-sm text-slate-300">
-                  {#if salvageOutputs.length > 0}
-                    {#each salvageOutputs as output}
+                  {#if recycleOutputs.length > 0}
+                    {#each recycleOutputs as output}
                       <li class="flex items-center justify-between gap-3">
                         <span class="truncate">{output.name}</span>
                         <span class="font-semibold text-white">×{output.qty}</span>
@@ -533,10 +533,10 @@
                     {/each}
                   {:else}
                     <li class="text-slate-500">
-                      {#if salvageSources.length > 0}
-                        This item lists salvage sources but no recorded outputs.
+                      {#if recycleSources.length > 0}
+                        This item lists recycle sources but no recorded outputs.
                       {:else}
-                        This item has no recorded salvage data.
+                        This item has no recorded recycle data.
                       {/if}
                     </li>
                   {/if}
