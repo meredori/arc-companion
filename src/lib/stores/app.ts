@@ -227,11 +227,11 @@ export function expandWantList(
       continue;
     }
 
-    for (const salvage of item.salvagesInto ?? []) {
-      if (!salvage || salvage.qty <= 0) continue;
-      const bucket = recyclersByMaterial.get(salvage.itemId) ?? [];
-      bucket.push({ item, qty: salvage.qty, name: salvage.name ?? salvage.itemId });
-      recyclersByMaterial.set(salvage.itemId, bucket);
+    for (const recycle of item.recyclesInto ?? item.salvagesInto ?? []) {
+      if (!recycle || recycle.qty <= 0) continue;
+      const bucket = recyclersByMaterial.get(recycle.itemId) ?? [];
+      bucket.push({ item, qty: recycle.qty, name: recycle.name ?? recycle.itemId });
+      recyclersByMaterial.set(recycle.itemId, bucket);
     }
   }
 
@@ -338,7 +338,7 @@ export function expandWantList(
 
     products.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
 
-    const salvageSources = item
+    const recycleSources = item
       ? (recyclersByMaterial.get(item.id) ?? []).map(({ item: source, qty, name }) => ({
           sourceItemId: source.id,
           sourceName: source.name || name,
@@ -346,7 +346,7 @@ export function expandWantList(
         }))
       : [];
 
-    salvageSources.sort((a, b) =>
+    recycleSources.sort((a, b) =>
       a.sourceName.localeCompare(b.sourceName, undefined, { sensitivity: 'base' })
     );
 
@@ -356,7 +356,7 @@ export function expandWantList(
       requirements,
       products,
       materials,
-      salvageSources
+      recycleSources
     } satisfies WantListResolvedEntry;
   });
 }

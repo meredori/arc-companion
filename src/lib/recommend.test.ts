@@ -510,7 +510,7 @@ describe('wishlist promotions', () => {
     requirements: [],
     products: [],
     materials: [],
-    salvageSources: []
+    recycleSources: []
   };
 
   const MATERIAL_DEPENDENCY: WantListResolvedEntry = {
@@ -530,7 +530,7 @@ describe('wishlist promotions', () => {
     ],
     products: [],
     materials: [],
-    salvageSources: []
+    recycleSources: []
   };
 
     it('elevates wishlist targets to keep with rationale and chip data', () => {

@@ -186,6 +186,7 @@ export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
       rarity: raw.rarity ?? null,
       category: raw.type ?? null,
       sell: typeof raw.value === 'number' ? raw.value : 0,
+      recyclesInto: [],
       salvagesInto: [],
       craftsFrom: [],
       craftsInto: [],
@@ -203,7 +204,7 @@ export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
     if (!itemId) continue;
     const englishName = englishText(raw.name, raw.id);
     const slug = slugify(raw.id.replace(/_/g, '-')) || slugify(englishName) || englishName;
-    const salvageSource = raw.salvagesInto;
+    const recycleSource = raw.recyclesInto ?? raw.recyleInto ?? raw.salvagesInto;
     const craftsRecipe = raw.recipe ?? raw.craftMaterials ?? raw.crafting;
     const notes = englishText(raw.description)?.trim();
     const craftsEntries = convertRecipeEntries(craftsRecipe, nameLookup);
@@ -220,7 +221,8 @@ export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
       category: raw.type ?? null,
       imageUrl: resolveImageUrl(raw.imageFilename),
       sell: typeof raw.value === 'number' ? raw.value : 0,
-      salvagesInto: convertRecycleEntries(salvageSource, nameLookup),
+      recyclesInto: convertRecycleEntries(recycleSource, nameLookup),
+      salvagesInto: convertRecycleEntries(recycleSource, nameLookup),
       craftsFrom: craftsEntries,
       craftsInto: [],
       notes: notes || null
