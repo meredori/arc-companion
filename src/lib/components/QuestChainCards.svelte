@@ -23,6 +23,8 @@
   import { createEventDispatcher } from 'svelte';
   import type { QuestChainCard as QuestChainCardType } from './QuestChainCards.svelte';
 
+  type KeyboardEvent = globalThis.KeyboardEvent;
+
   export let chains: QuestChainCardType[] = [];
 
   const dispatch = createEventDispatcher<{ toggle: { id: string } }>();
@@ -38,7 +40,27 @@
     }
     collapsedCompleted = defaults;
   }
+
+  let detailView: { chain: QuestChainCardType; quest: QuestCard } | null = null;
+
+  const showDetails = (chain: QuestChainCardType, quest: QuestCard) => {
+    detailView = { chain, quest };
+  };
+
+  const closeDetails = () => {
+    detailView = null;
+  };
+
+  const handleOverlayKeydown = (event: KeyboardEvent) => {
+    if (!detailView) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeDetails();
+    }
+  };
 </script>
+
+<svelte:window on:keydown={handleOverlayKeydown} />
 
 <div class="space-y-4">
   {#if chains.length === 0}
@@ -57,9 +79,9 @@
         <header class="flex flex-wrap items-center justify-between gap-3">
           <div class="space-y-1">
             <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Quest chain</p>
-            <h3 class="text-xl font-semibold text-white">{chain.name}</h3>
-            {#if chain.trader}
-              <p class="text-sm text-slate-400">Trader: {chain.trader}</p>
+            <h3 class="text-xl font-semibold text-white">{chain.trader ?? chain.name}</h3>
+            {#if chain.trader && chain.name !== chain.trader}
+              <p class="text-sm text-slate-400">{chain.name}</p>
             {/if}
           </div>
           <div class="flex flex-wrap items-center gap-2">
@@ -112,7 +134,6 @@
                     on:click={() => toggleQuest(quest.id)}
                     aria-pressed={quest.completed}
                     aria-label={`Toggle ${quest.name}`}
-                    aria-describedby={hasTooltip ? tooltipId : undefined}
                   >
                     <div class="flex items-start gap-3">
                       <span
@@ -143,35 +164,20 @@
                         </div>
                       {/if}
                     </div>
+                    {#if hasTooltip}
+                      <div class="flex justify-end">
+                        <button
+                          type="button"
+                          class="rounded-full border border-slate-700 bg-slate-900/80 px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-200 transition hover:border-slate-500"
+                          on:click|stopPropagation={() => showDetails(chain, quest)}
+                          aria-haspopup="dialog"
+                          aria-controls={tooltipId}
+                        >
+                          Details
+                        </button>
+                      </div>
+                    {/if}
                   </button>
-                  {#if hasTooltip}
-                    <div
-                      id={tooltipId}
-                      role="tooltip"
-                      class="pointer-events-none absolute left-0 top-full z-10 hidden w-72 translate-y-2 rounded-xl border border-slate-800 bg-slate-900/95 p-3 text-xs text-slate-100 shadow-lg group-focus-within:block group-hover:block"
-                    >
-                      {#if quest.requirements.length > 0}
-                        <div class="space-y-1">
-                          <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-300">Requirements</p>
-                          <ul class="list-disc space-y-1 pl-4 text-slate-200">
-                            {#each quest.requirements as requirement}
-                              <li>{requirement}</li>
-                            {/each}
-                          </ul>
-                        </div>
-                      {/if}
-                      {#if quest.objectives && quest.objectives.length > 0}
-                        <div class={`space-y-1 ${quest.requirements.length > 0 ? 'mt-3 border-t border-slate-800 pt-3' : ''}`}>
-                          <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-300">Objectives</p>
-                          <ul class="list-disc space-y-1 pl-4 text-slate-200">
-                            {#each quest.objectives as objective}
-                              <li>{objective}</li>
-                            {/each}
-                          </ul>
-                        </div>
-                      {/if}
-                    </div>
-                  {/if}
                 </div>
               {/each}
             </div>
@@ -179,5 +185,75 @@
         {/if}
       </article>
     {/each}
+  {/if}
+
+  {#if detailView}
+    {@const detailsId = `${detailView.chain.id}-${detailView.quest.id}-tooltip`}
+    <div class="fixed inset-0 z-50 flex items-start justify-center px-4 py-12" role="presentation" aria-hidden="true">
+      <button
+        type="button"
+        class="absolute inset-0 z-0 h-full w-full bg-black/50 backdrop-blur"
+        aria-label="Close quest details"
+        on:click={closeDetails}
+        on:keydown={handleOverlayKeydown}
+      />
+      <div
+        class="relative z-10 max-h-[80vh] w-full max-w-xl overflow-y-auto rounded-2xl border border-slate-800 bg-slate-900/95 p-5 text-slate-100 shadow-2xl"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={`${detailsId}-title`}
+        tabindex="-1"
+      >
+        <div class="flex items-start justify-between gap-3">
+          <div class="space-y-1">
+            <p class="text-[11px] uppercase tracking-[0.3em] text-slate-400">{detailView.chain.trader ?? 'Quest'}</p>
+            <h4 id={`${detailsId}-title`} class="text-xl font-semibold text-white">{detailView.quest.name}</h4>
+            {#if detailView.quest.stepLabel}
+              <p class="text-[11px] uppercase tracking-[0.25em] text-slate-400">{detailView.quest.stepLabel}</p>
+            {/if}
+          </div>
+          <button
+            type="button"
+            class="rounded-full border border-slate-700 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-200 transition hover:border-slate-500"
+            on:click={closeDetails}
+          >
+            Close
+          </button>
+        </div>
+
+        {#if detailView.quest.rewards && detailView.quest.rewards.length > 0}
+          <div class="mt-4 flex flex-wrap gap-2 text-xs text-amber-200">
+            <span class="rounded-full bg-amber-500/15 px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-amber-100">
+              Rewards
+            </span>
+            {#each detailView.quest.rewards as reward}
+              <span class="rounded-full bg-slate-800/70 px-2 py-1 text-[11px] text-amber-100">{reward}</span>
+            {/each}
+          </div>
+        {/if}
+
+        {#if detailView.quest.requirements.length > 0}
+          <div class="mt-4 space-y-2">
+            <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-300">Required items</p>
+            <ul class="space-y-1 text-sm text-slate-200">
+              {#each detailView.quest.requirements as requirement}
+                <li class="rounded-lg border border-slate-800/70 bg-slate-900/70 px-3 py-2">{requirement}</li>
+              {/each}
+            </ul>
+          </div>
+        {/if}
+
+        {#if detailView.quest.objectives && detailView.quest.objectives.length > 0}
+          <div class="mt-4 space-y-2">
+            <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-300">Objectives</p>
+            <ul class="space-y-1 text-sm text-slate-200">
+              {#each detailView.quest.objectives as objective}
+                <li class="rounded-lg border border-slate-800/70 bg-slate-900/70 px-3 py-2">{objective}</li>
+              {/each}
+            </ul>
+          </div>
+        {/if}
+      </div>
+    </div>
   {/if}
 </div>

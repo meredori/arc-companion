@@ -417,7 +417,7 @@
         if (segment.length === 0) return;
         const id = `${chain.id}::${segmentIndex}`;
         const traderLabel = trader ?? 'Unknown trader';
-        const name = trader ? `${chain.name} — ${traderLabel}` : chain.name;
+        const name = trader ? traderLabel : chain.name;
         const group = ensureGroup(id, name, { chainWeight, segmentIndex });
         group.totalQuests = segment.length;
         group.completedQuests = segment.filter((questId) => questCompletionSet.has(questId)).length;
@@ -648,12 +648,8 @@
             Toggling Hide completed affects which quests are shown below but the summary always uses unlocked steps.
           </p>
         </div>
-        <div class="content-grid">
+        <div class="space-y-4">
           <QuestChainCards chains={questChainsForDisplay} on:toggle={toggleQuest} />
-          <TipsPanel heading="Quest tracking tips" tips={[
-            'Toggle objectives as soon as you hand in a quest to free up the required loot.',
-            'Use this checklist alongside the Workshop section to know what still needs crafting.'
-          ]} />
         </div>
       </div>
     {/if}
