@@ -3,6 +3,7 @@
 </svelte:head>
 
 <script lang="ts">
+  import { base } from '$app/paths';
   import { derived } from 'svelte/store';
   import { onMount } from 'svelte';
   import { RecommendationCard, SearchBar, TipsPanel } from '$lib/components';
@@ -36,6 +37,8 @@
     { id: 'expedition-projects', label: 'Expedition projects' },
     { id: 'blueprint-catalog', label: 'Blueprint catalog' }
   ];
+
+  const withBase = (href: string) => (base ? `${base}${href}` : href);
 
   onMount(() => {
     hydrateFromCanonical({
@@ -157,7 +160,7 @@
     {#each whatIHaveTabs as tab}
       <a
         class="rounded-full border border-slate-700 bg-slate-900/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-200 transition hover:border-slate-500"
-        href={`/what-i-have#${tab.id}`}
+        href={withBase(`/what-i-have#${tab.id}`)}
       >
         {tab.label}
       </a>
