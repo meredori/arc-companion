@@ -14,7 +14,7 @@
     settings,
     wantList
   } from '$lib/stores/app';
-  import type { ItemRecord, UpgradePack } from '$lib/types';
+  import type { ItemRecord, UpgradePack, WantListRequirement } from '$lib/types';
   import type { PageData } from './$types';
 
   export let data: PageData;
@@ -214,6 +214,9 @@
     const normalized = Number.isFinite(value) ? Math.max(1, Math.round(value)) : 1;
     quantityDrafts = { ...quantityDrafts, [itemId]: normalized };
   };
+
+  const getDirectRequirements = (requirements: WantListRequirement[] = []) =>
+    requirements.filter((requirement) => requirement.depth === 1);
 
   const clearQuantityDraft = (itemId: string) => {
     const next = { ...quantityDrafts };
@@ -486,14 +489,19 @@
                 <div class="space-y-2">
                   <h4 class="text-xs uppercase tracking-widest text-slate-400">Crafting requirements</h4>
                   <ul class="space-y-1 text-sm text-slate-300">
-                    {#each detail.requirements as requirement}
-                      <li class="flex items-center justify-between gap-3">
-                        <span class="truncate">{requirement.name}</span>
-                        <span class="font-semibold text-white">×{requirement.qty}</span>
-                      </li>
-                    {:else}
-                      <li class="text-slate-500">No crafting requirements recorded.</li>
-                    {/each}
+                    {#if true}
+                      {@const directRequirements = getDirectRequirements(detail.requirements)}
+                      {#if directRequirements.length > 0}
+                        {#each directRequirements as requirement}
+                          <li class="flex items-center justify-between gap-3">
+                            <span class="truncate">{requirement.name}</span>
+                            <span class="font-semibold text-white">×{requirement.qty}</span>
+                          </li>
+                        {/each}
+                      {:else}
+                        <li class="text-slate-500">No crafting requirements recorded.</li>
+                      {/if}
+                    {/if}
                   </ul>
                 </div>
                 <div class="space-y-2">
