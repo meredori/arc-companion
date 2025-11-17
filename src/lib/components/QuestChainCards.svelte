@@ -23,7 +23,10 @@
   import { createEventDispatcher } from 'svelte';
   import type { QuestChainCard as QuestChainCardType } from './QuestChainCards.svelte';
 
-  type KeyboardEvent = globalThis.KeyboardEvent;
+  type KeyboardEvent = {
+    key: string;
+    preventDefault: () => void;
+  };
 
   export let chains: QuestChainCardType[] = [];
 
@@ -69,6 +72,7 @@
     </div>
   {:else}
     {#each chains as chain (chain.id)}
+      {@const chainLabel = chain.trader ?? chain.name}
       {@const completedCount = chain.quests.filter((quest) => quest.completed).length}
       {@const totalQuests = chain.totalQuests ?? chain.quests.length}
       {@const completedTotal = chain.completedQuests ?? completedCount}
@@ -79,10 +83,7 @@
         <header class="flex flex-wrap items-center justify-between gap-3">
           <div class="space-y-1">
             <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Quest chain</p>
-            <h3 class="text-xl font-semibold text-white">{chain.trader ?? chain.name}</h3>
-            {#if chain.trader && chain.name !== chain.trader}
-              <p class="text-sm text-slate-400">{chain.name}</p>
-            {/if}
+            <h3 class="text-xl font-semibold text-white">{chainLabel}</h3>
           </div>
           <div class="flex flex-wrap items-center gap-2">
             <span
@@ -106,8 +107,8 @@
               aria-pressed={collapsedCompleted[chain.id]}
               aria-label={
                 collapsedCompleted[chain.id]
-                  ? `Show completed quests in ${chain.name}`
-                  : `Hide completed quests in ${chain.name}`
+                  ? `Show completed quests in ${chainLabel}`
+                  : `Hide completed quests in ${chainLabel}`
               }
             >
               {collapsedCompleted[chain.id] ? 'Show completed' : 'Collapse completed'}
