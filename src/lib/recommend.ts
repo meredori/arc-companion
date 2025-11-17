@@ -125,6 +125,96 @@ function computeSalvageValue(item: ItemRecord): number {
   return item.salvagesInto.reduce((total, entry) => total + entry.qty * 35, 0);
 }
 
+type NeedResolver = {
+  hasDirectNeed: (itemId: string) => boolean;
+  feedsNeed: (itemId: string) => boolean;
+};
+
+const NEED_RESOLVER_CACHE = new WeakMap<RecommendationContext, NeedResolver>();
+
+function buildNeedResolver(context: RecommendationContext): NeedResolver {
+  const itemLookup = new Map(context.items.map((item) => [item.id, item] as const));
+  const ingredientConsumers = new Map<string, string[]>();
+
+  for (const item of context.items) {
+    for (const requirement of item.craftsFrom ?? []) {
+      const bucket = ingredientConsumers.get(requirement.itemId) ?? [];
+      bucket.push(item.id);
+      ingredientConsumers.set(requirement.itemId, bucket);
+    }
+
+    for (const product of item.craftsInto ?? []) {
+      const bucket = ingredientConsumers.get(product.productId) ?? [];
+      bucket.push(item.id);
+      ingredientConsumers.set(product.productId, bucket);
+    }
+  }
+
+  const directNeedCache = new Map<string, boolean>();
+  const feedCache = new Map<string, boolean>();
+
+  const hasDirectNeed = (itemId: string): boolean => {
+    const cached = directNeedCache.get(itemId);
+    if (cached !== undefined) return cached;
+
+    const need =
+      remainingQuestNeeds(itemId, context).total > 0 ||
+      remainingUpgradeNeeds(itemId, context).total > 0 ||
+      remainingProjectNeeds(itemId, context).total > 0 ||
+      (context.wishlistSourcesByItem[itemId]?.length ?? 0) > 0;
+
+    directNeedCache.set(itemId, need);
+    return need;
+  };
+
+  const feedsNeed = (itemId: string, visited = new Set<string>()): boolean => {
+    if (visited.has(itemId)) return false;
+    const cached = feedCache.get(itemId);
+    if (cached !== undefined) return cached;
+
+    if (hasDirectNeed(itemId)) {
+      feedCache.set(itemId, true);
+      return true;
+    }
+
+    visited.add(itemId);
+    const record = itemLookup.get(itemId);
+    const recycleTargets = [...(record?.recyclesInto ?? []), ...(record?.salvagesInto ?? [])];
+
+    for (const target of recycleTargets) {
+      if (feedsNeed(target.itemId, visited)) {
+        feedCache.set(itemId, true);
+        visited.delete(itemId);
+        return true;
+      }
+    }
+
+    const consumers = ingredientConsumers.get(itemId) ?? [];
+    for (const consumer of consumers) {
+      if (feedsNeed(consumer, visited)) {
+        feedCache.set(itemId, true);
+        visited.delete(itemId);
+        return true;
+      }
+    }
+
+    visited.delete(itemId);
+    feedCache.set(itemId, false);
+    return false;
+  };
+
+  return { hasDirectNeed, feedsNeed };
+}
+
+const needResolverForContext = (context: RecommendationContext) => {
+  let resolver = NEED_RESOLVER_CACHE.get(context);
+  if (!resolver) {
+    resolver = buildNeedResolver(context);
+    NEED_RESOLVER_CACHE.set(context, resolver);
+  }
+  return resolver;
+};
+
 function isQuestComplete(quest: Quest, progress: QuestProgress[]): boolean {
   const record = progress.find((entry) => entry.id === quest.id);
   return record?.completed ?? false;
@@ -355,9 +445,22 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
   } else if (alwaysKeepCategory) {
     action = 'keep';
     rationale = 'Category flagged as always keep in admin controls.';
-  } else if (salvageValue > item.sell) {
-    action = 'salvage';
-    rationale = 'Recycling yields higher composite value than selling outright.';
+  } else {
+    const { feedsNeed } = needResolverForContext(context);
+    const recycleTargets = [...(item.recyclesInto ?? []), ...(item.salvagesInto ?? [])];
+    const supportsNeededMaterials = recycleTargets.some((entry) => feedsNeed(entry.itemId));
+
+    if (supportsNeededMaterials) {
+      action = 'salvage';
+      const namedTargets = recycleTargets
+        .filter((entry) => feedsNeed(entry.itemId))
+        .map((entry) => entry.name ?? entry.itemId);
+      const targetList = namedTargets.length > 0 ? ` (${namedTargets.join(', ')})` : '';
+      rationale = `Recycle to recover materials needed for other objectives${targetList}.`;
+    } else if (salvageValue > item.sell) {
+      action = 'salvage';
+      rationale = 'Recycling yields higher composite value than selling outright.';
+    }
   }
 
   const wishlistSources = context.wishlistSourcesByItem[item.id] ?? [];

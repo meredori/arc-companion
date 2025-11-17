@@ -42,6 +42,34 @@ const ITEMS: ItemRecord[] = [
     salvagesInto: [{ itemId: 'mat-c', name: 'Material C', qty: 5 }],
   },
   {
+    id: 'item-arc-cell',
+    name: 'Arc Powercell',
+    slug: 'arc-powercell',
+    category: 'Battery',
+    rarity: 'Uncommon Component',
+    sell: 70,
+    salvagesInto: [],
+  },
+  {
+    id: 'item-advanced-arc',
+    name: 'Advanced Arc Powercell',
+    slug: 'advanced-arc-powercell',
+    category: 'Battery',
+    rarity: 'Rare Component',
+    sell: 120,
+    salvagesInto: [{ itemId: 'item-arc-cell', name: 'Arc Powercell', qty: 2 }],
+  },
+  {
+    id: 'item-arc-widget',
+    name: 'Arc Widget',
+    slug: 'arc-widget',
+    category: 'Modification',
+    rarity: 'Rare Component',
+    sell: 150,
+    salvagesInto: [],
+    craftsFrom: [{ itemId: 'item-arc-cell', name: 'Arc Powercell', qty: 2 }],
+  },
+  {
     id: 'item-weapon-legendary',
     name: 'Nova Cannon',
     slug: 'nova-cannon',
@@ -256,10 +284,18 @@ const QUESTS: Quest[] = [
     items: [
       { itemId: 'item-alpha', qty: 2 }
     ]
+  },
+  {
+    id: 'quest-arc',
+    name: 'Recharge Request',
+    items: [{ itemId: 'item-arc-cell', qty: 1 }]
   }
 ];
 
-const PROGRESS: QuestProgress[] = [{ id: 'quest-one', completed: false }];
+const PROGRESS: QuestProgress[] = [
+  { id: 'quest-one', completed: false },
+  { id: 'quest-arc', completed: false }
+];
 
 const UPGRADES: UpgradePack[] = [
   {
@@ -449,7 +485,7 @@ const context = buildRecommendationContext({
 
   it('sorts higher rarity items ahead within the same category', () => {
     const results = recommendItemsMatching('mod', context);
-    expect(results.map((rec) => rec.name)).toEqual(['Mod Apex', 'Mod Ridge']);
+    expect(results.map((rec) => rec.name)).toEqual(['Mod Apex', 'Arc Widget', 'Mod Ridge']);
   });
 
   it('supports alphabetical sorting when configured', () => {
@@ -487,6 +523,39 @@ const context = buildRecommendationContext({
     expect(result.action).toBe('keep');
     expect(result.needs.projects).toBe(1);
     expect(result.projectNeeds[0].projectId).toBe('project-expedition');
+  });
+
+  it('recommends recycling items that break down into quest targets', () => {
+    const result = recommendItem(getItem('item-advanced-arc'), context);
+    expect(result.action).toBe('salvage');
+    expect(result.rationale).toMatch(/Recycle/);
+  });
+
+  it('surfaces recycling when components feed wishlist crafting chains', () => {
+    const targetEntry: WantListEntry = {
+      itemId: 'item-arc-widget',
+      qty: 1,
+      createdAt: '2024-02-01T00:00:00.000Z'
+    };
+    const dependency: WantListResolvedEntry = {
+      entry: targetEntry,
+      item: getItem('item-arc-widget'),
+      requirements: [{ itemId: 'item-arc-cell', name: 'Arc Powercell', qty: 2, depth: 1 }],
+      products: [],
+      materials: [],
+      recycleSources: []
+    };
+    const recycleContext = buildRecommendationContext({
+      items: ITEMS,
+      quests: [],
+      wantList: [targetEntry],
+      wantListDependencies: [dependency],
+      ignoredCategories: []
+    });
+
+    const result = recommendItem(getItem('item-advanced-arc'), recycleContext);
+    expect(result.action).toBe('salvage');
+    expect(result.rationale).toMatch(/Recycle/);
   });
 
   it('filters by query', () => {
