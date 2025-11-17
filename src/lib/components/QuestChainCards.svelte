@@ -1,6 +1,4 @@
-<script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-
+<script lang="ts" context="module">
   export type QuestCard = {
     id: string;
     name: string;
@@ -14,8 +12,13 @@
     name: string;
     quests: QuestCard[];
   };
+</script>
 
-  export let chains: QuestChainCard[] = [];
+<script lang="ts">
+  import { createEventDispatcher } from 'svelte';
+  import type { QuestChainCard as QuestChainCardType } from './QuestChainCards.svelte';
+
+  export let chains: QuestChainCardType[] = [];
 
   const dispatch = createEventDispatcher<{ toggle: { id: string } }>();
 
@@ -111,7 +114,7 @@
                   </div>
                   {#if quest.requirements.length > 0}
                     <div class="mt-3 flex flex-wrap gap-2">
-                      {#each quest.requirements as requirement, index}
+                      {#each quest.requirements as requirement}
                         <span
                           class="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-200"
                         >
