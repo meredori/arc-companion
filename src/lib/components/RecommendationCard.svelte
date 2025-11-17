@@ -153,9 +153,12 @@
             </p>
             <ul class="space-y-1 text-slate-200">
               {#each questNeeds as quest}
-                <li class="flex items-center justify-between gap-2">
+                <li class="flex items-center justify-between gap-2 rounded-lg border border-slate-800/70 bg-slate-900/60 px-3 py-2">
                   <span class="truncate">{quest.name}</span>
-                  <span class="font-semibold text-white">×{quest.qty}</span>
+                  <span class="inline-flex items-center gap-2 rounded-full border border-slate-700/70 bg-slate-900/80 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-emerald-100">
+                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-300/80"></span>
+                    ×{quest.qty}
+                  </span>
                 </li>
               {:else}
                 <li class="text-slate-500">All quest needs satisfied.</li>

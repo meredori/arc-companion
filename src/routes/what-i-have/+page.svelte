@@ -6,7 +6,7 @@
   /* eslint-env browser */
   import { derived } from 'svelte/store';
   import { onDestroy, onMount } from 'svelte';
-  import { QuestChecklist, SearchBar, TipsPanel } from '$lib/components';
+  import { QuestChainCards, SearchBar, TipsPanel, type QuestChainCard } from '$lib/components';
   import {
     blueprints,
     hydrateFromCanonical,
@@ -22,6 +22,7 @@
     ProjectPhase,
     ProjectProgressState,
     QuestChain,
+    QuestReward,
     UpgradePack
   } from '$lib/types';
   import type { PageData } from './$types';
@@ -101,6 +102,7 @@
   });
 
   let hideCompleted = false;
+  let collapseCompletedQuests = false;
 
   const sectionControls = [
     { id: 'quests', label: 'Quest checklist' },
@@ -110,6 +112,8 @@
   ] as const;
 
   type SectionKey = (typeof sectionControls)[number]['id'];
+
+  type QuestChainDisplay = QuestChainCard;
 
   let collapsedSections: Record<SectionKey, boolean> = {
     quests: false,
@@ -141,30 +145,6 @@
     scrollToSection(value);
     jumpTarget = '';
   };
-
-  const questChecklist = derived(quests, ($quests) =>
-    questDefs.map((quest) => {
-      const progress = $quests.find((entry) => entry.id === quest.id);
-      const requirements = quest.items
-        .map((requirement) => `${requirement.qty}x ${itemName(requirement.itemId)}`)
-        .join(', ');
-      const chainInfo = questChainLookup.get(quest.id);
-      const prefix = chainInfo
-        ? chainInfo.index !== null
-          ? `${chainInfo.chainName ?? chainInfo.chainId} · Step ${chainInfo.index + 1}`
-          : `${chainInfo.chainName ?? chainInfo.chainId}`
-        : null;
-      const parts = [prefix ? `${prefix}: ${quest.name}` : quest.name];
-      if (requirements) {
-        parts.push(`— ${requirements}`);
-      }
-      return {
-        id: quest.id,
-        label: parts.join(' '),
-        completed: progress?.completed ?? false
-      };
-    })
-  );
 
   const toggleQuest = (event: CustomEvent<{ id: string }>) => {
     quests.toggle(event.detail.id);
@@ -378,15 +358,151 @@
 
   const compareQuestOrder = createQuestOrderComparator(chainOrder, questChainLookup, questById);
 
-  $: visibleQuestItems = ($questChecklist ?? [])
-    .filter((item) => {
-      const completed = questCompletionSet.has(item.id);
-      const unlocked = isQuestUnlocked(item.id) || completed;
-      if (!unlocked) return false;
-      if (hideCompleted && completed) return false;
-      return true;
-    })
-    .sort((a, b) => compareQuestOrder(a.id, b.id));
+  const standaloneChainId = '__standalone__';
+  const standaloneChainName = 'Standalone quests';
+
+  const rewardLabel = (reward: QuestReward) => {
+    if (!reward) return null;
+    if (reward.coins) return `${reward.coins} coins`;
+    const name = reward.name ?? (reward.itemId ? itemName(reward.itemId) : null);
+    if (!name) return null;
+    const qty = reward.qty ?? (reward.itemId ? 1 : null);
+    return qty ? `${qty}x ${name}` : name;
+  };
+
+  const questRewards = (questId: string) => {
+    const quest = questById.get(questId);
+    if (!quest) return [] as string[];
+    return (quest.rewards ?? [])
+      .map((reward) => rewardLabel(reward))
+      .filter((label): label is string => Boolean(label));
+  };
+
+  $: questSummary = (() => {
+    const total = questDefs.length;
+    const completed = questDefs.filter((quest) => questCompletionSet.has(quest.id)).length;
+    return { total, completed };
+  })();
+
+  $: questChainsForDisplay = (() => {
+    const groups = new Map<string, QuestChainDisplay>();
+    const weights = new Map<string, { chainWeight: number; segmentIndex: number }>();
+    const segmentLookup = new Map<string, string>();
+
+    const ensureGroup = (
+      id: string,
+      name: string,
+      order?: { chainWeight: number; segmentIndex: number }
+    ) => {
+      if (!groups.has(id)) {
+        groups.set(id, { id, name, quests: [] });
+      }
+      if (order) {
+        weights.set(id, order);
+      }
+      return groups.get(id)!;
+    };
+
+    chains.forEach((chain) => {
+      const stages = chain.stages ?? [];
+      let trader: string | null | undefined = undefined;
+      let segment: string[] = [];
+      let segmentIndex = 0;
+      const chainWeight = chainOrder.get(chain.id) ?? Number.MAX_SAFE_INTEGER;
+
+      const pushSegment = () => {
+        if (segment.length === 0) return;
+        const id = `${chain.id}::${segmentIndex}`;
+        const traderLabel = trader ?? 'Unknown trader';
+        const name = trader ? traderLabel : chain.name;
+        const group = ensureGroup(id, name, { chainWeight, segmentIndex });
+        group.totalQuests = segment.length;
+        group.completedQuests = segment.filter((questId) => questCompletionSet.has(questId)).length;
+        group.trader = trader ?? null;
+        segment.forEach((questId) => segmentLookup.set(questId, id));
+        segment = [];
+        segmentIndex += 1;
+      };
+
+      for (const questId of stages) {
+        const quest = questById.get(questId);
+        const questTrader = quest?.giver ?? null;
+        if (segment.length === 0) {
+          trader = questTrader;
+        } else if (questTrader !== trader) {
+          pushSegment();
+          trader = questTrader;
+        }
+        segment.push(questId);
+      }
+
+      pushSegment();
+    });
+
+    const standaloneIds = questDefs.filter((quest) => !quest.chainId).map((quest) => quest.id);
+    const standaloneGroup = ensureGroup(standaloneChainId, standaloneChainName, {
+      chainWeight: Number.MAX_SAFE_INTEGER,
+      segmentIndex: Number.MAX_SAFE_INTEGER
+    });
+    standaloneGroup.totalQuests = standaloneIds.length;
+    standaloneGroup.completedQuests = standaloneIds.filter((id) => questCompletionSet.has(id)).length;
+
+    const orderedQuests = [...questDefs].sort((a, b) => compareQuestOrder(a.id, b.id));
+
+    for (const quest of orderedQuests) {
+      const completed = questCompletionSet.has(quest.id);
+      const unlocked = isQuestUnlocked(quest.id) || completed;
+      if (!unlocked) continue;
+      if (hideCompleted && completed) continue;
+
+      const chainInfo = questChainLookup.get(quest.id);
+      const chainId = chainInfo?.chainId ?? standaloneChainId;
+      const groupId = segmentLookup.get(quest.id) ?? chainId;
+      const chainWeight = chainOrder.get(chainId) ?? Number.MAX_SAFE_INTEGER;
+      const group = ensureGroup(
+        groupId,
+        groups.get(groupId)?.name ?? chainInfo?.chainName ?? standaloneChainName,
+        weights.get(groupId) ?? { chainWeight, segmentIndex: Number.MAX_SAFE_INTEGER }
+      );
+
+      const requirements = quest.items.map((requirement) => `${requirement.qty}x ${itemName(requirement.itemId)}`);
+      const objectives = quest.mapHints ?? [];
+      const stepLabel =
+        chainInfo?.index !== null && chainInfo?.index !== undefined ? `Step ${chainInfo.index + 1}` : null;
+      const rewards = questRewards(quest.id);
+
+      group.quests.push({
+        id: quest.id,
+        name: quest.name,
+        completed,
+        requirements,
+        objectives,
+        rewards,
+        stepLabel
+      });
+    }
+
+    const weight = (chainId: string) => chainOrder.get(chainId) ?? Number.MAX_SAFE_INTEGER;
+
+    const weightFor = (id: string) => weights.get(id) ?? { chainWeight: weight(id), segmentIndex: 0 };
+
+    return [...groups.entries()]
+      .filter(([, group]) => {
+        const total = group.totalQuests ?? group.quests.length;
+        const completed =
+          group.completedQuests ?? group.quests.filter((quest) => quest.completed).length;
+        if (collapseCompletedQuests && total > 0 && completed >= total) return false;
+        return group.quests.length > 0;
+      })
+      .sort(([aId, a], [bId, b]) => {
+        const aWeight = weightFor(aId);
+        const bWeight = weightFor(bId);
+        if (aWeight.chainWeight !== bWeight.chainWeight) return aWeight.chainWeight - bWeight.chainWeight;
+        if (aWeight.segmentIndex !== bWeight.segmentIndex) return aWeight.segmentIndex - bWeight.segmentIndex;
+        return a.name.localeCompare(b.name);
+      })
+      .map(([, group]) => group);
+  })();
 
   const deliveredAmount = (
     progressMap: ProjectProgressState,
@@ -520,12 +636,48 @@
       </button>
     </header>
     {#if !collapsedSections.quests}
-      <div id="quests-content" class="content-grid">
-        <QuestChecklist title="Quest completions" items={visibleQuestItems} on:toggle={toggleQuest} />
-        <TipsPanel heading="Quest tracking tips" tips={[
-          'Toggle objectives as soon as you hand in a quest to free up the required loot.',
-          'Use this checklist alongside the Workshop section to know what still needs crafting.'
-        ]} />
+      <div id="quests-content" class="space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-800/70 bg-slate-950/60 px-4 py-3">
+          <div class="flex flex-wrap items-center gap-3 text-sm text-slate-200">
+            <span
+              class="inline-flex items-center gap-2 rounded-full border border-slate-700/70 bg-slate-900/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide"
+            >
+              <span class="h-2 w-2 rounded-full bg-emerald-400/80"></span>
+              {questSummary.completed}/{questSummary.total} completed
+            </span>
+            <span class="text-[11px] uppercase tracking-[0.3em] text-slate-400">Quest progress overview</span>
+          </div>
+          <div class="flex flex-wrap items-center gap-3 text-xs text-slate-400">
+            <p class="text-left text-slate-400">
+              Summary counts every quest in the database. Collapse completed hides finished steps below without affecting
+              totals.
+            </p>
+            <button
+              type="button"
+              class={`rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-wide transition ${
+                collapseCompletedQuests
+                  ? 'border-slate-600 bg-slate-800 text-slate-200 hover:border-slate-500'
+                  : 'border-slate-700 bg-slate-900 text-slate-300 hover:border-slate-600'
+              }`}
+              on:click={() => (collapseCompletedQuests = !collapseCompletedQuests)}
+              aria-pressed={collapseCompletedQuests}
+              aria-label={
+                collapseCompletedQuests
+                  ? 'Show completed quests in the checklist'
+                  : 'Collapse completed quests in the checklist'
+              }
+            >
+              {collapseCompletedQuests ? 'Show completed quests' : 'Collapse completed quests'}
+            </button>
+          </div>
+        </div>
+        <div class="space-y-4">
+          <QuestChainCards
+            chains={questChainsForDisplay}
+            collapseCompleted={collapseCompletedQuests}
+            on:toggle={toggleQuest}
+          />
+        </div>
       </div>
     {/if}
   </section>
