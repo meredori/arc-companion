@@ -22,6 +22,7 @@
     ProjectPhase,
     ProjectProgressState,
     QuestChain,
+    QuestReward,
     UpgradePack
   } from '$lib/types';
   import type { PageData } from './$types';
@@ -359,6 +360,23 @@
   const standaloneChainId = '__standalone__';
   const standaloneChainName = 'Standalone quests';
 
+  const rewardLabel = (reward: QuestReward) => {
+    if (!reward) return null;
+    if (reward.coins) return `${reward.coins} coins`;
+    const name = reward.name ?? (reward.itemId ? itemName(reward.itemId) : null);
+    if (!name) return null;
+    const qty = reward.qty ?? (reward.itemId ? 1 : null);
+    return qty ? `${qty}x ${name}` : name;
+  };
+
+  const questRewards = (questId: string) => {
+    const quest = questById.get(questId);
+    if (!quest) return [] as string[];
+    return (quest.rewards ?? [])
+      .map((reward) => rewardLabel(reward))
+      .filter((label): label is string => Boolean(label));
+  };
+
   $: questSummary = (() => {
     const unlocked = questDefs.filter((quest) => {
       const completed = questCompletionSet.has(quest.id);
@@ -371,15 +389,66 @@
 
   $: questChainsForDisplay = (() => {
     const groups = new Map<string, QuestChainDisplay>();
-    const ensureGroup = (id: string, name: string) => {
+    const weights = new Map<string, { chainWeight: number; segmentIndex: number }>();
+    const segmentLookup = new Map<string, string>();
+
+    const ensureGroup = (
+      id: string,
+      name: string,
+      order?: { chainWeight: number; segmentIndex: number }
+    ) => {
       if (!groups.has(id)) {
         groups.set(id, { id, name, quests: [] });
+      }
+      if (order) {
+        weights.set(id, order);
       }
       return groups.get(id)!;
     };
 
-    chains.forEach((chain) => ensureGroup(chain.id, chain.name));
-    ensureGroup(standaloneChainId, standaloneChainName);
+    chains.forEach((chain) => {
+      const stages = chain.stages ?? [];
+      let trader: string | null | undefined = undefined;
+      let segment: string[] = [];
+      let segmentIndex = 0;
+      const chainWeight = chainOrder.get(chain.id) ?? Number.MAX_SAFE_INTEGER;
+
+      const pushSegment = () => {
+        if (segment.length === 0) return;
+        const id = `${chain.id}::${segmentIndex}`;
+        const traderLabel = trader ?? 'Unknown trader';
+        const name = trader ? `${chain.name} — ${traderLabel}` : chain.name;
+        const group = ensureGroup(id, name, { chainWeight, segmentIndex });
+        group.totalQuests = segment.length;
+        group.completedQuests = segment.filter((questId) => questCompletionSet.has(questId)).length;
+        group.trader = trader ?? null;
+        segment.forEach((questId) => segmentLookup.set(questId, id));
+        segment = [];
+        segmentIndex += 1;
+      };
+
+      for (const questId of stages) {
+        const quest = questById.get(questId);
+        const questTrader = quest?.giver ?? null;
+        if (segment.length === 0) {
+          trader = questTrader;
+        } else if (questTrader !== trader) {
+          pushSegment();
+          trader = questTrader;
+        }
+        segment.push(questId);
+      }
+
+      pushSegment();
+    });
+
+    const standaloneIds = questDefs.filter((quest) => !quest.chainId).map((quest) => quest.id);
+    const standaloneGroup = ensureGroup(standaloneChainId, standaloneChainName, {
+      chainWeight: Number.MAX_SAFE_INTEGER,
+      segmentIndex: Number.MAX_SAFE_INTEGER
+    });
+    standaloneGroup.totalQuests = standaloneIds.length;
+    standaloneGroup.completedQuests = standaloneIds.filter((id) => questCompletionSet.has(id)).length;
 
     const orderedQuests = [...questDefs].sort((a, b) => compareQuestOrder(a.id, b.id));
 
@@ -391,32 +460,45 @@
 
       const chainInfo = questChainLookup.get(quest.id);
       const chainId = chainInfo?.chainId ?? standaloneChainId;
-      const chainName = chainInfo?.chainName ?? standaloneChainName;
-      const group = ensureGroup(chainId, chainName);
+      const groupId = segmentLookup.get(quest.id) ?? chainId;
+      const chainWeight = chainOrder.get(chainId) ?? Number.MAX_SAFE_INTEGER;
+      const group = ensureGroup(
+        groupId,
+        groups.get(groupId)?.name ?? chainInfo?.chainName ?? standaloneChainName,
+        weights.get(groupId) ?? { chainWeight, segmentIndex: Number.MAX_SAFE_INTEGER }
+      );
 
       const requirements = quest.items.map((requirement) => `${requirement.qty}x ${itemName(requirement.itemId)}`);
+      const objectives = quest.mapHints ?? [];
       const stepLabel =
         chainInfo?.index !== null && chainInfo?.index !== undefined ? `Step ${chainInfo.index + 1}` : null;
+      const rewards = questRewards(quest.id);
 
       group.quests.push({
         id: quest.id,
         name: quest.name,
         completed,
         requirements,
+        objectives,
+        rewards,
         stepLabel
       });
     }
 
     const weight = (chainId: string) => chainOrder.get(chainId) ?? Number.MAX_SAFE_INTEGER;
 
-    return [...groups.values()]
-      .filter((group) => group.quests.length > 0)
-      .sort((a, b) => {
-        const aWeight = weight(a.id);
-        const bWeight = weight(b.id);
-        if (aWeight !== bWeight) return aWeight - bWeight;
+    const weightFor = (id: string) => weights.get(id) ?? { chainWeight: weight(id), segmentIndex: 0 };
+
+    return [...groups.entries()]
+      .filter(([, group]) => group.quests.length > 0)
+      .sort(([aId, a], [bId, b]) => {
+        const aWeight = weightFor(aId);
+        const bWeight = weightFor(bId);
+        if (aWeight.chainWeight !== bWeight.chainWeight) return aWeight.chainWeight - bWeight.chainWeight;
+        if (aWeight.segmentIndex !== bWeight.segmentIndex) return aWeight.segmentIndex - bWeight.segmentIndex;
         return a.name.localeCompare(b.name);
-      });
+      })
+      .map(([, group]) => group);
   })();
 
   const deliveredAmount = (
