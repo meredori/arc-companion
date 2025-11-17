@@ -29,20 +29,11 @@
   };
 
   export let chains: QuestChainCardType[] = [];
+  export let collapseCompleted = false;
 
   const dispatch = createEventDispatcher<{ toggle: { id: string } }>();
 
   const toggleQuest = (id: string) => dispatch('toggle', { id });
-
-  let collapsedCompleted: Record<string, boolean> = {};
-
-  $: {
-    const defaults: Record<string, boolean> = {};
-    for (const chain of chains) {
-      defaults[chain.id] = collapsedCompleted[chain.id] ?? false;
-    }
-    collapsedCompleted = defaults;
-  }
 
   let detailView: { chain: QuestChainCardType; quest: QuestCard } | null = null;
 
@@ -76,44 +67,19 @@
       {@const completedCount = chain.quests.filter((quest) => quest.completed).length}
       {@const totalQuests = chain.totalQuests ?? chain.quests.length}
       {@const completedTotal = chain.completedQuests ?? completedCount}
-      {@const visibleQuests = chain.quests.filter(
-        (quest) => !(collapsedCompleted[chain.id] && quest.completed)
-      )}
+      {@const visibleQuests = chain.quests.filter((quest) => !(collapseCompleted && quest.completed))}
       <article class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
         <header class="flex flex-wrap items-center justify-between gap-3">
           <div class="space-y-1">
             <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Quest chain</p>
             <h3 class="text-xl font-semibold text-white">{chainLabel}</h3>
           </div>
-          <div class="flex flex-wrap items-center gap-2">
-            <span
-              class="inline-flex items-center gap-2 rounded-full border border-slate-700/70 bg-slate-900/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-200"
-            >
-              <span class="h-2 w-2 rounded-full bg-emerald-400/80"></span>
-              {completedTotal}/{totalQuests} done
-            </span>
-            <button
-              type="button"
-              class={`rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-wide transition ${
-                collapsedCompleted[chain.id]
-                  ? 'border-slate-600 bg-slate-800 text-slate-200 hover:border-slate-500'
-                  : 'border-slate-700 bg-slate-900 text-slate-300 hover:border-slate-600'
-              }`}
-              on:click={() =>
-                (collapsedCompleted = {
-                  ...collapsedCompleted,
-                  [chain.id]: !collapsedCompleted[chain.id]
-                })}
-              aria-pressed={collapsedCompleted[chain.id]}
-              aria-label={
-                collapsedCompleted[chain.id]
-                  ? `Show completed quests in ${chainLabel}`
-                  : `Hide completed quests in ${chainLabel}`
-              }
-            >
-              {collapsedCompleted[chain.id] ? 'Show completed' : 'Collapse completed'}
-            </button>
-          </div>
+          <span
+            class="inline-flex items-center gap-2 rounded-full border border-slate-700/70 bg-slate-900/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-200"
+          >
+            <span class="h-2 w-2 rounded-full bg-emerald-400/80"></span>
+            {completedTotal}/{totalQuests} done
+          </span>
         </header>
 
         {#if visibleQuests.length === 0}

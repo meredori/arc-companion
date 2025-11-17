@@ -102,6 +102,7 @@
   });
 
   let hideCompleted = false;
+  let collapseCompletedQuests = false;
 
   const sectionControls = [
     { id: 'quests', label: 'Quest checklist' },
@@ -378,12 +379,8 @@
   };
 
   $: questSummary = (() => {
-    const unlocked = questDefs.filter((quest) => {
-      const completed = questCompletionSet.has(quest.id);
-      return isQuestUnlocked(quest.id) || completed;
-    });
-    const total = unlocked.length;
-    const completed = unlocked.filter((quest) => questCompletionSet.has(quest.id)).length;
+    const total = questDefs.length;
+    const completed = questDefs.filter((quest) => questCompletionSet.has(quest.id)).length;
     return { total, completed };
   })();
 
@@ -642,14 +639,38 @@
               <span class="h-2 w-2 rounded-full bg-emerald-400/80"></span>
               {questSummary.completed}/{questSummary.total} completed
             </span>
-            <span class="text-[11px] uppercase tracking-[0.3em] text-slate-400">Unlocked quests overview</span>
+            <span class="text-[11px] uppercase tracking-[0.3em] text-slate-400">Quest progress overview</span>
           </div>
-          <p class="text-xs text-slate-400">
-            Toggling Hide completed affects which quests are shown below but the summary always uses unlocked steps.
-          </p>
+          <div class="flex flex-wrap items-center gap-3 text-xs text-slate-400">
+            <p class="text-left text-slate-400">
+              Summary counts every quest in the database. Collapse completed hides finished steps below without affecting
+              totals.
+            </p>
+            <button
+              type="button"
+              class={`rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-wide transition ${
+                collapseCompletedQuests
+                  ? 'border-slate-600 bg-slate-800 text-slate-200 hover:border-slate-500'
+                  : 'border-slate-700 bg-slate-900 text-slate-300 hover:border-slate-600'
+              }`}
+              on:click={() => (collapseCompletedQuests = !collapseCompletedQuests)}
+              aria-pressed={collapseCompletedQuests}
+              aria-label={
+                collapseCompletedQuests
+                  ? 'Show completed quests in the checklist'
+                  : 'Collapse completed quests in the checklist'
+              }
+            >
+              {collapseCompletedQuests ? 'Show completed quests' : 'Collapse completed quests'}
+            </button>
+          </div>
         </div>
         <div class="space-y-4">
-          <QuestChainCards chains={questChainsForDisplay} on:toggle={toggleQuest} />
+          <QuestChainCards
+            chains={questChainsForDisplay}
+            collapseCompleted={collapseCompletedQuests}
+            on:toggle={toggleQuest}
+          />
         </div>
       </div>
     {/if}
