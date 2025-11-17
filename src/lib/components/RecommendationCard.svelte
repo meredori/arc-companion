@@ -28,14 +28,14 @@
   const ACTION_COPY = {
     save: 'Save',
     keep: 'Keep',
-    salvage: 'Salvage',
+    recycle: 'Recycle',
     sell: 'Sell'
   } as const;
 
   const ACTION_STYLES = {
     save: 'bg-emerald-500/20 text-emerald-200 border border-emerald-400/60',
     keep: 'bg-sky-500/20 text-sky-200 border border-sky-400/60',
-    salvage: 'bg-amber-500/20 text-amber-200 border border-amber-400/60',
+    recycle: 'bg-amber-500/20 text-amber-200 border border-amber-400/60',
     sell: 'bg-rose-500/20 text-rose-200 border border-rose-400/60'
   } as const;
 
@@ -202,10 +202,10 @@
               <p class="text-slate-500">Future upgrades will call for this soon.</p>
             {/if}
           </div>
-        {:else if action === 'salvage'}
+        {:else if action === 'recycle'}
           <div class="space-y-1">
             <p class="text-[10px] uppercase tracking-widest text-slate-400">
-              Salvage yield ({formattedSalvage ?? '—'} value)
+              Recycle yield ({formattedSalvage ?? '—'} value)
             </p>
             <ul class="space-y-1 text-slate-200">
               {#each salvageBreakdown as part}
@@ -214,7 +214,7 @@
                   <span class="font-semibold text-white">×{part.qty}</span>
                 </li>
               {:else}
-                <li class="text-slate-500">No salvage output recorded.</li>
+                <li class="text-slate-500">No recycle output recorded.</li>
               {/each}
             </ul>
           </div>

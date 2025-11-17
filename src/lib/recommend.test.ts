@@ -371,9 +371,9 @@ const context = buildRecommendationContext({
     expect(result.rationale).toContain('workbench upgrades');
   });
 
-  it('falls back to salvage when recycling beats selling', () => {
+  it('falls back to recycle when recycling beats selling', () => {
     const result = recommendItem(getItem('item-beta'), context);
-    expect(result.action).toBe('salvage');
+    expect(result.action).toBe('recycle');
   });
 
   it('forces keep for admin-selected categories', () => {
@@ -527,7 +527,7 @@ const context = buildRecommendationContext({
 
   it('recommends recycling items that break down into quest targets', () => {
     const result = recommendItem(getItem('item-advanced-arc'), context);
-    expect(result.action).toBe('salvage');
+    expect(result.action).toBe('recycle');
     expect(result.rationale).toMatch(/Recycle/);
   });
 
@@ -554,7 +554,7 @@ const context = buildRecommendationContext({
     });
 
     const result = recommendItem(getItem('item-advanced-arc'), recycleContext);
-    expect(result.action).toBe('salvage');
+    expect(result.action).toBe('recycle');
     expect(result.rationale).toMatch(/Recycle/);
   });
 

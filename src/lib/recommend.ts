@@ -121,8 +121,9 @@ const RARITY_PRIORITY = ['legendary', 'epic', 'rare', 'uncommon', 'common'] as c
 
 const normalizeCategory = (value?: string | null) => (value ? value.toLowerCase().trim() : '');
 
-function computeSalvageValue(item: ItemRecord): number {
-  return item.salvagesInto.reduce((total, entry) => total + entry.qty * 35, 0);
+function computeRecycleValue(item: ItemRecord): number {
+  const targets = item.recyclesInto ?? item.salvagesInto ?? [];
+  return targets.reduce((total, entry) => total + entry.qty * 35, 0);
 }
 
 type NeedResolver = {
@@ -179,7 +180,7 @@ function buildNeedResolver(context: RecommendationContext): NeedResolver {
 
     visited.add(itemId);
     const record = itemLookup.get(itemId);
-    const recycleTargets = [...(record?.recyclesInto ?? []), ...(record?.salvagesInto ?? [])];
+    const recycleTargets = record?.recyclesInto ?? record?.salvagesInto ?? [];
 
     for (const target of recycleTargets) {
       if (feedsNeed(target.itemId, visited)) {
@@ -416,7 +417,7 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
   const questNeed = remainingQuestNeeds(item.id, context);
   const upgradeNeed = remainingUpgradeNeeds(item.id, context);
   const projectNeed = remainingProjectNeeds(item.id, context);
-  const salvageValue = computeSalvageValue(item);
+  const salvageValue = computeRecycleValue(item);
   const normalizedCategory = item.category?.toLowerCase().trim();
   const alwaysKeepCategory =
     normalizedCategory && context.alwaysKeepCategories.length > 0
@@ -447,25 +448,25 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
     rationale = 'Category flagged as always keep in admin controls.';
   } else {
     const { feedsNeed } = needResolverForContext(context);
-    const recycleTargets = [...(item.recyclesInto ?? []), ...(item.salvagesInto ?? [])];
+    const recycleTargets = item.recyclesInto ?? item.salvagesInto ?? [];
     const supportsNeededMaterials = recycleTargets.some((entry) => feedsNeed(entry.itemId));
 
     if (supportsNeededMaterials) {
-      action = 'salvage';
+      action = 'recycle';
       const namedTargets = recycleTargets
         .filter((entry) => feedsNeed(entry.itemId))
         .map((entry) => entry.name ?? entry.itemId);
       const targetList = namedTargets.length > 0 ? ` (${namedTargets.join(', ')})` : '';
       rationale = `Recycle to recover materials needed for other objectives${targetList}.`;
     } else if (salvageValue > item.sell) {
-      action = 'salvage';
+      action = 'recycle';
       rationale = 'Recycling yields higher composite value than selling outright.';
     }
   }
 
   const wishlistSources = context.wishlistSourcesByItem[item.id] ?? [];
   if (wishlistSources.length > 0) {
-    if (action === 'sell' || action === 'salvage') {
+    if (action === 'sell' || action === 'recycle') {
       action = 'keep';
     }
     const uniqueTargets = Array.from(
@@ -502,7 +503,7 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
     rationale,
     sellPrice: item.sell,
     salvageValue,
-    salvageBreakdown: item.salvagesInto,
+    salvageBreakdown: item.recyclesInto ?? item.salvagesInto,
     questNeeds: questNeed.details,
     upgradeNeeds: upgradeNeed.details,
     projectNeeds: projectNeed.details,
