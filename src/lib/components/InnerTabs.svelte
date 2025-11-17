@@ -2,8 +2,7 @@
   import { createEventDispatcher, onMount } from 'svelte';
   import { tick } from 'svelte';
 
-  export type InnerTab = { id: string; label: string };
-
+  type InnerTab = { id: string; label: string };
   export let tabs: InnerTab[] = [];
   export let selected: string | null = null;
   export let useHash = true;

@@ -104,14 +104,14 @@
   let hideCompleted = false;
   let collapseCompletedQuests = false;
 
-  const sectionControls = [
+  type SectionKey = 'quests' | 'workbench-upgrades' | 'expedition-projects' | 'blueprint-catalog';
+
+  const sectionControls: { id: SectionKey; label: string }[] = [
     { id: 'quests', label: 'Quest checklist' },
     { id: 'workbench-upgrades', label: 'Workbench upgrades' },
     { id: 'expedition-projects', label: 'Expedition projects' },
     { id: 'blueprint-catalog', label: 'Blueprint catalog' }
-  ] as const;
-
-  type SectionKey = (typeof sectionControls)[number]['id'];
+  ];
 
   type QuestChainDisplay = QuestChainCard;
 
@@ -614,7 +614,7 @@
   <InnerTabs tabs={sectionControls} bind:selected={activeTab}>
     <svelte:fragment slot="panels" let:activeId>
       {#if activeId === 'quests'}
-        <section
+        <div
           id="quests"
           role="tabpanel"
           aria-labelledby="quests-tab"
@@ -678,60 +678,18 @@
                     {/if}
                   </div>
                 {:else}
-                  {#each questChainsForDisplay as chain}
-                    <article class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
-                      <header class="flex flex-wrap items-center justify-between gap-3">
-                        <div class="space-y-1">
-                          <p class="text-xs uppercase tracking-[0.3em] text-slate-400">{chain.trader ?? 'Quest chain'}</p>
-                          <div class="flex flex-wrap items-center gap-2">
-                            <h3 class="text-xl font-semibold text-white">{chain.name}</h3>
-                            {#if chain.totalQuests && chain.completedQuests !== undefined}
-                              <span
-                                class={`rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wide ${
-                                  chain.completedQuests >= chain.totalQuests
-                                    ? 'bg-emerald-500/20 text-emerald-100'
-                                    : 'bg-slate-800 text-slate-300'
-                                }`}
-                              >
-                                {chain.completedQuests}/{chain.totalQuests} complete
-                              </span>
-                            {/if}
-                          </div>
-                        </div>
-                        <div class="flex flex-wrap items-center gap-2 text-xs text-slate-400">
-                          <span class="text-[11px] uppercase tracking-[0.3em] text-slate-500">{chain.quests.length} quests</span>
-                          <span class="h-1.5 w-1.5 rounded-full bg-slate-600"></span>
-                          <span class="text-[11px] uppercase tracking-[0.3em] text-slate-500">
-                            {chain.trader ? `${chain.trader} chain` : 'General chain'}
-                          </span>
-                        </div>
-                      </header>
-
-                      <div class="mt-3 divide-y divide-slate-800/60 border-t border-slate-800/60">
-                        {#each chain.quests as quest}
-                          <QuestChainCards
-                            quest={{
-                              id: quest.id,
-                              name: quest.name,
-                              completed: quest.completed,
-                              requirements: quest.requirements,
-                              objectives: quest.objectives,
-                              rewards: quest.rewards,
-                              stepLabel: quest.stepLabel
-                            }}
-                            on:toggle={toggleQuest}
-                          />
-                        {/each}
-                      </div>
-                    </article>
-                  {/each}
+                  <QuestChainCards
+                    chains={questChainsForDisplay}
+                    collapseCompleted={collapseCompletedQuests}
+                    on:toggle={toggleQuest}
+                  />
                 {/if}
               </div>
             </div>
           {/if}
-        </section>
+        </div>
       {:else if activeId === 'workbench-upgrades'}
-        <section
+        <div
           id="workbench-upgrades"
           role="tabpanel"
           aria-labelledby="workbench-upgrades-tab"
@@ -847,9 +805,9 @@
               <TipsPanel heading="Workbench reminders" tips={workshopSummary.tips} />
             </div>
           {/if}
-        </section>
+        </div>
       {:else if activeId === 'expedition-projects'}
-        <section
+        <div
           id="expedition-projects"
           role="tabpanel"
           aria-labelledby="expedition-projects-tab"
@@ -965,9 +923,9 @@
               {/if}
             </div>
           {/if}
-        </section>
+        </div>
       {:else if activeId === 'blueprint-catalog'}
-        <section
+        <div
           id="blueprint-catalog"
           role="tabpanel"
           aria-labelledby="blueprint-catalog-tab"
@@ -1038,7 +996,7 @@
               <TipsPanel heading="Blueprint notes" tips={$blueprintSummary.tips} />
             </div>
           {/if}
-        </section>
+        </div>
       {/if}
     </svelte:fragment>
   </InnerTabs>
