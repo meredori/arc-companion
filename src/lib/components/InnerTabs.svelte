@@ -6,6 +6,7 @@
   export let tabs: InnerTab[] = [];
   export let selected: string | null = null;
   export let useHash = true;
+  export let persistKey: string | null = null;
 
   const dispatch = createEventDispatcher<{ change: { id: string } }>();
   let activeId: string | null = null;
@@ -25,6 +26,17 @@
     }
   };
 
+  const persistSelection = (id: string) => {
+    if (!persistKey || typeof localStorage === 'undefined') return;
+    localStorage.setItem(persistKey, id);
+  };
+
+  const readPersistedSelection = () => {
+    if (!persistKey || typeof localStorage === 'undefined') return null;
+    const stored = localStorage.getItem(persistKey);
+    return stored && validId(stored) ? stored : null;
+  };
+
   const activate = async (id: string, options: { notify?: boolean; updateHash?: boolean } = {}) => {
     if (!validId(id)) return;
     activeId = id;
@@ -32,6 +44,7 @@
     if (options.updateHash !== false) {
       updateHash(id);
     }
+    persistSelection(id);
     if (options.notify !== false) {
       dispatch('change', { id });
       await tick();
@@ -45,7 +58,8 @@
   };
 
   onMount(() => {
-    const initial = setInitialFromHash() ?? selected ?? tabs[0]?.id ?? null;
+    const initial =
+      setInitialFromHash() ?? readPersistedSelection() ?? selected ?? tabs[0]?.id ?? null;
     if (initial) {
       activate(initial, { notify: false });
     }

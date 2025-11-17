@@ -611,7 +611,7 @@
     </select>
   </div>
 
-  <InnerTabs tabs={sectionControls} bind:selected={activeTab}>
+  <InnerTabs tabs={sectionControls} bind:selected={activeTab} persistKey="what-i-have-tabs">
     <svelte:fragment slot="panels" let:activeId>
       <div
         id="quests"
