@@ -1,13 +1,53 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import { createQuestOrderComparator, sortQuestIds } from './quest-order';
 import { normalizeItems, normalizeQuests } from '$lib/server/pipeline';
 
-const readJson = <T>(relativePath: string): T => {
-  const absolutePath = path.resolve(relativePath);
-  return JSON.parse(readFileSync(absolutePath, 'utf-8')) as T;
+const staticRoot = path.resolve('static');
+
+const readJsonFileIfExists = <T>(relativePath: string): T | null => {
+  const absolute = path.join(staticRoot, relativePath);
+  try {
+    return JSON.parse(readFileSync(absolute, 'utf-8')) as T;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException)?.code === 'ENOENT') {
+      return null;
+    }
+    throw error;
+  }
+};
+
+const readJsonDirectory = <T>(relativeDir: string): T[] => {
+  const directory = path.join(staticRoot, relativeDir);
+  try {
+    return readdirSync(directory)
+      .filter((file) => file.endsWith('.json'))
+      .sort((a, b) => a.localeCompare(b))
+      .map((file) => JSON.parse(readFileSync(path.join(directory, file), 'utf-8')) as T);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException)?.code === 'ENOENT') {
+      return [];
+    }
+    throw error;
+  }
+};
+
+const loadRawCollection = <T>(directory: string, legacyPaths: string[] = []) => {
+  const fromDirectory = readJsonDirectory<T>(directory);
+  if (fromDirectory.length > 0) {
+    return fromDirectory;
+  }
+
+  for (const legacyPath of legacyPaths) {
+    const legacy = readJsonFileIfExists<T[]>(legacyPath);
+    if (legacy && legacy.length > 0) {
+      return legacy;
+    }
+  }
+
+  return [];
 };
 
 describe('quest ordering helpers', () => {
@@ -82,9 +122,15 @@ describe('quest ordering helpers', () => {
   });
 
   it('follows the configured chain order when sorting real quest data', () => {
-    const rawItems = readJson('static/data/raw/items.json') as Parameters<typeof normalizeItems>[0];
+    const rawItems = loadRawCollection<Parameters<typeof normalizeItems>[0][number]>(
+      'items',
+      ['data/raw/items.json']
+    );
     const items = normalizeItems(rawItems);
-    const rawQuests = readJson('static/data/raw/quests.json') as Parameters<typeof normalizeQuests>[0];
+    const rawQuests = loadRawCollection<Parameters<typeof normalizeQuests>[0][number]>(
+      'quests',
+      ['data/raw/quests.json']
+    );
     const { chains, quests } = normalizeQuests(rawQuests, { rawItems, items });
 
     const chainOrder = new Map(chains.map((chain, index) => [chain.id, index]));

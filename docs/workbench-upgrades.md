@@ -10,8 +10,8 @@ when to keep or free up loot.
 - Use the official wiki pages such as <https://arcraiders.wiki/wiki/Workshop>.
 - Each workbench typically has three upgrade levels. Record the level number, the exact requirement
   list, and any crafts/unlocks the level grants (if relevant).
-- Add the data to `static/data/raw/hideout-modules.json`. Each module entry mirrors the upstream
-  export and lists its levels plus item requirements:
+- Add the data to `static/hideout/<module>.json` (one file per bench). Each module entry mirrors the
+  upstream export and lists its levels plus item requirements:
 
 ```jsonc
 {
@@ -54,7 +54,8 @@ Have → Workbench upgrades** section to mark each level as owned.
 4. Visit **What I Have** and toggle the completed levels/benches. Finished levels immediately stop
    flagging their materials as “keep” on the What To Do page.
 
-If you need to share updates with the team, commit the modified `static/data/raw/hideout-modules.json`
-file or paste the relevant tables into this chat so Codex can convert them for you.
+If you need to share updates with the team, commit the modified `static/hideout/*.json` files (or the
+legacy `static/data/raw/hideout-modules.json`) or paste the relevant tables into this chat so Codex can
+convert them for you.
 The SvelteKit loaders now normalize hideout modules through `src/lib/server/pipeline.ts`, so there is
 no separate merge step—updating the raw file is enough.

@@ -1,6 +1,6 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import {
   loadCanonicalData,
@@ -10,9 +10,49 @@ import {
   normalizeUpgrades
 } from './pipeline';
 
-const readJson = (relativePath: string) => {
-  const absolute = path.resolve(relativePath);
-  return JSON.parse(readFileSync(absolute, 'utf-8')) as unknown;
+const staticRoot = path.resolve('static');
+
+const readJsonFileIfExists = <T>(relativePath: string): T | null => {
+  const absolute = path.join(staticRoot, relativePath);
+  try {
+    return JSON.parse(readFileSync(absolute, 'utf-8')) as T;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException)?.code === 'ENOENT') {
+      return null;
+    }
+    throw error;
+  }
+};
+
+const readJsonDirectory = <T>(relativeDir: string): T[] => {
+  const directory = path.join(staticRoot, relativeDir);
+  try {
+    return readdirSync(directory)
+      .filter((file) => file.endsWith('.json'))
+      .sort((a, b) => a.localeCompare(b))
+      .map((file) => JSON.parse(readFileSync(path.join(directory, file), 'utf-8')) as T);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException)?.code === 'ENOENT') {
+      return [];
+    }
+    throw error;
+  }
+};
+
+const loadRawCollection = <T>(directory: string, legacyPaths: string[] = []) => {
+  const fromDirectory = readJsonDirectory<T>(directory);
+  if (fromDirectory.length > 0) {
+    return fromDirectory;
+  }
+
+  for (const legacyPath of legacyPaths) {
+    const legacy = readJsonFileIfExists<T[]>(legacyPath);
+    if (legacy && legacy.length > 0) {
+      return legacy;
+    }
+  }
+
+  return [];
 };
 
 const toItemId = (raw: string | undefined | null): string | null => {
@@ -35,11 +75,23 @@ const toQuestId = (raw: string | undefined | null): string | null => {
 };
 
 describe('pipeline normalization', () => {
-  const rawItems = readJson('static/data/raw/items.json') as Parameters<typeof normalizeItems>[0];
+  const rawItems = loadRawCollection<Parameters<typeof normalizeItems>[0][number]>(
+    'items',
+    ['data/raw/items.json']
+  );
   const normalizedItems = normalizeItems(rawItems);
-  const rawQuests = readJson('static/data/raw/quests.json') as Parameters<typeof normalizeQuests>[0];
-  const rawModules = readJson('static/data/raw/hideout-modules.json') as Parameters<typeof normalizeUpgrades>[0];
-  const rawProjects = readJson('static/data/raw/projects.json') as Parameters<typeof normalizeProjects>[0];
+  const rawQuests = loadRawCollection<Parameters<typeof normalizeQuests>[0][number]>(
+    'quests',
+    ['data/raw/quests.json']
+  );
+  const rawModules = loadRawCollection<Parameters<typeof normalizeUpgrades>[0][number]>(
+    'hideout',
+    ['data/raw/hideout-modules.json']
+  );
+  const rawProjects = loadRawCollection<Parameters<typeof normalizeProjects>[0][number]>(
+    'projects',
+    ['projects.json', 'data/raw/projects.json']
+  );
 
   it('normalizes items solely from raw exports', () => {
     const expectedIds = new Set(
@@ -126,14 +178,7 @@ describe('pipeline normalization', () => {
   });
 
   it('loads canonical data from raw feeds', async () => {
-    const fetchStub: typeof fetch = async (resource) => {
-      const url = typeof resource === 'string' ? resource : resource.url;
-      const [, rawPath] = url.split('/data/');
-      if (!rawPath) throw new Error(`Unexpected fetch path: ${url}`);
-      const filePath = path.join('static', 'data', rawPath);
-      const payload = readFileSync(filePath, 'utf-8');
-      return new Response(payload, { status: 200, headers: { 'Content-Type': 'application/json' } });
-    };
+    const fetchStub = vi.fn<typeof fetch>();
 
     const result = await loadCanonicalData(fetchStub, {
       items: true,
@@ -143,6 +188,7 @@ describe('pipeline normalization', () => {
       projects: true
     });
 
+    expect(fetchStub).not.toHaveBeenCalled();
     expect(result.items?.length).toBe(normalizedItems.length);
     const arcCore = result.items?.find((item) => item.id === 'item-arc-motion-core');
     expect(arcCore?.craftsInto).toEqual(

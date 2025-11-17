@@ -1,4 +1,5 @@
 import { readdirSync } from 'node:fs';
+import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 
 import type {
@@ -720,10 +721,62 @@ export interface PipelineResult {
   projects?: Project[];
 }
 
+const staticRoot = path.join(process.cwd(), 'static');
+
+const readJsonFileIfExists = async <T>(relativePath: string): Promise<T | null> => {
+  const filePath = path.join(staticRoot, relativePath);
+  try {
+    const contents = await readFile(filePath, 'utf-8');
+    return JSON.parse(contents) as T;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException)?.code === 'ENOENT') {
+      return null;
+    }
+    throw error;
+  }
+};
+
+const readJsonDirectory = async <T>(relativeDir: string): Promise<T[]> => {
+  const directory = path.join(staticRoot, relativeDir);
+  try {
+    const entries = await readdir(directory, { withFileTypes: true });
+    const files = entries
+      .filter((entry) => entry.isFile() && entry.name.endsWith('.json'))
+      .map((entry) => entry.name)
+      .sort((a, b) => a.localeCompare(b));
+
+    const payloads = await Promise.all(
+      files.map((file) => readFile(path.join(directory, file), 'utf-8').then((raw) => JSON.parse(raw) as T))
+    );
+    return payloads;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException)?.code === 'ENOENT') {
+      return [];
+    }
+    throw error;
+  }
+};
+
+const loadRawCollection = async <T>(directory: string, legacyPaths: string[] = []): Promise<T[]> => {
+  const fromDirectory = await readJsonDirectory<T>(directory);
+  if (fromDirectory.length > 0) {
+    return fromDirectory;
+  }
+
+  for (const legacyPath of legacyPaths) {
+    const legacy = await readJsonFileIfExists<T[]>(legacyPath);
+    if (legacy && legacy.length > 0) {
+      return legacy;
+    }
+  }
+
+  return [];
+};
+
 export const loadCanonicalData = async (
-  fetchFn: typeof fetch,
+  _fetchFn: typeof fetch,
   request: PipelineRequest,
-  basePath = ''
+  _basePath = ''
 ): Promise<PipelineResult> => {
   const includeItems = request.items || request.quests || request.chains || false;
   const includeQuests = request.quests || request.chains || false;
@@ -732,16 +785,16 @@ export const loadCanonicalData = async (
 
   const [rawItems, rawQuests, rawModules, rawProjects] = await Promise.all([
     includeItems
-      ? fetchFn(`${basePath}/data/raw/items.json`).then((res) => res.json() as Promise<RawItem[]>)
+      ? loadRawCollection<RawItem>('items', ['data/raw/items.json'])
       : Promise.resolve<RawItem[] | null>(null),
     includeQuests
-      ? fetchFn(`${basePath}/data/raw/quests.json`).then((res) => res.json() as Promise<RawQuest[]>)
+      ? loadRawCollection<RawQuest>('quests', ['data/raw/quests.json'])
       : Promise.resolve<RawQuest[] | null>(null),
     includeUpgrades
-      ? fetchFn(`${basePath}/data/raw/hideout-modules.json`).then((res) => res.json() as Promise<RawModule[]>)
+      ? loadRawCollection<RawModule>('hideout', ['data/raw/hideout-modules.json'])
       : Promise.resolve<RawModule[] | null>(null),
     includeProjects
-      ? fetchFn(`${basePath}/data/raw/projects.json`).then((res) => res.json() as Promise<RawProject[]>)
+      ? loadRawCollection<RawProject>('projects', ['projects.json', 'data/raw/projects.json'])
       : Promise.resolve<RawProject[] | null>(null)
   ]);
 
