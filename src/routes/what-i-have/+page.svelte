@@ -489,8 +489,9 @@
     return [...groups.entries()]
       .filter(([, group]) => {
         const total = group.totalQuests ?? group.quests.length;
-        const completed = group.completedQuests ?? group.quests.filter((quest) => quest.completed).length;
-        if (total > 0 && completed >= total) return false;
+        const completed =
+          group.completedQuests ?? group.quests.filter((quest) => quest.completed).length;
+        if (collapseCompletedQuests && total > 0 && completed >= total) return false;
         return group.quests.length > 0;
       })
       .sort(([aId, a], [bId, b]) => {
