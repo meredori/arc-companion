@@ -489,15 +489,18 @@
                 <div class="space-y-2">
                   <h4 class="text-xs uppercase tracking-widest text-slate-400">Crafting requirements</h4>
                   <ul class="space-y-1 text-sm text-slate-300">
-                    {#if getDirectRequirements(detail.requirements).length > 0}
-                      {#each getDirectRequirements(detail.requirements) as requirement}
-                        <li class="flex items-center justify-between gap-3">
-                          <span class="truncate">{requirement.name}</span>
-                          <span class="font-semibold text-white">×{requirement.qty}</span>
-                        </li>
-                      {/each}
-                    {:else}
-                      <li class="text-slate-500">No crafting requirements recorded.</li>
+                    {#if true}
+                      {@const directRequirements = getDirectRequirements(detail.requirements)}
+                      {#if directRequirements.length > 0}
+                        {#each directRequirements as requirement}
+                          <li class="flex items-center justify-between gap-3">
+                            <span class="truncate">{requirement.name}</span>
+                            <span class="font-semibold text-white">×{requirement.qty}</span>
+                          </li>
+                        {/each}
+                      {:else}
+                        <li class="text-slate-500">No crafting requirements recorded.</li>
+                      {/if}
                     {/if}
                   </ul>
                 </div>
