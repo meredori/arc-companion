@@ -775,8 +775,7 @@ const loadRawCollection = async <T>(directory: string, legacyPaths: string[] = [
 
 export const loadCanonicalData = async (
   _fetchFn: typeof fetch,
-  request: PipelineRequest,
-  _basePath = ''
+  request: PipelineRequest
 ): Promise<PipelineResult> => {
   const includeItems = request.items || request.quests || request.chains || false;
   const includeQuests = request.quests || request.chains || false;

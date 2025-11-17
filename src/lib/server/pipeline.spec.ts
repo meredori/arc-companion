@@ -178,7 +178,7 @@ describe('pipeline normalization', () => {
   });
 
   it('loads canonical data from raw feeds', async () => {
-    const fetchStub = vi.fn<typeof fetch>();
+    const fetchStub = vi.fn() as unknown as typeof fetch;
 
     const result = await loadCanonicalData(fetchStub, {
       items: true,
