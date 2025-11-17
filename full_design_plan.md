@@ -45,11 +45,11 @@ It is intended for **AI code-generation (Codex)** or human engineers to implemen
 ### 3.1 Source Integration
 | Source | Role | Example |
 |--------|------|----------|
-| **RaidTheory Dumps** | Canonical structured data: items, quests, upgrades, projects | `static/data/raw/*.json` |
+| **RaidTheory Dumps** | Canonical structured data: items, quests, upgrades, projects | `static/{items,quests,hideout,projects}/*.json` |
 | **MetaForge API (future)** | Supplemental metadata when available | `https://metaforge.app/arc-raiders/api/items` |
 
 ### 3.2 Data Flow
-- New exports from RaidTheory are committed directly to `static/data/raw/` (`items.json`, `quests.json`, `hideout-modules.json`, `projects.json`).
+- New exports from RaidTheory are committed directly to the per-entity folders in `static/` (`items/`, `quests/`, `hideout/`, `projects/` or `projects.json`).
 - `src/lib/server/pipeline.ts` normalizes those feeds at runtime—slugging IDs, resolving images, deriving quest chains, and mapping crafting inputs/outputs.
 - The SvelteKit routes depend exclusively on the normalized result; there are no staged review passes or merge gates.
 
@@ -255,14 +255,17 @@ etc.) so the recommendation engine, Run Analyzer, and Track views see consistent
 ## 9. File Structure Example
 The SPA reserves a dedicated admin workspace that is not exposed in the primary navigation; admin routes live under `src/routes/admin/` with their own layout guard and data loaders for tools that inspect and validate the raw datasets.
 ```
-static/data/raw/
-  items.json
-  quests.json
-  hideout-modules.json
-  projects.json
-
-static/data/
-  normalized.json
+static/
+  items/
+    <item-id>.json
+  quests/
+    <quest-id>.json
+  hideout/
+    <bench-id>.json
+  projects/
+    <project-id>.json
+  data/
+    normalized.json
 
 src/lib/
   types.ts
@@ -286,7 +289,7 @@ src/routes/
 ---
 
 ## 10. Acceptance Criteria
-1. Raw JSON exports are stored in `static/data/raw/` and successfully normalized at runtime.
+1. Raw JSON exports are stored in the per-entity folders under `static/` and successfully normalized at runtime.
 2. Items have verified **sell**, **recycle**, **sources**, **vendors**, **crafting uses** within the normalized payload.
 3. Deterministic recommendation logic yields consistent results for each item.
 4. Run Analyzer correctly records, persists, and displays metrics.

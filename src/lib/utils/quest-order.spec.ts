@@ -1,14 +1,8 @@
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import { createQuestOrderComparator, sortQuestIds } from './quest-order';
 import { normalizeItems, normalizeQuests } from '$lib/server/pipeline';
-
-const readJson = <T>(relativePath: string): T => {
-  const absolutePath = path.resolve(relativePath);
-  return JSON.parse(readFileSync(absolutePath, 'utf-8')) as T;
-};
+import { loadRawCollection } from '$lib/test-helpers';
 
 describe('quest ordering helpers', () => {
   it('prioritises chain order before stage index', () => {
@@ -82,9 +76,15 @@ describe('quest ordering helpers', () => {
   });
 
   it('follows the configured chain order when sorting real quest data', () => {
-    const rawItems = readJson('static/data/raw/items.json') as Parameters<typeof normalizeItems>[0];
+    const rawItems = loadRawCollection<Parameters<typeof normalizeItems>[0][number]>(
+      'items',
+      ['data/raw/items.json']
+    );
     const items = normalizeItems(rawItems);
-    const rawQuests = readJson('static/data/raw/quests.json') as Parameters<typeof normalizeQuests>[0];
+    const rawQuests = loadRawCollection<Parameters<typeof normalizeQuests>[0][number]>(
+      'quests',
+      ['data/raw/quests.json']
+    );
     const { chains, quests } = normalizeQuests(rawQuests, { rawItems, items });
 
     const chainOrder = new Map(chains.map((chain, index) => [chain.id, index]));

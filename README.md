@@ -74,15 +74,16 @@ Artifacts generated on pull requests can be previewed using GitHub Pages environ
 
 ### Base data
 
-Raw data exports live under `static/data/raw/` and keep the multilingual schema provided by RaidTheory
-and the wiki dumps:
+Raw data exports now live under per-entity folders in `static/`, with one JSON file per record to
+match the upstream dumps:
 
-- `static/data/raw/items.json`
-- `static/data/raw/quests.json`
-- `static/data/raw/hideout-modules.json`
-- `static/data/raw/projects.json`
+- `static/items/`
+- `static/quests/`
+- `static/hideout/`
+- `static/projects/` (falls back to `static/projects.json` until the folder arrives)
 
-At runtime, `src/lib/server/pipeline.ts` normalizes these feeds (slugging IDs, mapping recipes to
+Legacy combined exports under `static/data/raw/*.json` are still supported for compatibility. At
+runtime, `src/lib/server/pipeline.ts` normalizes the raw feeds (slugging IDs, mapping recipes to
 `craftsFrom`, resolving local image paths, deriving quest chains, etc.). SvelteKit loads call the
 pipeline helper so the UI always works directly off the raw dumps. Commit updates to the raw files
 whenever a new export arrives.
@@ -95,7 +96,8 @@ normalization pipeline can ingest the updates automatically.
 
 ### Expedition projects
 
-`static/data/raw/projects.json` describes expedition projects and their phases. The **What I Have** page
+`static/projects/` (or the legacy `static/projects.json`) describes expedition projects and their
+phases. The **What I Have** page
 lets you record partial contributions; state is persisted in `localStorage` via the project progress
 store. Once a phase reaches 100 %, the What To Do recommendations stop flagging its items as “keep.”
 
