@@ -1,6 +1,4 @@
-import { readFileSync, readdirSync } from 'node:fs';
-import path from 'node:path';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import {
   loadCanonicalData,
@@ -9,51 +7,7 @@ import {
   normalizeQuests,
   normalizeUpgrades
 } from './pipeline';
-
-const staticRoot = path.resolve('static');
-
-const readJsonFileIfExists = <T>(relativePath: string): T | null => {
-  const absolute = path.join(staticRoot, relativePath);
-  try {
-    return JSON.parse(readFileSync(absolute, 'utf-8')) as T;
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException)?.code === 'ENOENT') {
-      return null;
-    }
-    throw error;
-  }
-};
-
-const readJsonDirectory = <T>(relativeDir: string): T[] => {
-  const directory = path.join(staticRoot, relativeDir);
-  try {
-    return readdirSync(directory)
-      .filter((file) => file.endsWith('.json'))
-      .sort((a, b) => a.localeCompare(b))
-      .map((file) => JSON.parse(readFileSync(path.join(directory, file), 'utf-8')) as T);
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException)?.code === 'ENOENT') {
-      return [];
-    }
-    throw error;
-  }
-};
-
-const loadRawCollection = <T>(directory: string, legacyPaths: string[] = []) => {
-  const fromDirectory = readJsonDirectory<T>(directory);
-  if (fromDirectory.length > 0) {
-    return fromDirectory;
-  }
-
-  for (const legacyPath of legacyPaths) {
-    const legacy = readJsonFileIfExists<T[]>(legacyPath);
-    if (legacy && legacy.length > 0) {
-      return legacy;
-    }
-  }
-
-  return [];
-};
+import { loadRawCollection } from '$lib/test-helpers';
 
 const toItemId = (raw: string | undefined | null): string | null => {
   if (!raw) return null;
@@ -178,9 +132,7 @@ describe('pipeline normalization', () => {
   });
 
   it('loads canonical data from raw feeds', async () => {
-    const fetchStub = vi.fn() as unknown as typeof fetch;
-
-    const result = await loadCanonicalData(fetchStub, {
+    const result = await loadCanonicalData({
       items: true,
       quests: true,
       chains: true,
@@ -188,7 +140,6 @@ describe('pipeline normalization', () => {
       projects: true
     });
 
-    expect(fetchStub).not.toHaveBeenCalled();
     expect(result.items?.length).toBe(normalizedItems.length);
     const arcCore = result.items?.find((item) => item.id === 'item-arc-motion-core');
     expect(arcCore?.craftsInto).toEqual(

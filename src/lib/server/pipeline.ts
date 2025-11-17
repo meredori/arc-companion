@@ -738,23 +738,32 @@ const readJsonFileIfExists = async <T>(relativePath: string): Promise<T | null> 
 
 const readJsonDirectory = async <T>(relativeDir: string): Promise<T[]> => {
   const directory = path.join(staticRoot, relativeDir);
+  let files: string[] = [];
   try {
     const entries = await readdir(directory, { withFileTypes: true });
-    const files = entries
+    files = entries
       .filter((entry) => entry.isFile() && entry.name.endsWith('.json'))
       .map((entry) => entry.name)
       .sort((a, b) => a.localeCompare(b));
-
-    const payloads = await Promise.all(
-      files.map((file) => readFile(path.join(directory, file), 'utf-8').then((raw) => JSON.parse(raw) as T))
-    );
-    return payloads;
   } catch (error) {
     if ((error as NodeJS.ErrnoException)?.code === 'ENOENT') {
       return [];
     }
     throw error;
   }
+
+  const payloads = await Promise.all(
+    files.map(async (file) => {
+      try {
+        const raw = await readFile(path.join(directory, file), 'utf-8');
+        return JSON.parse(raw) as T;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        throw new Error(`Failed to parse JSON in ${path.join(relativeDir, file)}: ${message}`);
+      }
+    })
+  );
+  return payloads;
 };
 
 const loadRawCollection = async <T>(directory: string, legacyPaths: string[] = []): Promise<T[]> => {
@@ -773,10 +782,7 @@ const loadRawCollection = async <T>(directory: string, legacyPaths: string[] = [
   return [];
 };
 
-export const loadCanonicalData = async (
-  _fetchFn: typeof fetch,
-  request: PipelineRequest
-): Promise<PipelineResult> => {
+export const loadCanonicalData = async (request: PipelineRequest): Promise<PipelineResult> => {
   const includeItems = request.items || request.quests || request.chains || false;
   const includeQuests = request.quests || request.chains || false;
   const includeUpgrades = request.upgrades ?? false;
