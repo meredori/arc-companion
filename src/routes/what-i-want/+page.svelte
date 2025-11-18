@@ -14,6 +14,7 @@
     settings,
     wantList
   } from '$lib/stores/app';
+  import { BENCH_LABELS, DEFAULT_BENCH_ORDER, QUICK_USE_BENCH_BY_SLUG } from '$lib/utils/bench';
   import type { ItemRecord, UpgradePack, WantListRequirement } from '$lib/types';
   import type { PageData } from './$types';
 
@@ -100,58 +101,6 @@
     };
   };
 
-  const QUICK_USE_BENCH_BY_SLUG = new Map<string, string>([
-    ['adrenaline-shot', 'med_station'],
-    ['bandage', 'workbench'],
-    ['barricade-kit', 'none'],
-    ['binoculars', 'utility_bench'],
-    ['blaze-grenade', 'none'],
-    ['blaze-grenade-trap', 'none'],
-    ['blue-light-stick', 'none'],
-    ['defibrillator', 'med_station'],
-    ['door-blocker', 'utility_bench'],
-    ['gas-grenade', 'explosives_bench'],
-    ['gas-grenade-trap', 'none'],
-    ['green-light-stick', 'utility_bench'],
-    ['heavy-fuze-grenade', 'explosives_bench'],
-    ['herbal-bandage', 'med_station'],
-    ['jolt-mine', 'explosives_bench'],
-    ['light-impact-grenade', 'workbench'],
-    ['lil-smoke-grenade', 'utility_bench'],
-    ['lure-grenade', 'utility_bench'],
-    ['lure-grenade-trap', 'none'],
-    ['noisemaker', 'none'],
-    ['photoelectric-cloak', 'utility_bench'],
-    ['red-light-stick', 'none'],
-    ['remote-raider-flare', 'utility_bench'],
-    ['shield-recharger', 'workbench'],
-    ['showstopper', 'none'],
-    ['shrapnel-grenade', 'explosives_bench'],
-    ['smoke-grenade', 'none'],
-    ['smoke-grenade-trap', 'none'],
-    ['snap-blast-grenade', 'explosives_bench'],
-    ['snap-hook', 'utility_bench'],
-    ['sterilized-bandage', 'med_station'],
-    ['surge-shield-recharger', 'med_station'],
-    ['tagging-grenade', 'none'],
-    ['trigger-nade', 'explosives_bench'],
-    ['vita-shot', 'none'],
-    ['vita-spray', 'medical_bench'],
-    ['wolfpack', 'none'],
-    ['yellow-light-stick', 'none'],
-    ['zipline', 'utility_bench']
-  ]);
-
-  const benchLabels: Record<string, string> = {
-    all: 'All benches',
-    workbench: 'Workbench',
-    utility_bench: 'Utility Bench',
-    explosives_bench: 'Explosives Bench',
-    med_station: 'Med Station',
-    medical_bench: 'Medical Bench',
-    none: 'No bench'
-  };
-
   let search = '';
   let benchFilter = 'all';
   let blueprintFilter: 'any' | 'owned' | 'missing' = 'any';
@@ -184,15 +133,6 @@
     benchUsage.set(key, (benchUsage.get(key) ?? 0) + 1);
   }
 
-  const DEFAULT_BENCH_ORDER = [
-    'workbench',
-    'utility_bench',
-    'explosives_bench',
-    'med_station',
-    'medical_bench',
-    'none'
-  ];
-
   const benchOptions = ['all']
     .concat(DEFAULT_BENCH_ORDER.filter((key) => benchUsage.has(key)))
     .concat(Array.from(benchUsage.keys()).filter((key) => !DEFAULT_BENCH_ORDER.includes(key)));
@@ -202,7 +142,7 @@
   }
 
   const labelForBench = (key: string) => {
-    if (benchLabels[key]) return benchLabels[key];
+    if (BENCH_LABELS[key]) return BENCH_LABELS[key];
     return key
       .split(/[_-]/)
       .map((part) => (part ? part[0]?.toUpperCase() + part.slice(1) : ''))
