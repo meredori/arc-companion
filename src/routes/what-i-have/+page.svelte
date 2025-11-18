@@ -221,6 +221,20 @@
     bench.levels.forEach((level) => level.entries.forEach((entry) => setWorkbenchOwnership(entry, next)));
   };
 
+  const anchorForBlueprint = (blueprint: ItemRecord) => {
+    if (blueprint.slug && blueprint.slug.trim()) {
+      return `blueprint-${blueprint.slug}`;
+    }
+
+    const fallback = blueprint.name
+      ?.toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .replace(/-{2,}/g, '-');
+
+    return `blueprint-${fallback || blueprint.id}`;
+  };
+
   type BlueprintEntry = {
     record: ItemRecord;
     state: {
@@ -262,6 +276,7 @@
       sell: entry.record.sell,
       category: entry.record.category,
       owned: entry.state.owned,
+      anchorId: anchorForBlueprint(entry.record),
       imageUrl: entry.record.imageUrl ?? null,
       notes: entry.record.notes ?? null
     }))
@@ -865,6 +880,7 @@
               {:else}
                 {#each filteredBlueprints as blueprint}
                   <button
+                    id={blueprint.anchorId}
                     type="button"
                     class={`rounded-2xl border px-4 py-3 text-left text-sm transition ${
                       blueprint.owned

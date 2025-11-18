@@ -52,11 +52,6 @@
       description: 'Build a wishlist of future crafts and inspect the materials needed to complete them.'
     },
     {
-      href: '/blueprints',
-      title: 'Blueprints',
-      description: 'Manage owned schematics to unlock crafting suggestions and salvage guidance.'
-    },
-    {
       href: '/run',
       title: 'Run Analyzer',
       description: 'Live run logging with contextual tips and telemetry overlays.'
