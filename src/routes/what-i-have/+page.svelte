@@ -76,13 +76,19 @@
     if (!quest.chainId) return;
     const chain = chainById.get(quest.chainId);
     const chainName = chain?.name ?? quest.chainId;
-    const stage = quest.chainStage ?? (chain?.stages?.indexOf(quest.id) ?? -1);
-    const index = stage >= 0 ? stage : null;
+    const index = quest.chainStage ?? null;
     questChainLookup.set(quest.id, {
       chainId: quest.chainId,
       chainName,
       index
     });
+  });
+
+  const previousQuestIdsByQuest = new Map<string, string[]>();
+  const nextQuestIdsByQuest = new Map<string, string[]>();
+  questDefs.forEach((quest) => {
+    previousQuestIdsByQuest.set(quest.id, Array.isArray(quest.previousQuestIds) ? quest.previousQuestIds : []);
+    nextQuestIdsByQuest.set(quest.id, Array.isArray(quest.nextQuestIds) ? quest.nextQuestIds : []);
   });
 
   let showCompleted = false;
@@ -225,11 +231,8 @@
   $: questCompletionSet = new Set($quests.filter((entry) => entry.completed).map((entry) => entry.id));
 
   const isQuestUnlocked = (questId: string) => {
-    const info = questChainLookup.get(questId);
-    if (!info) return true;
-    const chain = chainById.get(info.chainId);
-    const stages = chain?.stages ?? [];
-    return stages.slice(0, info.index).every((id) => questCompletionSet.has(id));
+    const previous = previousQuestIdsByQuest.get(questId) ?? [];
+    return previous.every((id) => questCompletionSet.has(id));
   };
 
   const compareQuestOrder = createQuestOrderComparator(chainOrder, questChainLookup, questById);
@@ -275,11 +278,7 @@
   };
 
   const prerequisiteIdsFor = (questId: string) => {
-    const info = questChainLookup.get(questId);
-    if (!info || info.index === null) return [] as string[];
-    const chain = chainById.get(info.chainId);
-    const stages = chain?.stages ?? [];
-    return stages.slice(0, info.index);
+    return previousQuestIdsByQuest.get(questId) ?? [];
   };
 
   $: quickUpdatePrerequisites = (() => {
@@ -302,20 +301,19 @@
 
     const questsToKeepIncomplete = new Set(selectedQuests);
 
-    selectedQuests.forEach((questId) => {
-      const info = questChainLookup.get(questId);
-      if (!info || info.index === null) return;
-
-      const chain = chainById.get(info.chainId);
-      const stages = chain?.stages ?? [];
-      const startIndex = stages.indexOf(questId);
-
-      if (startIndex === -1) return;
-
-      for (let i = startIndex + 1; i < stages.length; i += 1) {
-        questsToKeepIncomplete.add(stages[i]);
+    const collectDownstream = (questId: string) => {
+      const queue = [...(nextQuestIdsByQuest.get(questId) ?? [])];
+      const visited = new Set<string>();
+      while (queue.length > 0) {
+        const current = queue.shift();
+        if (!current || visited.has(current)) continue;
+        visited.add(current);
+        questsToKeepIncomplete.add(current);
+        (nextQuestIdsByQuest.get(current) ?? []).forEach((nextId) => queue.push(nextId));
       }
-    });
+    };
+
+    selectedQuests.forEach((questId) => collectDownstream(questId));
 
     questDefs.forEach((quest) => {
       quests.upsert({ id: quest.id, completed: !questsToKeepIncomplete.has(quest.id) });
