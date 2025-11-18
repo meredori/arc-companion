@@ -774,7 +774,6 @@
 {#if quickUpdateOpen}
   <div
     class="fixed inset-0 z-50 flex items-start justify-center bg-slate-950/80 px-4 py-10 backdrop-blur"
-    on:click|self={closeQuickUpdate}
     role="dialog"
     aria-modal="true"
     aria-label="Quick quest update"
