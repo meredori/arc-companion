@@ -45,13 +45,14 @@ The project is configured for SvelteKit with TypeScript, TailwindCSS, ESLint, Pr
 Key routes (`src/routes/`) now include:
 
 - `/what-to-do` — tokenized item recommendations that factor in quests, workbenches, and expedition projects.
-- `/what-i-have` — the inventory control center for quest completion, workbench upgrades, blueprint ownership, and expedition project contributions.
+- `/what-i-have` — the inventory control center for quest completion, workbench upgrades, and expedition project contributions.
 - `/track` — streamlined quest + upgrade checklist (legacy view).
-- `/blueprints` — focused blueprint ownership manager.
 - `/run` / `/runs` — live run logger + historical dashboard.
 
 
 Each section is wired to the shared stores so toggling a quest, bench, or project immediately influences the What To Do page.
+
+> **Prerendering note:** Hash links in prerendered pages must point to elements that actually exist (e.g. `/what-to-do` links to section IDs on `/what-i-have`). When you remove or rename a section, update any cross-page anchors at the same time to avoid prerender failures like “no element with id=… exists.”
 
 ## Workshop Upgrade Data
 
