@@ -3,6 +3,7 @@ export { default as RecommendationCard } from './RecommendationCard.svelte';
 export { default as QuestChecklist } from './QuestChecklist.svelte';
 export { default as QuestChainCards } from './QuestChainCards.svelte';
 export { default as RunTimer } from './RunTimer.svelte';
+export { default as InnerTabs } from './InnerTabs.svelte';
 export { default as TipsPanel } from './TipsPanel.svelte';
 export type { RecommendationAction, RecommendationCardProps } from './RecommendationCard.svelte';
 export type { ChecklistItem } from './QuestChecklist.svelte';
