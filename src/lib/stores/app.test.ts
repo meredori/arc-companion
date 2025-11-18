@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { get } from 'svelte/store';
-import { expandWantList, lastRemovedRun, runs, settings } from './app';
+import { expandWantList, hydrateFromCanonical, lastRemovedRun, quests, runs, settings } from './app';
 import type { ItemRecord, WantListEntry } from '$lib/types';
 
 const iso = () => new Date().toISOString();
@@ -117,5 +117,29 @@ describe('expandWantList', () => {
     });
     expect(expanded[0].requirements).toHaveLength(0);
     expect(expanded[0].materials).toHaveLength(0);
+  });
+});
+
+describe('quest hydration', () => {
+  it('merges canonical quests and allows toggling newly added IDs', () => {
+    quests.reset();
+    quests.upsert({ id: 'existing-quest', completed: false });
+
+    hydrateFromCanonical({
+      quests: [
+        { id: 'existing-quest', completed: false },
+        { id: 'new-quest', completed: false }
+      ]
+    });
+
+    quests.toggle('new-quest');
+    const questState = get(quests);
+    const existing = questState.find((quest) => quest.id === 'existing-quest');
+    const added = questState.find((quest) => quest.id === 'new-quest');
+
+    expect(existing?.completed).toBe(false);
+    expect(added?.completed).toBe(true);
+
+    quests.reset();
   });
 });

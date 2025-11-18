@@ -382,9 +382,13 @@ function pruneOverride(override: ItemOverride | undefined): ItemOverride | null 
 export const quests = {
   subscribe: questStore.subscribe,
   toggle(id: string) {
-    questStore.update((records) =>
-      records.map((quest) => (quest.id === id ? { ...quest, completed: !quest.completed } : quest))
-    );
+    questStore.update((records) => {
+      const existing = records.find((quest) => quest.id === id);
+      if (!existing) {
+        return [...records, { id, completed: true }];
+      }
+      return records.map((quest) => (quest.id === id ? { ...quest, completed: !quest.completed } : quest));
+    });
   },
   upsert(progress: QuestProgress) {
     questStore.update((records) => {
@@ -707,8 +711,11 @@ export function hydrateFromCanonical(params: {
     params;
 
   const existingQuests = get(questStore);
-  if (existingQuests.length === 0 && questsData.length > 0) {
-    questStore.set(questsData);
+  if (questsData.length > 0) {
+    questStore.set([
+      ...existingQuests,
+      ...questsData.filter((quest) => !existingQuests.some((existing) => existing.id === quest.id))
+    ]);
   }
 
   const existingWorkbench = get(workbenchUpgradeStore);
