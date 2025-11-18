@@ -234,9 +234,6 @@
 
   const compareQuestOrder = createQuestOrderComparator(chainOrder, questChainLookup, questById);
 
-  const standaloneChainId = '__standalone__';
-  const standaloneChainName = 'Standalone quests';
-
   const rewardLabel = (reward: QuestReward) => {
     if (!reward) return null;
     if (reward.coins) return `${reward.coins} coins`;
@@ -267,15 +264,8 @@
 
     const vendorLabel = (quest: typeof questDefs[number]) => quest.giver ?? 'Unknown vendor';
 
-    questDefs.forEach((quest) => {
-      const vendor = vendorLabel(quest);
-      const entry = vendorTotals.get(vendor) ?? { totalQuests: 0, completedQuests: 0 };
-      entry.totalQuests += 1;
-      if (questCompletionSet.has(quest.id)) entry.completedQuests += 1;
-      vendorTotals.set(vendor, entry);
-    });
-
     const orderedQuests = [...questDefs].sort((a, b) => compareQuestOrder(a.id, b.id));
+    const availableQuests: (typeof questDefs[number])[] = [];
 
     orderedQuests.forEach((quest, index) => {
       const completed = questCompletionSet.has(quest.id);
@@ -283,6 +273,20 @@
       if (!unlocked) return;
       if (!showCompleted && completed) return;
 
+      const vendor = vendorLabel(quest);
+      const totals = vendorTotals.get(vendor) ?? { totalQuests: 0, completedQuests: 0 };
+      totals.totalQuests += 1;
+      if (completed) totals.completedQuests += 1;
+      vendorTotals.set(vendor, totals);
+
+      if (!vendorWeights.has(vendor)) {
+        vendorWeights.set(vendor, index);
+      }
+
+      availableQuests.push(quest);
+    });
+
+    availableQuests.forEach((quest) => {
       const vendor = vendorLabel(quest);
       const group = groups.get(vendor) ?? {
         id: vendor,
@@ -295,10 +299,10 @@
         const totals = vendorTotals.get(vendor);
         group.totalQuests = totals?.totalQuests;
         group.completedQuests = totals?.completedQuests;
-        vendorWeights.set(vendor, index);
         groups.set(vendor, group);
       }
 
+      const completed = questCompletionSet.has(quest.id);
       const requirements = quest.items.map((requirement) => `${requirement.qty}x ${itemName(requirement.itemId)}`);
       const objectives = quest.mapHints ?? [];
       const rewards = questRewards(quest.id);
