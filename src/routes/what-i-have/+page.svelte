@@ -76,13 +76,19 @@
     if (!quest.chainId) return;
     const chain = chainById.get(quest.chainId);
     const chainName = chain?.name ?? quest.chainId;
-    const stage = quest.chainStage ?? (chain?.stages?.indexOf(quest.id) ?? -1);
-    const index = stage >= 0 ? stage : null;
+    const index = quest.chainStage ?? null;
     questChainLookup.set(quest.id, {
       chainId: quest.chainId,
       chainName,
       index
     });
+  });
+
+  const previousQuestIdsByQuest = new Map<string, string[]>();
+  const nextQuestIdsByQuest = new Map<string, string[]>();
+  questDefs.forEach((quest) => {
+    previousQuestIdsByQuest.set(quest.id, Array.isArray(quest.previousQuestIds) ? quest.previousQuestIds : []);
+    nextQuestIdsByQuest.set(quest.id, Array.isArray(quest.nextQuestIds) ? quest.nextQuestIds : []);
   });
 
   let showCompleted = false;
@@ -225,14 +231,96 @@
   $: questCompletionSet = new Set($quests.filter((entry) => entry.completed).map((entry) => entry.id));
 
   const isQuestUnlocked = (questId: string) => {
-    const info = questChainLookup.get(questId);
-    if (!info) return true;
-    const chain = chainById.get(info.chainId);
-    const stages = chain?.stages ?? [];
-    return stages.slice(0, info.index).every((id) => questCompletionSet.has(id));
+    const previous = previousQuestIdsByQuest.get(questId) ?? [];
+    return previous.every((id) => questCompletionSet.has(id));
   };
 
   const compareQuestOrder = createQuestOrderComparator(chainOrder, questChainLookup, questById);
+
+  let quickUpdateOpen = false;
+  let quickUpdateFilter = '';
+  let selectedQuests = new Set<string>();
+
+  $: questOptions = [...questDefs].sort((a, b) => compareQuestOrder(a.id, b.id));
+  $: filteredQuestOptions = questOptions.filter((quest) =>
+    quest.name.toLowerCase().includes(quickUpdateFilter.trim().toLowerCase())
+  );
+
+  const resetQuickUpdate = () => {
+    quickUpdateFilter = '';
+    selectedQuests = new Set();
+  };
+
+  const openQuickUpdate = () => {
+    resetQuickUpdate();
+    quickUpdateOpen = true;
+  };
+
+  const closeQuickUpdate = () => {
+    quickUpdateOpen = false;
+  };
+
+  const toggleQuickUpdateSelection = (id: string) => {
+    const next = new Set(selectedQuests);
+    if (next.has(id)) {
+      next.delete(id);
+    } else {
+      next.add(id);
+    }
+    selectedQuests = next;
+  };
+
+  const chainLabel = (questId: string) => {
+    const info = questChainLookup.get(questId);
+    if (!info) return 'Standalone quest';
+    const stage = info.index !== null ? `Stage ${info.index + 1}` : null;
+    return stage ? `${info.chainName} · ${stage}` : info.chainName;
+  };
+
+  const prerequisiteIdsFor = (questId: string) => {
+    return previousQuestIdsByQuest.get(questId) ?? [];
+  };
+
+  $: quickUpdatePrerequisites = (() => {
+    const needed = new Set<string>();
+    selectedQuests.forEach((questId) => {
+      prerequisiteIdsFor(questId).forEach((id) => needed.add(id));
+    });
+    return needed;
+  })();
+
+  $: missingPrerequisites = [...quickUpdatePrerequisites].filter(
+    (id) => !questCompletionSet.has(id) && !selectedQuests.has(id)
+  );
+
+  const applyQuickUpdate = () => {
+    if (selectedQuests.size === 0) {
+      quickUpdateOpen = false;
+      return;
+    }
+
+    const questsToKeepIncomplete = new Set(selectedQuests);
+
+    const collectDownstream = (questId: string) => {
+      const queue = [...(nextQuestIdsByQuest.get(questId) ?? [])];
+      const visited = new Set<string>();
+      while (queue.length > 0) {
+        const current = queue.shift();
+        if (!current || visited.has(current)) continue;
+        visited.add(current);
+        questsToKeepIncomplete.add(current);
+        (nextQuestIdsByQuest.get(current) ?? []).forEach((nextId) => queue.push(nextId));
+      }
+    };
+
+    selectedQuests.forEach((questId) => collectDownstream(questId));
+
+    questDefs.forEach((quest) => {
+      quests.upsert({ id: quest.id, completed: !questsToKeepIncomplete.has(quest.id) });
+    });
+
+    quickUpdateOpen = false;
+  };
 
   const rewardLabel = (reward: QuestReward) => {
     if (!reward) return null;
@@ -439,6 +527,13 @@
               Toggle quests as you finish them to keep tabs on outstanding objectives and required loot.
             </p>
           </div>
+          <button
+            type="button"
+            class="inline-flex items-center gap-2 rounded-full border border-sky-500/40 bg-sky-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-sky-100 transition hover:border-sky-400 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+            on:click={openQuickUpdate}
+          >
+            Quick update
+          </button>
         </header>
         <div id="quests-content" class="space-y-4">
           <div class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-800/70 bg-slate-950/60 px-4 py-3">
@@ -686,6 +781,125 @@
   </InnerTabs>
 
 </section>
+{#if quickUpdateOpen}
+  <div
+    class="fixed inset-0 z-50 flex items-start justify-center bg-slate-950/80 px-4 py-10 backdrop-blur"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Quick quest update"
+  >
+    <div class="w-full max-w-3xl rounded-2xl border border-slate-800 bg-slate-900/95 shadow-2xl">
+      <header class="flex items-start justify-between gap-4 border-b border-slate-800/80 px-6 py-4">
+        <div class="space-y-1">
+          <p class="text-[11px] uppercase tracking-[0.3em] text-slate-400">Quest checklist</p>
+          <h3 class="text-xl font-semibold text-white">Quick update</h3>
+          <p class="text-sm text-slate-400">
+            Pick quests you still need. Earlier stages will be marked complete automatically so the checklist stays
+            consistent.
+          </p>
+        </div>
+        <button
+          type="button"
+          class="rounded-full border border-slate-700 px-3 py-1 text-xs uppercase tracking-widest text-slate-300 hover:border-slate-500"
+          on:click={closeQuickUpdate}
+        >
+          Close
+        </button>
+      </header>
+      <div class="space-y-5 px-6 py-5">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <label class="flex flex-1 items-center gap-3 rounded-xl border border-slate-800 bg-slate-950/60 px-3 py-2 text-sm text-slate-200">
+            <span class="text-slate-400">Filter quests</span>
+            <input
+              class="w-full rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-white focus:border-sky-500 focus:outline-none"
+              type="text"
+              placeholder="Search by name"
+              bind:value={quickUpdateFilter}
+            />
+          </label>
+          <div class="flex items-center gap-2 text-xs text-slate-400">
+            <span class="rounded-full bg-slate-800/70 px-3 py-1 font-semibold uppercase tracking-wide text-slate-200">
+              {selectedQuests.size} selected
+            </span>
+            {#if missingPrerequisites.length > 0}
+              <span class="rounded-full bg-amber-500/10 px-3 py-1 font-semibold uppercase tracking-wide text-amber-200">
+                {missingPrerequisites.length} prerequisites will be completed
+              </span>
+            {:else if quickUpdatePrerequisites.size > 0}
+              <span class="rounded-full bg-emerald-500/10 px-3 py-1 font-semibold uppercase tracking-wide text-emerald-200">
+                Prerequisites already complete
+              </span>
+            {/if}
+          </div>
+        </div>
+        <div class="max-h-[60vh] space-y-3 overflow-y-auto pr-2">
+          {#if filteredQuestOptions.length === 0}
+            <p class="rounded-xl border border-dashed border-slate-800/70 bg-slate-950/60 px-4 py-5 text-sm text-slate-400">
+              No quests match “{quickUpdateFilter}”. Try another name.
+            </p>
+          {:else}
+            {#each filteredQuestOptions as quest}
+              <label
+                class={`flex cursor-pointer items-start gap-3 rounded-xl border px-4 py-3 transition ${
+                  selectedQuests.has(quest.id)
+                    ? 'border-sky-500/60 bg-sky-500/5'
+                    : 'border-slate-800/80 bg-slate-950/60 hover:border-slate-700'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  class="mt-1 h-4 w-4 rounded border-slate-700 bg-slate-900 text-sky-400 focus:ring-sky-500"
+                  checked={selectedQuests.has(quest.id)}
+                  on:change={() => toggleQuickUpdateSelection(quest.id)}
+                />
+                <div class="flex-1 space-y-1">
+                  <p class="text-sm font-semibold text-white">{quest.name}</p>
+                  <p class="text-[11px] uppercase tracking-widest text-slate-500">{chainLabel(quest.id)}</p>
+                  <p class={`text-xs ${isQuestUnlocked(quest.id) ? 'text-emerald-300' : 'text-amber-200'}`}>
+                    {isQuestUnlocked(quest.id) ? 'Ready to do now' : 'Prerequisites required'}
+                  </p>
+                </div>
+                {#if questCompletionSet.has(quest.id)}
+                  <span class="rounded-full bg-emerald-500/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-200">
+                    Completed
+                  </span>
+                {/if}
+              </label>
+            {/each}
+          {/if}
+        </div>
+        <div class="flex flex-wrap items-center justify-end gap-3 border-t border-slate-800/70 pt-4">
+          <button
+            type="button"
+            class="rounded-full border border-slate-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-slate-200 hover:border-slate-500"
+            on:click={() => {
+              resetQuickUpdate();
+            }}
+          >
+            Clear selection
+          </button>
+          <div class="flex flex-wrap gap-2">
+            <button
+              type="button"
+              class="rounded-full border border-slate-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-slate-200 hover:border-slate-500"
+              on:click={closeQuickUpdate}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="rounded-full border border-emerald-400/60 bg-emerald-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-emerald-100 transition hover:border-emerald-400 hover:bg-emerald-500/20"
+              on:click={applyQuickUpdate}
+              disabled={selectedQuests.size === 0}
+            >
+              Apply changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{/if}
 {#if showReturnToTop}
   <button
     type="button"
