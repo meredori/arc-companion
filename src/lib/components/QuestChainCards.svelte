@@ -6,7 +6,6 @@
     requirements: string[];
     objectives?: string[];
     rewards?: string[];
-    stepLabel?: string | null;
   };
 
   export type QuestChainCard = {
@@ -81,7 +80,6 @@
       <article class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
         <header class="flex flex-wrap items-center justify-between gap-3">
           <div class="space-y-1">
-            <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Quest chain</p>
             <h3 class="text-xl font-semibold text-white">{chainLabel}</h3>
           </div>
           <span
@@ -127,9 +125,6 @@
                         </span>
                         <div class="min-w-0 space-y-1">
                           <p class="truncate text-sm font-semibold">{quest.name}</p>
-                          {#if quest.stepLabel}
-                            <p class="text-[11px] uppercase tracking-[0.25em] text-slate-400">{quest.stepLabel}</p>
-                          {/if}
                         </div>
                       </div>
                       <div class="min-h-[28px] space-y-1">
@@ -189,9 +184,6 @@
           <div class="space-y-1">
             <p class="text-[11px] uppercase tracking-[0.3em] text-slate-400">{detailView.chain.trader ?? 'Quest'}</p>
             <h4 id={`${detailsId}-title`} class="text-xl font-semibold text-white">{detailView.quest.name}</h4>
-            {#if detailView.quest.stepLabel}
-              <p class="text-[11px] uppercase tracking-[0.25em] text-slate-400">{detailView.quest.stepLabel}</p>
-            {/if}
           </div>
           <button
             type="button"
