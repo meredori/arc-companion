@@ -142,4 +142,22 @@ describe('quest hydration', () => {
 
     quests.reset();
   });
+
+  it('merges canonical properties into existing quests', () => {
+    quests.reset();
+    quests.upsert({ id: 'quest-1', completed: true, pinned: false, notes: 'old note' });
+
+    hydrateFromCanonical({
+      quests: [{ id: 'quest-1', completed: false, pinned: true, notes: 'new note' }]
+    });
+
+    const questState = get(quests);
+    const quest = questState.find((entry) => entry.id === 'quest-1');
+
+    expect(quest?.completed).toBe(false);
+    expect(quest?.pinned).toBe(true);
+    expect(quest?.notes).toBe('new note');
+
+    quests.reset();
+  });
 });

@@ -712,9 +712,16 @@ export function hydrateFromCanonical(params: {
 
   const existingQuests = get(questStore);
   if (questsData.length > 0) {
+    const canonicalIds = new Set(questsData.map((quest) => quest.id));
+    const mergedQuests = questsData.map((quest) => {
+      const existingQuest = existingQuests.find((existing) => existing.id === quest.id);
+      if (!existingQuest) return quest;
+      return { ...existingQuest, ...quest } satisfies QuestProgress;
+    });
+
     questStore.set([
-      ...existingQuests,
-      ...questsData.filter((quest) => !existingQuests.some((existing) => existing.id === quest.id))
+      ...existingQuests.filter((quest) => !canonicalIds.has(quest.id)),
+      ...mergedQuests
     ]);
   }
 
