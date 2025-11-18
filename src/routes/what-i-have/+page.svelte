@@ -262,89 +262,45 @@
 
   $: questChainsForDisplay = (() => {
     const groups = new Map<string, QuestChainDisplay>();
-    const weights = new Map<string, { chainWeight: number; segmentIndex: number }>();
-    const segmentLookup = new Map<string, string>();
+    const vendorWeights = new Map<string, number>();
+    const vendorTotals = new Map<string, { totalQuests: number; completedQuests: number }>();
 
-    const ensureGroup = (
-      id: string,
-      name: string,
-      order?: { chainWeight: number; segmentIndex: number }
-    ) => {
-      if (!groups.has(id)) {
-        groups.set(id, { id, name, quests: [] });
-      }
-      if (order) {
-        weights.set(id, order);
-      }
-      return groups.get(id)!;
-    };
+    const vendorLabel = (quest: typeof questDefs[number]) => quest.giver ?? 'Unknown vendor';
 
-    chains.forEach((chain) => {
-      const stages = chain.stages ?? [];
-      let trader: string | null | undefined = undefined;
-      let segment: string[] = [];
-      let segmentIndex = 0;
-      const chainWeight = chainOrder.get(chain.id) ?? Number.MAX_SAFE_INTEGER;
-
-      const pushSegment = () => {
-        if (segment.length === 0) return;
-        const id = `${chain.id}::${segmentIndex}`;
-        const traderLabel = trader ?? 'Unknown trader';
-        const name = trader ? traderLabel : chain.name;
-        const group = ensureGroup(id, name, { chainWeight, segmentIndex });
-        group.totalQuests = segment.length;
-        group.completedQuests = segment.filter((questId) => questCompletionSet.has(questId)).length;
-        group.trader = trader ?? null;
-        segment.forEach((questId) => segmentLookup.set(questId, id));
-        segment = [];
-        segmentIndex += 1;
-      };
-
-      for (const questId of stages) {
-        const quest = questById.get(questId);
-        const questTrader = quest?.giver ?? null;
-        if (segment.length === 0) {
-          trader = questTrader;
-        } else if (questTrader !== trader) {
-          pushSegment();
-          trader = questTrader;
-        }
-        segment.push(questId);
-      }
-
-      pushSegment();
+    questDefs.forEach((quest) => {
+      const vendor = vendorLabel(quest);
+      const entry = vendorTotals.get(vendor) ?? { totalQuests: 0, completedQuests: 0 };
+      entry.totalQuests += 1;
+      if (questCompletionSet.has(quest.id)) entry.completedQuests += 1;
+      vendorTotals.set(vendor, entry);
     });
-
-    const standaloneIds = questDefs.filter((quest) => !quest.chainId).map((quest) => quest.id);
-    const standaloneGroup = ensureGroup(standaloneChainId, standaloneChainName, {
-      chainWeight: Number.MAX_SAFE_INTEGER,
-      segmentIndex: Number.MAX_SAFE_INTEGER
-    });
-    standaloneGroup.totalQuests = standaloneIds.length;
-    standaloneGroup.completedQuests = standaloneIds.filter((id) => questCompletionSet.has(id)).length;
 
     const orderedQuests = [...questDefs].sort((a, b) => compareQuestOrder(a.id, b.id));
 
-    for (const quest of orderedQuests) {
+    orderedQuests.forEach((quest, index) => {
       const completed = questCompletionSet.has(quest.id);
       const unlocked = isQuestUnlocked(quest.id) || completed;
-      if (!unlocked) continue;
-      if (!showCompleted && completed) continue;
+      if (!unlocked) return;
+      if (!showCompleted && completed) return;
 
-      const chainInfo = questChainLookup.get(quest.id);
-      const chainId = chainInfo?.chainId ?? standaloneChainId;
-      const groupId = segmentLookup.get(quest.id) ?? chainId;
-      const chainWeight = chainOrder.get(chainId) ?? Number.MAX_SAFE_INTEGER;
-      const group = ensureGroup(
-        groupId,
-        groups.get(groupId)?.name ?? chainInfo?.chainName ?? standaloneChainName,
-        weights.get(groupId) ?? { chainWeight, segmentIndex: Number.MAX_SAFE_INTEGER }
-      );
+      const vendor = vendorLabel(quest);
+      const group = groups.get(vendor) ?? {
+        id: vendor,
+        name: vendor,
+        quests: [],
+        trader: vendor
+      };
+
+      if (!groups.has(vendor)) {
+        const totals = vendorTotals.get(vendor);
+        group.totalQuests = totals?.totalQuests;
+        group.completedQuests = totals?.completedQuests;
+        vendorWeights.set(vendor, index);
+        groups.set(vendor, group);
+      }
 
       const requirements = quest.items.map((requirement) => `${requirement.qty}x ${itemName(requirement.itemId)}`);
       const objectives = quest.mapHints ?? [];
-      const stepLabel =
-        chainInfo?.index !== null && chainInfo?.index !== undefined ? `Step ${chainInfo.index + 1}` : null;
       const rewards = questRewards(quest.id);
 
       group.quests.push({
@@ -353,30 +309,13 @@
         completed,
         requirements,
         objectives,
-        rewards,
-        stepLabel
+        rewards
       });
-    }
-
-    const weight = (chainId: string) => chainOrder.get(chainId) ?? Number.MAX_SAFE_INTEGER;
-
-    const weightFor = (id: string) => weights.get(id) ?? { chainWeight: weight(id), segmentIndex: 0 };
+    });
 
     return [...groups.entries()]
-      .filter(([, group]) => {
-        const total = group.totalQuests ?? group.quests.length;
-        const completed =
-          group.completedQuests ?? group.quests.filter((quest) => quest.completed).length;
-        if (!showCompleted && total > 0 && completed >= total) return false;
-        return group.quests.length > 0;
-      })
-      .sort(([aId, a], [bId, b]) => {
-        const aWeight = weightFor(aId);
-        const bWeight = weightFor(bId);
-        if (aWeight.chainWeight !== bWeight.chainWeight) return aWeight.chainWeight - bWeight.chainWeight;
-        if (aWeight.segmentIndex !== bWeight.segmentIndex) return aWeight.segmentIndex - bWeight.segmentIndex;
-        return a.name.localeCompare(b.name);
-      })
+      .filter(([, group]) => group.quests.length > 0)
+      .sort(([aId], [bId]) => (vendorWeights.get(aId) ?? 0) - (vendorWeights.get(bId) ?? 0))
       .map(([, group]) => group);
   })();
 
