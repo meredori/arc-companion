@@ -32,6 +32,8 @@ The project is configured for SvelteKit with TypeScript, TailwindCSS, ESLint, Pr
 
 - `BASE_PATH` &mdash; Optional environment variable consumed by `svelte.config.js` to support GitHub
   Pages style deployments (e.g. `BASE_PATH=/project-name`). Local development ignores this value.
+  When adding links or redirects, build URLs with `$app/paths`’ `base` helper or derive targets from
+  `url.pathname` so navigation works both locally and when the site is served from a subdirectory.
 
 ## Project Structure
 
