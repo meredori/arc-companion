@@ -300,46 +300,25 @@
       return;
     }
 
-    const questsToKeepActive = new Set(selectedQuests);
-    const earliestSelectedByChain = new Map<string, number>();
-    const chainsWithUnknownStage = new Set<string>();
+    const questsToKeepIncomplete = new Set(selectedQuests);
 
     selectedQuests.forEach((questId) => {
       const info = questChainLookup.get(questId);
-      if (!info) return;
+      if (!info || info.index === null) return;
 
-      if (info.index === null) {
-        chainsWithUnknownStage.add(info.chainId);
-        return;
-      }
+      const chain = chainById.get(info.chainId);
+      const stages = chain?.stages ?? [];
+      const startIndex = stages.indexOf(questId);
 
-      const currentEarliest = earliestSelectedByChain.get(info.chainId);
-      const nextEarliest = currentEarliest === undefined ? info.index : Math.min(currentEarliest, info.index);
-      earliestSelectedByChain.set(info.chainId, nextEarliest);
-    });
+      if (startIndex === -1) return;
 
-    questDefs.forEach((quest) => {
-      const info = questChainLookup.get(quest.id);
-      if (!info || info.index === null) {
-        if (selectedQuests.has(quest.id)) questsToKeepActive.add(quest.id);
-        return;
-      }
-
-      if (chainsWithUnknownStage.has(info.chainId)) {
-        questsToKeepActive.add(quest.id);
-        return;
-      }
-
-      const earliestActiveStage = earliestSelectedByChain.get(info.chainId);
-      if (earliestActiveStage === undefined) return;
-
-      if (info.index >= earliestActiveStage) {
-        questsToKeepActive.add(quest.id);
+      for (let i = startIndex + 1; i < stages.length; i += 1) {
+        questsToKeepIncomplete.add(stages[i]);
       }
     });
 
     questDefs.forEach((quest) => {
-      quests.upsert({ id: quest.id, completed: !questsToKeepActive.has(quest.id) });
+      quests.upsert({ id: quest.id, completed: !questsToKeepIncomplete.has(quest.id) });
     });
 
     quickUpdateOpen = false;
