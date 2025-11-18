@@ -295,18 +295,24 @@
   );
 
   const applyQuickUpdate = () => {
-    const selected = [...selectedQuests];
-    if (selected.length === 0) {
+    if (selectedQuests.size === 0) {
       quickUpdateOpen = false;
       return;
     }
 
-    quickUpdatePrerequisites.forEach((id) => {
-      quests.upsert({ id, completed: true });
+    const questsToKeepActive = new Set(selectedQuests);
+
+    selectedQuests.forEach((questId) => {
+      const info = questChainLookup.get(questId);
+      if (!info || info.index === null) return;
+
+      const chain = chainById.get(info.chainId);
+      const stages = chain?.stages ?? [];
+      stages.slice(info.index + 1).forEach((id) => questsToKeepActive.add(id));
     });
 
-    selected.forEach((id) => {
-      quests.upsert({ id, completed: false });
+    questDefs.forEach((quest) => {
+      quests.upsert({ id: quest.id, completed: !questsToKeepActive.has(quest.id) });
     });
 
     quickUpdateOpen = false;
