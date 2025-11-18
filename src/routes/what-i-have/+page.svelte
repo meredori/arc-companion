@@ -101,8 +101,7 @@
     });
   });
 
-  let hideCompleted = false;
-  let collapseCompletedQuests = false;
+  let showCompleted = false;
 
   type SectionKey = 'quests' | 'workbench-upgrades' | 'expedition-projects' | 'blueprint-catalog';
 
@@ -116,29 +115,9 @@
   type QuestChainDisplay = QuestChainCard;
 
   let activeTab: SectionKey = sectionControls[0].id;
-  let collapsedSections: Record<SectionKey, boolean> = {
-    quests: false,
-    'workbench-upgrades': false,
-    'expedition-projects': false,
-    'blueprint-catalog': false
-  };
-
-  let jumpTarget: SectionKey | '' = '';
-
-  const toggleSectionVisibility = (id: SectionKey) => {
-    collapsedSections = { ...collapsedSections, [id]: !collapsedSections[id] };
-  };
-
   const scrollToTop = () => {
     if (typeof window === 'undefined') return;
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleJumpChange = (event: Event & { currentTarget: HTMLSelectElement }) => {
-    const value = event.currentTarget.value as SectionKey | '';
-    if (!value) return;
-    activeTab = value;
-    jumpTarget = '';
   };
 
   const toggleQuest = (event: CustomEvent<{ id: string }>) => {
@@ -326,7 +305,7 @@
   };
 
   $: filteredBenchGroups = currentBenchGroups.filter(
-    (group) => matchesWorkshopFilter(group, workshopFilter) && (!hideCompleted || !group.owned)
+    (group) => matchesWorkshopFilter(group, workshopFilter) && (showCompleted || !group.owned)
   );
 
   $: catalog = $blueprintCatalog;
@@ -448,7 +427,7 @@
       const completed = questCompletionSet.has(quest.id);
       const unlocked = isQuestUnlocked(quest.id) || completed;
       if (!unlocked) continue;
-      if (hideCompleted && completed) continue;
+      if (!showCompleted && completed) continue;
 
       const chainInfo = questChainLookup.get(quest.id);
       const chainId = chainInfo?.chainId ?? standaloneChainId;
@@ -486,7 +465,7 @@
         const total = group.totalQuests ?? group.quests.length;
         const completed =
           group.completedQuests ?? group.quests.filter((quest) => quest.completed).length;
-        if (collapseCompletedQuests && total > 0 && completed >= total) return false;
+        if (!showCompleted && total > 0 && completed >= total) return false;
         return group.quests.length > 0;
       })
       .sort(([aId, a], [bId, b]) => {
@@ -587,28 +566,11 @@
     <label class="inline-flex items-center gap-2">
       <input
         type="checkbox"
-        bind:checked={hideCompleted}
+        bind:checked={showCompleted}
         class="h-4 w-4 rounded border-slate-600 bg-slate-900 text-sky-400 focus:ring-sky-500"
       />
-      Hide completed entries
+      Show completed entries
     </label>
-  </div>
-
-  <div class="mb-6 flex flex-wrap items-center gap-3 text-sm text-slate-300">
-    <label for="jump-to-section" class="text-xs uppercase tracking-[0.3em] text-slate-400">
-      Jump to section
-    </label>
-    <select
-      id="jump-to-section"
-      class="min-w-[200px] rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white focus:border-sky-500 focus:outline-none"
-      bind:value={jumpTarget}
-      on:change={handleJumpChange}
-    >
-      <option value="">Select…</option>
-      {#each sectionControls as section}
-        <option value={section.id}>{section.label}</option>
-      {/each}
-    </select>
   </div>
 
   <InnerTabs tabs={sectionControls} bind:selected={activeTab} persistKey="what-i-have-tabs">
@@ -628,61 +590,29 @@
               Toggle quests as you finish them to keep tabs on outstanding objectives and required loot.
             </p>
           </div>
-          <button
-            type="button"
-            class="shrink-0 rounded-full border border-slate-700 px-3 py-1 text-[11px] uppercase tracking-widest text-slate-300 transition hover:border-slate-500"
-            on:click={() => toggleSectionVisibility('quests')}
-            aria-expanded={!collapsedSections.quests}
-            aria-controls="quests-content"
-          >
-            {collapsedSections.quests ? 'Show section' : 'Hide section'}
-          </button>
         </header>
-        {#if !collapsedSections.quests}
-          <div id="quests-content" class="space-y-4">
-            <div class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-800/70 bg-slate-950/60 px-4 py-3">
-              <div class="flex flex-wrap items-center gap-3 text-sm text-slate-200">
-                <span
-                  class="inline-flex items-center gap-2 rounded-full border border-slate-700/70 bg-slate-900/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide"
-                >
-                  <span class="h-2 w-2 rounded-full bg-emerald-400/80"></span>
-                  {questSummary.completed}/{questSummary.total} completed
-                </span>
-                <span class="text-[11px] uppercase tracking-[0.3em] text-slate-400">Quest progress overview</span>
-              </div>
-              <div class="flex flex-wrap items-center gap-3 text-xs text-slate-400">
-                <p class="text-left text-slate-400">
-                  Summary counts every quest in the database. Collapse completed hides finished steps below without affecting
-                  totals.
-                </p>
-                <button
-                  type="button"
-                  class={`rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-wide transition ${
-                    collapseCompletedQuests
-                      ? 'border-slate-600 bg-slate-800 text-slate-200 hover:border-slate-500'
-                      : 'border-slate-700 bg-slate-900 text-slate-300 hover:border-slate-600'
-                  }`}
-                  on:click={() => (collapseCompletedQuests = !collapseCompletedQuests)}
-                  aria-pressed={collapseCompletedQuests}
-                  aria-label={
-                    collapseCompletedQuests
-                      ? 'Show completed quests in the checklist'
-                      : 'Collapse completed quests in the checklist'
-                  }
-                >
-                  {collapseCompletedQuests ? 'Show completed quests' : 'Collapse completed quests'}
-                </button>
-              </div>
+        <div id="quests-content" class="space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-800/70 bg-slate-950/60 px-4 py-3">
+            <div class="flex flex-wrap items-center gap-3 text-sm text-slate-200">
+              <span
+                class="inline-flex items-center gap-2 rounded-full border border-slate-700/70 bg-slate-900/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide"
+              >
+                <span class="h-2 w-2 rounded-full bg-emerald-400/80"></span>
+                {questSummary.completed}/{questSummary.total} completed
+              </span>
+              <span class="text-[11px] uppercase tracking-[0.3em] text-slate-400">Quest progress overview</span>
             </div>
-            <div class="space-y-4">
-              <QuestChainCards
-                chains={questChainsForDisplay}
-                collapseCompleted={collapseCompletedQuests}
-                on:toggle={toggleQuest}
-              />
+            <div class="flex flex-wrap items-center gap-3 text-xs text-slate-400">
+              <p class="text-left text-slate-400">
+                Summary counts every quest in the database. Completed entries are hidden by default below but still counted
+                here.
+              </p>
             </div>
           </div>
-        {/if}
+          <div class="space-y-4">
+            <QuestChainCards chains={questChainsForDisplay} collapseCompleted={!showCompleted} on:toggle={toggleQuest} />
+          </div>
+        </div>
       </div>
 
       <div
@@ -701,18 +631,8 @@
               materials from keep or save recommendations.
             </p>
           </div>
-          <button
-            type="button"
-            class="shrink-0 rounded-full border border-slate-700 px-3 py-1 text-[11px] uppercase tracking-widest text-slate-300 transition hover:border-slate-500"
-            on:click={() => toggleSectionVisibility('workbench-upgrades')}
-            aria-expanded={!collapsedSections['workbench-upgrades']}
-            aria-controls="workbench-upgrades-content"
-          >
-            {collapsedSections['workbench-upgrades'] ? 'Show section' : 'Hide section'}
-          </button>
         </header>
-        {#if !collapsedSections['workbench-upgrades']}
-          <div id="workbench-upgrades-content" class="space-y-6">
+        <div id="workbench-upgrades-content" class="space-y-6">
             <SearchBar
               label="Find workbench or level"
               placeholder="Search benches, levels, or required items"
@@ -726,7 +646,7 @@
                 </div>
               {:else}
                 {#each filteredBenchGroups as bench}
-                  {#if bench.levels.filter((level) => !hideCompleted || !level.owned).length > 0}
+                  {#if bench.levels.filter((level) => showCompleted || !level.owned).length > 0}
                     <article class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
                       <header class="flex flex-wrap items-center justify-between gap-3">
                         <h3 class="text-xl font-semibold text-white">{bench.bench}</h3>
@@ -743,7 +663,7 @@
                         </button>
                       </header>
                       <div class="mt-4 space-y-4">
-                        {#each bench.levels.filter((level) => !hideCompleted || !level.owned) as level}
+                        {#each bench.levels.filter((level) => showCompleted || !level.owned) as level}
                           <div class="rounded-xl border border-slate-800/70 bg-slate-950/50 p-4">
                             <div class="flex flex-wrap items-center justify-between gap-3">
                               <p class="text-sm uppercase tracking-widest text-slate-400">Level {level.level}</p>
@@ -802,7 +722,6 @@
             </div>
             <TipsPanel heading="Workbench reminders" tips={workshopSummary.tips} />
           </div>
-        {/if}
       </div>
 
       <div
@@ -821,18 +740,8 @@
               reaches full contribution.
             </p>
           </div>
-          <button
-            type="button"
-            class="shrink-0 rounded-full border border-slate-700 px-3 py-1 text-[11px] uppercase tracking-widest text-slate-300 transition hover:border-slate-500"
-            on:click={() => toggleSectionVisibility('expedition-projects')}
-            aria-expanded={!collapsedSections['expedition-projects']}
-            aria-controls="expedition-projects-content"
-          >
-            {collapsedSections['expedition-projects'] ? 'Show section' : 'Hide section'}
-          </button>
         </header>
-        {#if !collapsedSections['expedition-projects']}
-          <div id="expedition-projects-content" class="space-y-6">
+        <div id="expedition-projects-content" class="space-y-6">
             {#if projects.length === 0}
               <div class="rounded-2xl border border-dashed border-slate-800/70 bg-slate-950/60 p-6 text-sm text-slate-400">
                 No expedition project data available yet. Paste the latest feed via the import scripts to see
@@ -841,7 +750,7 @@
             {:else}
               <div class="space-y-4">
                 {#each projects as project}
-                  {#if !hideCompleted || !projectCompleted($projectProgress, project)}
+                  {#if showCompleted || !projectCompleted($projectProgress, project)}
                     <article class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
                       <header class="flex flex-wrap items-center justify-between gap-3">
                         <div>
@@ -856,7 +765,7 @@
                       </header>
                       <div class="mt-4 space-y-3">
                         {#each project.phases as phase}
-                          {#if !hideCompleted || !phaseCompleted($projectProgress, project.id, phase)}
+                          {#if showCompleted || !phaseCompleted($projectProgress, project.id, phase)}
                             <div class="rounded-xl border border-slate-800/70 bg-slate-950/50 p-4 space-y-3">
                               <div class="flex flex-wrap items-center justify-between gap-3">
                                 <div>
@@ -885,7 +794,7 @@
                               </div>
                               <ul class="space-y-2 text-sm text-slate-300">
                                 {#each phase.requirements as requirement}
-                                  {#if !hideCompleted || deliveredAmount($projectProgress, project.id, phase.id, requirement.itemId) < requirement.qty}
+                                  {#if showCompleted || deliveredAmount($projectProgress, project.id, phase.id, requirement.itemId) < requirement.qty}
                                     <li class="flex flex-wrap items-center gap-3">
                                       <div class="flex-1">
                                         <p class="font-semibold text-white">{itemName(requirement.itemId)}</p>
@@ -920,9 +829,8 @@
                   {projectSummary.completedPhases} of {projectSummary.totalPhases} phases marked as complete.
                 </p>
               </div>
-            {/if}
-          </div>
-        {/if}
+              {/if}
+            </div>
       </div>
 
       <div
@@ -941,18 +849,8 @@
               flip individual schematics across every bench.
             </p>
           </div>
-          <button
-            type="button"
-            class="shrink-0 rounded-full border border-slate-700 px-3 py-1 text-[11px] uppercase tracking-widest text-slate-300 transition hover:border-slate-500"
-            on:click={() => toggleSectionVisibility('blueprint-catalog')}
-            aria-expanded={!collapsedSections['blueprint-catalog']}
-            aria-controls="blueprint-catalog-content"
-          >
-            {collapsedSections['blueprint-catalog'] ? 'Show section' : 'Hide section'}
-          </button>
         </header>
-        {#if !collapsedSections['blueprint-catalog']}
-          <div id="blueprint-catalog-content" class="space-y-6">
+        <div id="blueprint-catalog-content" class="space-y-6">
             <SearchBar
               label="Find blueprint"
               placeholder="Search by name, rarity, or slug"
@@ -995,9 +893,8 @@
                 {/each}
               {/if}
             </div>
-            <TipsPanel heading="Blueprint notes" tips={$blueprintSummary.tips} />
-          </div>
-        {/if}
+              <TipsPanel heading="Blueprint notes" tips={$blueprintSummary.tips} />
+            </div>
       </div>
     </svelte:fragment>
   </InnerTabs>
