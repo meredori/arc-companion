@@ -260,9 +260,17 @@
   $: questChainsForDisplay = (() => {
     const groups = new Map<string, QuestChainDisplay>();
     const vendorWeights = new Map<string, number>();
-    const vendorTotals = new Map<string, { totalQuests: number; completedQuests: number }>();
 
     const vendorLabel = (quest: typeof questDefs[number]) => quest.giver ?? 'Unknown vendor';
+    const vendorTotals = new Map<string, { totalQuests: number; completedQuests: number }>();
+
+    questDefs.forEach((quest) => {
+      const vendor = vendorLabel(quest);
+      const totals = vendorTotals.get(vendor) ?? { totalQuests: 0, completedQuests: 0 };
+      totals.totalQuests += 1;
+      if (questCompletionSet.has(quest.id)) totals.completedQuests += 1;
+      vendorTotals.set(vendor, totals);
+    });
 
     const orderedQuests = [...questDefs].sort((a, b) => compareQuestOrder(a.id, b.id));
     const availableQuests: (typeof questDefs[number])[] = [];
@@ -274,10 +282,6 @@
       if (!showCompleted && completed) return;
 
       const vendor = vendorLabel(quest);
-      const totals = vendorTotals.get(vendor) ?? { totalQuests: 0, completedQuests: 0 };
-      totals.totalQuests += 1;
-      if (completed) totals.completedQuests += 1;
-      vendorTotals.set(vendor, totals);
 
       if (!vendorWeights.has(vendor)) {
         vendorWeights.set(vendor, index);
