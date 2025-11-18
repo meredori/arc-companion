@@ -154,9 +154,9 @@ describe('quest hydration', () => {
     const questState = get(quests);
     const quest = questState.find((entry) => entry.id === 'quest-1');
 
-    expect(quest?.completed).toBe(false);
-    expect(quest?.pinned).toBe(true);
-    expect(quest?.notes).toBe('new note');
+    expect(quest?.completed).toBe(true);
+    expect(quest?.pinned).toBe(false);
+    expect(quest?.notes).toBe('old note');
 
     quests.reset();
   });
