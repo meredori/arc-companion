@@ -32,6 +32,8 @@ The project is configured for SvelteKit with TypeScript, TailwindCSS, ESLint, Pr
 
 - `BASE_PATH` &mdash; Optional environment variable consumed by `svelte.config.js` to support GitHub
   Pages style deployments (e.g. `BASE_PATH=/project-name`). Local development ignores this value.
+  When adding links or redirects, build URLs with `$app/paths`’ `base` helper or derive targets from
+  `url.pathname` so navigation works both locally and when the site is served from a subdirectory.
 
 ## Project Structure
 
@@ -45,13 +47,14 @@ The project is configured for SvelteKit with TypeScript, TailwindCSS, ESLint, Pr
 Key routes (`src/routes/`) now include:
 
 - `/what-to-do` — tokenized item recommendations that factor in quests, workbenches, and expedition projects.
-- `/what-i-have` — the inventory control center for quest completion, workbench upgrades, blueprint ownership, and expedition project contributions.
+- `/what-i-have` — the inventory control center for quest completion, workbench upgrades, and expedition project contributions.
 - `/track` — streamlined quest + upgrade checklist (legacy view).
-- `/blueprints` — focused blueprint ownership manager.
 - `/run` / `/runs` — live run logger + historical dashboard.
 
 
 Each section is wired to the shared stores so toggling a quest, bench, or project immediately influences the What To Do page.
+
+> **Prerendering note:** Hash links in prerendered pages must point to elements that actually exist (e.g. `/what-to-do` links to section IDs on `/what-i-have`). When you remove or rename a section, update any cross-page anchors at the same time to avoid prerender failures like “no element with id=… exists.”
 
 ## Workshop Upgrade Data
 

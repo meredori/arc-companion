@@ -7,14 +7,8 @@
   import { derived } from 'svelte/store';
   import { onDestroy, onMount } from 'svelte';
   import { InnerTabs, QuestChainCards, SearchBar, TipsPanel, type QuestChainCard } from '$lib/components';
-  import {
-    blueprints,
-    hydrateFromCanonical,
-    projectProgress,
-    quests,
-    workbenchUpgrades
-  } from '$lib/stores/app';
-  import { tipsForBlueprints, tipsForWorkshop } from '$lib/tips';
+  import { hydrateFromCanonical, projectProgress, quests, workbenchUpgrades } from '$lib/stores/app';
+  import { tipsForWorkshop } from '$lib/tips';
   import { createQuestOrderComparator } from '$lib/utils/quest-order';
   import type {
     ItemRecord,
@@ -38,7 +32,6 @@
   const items: ItemRecord[] = data.items ?? [];
   const projects: Project[] = data.projects ?? [];
   const chains: QuestChain[] = data.chains ?? [];
-  const blueprintRecords: ItemRecord[] = data.blueprints ?? [];
 
   let showReturnToTop = false;
 
@@ -55,15 +48,6 @@
         name: upgrade.name,
         bench: upgrade.bench,
         level: upgrade.level,
-        owned: false
-      })),
-      blueprints: blueprintRecords.map((blueprint) => ({
-        id: blueprint.id,
-        name: blueprint.name,
-        slug: blueprint.slug,
-        rarity: blueprint.rarity ?? null,
-        category: blueprint.category ?? null,
-        imageUrl: blueprint.imageUrl ?? null,
         owned: false
       }))
     });
@@ -103,13 +87,12 @@
 
   let showCompleted = false;
 
-  type SectionKey = 'quests' | 'workbench-upgrades' | 'expedition-projects' | 'blueprint-catalog';
+  type SectionKey = 'quests' | 'workbench-upgrades' | 'expedition-projects';
 
   const sectionControls: { id: SectionKey; label: string }[] = [
     { id: 'quests', label: 'Quest checklist' },
     { id: 'workbench-upgrades', label: 'Workbench upgrades' },
-    { id: 'expedition-projects', label: 'Expedition projects' },
-    { id: 'blueprint-catalog', label: 'Blueprint catalog' }
+    { id: 'expedition-projects', label: 'Expedition projects' }
   ];
 
   type QuestChainDisplay = QuestChainCard;
@@ -221,76 +204,7 @@
     bench.levels.forEach((level) => level.entries.forEach((entry) => setWorkbenchOwnership(entry, next)));
   };
 
-  type BlueprintEntry = {
-    record: ItemRecord;
-    state: {
-      id: string;
-      owned: boolean;
-      name?: string;
-      slug?: string;
-      rarity?: string | null;
-      category?: string | null;
-      imageUrl?: string | null;
-    };
-  };
-
-  const blueprintEntries = derived(blueprints, ($blueprints) => {
-    const map = new Map($blueprints.map((entry) => [entry.id, entry]));
-    return blueprintRecords.map<BlueprintEntry>((record) => {
-      const state =
-        map.get(record.id) ??
-        ({
-          id: record.id,
-          owned: false,
-          name: record.name,
-          slug: record.slug,
-          rarity: record.rarity ?? null,
-          category: record.category ?? null,
-          imageUrl: record.imageUrl ?? null
-        } as const);
-      return { record, state };
-    });
-  });
-
-  const blueprintCatalog = derived(blueprintEntries, ($entries) =>
-    $entries.map((entry) => ({
-      entry,
-      id: entry.record.id,
-      name: entry.record.name,
-      slug: entry.record.slug,
-      rarity: entry.record.rarity,
-      sell: entry.record.sell,
-      category: entry.record.category,
-      owned: entry.state.owned,
-      imageUrl: entry.record.imageUrl ?? null,
-      notes: entry.record.notes ?? null
-    }))
-  );
-
-  const setBlueprintOwnership = (entry: BlueprintEntry, owned: boolean) =>
-    blueprints.upsert({
-      id: entry.record.id,
-      name: entry.record.name,
-      slug: entry.record.slug,
-      rarity: entry.record.rarity ?? null,
-      category: entry.record.category ?? null,
-      imageUrl: entry.record.imageUrl ?? null,
-      owned
-    });
-
-  const toggleBlueprint = (entry: BlueprintEntry) => setBlueprintOwnership(entry, !entry.state.owned);
-
-  const blueprintSummary = derived(blueprints, ($blueprints) => {
-    const owned = $blueprints.filter((bp) => bp.owned).length;
-    return {
-      owned,
-      total: blueprintRecords.length,
-      tips: tipsForBlueprints(owned, blueprintRecords.length)
-    };
-  });
-
   let workshopFilter = '';
-  let blueprintQuery = '';
 
   $: currentBenchGroups = $benchGroups;
   const matchesWorkshopFilter = (group: BenchGroup, term: string) => {
@@ -307,18 +221,6 @@
   $: filteredBenchGroups = currentBenchGroups.filter(
     (group) => matchesWorkshopFilter(group, workshopFilter) && (showCompleted || !group.owned)
   );
-
-  $: catalog = $blueprintCatalog;
-  $: filteredBlueprints = catalog.filter((entry) => {
-    if (!blueprintQuery.trim()) return true;
-    const term = blueprintQuery.toLowerCase();
-    return (
-      entry.name.toLowerCase().includes(term) ||
-      (entry.slug ?? '').toLowerCase().includes(term) ||
-      (entry.rarity ?? '').toLowerCase().includes(term) ||
-      (entry.category ?? '').toLowerCase().includes(term)
-    );
-  });
 
   $: questCompletionSet = new Set($quests.filter((entry) => entry.completed).map((entry) => entry.id));
 
@@ -833,69 +735,6 @@
             </div>
       </div>
 
-      <div
-        id="blueprint-catalog"
-        role="tabpanel"
-        aria-labelledby="blueprint-catalog-tab"
-        aria-hidden={activeId !== 'blueprint-catalog'}
-        hidden={activeId !== 'blueprint-catalog'}
-        class="section-card space-y-6"
-      >
-        <header class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div class="space-y-2">
-            <h2 class="text-2xl font-semibold text-white">Blueprint catalog</h2>
-            <p class="text-sm text-slate-400">
-              Ownership toggles mirror the workbench section above, but you can use this list to quickly
-              flip individual schematics across every bench.
-            </p>
-          </div>
-        </header>
-        <div id="blueprint-catalog-content" class="space-y-6">
-            <SearchBar
-              label="Find blueprint"
-              placeholder="Search by name, rarity, or slug"
-              value={blueprintQuery}
-              on:input={({ detail }) => (blueprintQuery = detail.value)}
-            />
-            <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {#if filteredBlueprints.length === 0}
-                <div class="sm:col-span-2 lg:col-span-3 rounded-2xl border border-dashed border-slate-800/70 bg-slate-950/60 p-6 text-sm text-slate-400">
-                  No blueprints match “{blueprintQuery}”.
-                </div>
-              {:else}
-                {#each filteredBlueprints as blueprint}
-                  <button
-                    type="button"
-                    class={`rounded-2xl border px-4 py-3 text-left text-sm transition ${
-                      blueprint.owned
-                        ? 'border-emerald-500/50 bg-emerald-500/10 text-white'
-                        : 'border-slate-800 bg-slate-900/50 text-slate-300 hover:border-slate-600'
-                    }`}
-                    on:click={() => toggleBlueprint(blueprint.entry)}
-                  >
-                    <p class="text-base font-semibold">{blueprint.name}</p>
-                    <p class="text-xs uppercase tracking-widest text-slate-400">
-                      {(blueprint.rarity ?? 'Unknown rarity')} · {(blueprint.category ?? 'Blueprint')}
-                    </p>
-                    <p class="mt-1 text-xs text-slate-400">
-                      {blueprint.slug}
-                      {#if typeof blueprint.sell === 'number'}
-                        · Sell {blueprint.sell.toLocaleString()} coins
-                      {/if}
-                    </p>
-                    {#if blueprint.notes}
-                      <p class="mt-2 text-xs text-slate-400">{blueprint.notes}</p>
-                    {/if}
-                    <p class="mt-3 text-[11px] uppercase tracking-widest">
-                      {blueprint.owned ? 'Owned' : 'Not owned'}
-                    </p>
-                  </button>
-                {/each}
-              {/if}
-            </div>
-              <TipsPanel heading="Blueprint notes" tips={$blueprintSummary.tips} />
-            </div>
-      </div>
     </svelte:fragment>
   </InnerTabs>
 

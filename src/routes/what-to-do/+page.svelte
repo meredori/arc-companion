@@ -34,8 +34,7 @@
   const whatIHaveTabs = [
     { id: 'quests', label: 'Quest checklist' },
     { id: 'workbench-upgrades', label: 'Workbench upgrades' },
-    { id: 'expedition-projects', label: 'Expedition projects' },
-    { id: 'blueprint-catalog', label: 'Blueprint catalog' }
+    { id: 'expedition-projects', label: 'Expedition projects' }
   ];
 
   const withBase = (href: string) => (base ? `${base}${href}` : href);
