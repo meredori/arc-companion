@@ -97,6 +97,15 @@ const ITEMS: ItemRecord[] = [
     salvagesInto: [],
   },
   {
+    id: 'item-sniper-epic',
+    name: 'Longsight Sniper',
+    slug: 'longsight-sniper',
+    category: 'Sniper Rifle',
+    rarity: 'Epic Weapon',
+    sell: 115,
+    salvagesInto: [],
+  },
+  {
     id: 'item-lmg-uncommon',
     name: 'Tempest LMG',
     slug: 'tempest-lmg',
@@ -121,6 +130,15 @@ const ITEMS: ItemRecord[] = [
     category: 'Assault Rifle',
     rarity: 'Common Weapon',
     sell: 90,
+    salvagesInto: [],
+  },
+  {
+    id: 'item-special-rare',
+    name: 'Hullcracker',
+    slug: 'hullcracker',
+    category: 'Special',
+    rarity: 'Rare Weapon',
+    sell: 130,
     salvagesInto: [],
   },
   {
@@ -398,14 +416,23 @@ const context = buildRecommendationContext({
     const results = recommendItemsMatching('', context);
     const modIndex = results.findIndex((entry) => entry.category === 'Modification');
     const weaponGroup = results.filter((entry) =>
-      ['Weapon', 'Shotgun', 'Pistol', 'LMG', 'Hand Cannon', 'Assault Rifle'].includes(
-        entry.category ?? ''
-      )
+      [
+        'Weapon',
+        'Shotgun',
+        'Pistol',
+        'LMG',
+        'Hand Cannon',
+        'Assault Rifle',
+        'Sniper Rifle',
+        'Special'
+      ].includes(entry.category ?? '')
     );
-    expect(weaponGroup).toHaveLength(6);
+    expect(weaponGroup).toHaveLength(8);
     expect(weaponGroup.map((entry) => entry.name)).toEqual([
       'Nova Cannon',
       'Cyclone Shotgun',
+      'Longsight Sniper',
+      'Hullcracker',
       'Warden Pistol',
       'Parallax Hand Cannon',
       'Tempest LMG',

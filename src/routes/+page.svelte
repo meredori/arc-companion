@@ -55,6 +55,11 @@
       href: '/run',
       title: 'Run Analyzer',
       description: 'Live run logging with contextual tips and telemetry overlays.'
+    },
+    {
+      href: '/about',
+      title: 'About & Attribution',
+      description: 'Copyright, data credits, and tools to clear your saved ARC Companion data.'
     }
   ];
 

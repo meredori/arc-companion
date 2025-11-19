@@ -26,7 +26,17 @@ import {
 const CATEGORY_PRIORITY_GROUPS: string[][] = [
   ['Augment'],
   ['Shield'],
-  ['Weapon', 'Assault Rifle', 'Battle Rifle', 'Hand Cannon', 'LMG', 'Pistol', 'Shotgun'],
+  [
+    'Weapon',
+    'Assault Rifle',
+    'Battle Rifle',
+    'Hand Cannon',
+    'LMG',
+    'Pistol',
+    'Shotgun',
+    'Sniper Rifle',
+    'Special'
+  ],
   ['Ammunition'],
   ['Modification'],
   ['Quick Use'],
