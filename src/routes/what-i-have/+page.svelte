@@ -92,13 +92,19 @@
     if (!quest.chainId) return;
     const chain = chainById.get(quest.chainId);
     const chainName = chain?.name ?? quest.chainId;
-    const stage = quest.chainStage ?? (chain?.stages?.indexOf(quest.id) ?? -1);
-    const index = stage >= 0 ? stage : null;
+    const index = quest.chainStage ?? null;
     questChainLookup.set(quest.id, {
       chainId: quest.chainId,
       chainName,
       index
     });
+  });
+
+  const previousQuestIdsByQuest = new Map<string, string[]>();
+  const nextQuestIdsByQuest = new Map<string, string[]>();
+  questDefs.forEach((quest) => {
+    previousQuestIdsByQuest.set(quest.id, Array.isArray(quest.previousQuestIds) ? quest.previousQuestIds : []);
+    nextQuestIdsByQuest.set(quest.id, Array.isArray(quest.nextQuestIds) ? quest.nextQuestIds : []);
   });
 
   let showCompleted = false;
@@ -303,7 +309,6 @@
       tips: tipsForBlueprints(owned, blueprintRecords.length)
     };
   });
-
   let workshopFilter = '';
   let blueprintQuery = '';
 
@@ -338,17 +343,96 @@
   $: questCompletionSet = new Set($quests.filter((entry) => entry.completed).map((entry) => entry.id));
 
   const isQuestUnlocked = (questId: string) => {
-    const info = questChainLookup.get(questId);
-    if (!info) return true;
-    const chain = chainById.get(info.chainId);
-    const stages = chain?.stages ?? [];
-    return stages.slice(0, info.index).every((id) => questCompletionSet.has(id));
+    const previous = previousQuestIdsByQuest.get(questId) ?? [];
+    return previous.every((id) => questCompletionSet.has(id));
   };
 
   const compareQuestOrder = createQuestOrderComparator(chainOrder, questChainLookup, questById);
 
-  const standaloneChainId = '__standalone__';
-  const standaloneChainName = 'Standalone quests';
+  let quickUpdateOpen = false;
+  let quickUpdateFilter = '';
+  let selectedQuests = new Set<string>();
+
+  $: questOptions = [...questDefs].sort((a, b) => compareQuestOrder(a.id, b.id));
+  $: filteredQuestOptions = questOptions.filter((quest) =>
+    quest.name.toLowerCase().includes(quickUpdateFilter.trim().toLowerCase())
+  );
+
+  const resetQuickUpdate = () => {
+    quickUpdateFilter = '';
+    selectedQuests = new Set();
+  };
+
+  const openQuickUpdate = () => {
+    resetQuickUpdate();
+    quickUpdateOpen = true;
+  };
+
+  const closeQuickUpdate = () => {
+    quickUpdateOpen = false;
+  };
+
+  const toggleQuickUpdateSelection = (id: string) => {
+    const next = new Set(selectedQuests);
+    if (next.has(id)) {
+      next.delete(id);
+    } else {
+      next.add(id);
+    }
+    selectedQuests = next;
+  };
+
+  const chainLabel = (questId: string) => {
+    const info = questChainLookup.get(questId);
+    if (!info) return 'Standalone quest';
+    const stage = info.index !== null ? `Stage ${info.index + 1}` : null;
+    return stage ? `${info.chainName} · ${stage}` : info.chainName;
+  };
+
+  const prerequisiteIdsFor = (questId: string) => {
+    return previousQuestIdsByQuest.get(questId) ?? [];
+  };
+
+  $: quickUpdatePrerequisites = (() => {
+    const needed = new Set<string>();
+    selectedQuests.forEach((questId) => {
+      prerequisiteIdsFor(questId).forEach((id) => needed.add(id));
+    });
+    return needed;
+  })();
+
+  $: missingPrerequisites = [...quickUpdatePrerequisites].filter(
+    (id) => !questCompletionSet.has(id) && !selectedQuests.has(id)
+  );
+
+  const applyQuickUpdate = () => {
+    if (selectedQuests.size === 0) {
+      quickUpdateOpen = false;
+      return;
+    }
+
+    const questsToKeepIncomplete = new Set(selectedQuests);
+
+    const collectDownstream = (questId: string) => {
+      const queue = [...(nextQuestIdsByQuest.get(questId) ?? [])];
+      const visited = new Set<string>();
+      while (queue.length > 0) {
+        const current = queue.shift();
+        if (!current || visited.has(current)) continue;
+        visited.add(current);
+        questsToKeepIncomplete.add(current);
+        (nextQuestIdsByQuest.get(current) ?? []).forEach((nextId) => queue.push(nextId));
+      }
+    };
+
+    selectedQuests.forEach((questId) => collectDownstream(questId));
+
+    questDefs.forEach((quest) => {
+      quests.upsert({ id: quest.id, completed: !questsToKeepIncomplete.has(quest.id) });
+    });
+
+    quickUpdateOpen = false;
+  };
 
   const rewardLabel = (reward: QuestReward) => {
     if (!reward) return null;
@@ -375,89 +459,56 @@
 
   $: questChainsForDisplay = (() => {
     const groups = new Map<string, QuestChainDisplay>();
-    const weights = new Map<string, { chainWeight: number; segmentIndex: number }>();
-    const segmentLookup = new Map<string, string>();
+    const vendorWeights = new Map<string, number>();
 
-    const ensureGroup = (
-      id: string,
-      name: string,
-      order?: { chainWeight: number; segmentIndex: number }
-    ) => {
-      if (!groups.has(id)) {
-        groups.set(id, { id, name, quests: [] });
-      }
-      if (order) {
-        weights.set(id, order);
-      }
-      return groups.get(id)!;
-    };
+    const vendorLabel = (quest: typeof questDefs[number]) => quest.giver ?? 'Unknown vendor';
+    const vendorTotals = new Map<string, { totalQuests: number; completedQuests: number }>();
 
-    chains.forEach((chain) => {
-      const stages = chain.stages ?? [];
-      let trader: string | null | undefined = undefined;
-      let segment: string[] = [];
-      let segmentIndex = 0;
-      const chainWeight = chainOrder.get(chain.id) ?? Number.MAX_SAFE_INTEGER;
-
-      const pushSegment = () => {
-        if (segment.length === 0) return;
-        const id = `${chain.id}::${segmentIndex}`;
-        const traderLabel = trader ?? 'Unknown trader';
-        const name = trader ? traderLabel : chain.name;
-        const group = ensureGroup(id, name, { chainWeight, segmentIndex });
-        group.totalQuests = segment.length;
-        group.completedQuests = segment.filter((questId) => questCompletionSet.has(questId)).length;
-        group.trader = trader ?? null;
-        segment.forEach((questId) => segmentLookup.set(questId, id));
-        segment = [];
-        segmentIndex += 1;
-      };
-
-      for (const questId of stages) {
-        const quest = questById.get(questId);
-        const questTrader = quest?.giver ?? null;
-        if (segment.length === 0) {
-          trader = questTrader;
-        } else if (questTrader !== trader) {
-          pushSegment();
-          trader = questTrader;
-        }
-        segment.push(questId);
-      }
-
-      pushSegment();
+    questDefs.forEach((quest) => {
+      const vendor = vendorLabel(quest);
+      const totals = vendorTotals.get(vendor) ?? { totalQuests: 0, completedQuests: 0 };
+      totals.totalQuests += 1;
+      if (questCompletionSet.has(quest.id)) totals.completedQuests += 1;
+      vendorTotals.set(vendor, totals);
     });
-
-    const standaloneIds = questDefs.filter((quest) => !quest.chainId).map((quest) => quest.id);
-    const standaloneGroup = ensureGroup(standaloneChainId, standaloneChainName, {
-      chainWeight: Number.MAX_SAFE_INTEGER,
-      segmentIndex: Number.MAX_SAFE_INTEGER
-    });
-    standaloneGroup.totalQuests = standaloneIds.length;
-    standaloneGroup.completedQuests = standaloneIds.filter((id) => questCompletionSet.has(id)).length;
 
     const orderedQuests = [...questDefs].sort((a, b) => compareQuestOrder(a.id, b.id));
+    const availableQuests: (typeof questDefs[number])[] = [];
 
-    for (const quest of orderedQuests) {
+    orderedQuests.forEach((quest, index) => {
       const completed = questCompletionSet.has(quest.id);
       const unlocked = isQuestUnlocked(quest.id) || completed;
-      if (!unlocked) continue;
-      if (!showCompleted && completed) continue;
+      if (!unlocked) return;
+      if (!showCompleted && completed) return;
 
-      const chainInfo = questChainLookup.get(quest.id);
-      const chainId = chainInfo?.chainId ?? standaloneChainId;
-      const groupId = segmentLookup.get(quest.id) ?? chainId;
-      const chainWeight = chainOrder.get(chainId) ?? Number.MAX_SAFE_INTEGER;
-      const group = ensureGroup(
-        groupId,
-        groups.get(groupId)?.name ?? chainInfo?.chainName ?? standaloneChainName,
-        weights.get(groupId) ?? { chainWeight, segmentIndex: Number.MAX_SAFE_INTEGER }
-      );
+      const vendor = vendorLabel(quest);
 
+      if (!vendorWeights.has(vendor)) {
+        vendorWeights.set(vendor, index);
+      }
+
+      availableQuests.push(quest);
+    });
+
+    availableQuests.forEach((quest) => {
+      const vendor = vendorLabel(quest);
+      const group = groups.get(vendor) ?? {
+        id: vendor,
+        name: vendor,
+        quests: [],
+        trader: vendor
+      };
+
+      if (!groups.has(vendor)) {
+        const totals = vendorTotals.get(vendor);
+        group.totalQuests = totals?.totalQuests;
+        group.completedQuests = totals?.completedQuests;
+        groups.set(vendor, group);
+      }
+
+      const completed = questCompletionSet.has(quest.id);
       const requirements = quest.items.map((requirement) => `${requirement.qty}x ${itemName(requirement.itemId)}`);
       const objectives = quest.mapHints ?? [];
-      const stepLabel =
-        chainInfo?.index !== null && chainInfo?.index !== undefined ? `Step ${chainInfo.index + 1}` : null;
       const rewards = questRewards(quest.id);
 
       group.quests.push({
@@ -466,30 +517,13 @@
         completed,
         requirements,
         objectives,
-        rewards,
-        stepLabel
+        rewards
       });
-    }
-
-    const weight = (chainId: string) => chainOrder.get(chainId) ?? Number.MAX_SAFE_INTEGER;
-
-    const weightFor = (id: string) => weights.get(id) ?? { chainWeight: weight(id), segmentIndex: 0 };
+    });
 
     return [...groups.entries()]
-      .filter(([, group]) => {
-        const total = group.totalQuests ?? group.quests.length;
-        const completed =
-          group.completedQuests ?? group.quests.filter((quest) => quest.completed).length;
-        if (!showCompleted && total > 0 && completed >= total) return false;
-        return group.quests.length > 0;
-      })
-      .sort(([aId, a], [bId, b]) => {
-        const aWeight = weightFor(aId);
-        const bWeight = weightFor(bId);
-        if (aWeight.chainWeight !== bWeight.chainWeight) return aWeight.chainWeight - bWeight.chainWeight;
-        if (aWeight.segmentIndex !== bWeight.segmentIndex) return aWeight.segmentIndex - bWeight.segmentIndex;
-        return a.name.localeCompare(b.name);
-      })
+      .filter(([, group]) => group.quests.length > 0)
+      .sort(([aId], [bId]) => (vendorWeights.get(aId) ?? 0) - (vendorWeights.get(bId) ?? 0))
       .map(([, group]) => group);
   })();
 
@@ -605,6 +639,13 @@
               Toggle quests as you finish them to keep tabs on outstanding objectives and required loot.
             </p>
           </div>
+          <button
+            type="button"
+            class="inline-flex items-center gap-2 rounded-full border border-sky-500/40 bg-sky-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-sky-100 transition hover:border-sky-400 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+            on:click={openQuickUpdate}
+          >
+            Quick update
+          </button>
         </header>
         <div id="quests-content" class="space-y-4">
           <div class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-800/70 bg-slate-950/60 px-4 py-3">
@@ -866,56 +907,175 @@
           </div>
         </header>
         <div id="blueprint-catalog-content" class="space-y-6">
-            <SearchBar
-              label="Find blueprint"
-              placeholder="Search by name, rarity, or slug"
-              value={blueprintQuery}
-              on:input={({ detail }) => (blueprintQuery = detail.value)}
-            />
-            <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {#if filteredBlueprints.length === 0}
-                <div class="sm:col-span-2 lg:col-span-3 rounded-2xl border border-dashed border-slate-800/70 bg-slate-950/60 p-6 text-sm text-slate-400">
-                  No blueprints match “{blueprintQuery}”.
-                </div>
-              {:else}
-                {#each filteredBlueprints as blueprint}
-                  <button
-                    id={blueprint.anchorId}
-                    type="button"
-                    class={`rounded-2xl border px-4 py-3 text-left text-sm transition ${
-                      blueprint.owned
-                        ? 'border-emerald-500/50 bg-emerald-500/10 text-white'
-                        : 'border-slate-800 bg-slate-900/50 text-slate-300 hover:border-slate-600'
-                    }`}
-                    on:click={() => toggleBlueprint(blueprint.entry)}
-                  >
-                    <p class="text-base font-semibold">{blueprint.name}</p>
-                    <p class="text-xs uppercase tracking-widest text-slate-400">
-                      {(blueprint.rarity ?? 'Unknown rarity')} · {(blueprint.category ?? 'Blueprint')}
-                    </p>
-                    <p class="mt-1 text-xs text-slate-400">
-                      {blueprint.slug}
-                      {#if typeof blueprint.sell === 'number'}
-                        · Sell {blueprint.sell.toLocaleString()} coins
-                      {/if}
-                    </p>
-                    {#if blueprint.notes}
-                      <p class="mt-2 text-xs text-slate-400">{blueprint.notes}</p>
+          <SearchBar
+            label="Find blueprint"
+            placeholder="Search by name, rarity, or slug"
+            value={blueprintQuery}
+            on:input={({ detail }) => (blueprintQuery = detail.value)}
+          />
+          <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {#if filteredBlueprints.length === 0}
+              <div class="sm:col-span-2 lg:col-span-3 rounded-2xl border border-dashed border-slate-800/70 bg-slate-950/60 p-6 text-sm text-slate-400">
+                No blueprints match “{blueprintQuery}”.
+              </div>
+            {:else}
+              {#each filteredBlueprints as blueprint}
+                <button
+                  id={blueprint.anchorId}
+                  type="button"
+                  class={`rounded-2xl border px-4 py-3 text-left text-sm transition ${
+                    blueprint.owned
+                      ? 'border-emerald-500/50 bg-emerald-500/10 text-white'
+                      : 'border-slate-800 bg-slate-900/50 text-slate-300 hover:border-slate-600'
+                  }`}
+                  on:click={() => toggleBlueprint(blueprint.entry)}
+                >
+                  <p class="text-base font-semibold">{blueprint.name}</p>
+                  <p class="text-xs uppercase tracking-widest text-slate-400">
+                    {(blueprint.rarity ?? 'Unknown rarity')} · {(blueprint.category ?? 'Blueprint')}
+                  </p>
+                  <p class="mt-1 text-xs text-slate-400">
+                    {blueprint.slug}
+                    {#if typeof blueprint.sell === 'number'}
+                      · Sell {blueprint.sell.toLocaleString()} coins
                     {/if}
-                    <p class="mt-3 text-[11px] uppercase tracking-widest">
-                      {blueprint.owned ? 'Owned' : 'Not owned'}
-                    </p>
-                  </button>
-                {/each}
-              {/if}
-            </div>
-              <TipsPanel heading="Blueprint notes" tips={$blueprintSummary.tips} />
-            </div>
+                  </p>
+                  {#if blueprint.notes}
+                    <p class="mt-2 text-xs text-slate-400">{blueprint.notes}</p>
+                  {/if}
+                  <p class="mt-3 text-[11px] uppercase tracking-widest">
+                    {blueprint.owned ? 'Owned' : 'Not owned'}
+                  </p>
+                </button>
+              {/each}
+            {/if}
+          </div>
+          <TipsPanel heading="Blueprint notes" tips={$blueprintSummary.tips} />
+        </div>
       </div>
     </svelte:fragment>
   </InnerTabs>
 
 </section>
+{#if quickUpdateOpen}
+  <div
+    class="fixed inset-0 z-50 flex items-start justify-center bg-slate-950/80 px-4 py-10 backdrop-blur"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Quick quest update"
+  >
+    <div class="w-full max-w-3xl rounded-2xl border border-slate-800 bg-slate-900/95 shadow-2xl">
+      <header class="flex items-start justify-between gap-4 border-b border-slate-800/80 px-6 py-4">
+        <div class="space-y-1">
+          <p class="text-[11px] uppercase tracking-[0.3em] text-slate-400">Quest checklist</p>
+          <h3 class="text-xl font-semibold text-white">Quick update</h3>
+          <p class="text-sm text-slate-400">
+            Pick quests you still need. Earlier stages will be marked complete automatically so the checklist stays
+            consistent.
+          </p>
+        </div>
+        <button
+          type="button"
+          class="rounded-full border border-slate-700 px-3 py-1 text-xs uppercase tracking-widest text-slate-300 hover:border-slate-500"
+          on:click={closeQuickUpdate}
+        >
+          Close
+        </button>
+      </header>
+      <div class="space-y-5 px-6 py-5">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <label class="flex flex-1 items-center gap-3 rounded-xl border border-slate-800 bg-slate-950/60 px-3 py-2 text-sm text-slate-200">
+            <span class="text-slate-400">Filter quests</span>
+            <input
+              class="w-full rounded-lg border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-white focus:border-sky-500 focus:outline-none"
+              type="text"
+              placeholder="Search by name"
+              bind:value={quickUpdateFilter}
+            />
+          </label>
+          <div class="flex items-center gap-2 text-xs text-slate-400">
+            <span class="rounded-full bg-slate-800/70 px-3 py-1 font-semibold uppercase tracking-wide text-slate-200">
+              {selectedQuests.size} selected
+            </span>
+            {#if missingPrerequisites.length > 0}
+              <span class="rounded-full bg-amber-500/10 px-3 py-1 font-semibold uppercase tracking-wide text-amber-200">
+                {missingPrerequisites.length} prerequisites will be completed
+              </span>
+            {:else if quickUpdatePrerequisites.size > 0}
+              <span class="rounded-full bg-emerald-500/10 px-3 py-1 font-semibold uppercase tracking-wide text-emerald-200">
+                Prerequisites already complete
+              </span>
+            {/if}
+          </div>
+        </div>
+        <div class="max-h-[60vh] space-y-3 overflow-y-auto pr-2">
+          {#if filteredQuestOptions.length === 0}
+            <p class="rounded-xl border border-dashed border-slate-800/70 bg-slate-950/60 px-4 py-5 text-sm text-slate-400">
+              No quests match “{quickUpdateFilter}”. Try another name.
+            </p>
+          {:else}
+            {#each filteredQuestOptions as quest}
+              <label
+                class={`flex cursor-pointer items-start gap-3 rounded-xl border px-4 py-3 transition ${
+                  selectedQuests.has(quest.id)
+                    ? 'border-sky-500/60 bg-sky-500/5'
+                    : 'border-slate-800/80 bg-slate-950/60 hover:border-slate-700'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  class="mt-1 h-4 w-4 rounded border-slate-700 bg-slate-900 text-sky-400 focus:ring-sky-500"
+                  checked={selectedQuests.has(quest.id)}
+                  on:change={() => toggleQuickUpdateSelection(quest.id)}
+                />
+                <div class="flex-1 space-y-1">
+                  <p class="text-sm font-semibold text-white">{quest.name}</p>
+                  <p class="text-[11px] uppercase tracking-widest text-slate-500">{chainLabel(quest.id)}</p>
+                  <p class={`text-xs ${isQuestUnlocked(quest.id) ? 'text-emerald-300' : 'text-amber-200'}`}>
+                    {isQuestUnlocked(quest.id) ? 'Ready to do now' : 'Prerequisites required'}
+                  </p>
+                </div>
+                {#if questCompletionSet.has(quest.id)}
+                  <span class="rounded-full bg-emerald-500/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-200">
+                    Completed
+                  </span>
+                {/if}
+              </label>
+            {/each}
+          {/if}
+        </div>
+        <div class="flex flex-wrap items-center justify-end gap-3 border-t border-slate-800/70 pt-4">
+          <button
+            type="button"
+            class="rounded-full border border-slate-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-slate-200 hover:border-slate-500"
+            on:click={() => {
+              resetQuickUpdate();
+            }}
+          >
+            Clear selection
+          </button>
+          <div class="flex flex-wrap gap-2">
+            <button
+              type="button"
+              class="rounded-full border border-slate-700 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-slate-200 hover:border-slate-500"
+              on:click={closeQuickUpdate}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="rounded-full border border-emerald-400/60 bg-emerald-500/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-emerald-100 transition hover:border-emerald-400 hover:bg-emerald-500/20"
+              on:click={applyQuickUpdate}
+              disabled={selectedQuests.size === 0}
+            >
+              Apply changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{/if}
 {#if showReturnToTop}
   <button
     type="button"
