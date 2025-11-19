@@ -14,7 +14,8 @@
     settings,
     wantList
   } from '$lib/stores/app';
-  import type { ItemRecord, UpgradePack } from '$lib/types';
+  import { BENCH_LABELS, DEFAULT_BENCH_ORDER, QUICK_USE_BENCH_BY_SLUG } from '$lib/utils/bench';
+  import type { ItemRecord, UpgradePack, WantListRequirement } from '$lib/types';
   import type { PageData } from './$types';
 
   export let data: PageData;
@@ -80,14 +81,14 @@
 
   const anchorForBlueprint = (blueprint: ItemRecord) => {
     if (blueprint.slug && blueprint.slug.trim()) {
-      return `#blueprint-${blueprint.slug}`;
+      return `blueprint-${blueprint.slug}`;
     }
     const fallback = blueprint.name
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '')
       .replace(/-{2,}/g, '-');
-    return `#blueprint-${fallback || blueprint.id}`;
+    return `blueprint-${fallback || blueprint.id}`;
   };
 
   const recipeLinkForItem = (item: ItemRecord) => {
@@ -95,61 +96,9 @@
     if (!blueprint) return null;
     const anchor = anchorForBlueprint(blueprint);
     return {
-      href: `${base}/blueprints${anchor}`.replace(/\/{2,}/g, '/').replace(':/', '://'),
+      href: `${base}/what-i-have#${anchor}`.replace(/\/{2,}/g, '/').replace(':/', '://'),
       blueprint
     };
-  };
-
-  const QUICK_USE_BENCH_BY_SLUG = new Map<string, string>([
-    ['adrenaline-shot', 'med_station'],
-    ['bandage', 'workbench'],
-    ['barricade-kit', 'none'],
-    ['binoculars', 'utility_bench'],
-    ['blaze-grenade', 'none'],
-    ['blaze-grenade-trap', 'none'],
-    ['blue-light-stick', 'none'],
-    ['defibrillator', 'med_station'],
-    ['door-blocker', 'utility_bench'],
-    ['gas-grenade', 'explosives_bench'],
-    ['gas-grenade-trap', 'none'],
-    ['green-light-stick', 'utility_bench'],
-    ['heavy-fuze-grenade', 'explosives_bench'],
-    ['herbal-bandage', 'med_station'],
-    ['jolt-mine', 'explosives_bench'],
-    ['light-impact-grenade', 'workbench'],
-    ['lil-smoke-grenade', 'utility_bench'],
-    ['lure-grenade', 'utility_bench'],
-    ['lure-grenade-trap', 'none'],
-    ['noisemaker', 'none'],
-    ['photoelectric-cloak', 'utility_bench'],
-    ['red-light-stick', 'none'],
-    ['remote-raider-flare', 'utility_bench'],
-    ['shield-recharger', 'workbench'],
-    ['showstopper', 'none'],
-    ['shrapnel-grenade', 'explosives_bench'],
-    ['smoke-grenade', 'none'],
-    ['smoke-grenade-trap', 'none'],
-    ['snap-blast-grenade', 'explosives_bench'],
-    ['snap-hook', 'utility_bench'],
-    ['sterilized-bandage', 'med_station'],
-    ['surge-shield-recharger', 'med_station'],
-    ['tagging-grenade', 'none'],
-    ['trigger-nade', 'explosives_bench'],
-    ['vita-shot', 'none'],
-    ['vita-spray', 'medical_bench'],
-    ['wolfpack', 'none'],
-    ['yellow-light-stick', 'none'],
-    ['zipline', 'utility_bench']
-  ]);
-
-  const benchLabels: Record<string, string> = {
-    all: 'All benches',
-    workbench: 'Workbench',
-    utility_bench: 'Utility Bench',
-    explosives_bench: 'Explosives Bench',
-    med_station: 'Med Station',
-    medical_bench: 'Medical Bench',
-    none: 'No bench'
   };
 
   let search = '';
@@ -184,15 +133,6 @@
     benchUsage.set(key, (benchUsage.get(key) ?? 0) + 1);
   }
 
-  const DEFAULT_BENCH_ORDER = [
-    'workbench',
-    'utility_bench',
-    'explosives_bench',
-    'med_station',
-    'medical_bench',
-    'none'
-  ];
-
   const benchOptions = ['all']
     .concat(DEFAULT_BENCH_ORDER.filter((key) => benchUsage.has(key)))
     .concat(Array.from(benchUsage.keys()).filter((key) => !DEFAULT_BENCH_ORDER.includes(key)));
@@ -202,7 +142,7 @@
   }
 
   const labelForBench = (key: string) => {
-    if (benchLabels[key]) return benchLabels[key];
+    if (BENCH_LABELS[key]) return BENCH_LABELS[key];
     return key
       .split(/[_-]/)
       .map((part) => (part ? part[0]?.toUpperCase() + part.slice(1) : ''))
@@ -214,6 +154,9 @@
     const normalized = Number.isFinite(value) ? Math.max(1, Math.round(value)) : 1;
     quantityDrafts = { ...quantityDrafts, [itemId]: normalized };
   };
+
+  const getDirectRequirements = (requirements: WantListRequirement[] = []) =>
+    requirements.filter((requirement) => requirement.depth === 1);
 
   const clearQuantityDraft = (itemId: string) => {
     const next = { ...quantityDrafts };
@@ -421,8 +364,8 @@
         <div class="space-y-5">
           {#each $resolvedEntries as detail}
             {@const recipeLink = detail.item ? recipeLinkForItem(detail.item) : null}
-            {@const salvageOutputs = detail.item?.salvagesInto ?? []}
-            {@const salvageSources = detail.salvageSources}
+            {@const recycleOutputs = detail.item?.recyclesInto ?? detail.item?.salvagesInto ?? []}
+            {@const recycleSources = detail.recycleSources}
             <article class="space-y-4 rounded-2xl border border-slate-800/60 bg-slate-950/60 p-5 text-sm text-slate-200">
               <header class="flex flex-wrap items-center justify-between gap-3">
                 <div class="space-y-1">
@@ -486,21 +429,26 @@
                 <div class="space-y-2">
                   <h4 class="text-xs uppercase tracking-widest text-slate-400">Crafting requirements</h4>
                   <ul class="space-y-1 text-sm text-slate-300">
-                    {#each detail.requirements as requirement}
-                      <li class="flex items-center justify-between gap-3">
-                        <span class="truncate">{requirement.name}</span>
-                        <span class="font-semibold text-white">×{requirement.qty}</span>
-                      </li>
-                    {:else}
-                      <li class="text-slate-500">No crafting requirements recorded.</li>
-                    {/each}
+                    {#if true}
+                      {@const directRequirements = getDirectRequirements(detail.requirements)}
+                      {#if directRequirements.length > 0}
+                        {#each directRequirements as requirement}
+                          <li class="flex items-center justify-between gap-3">
+                            <span class="truncate">{requirement.name}</span>
+                            <span class="font-semibold text-white">×{requirement.qty}</span>
+                          </li>
+                        {/each}
+                      {:else}
+                        <li class="text-slate-500">No crafting requirements recorded.</li>
+                      {/if}
+                    {/if}
                   </ul>
                 </div>
                 <div class="space-y-2">
-                  <h4 class="text-xs uppercase tracking-widest text-slate-400">Salvaging sources</h4>
+                  <h4 class="text-xs uppercase tracking-widest text-slate-400">Recycle Source</h4>
                   <ul class="space-y-1 text-sm text-slate-300">
-                    {#if salvageSources.length > 0}
-                      {#each salvageSources as source}
+                    {#if recycleSources.length > 0}
+                      {#each recycleSources as source}
                         <li class="space-y-1 rounded-lg border border-slate-800/60 bg-slate-900/60 p-2">
                           <div class="flex items-center justify-between gap-3">
                             <span class="truncate">{source.sourceName}</span>
@@ -510,10 +458,10 @@
                       {/each}
                     {:else}
                       <li class="text-slate-500">
-                        {#if salvageOutputs.length > 0}
-                          No other recorded salvage sources produce this item.
+                        {#if recycleOutputs.length > 0}
+                          No other recorded recycle sources produce this item.
                         {:else}
-                          This item has no recorded salvage data.
+                          This item has no recorded recycle data.
                         {/if}
                       </li>
                     {/if}
@@ -522,10 +470,10 @@
               </div>
 
               <div class="space-y-2">
-                <h4 class="text-xs uppercase tracking-widest text-slate-400">Salvaged into</h4>
+                <h4 class="text-xs uppercase tracking-widest text-slate-400">Recycled into</h4>
                 <ul class="space-y-1 text-sm text-slate-300">
-                  {#if salvageOutputs.length > 0}
-                    {#each salvageOutputs as output}
+                  {#if recycleOutputs.length > 0}
+                    {#each recycleOutputs as output}
                       <li class="flex items-center justify-between gap-3">
                         <span class="truncate">{output.name}</span>
                         <span class="font-semibold text-white">×{output.qty}</span>
@@ -533,10 +481,10 @@
                     {/each}
                   {:else}
                     <li class="text-slate-500">
-                      {#if salvageSources.length > 0}
-                        This item lists salvage sources but no recorded outputs.
+                      {#if recycleSources.length > 0}
+                        This item lists recycle sources but no recorded outputs.
                       {:else}
-                        This item has no recorded salvage data.
+                        This item has no recorded recycle data.
                       {/if}
                     </li>
                   {/if}

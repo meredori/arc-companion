@@ -227,11 +227,11 @@ export function expandWantList(
       continue;
     }
 
-    for (const salvage of item.salvagesInto ?? []) {
-      if (!salvage || salvage.qty <= 0) continue;
-      const bucket = recyclersByMaterial.get(salvage.itemId) ?? [];
-      bucket.push({ item, qty: salvage.qty, name: salvage.name ?? salvage.itemId });
-      recyclersByMaterial.set(salvage.itemId, bucket);
+    for (const recycle of item.recyclesInto ?? item.salvagesInto ?? []) {
+      if (!recycle || recycle.qty <= 0) continue;
+      const bucket = recyclersByMaterial.get(recycle.itemId) ?? [];
+      bucket.push({ item, qty: recycle.qty, name: recycle.name ?? recycle.itemId });
+      recyclersByMaterial.set(recycle.itemId, bucket);
     }
   }
 
@@ -338,7 +338,7 @@ export function expandWantList(
 
     products.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
 
-    const salvageSources = item
+    const recycleSources = item
       ? (recyclersByMaterial.get(item.id) ?? []).map(({ item: source, qty, name }) => ({
           sourceItemId: source.id,
           sourceName: source.name || name,
@@ -346,7 +346,7 @@ export function expandWantList(
         }))
       : [];
 
-    salvageSources.sort((a, b) =>
+    recycleSources.sort((a, b) =>
       a.sourceName.localeCompare(b.sourceName, undefined, { sensitivity: 'base' })
     );
 
@@ -356,7 +356,7 @@ export function expandWantList(
       requirements,
       products,
       materials,
-      salvageSources
+      recycleSources
     } satisfies WantListResolvedEntry;
   });
 }
@@ -382,9 +382,13 @@ function pruneOverride(override: ItemOverride | undefined): ItemOverride | null 
 export const quests = {
   subscribe: questStore.subscribe,
   toggle(id: string) {
-    questStore.update((records) =>
-      records.map((quest) => (quest.id === id ? { ...quest, completed: !quest.completed } : quest))
-    );
+    questStore.update((records) => {
+      const existing = records.find((quest) => quest.id === id);
+      if (!existing) {
+        return [...records, { id, completed: true }];
+      }
+      return records.map((quest) => (quest.id === id ? { ...quest, completed: !quest.completed } : quest));
+    });
   },
   upsert(progress: QuestProgress) {
     questStore.update((records) => {
@@ -707,8 +711,18 @@ export function hydrateFromCanonical(params: {
     params;
 
   const existingQuests = get(questStore);
-  if (existingQuests.length === 0 && questsData.length > 0) {
-    questStore.set(questsData);
+  if (questsData.length > 0) {
+    const canonicalIds = new Set(questsData.map((quest) => quest.id));
+    const mergedQuests = questsData.map((quest) => {
+      const existingQuest = existingQuests.find((existing) => existing.id === quest.id);
+      if (!existingQuest) return quest;
+      return { ...quest, ...existingQuest } satisfies QuestProgress;
+    });
+
+    questStore.set([
+      ...existingQuests.filter((quest) => !canonicalIds.has(quest.id)),
+      ...mergedQuests
+    ]);
   }
 
   const existingWorkbench = get(workbenchUpgradeStore);

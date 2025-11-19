@@ -39,3 +39,26 @@ export function removeFromStorage(key: string): void {
     console.warn(`Failed to remove ${key} from localStorage`, error);
   }
 }
+
+export function clearAppStorage(options?: { extraKeys?: string[] }): void {
+  if (!browser) {
+    return;
+  }
+
+  const { extraKeys = [] } = options ?? {};
+
+  try {
+    const keysToRemove = new Set<string>(extraKeys);
+
+    for (let index = 0; index < window.localStorage.length; index += 1) {
+      const key = window.localStorage.key(index);
+      if (key?.startsWith(STORAGE_PREFIX)) {
+        keysToRemove.add(key);
+      }
+    }
+
+    keysToRemove.forEach((key) => window.localStorage.removeItem(key));
+  } catch (error) {
+    console.warn('Failed to clear localStorage for ARC Companion', error);
+  }
+}

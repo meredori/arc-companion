@@ -3,6 +3,8 @@
 Baseline implementation scaffolding for the ARC Raiders Companion tool described in `full_design_plan.md`.
 The project is configured for SvelteKit with TypeScript, TailwindCSS, ESLint, Prettier, and Vitest.
 
+© 2025 Meredori.
+
 ## Getting Started
 
 > **Prerequisite:** Node.js 18.17+, 20.6+, or 22+ (see `.npmrc`).
@@ -32,6 +34,8 @@ The project is configured for SvelteKit with TypeScript, TailwindCSS, ESLint, Pr
 
 - `BASE_PATH` &mdash; Optional environment variable consumed by `svelte.config.js` to support GitHub
   Pages style deployments (e.g. `BASE_PATH=/project-name`). Local development ignores this value.
+  When adding links or redirects, build URLs with `$app/paths`’ `base` helper or derive targets from
+  `url.pathname` so navigation works both locally and when the site is served from a subdirectory.
 
 ## Project Structure
 
@@ -45,13 +49,14 @@ The project is configured for SvelteKit with TypeScript, TailwindCSS, ESLint, Pr
 Key routes (`src/routes/`) now include:
 
 - `/what-to-do` — tokenized item recommendations that factor in quests, workbenches, and expedition projects.
-- `/what-i-have` — the inventory control center for quest completion, workbench upgrades, blueprint ownership, and expedition project contributions.
+- `/what-i-have` — the inventory control center for quest completion, workbench upgrades, and expedition project contributions.
 - `/track` — streamlined quest + upgrade checklist (legacy view).
-- `/blueprints` — focused blueprint ownership manager.
 - `/run` / `/runs` — live run logger + historical dashboard.
 
 
 Each section is wired to the shared stores so toggling a quest, bench, or project immediately influences the What To Do page.
+
+> **Prerendering note:** Hash links in prerendered pages must point to elements that actually exist (e.g. `/what-to-do` links to section IDs on `/what-i-have`). When you remove or rename a section, update any cross-page anchors at the same time to avoid prerender failures like “no element with id=… exists.”
 
 ## Workshop Upgrade Data
 
@@ -74,15 +79,16 @@ Artifacts generated on pull requests can be previewed using GitHub Pages environ
 
 ### Base data
 
-Raw data exports live under `static/data/raw/` and keep the multilingual schema provided by RaidTheory
-and the wiki dumps:
+Raw data exports now live under per-entity folders in `static/`, with one JSON file per record to
+match the upstream dumps:
 
-- `static/data/raw/items.json`
-- `static/data/raw/quests.json`
-- `static/data/raw/hideout-modules.json`
-- `static/data/raw/projects.json`
+- `static/items/`
+- `static/quests/`
+- `static/hideout/`
+- `static/projects/` (falls back to `static/projects.json` until the folder arrives)
 
-At runtime, `src/lib/server/pipeline.ts` normalizes these feeds (slugging IDs, mapping recipes to
+Legacy combined exports under `static/data/raw/*.json` are still supported for compatibility. At
+runtime, `src/lib/server/pipeline.ts` normalizes the raw feeds (slugging IDs, mapping recipes to
 `craftsFrom`, resolving local image paths, deriving quest chains, etc.). SvelteKit loads call the
 pipeline helper so the UI always works directly off the raw dumps. Commit updates to the raw files
 whenever a new export arrives.
@@ -95,7 +101,8 @@ normalization pipeline can ingest the updates automatically.
 
 ### Expedition projects
 
-`static/data/raw/projects.json` describes expedition projects and their phases. The **What I Have** page
+`static/projects/` (or the legacy `static/projects.json`) describes expedition projects and their
+phases. The **What I Have** page
 lets you record partial contributions; state is persisted in `localStorage` via the project progress
 store. Once a phase reaches 100 %, the What To Do recommendations stop flagging its items as “keep.”
 
@@ -107,6 +114,12 @@ The normalization pipeline automatically rewrites `imageUrl` fields to `/images/
 > **Heads up:** When rendering those assets in Svelte components, resolve the stored path through
 > `$app/paths`’ `base` helper (e.g. ```${base}${url}```) so prerendering in CI finds the images when the
 > site is deployed under a subdirectory (GitHub Pages).
+
+## Data attribution
+
+This project ships with game data sourced from the [RaidTheory/arcraiders-data](https://github.com/RaidTheory/arcraiders-data)
+repository (also used by [arctracker.io](https://arctracker.io)). If you reuse these JSON exports elsewhere, please
+attribute the data by linking back to the upstream repository and consider including a link to arctracker.io as well.
 
 ## TailwindCSS usage
 

@@ -42,6 +42,34 @@ const ITEMS: ItemRecord[] = [
     salvagesInto: [{ itemId: 'mat-c', name: 'Material C', qty: 5 }],
   },
   {
+    id: 'item-arc-cell',
+    name: 'Arc Powercell',
+    slug: 'arc-powercell',
+    category: 'Battery',
+    rarity: 'Uncommon Component',
+    sell: 70,
+    salvagesInto: [],
+  },
+  {
+    id: 'item-advanced-arc',
+    name: 'Advanced Arc Powercell',
+    slug: 'advanced-arc-powercell',
+    category: 'Battery',
+    rarity: 'Rare Component',
+    sell: 120,
+    salvagesInto: [{ itemId: 'item-arc-cell', name: 'Arc Powercell', qty: 2 }],
+  },
+  {
+    id: 'item-arc-widget',
+    name: 'Arc Widget',
+    slug: 'arc-widget',
+    category: 'Modification',
+    rarity: 'Rare Component',
+    sell: 150,
+    salvagesInto: [],
+    craftsFrom: [{ itemId: 'item-arc-cell', name: 'Arc Powercell', qty: 2 }],
+  },
+  {
     id: 'item-weapon-legendary',
     name: 'Nova Cannon',
     slug: 'nova-cannon',
@@ -69,6 +97,15 @@ const ITEMS: ItemRecord[] = [
     salvagesInto: [],
   },
   {
+    id: 'item-sniper-epic',
+    name: 'Longsight Sniper',
+    slug: 'longsight-sniper',
+    category: 'Sniper Rifle',
+    rarity: 'Epic Weapon',
+    sell: 115,
+    salvagesInto: [],
+  },
+  {
     id: 'item-lmg-uncommon',
     name: 'Tempest LMG',
     slug: 'tempest-lmg',
@@ -93,6 +130,15 @@ const ITEMS: ItemRecord[] = [
     category: 'Assault Rifle',
     rarity: 'Common Weapon',
     sell: 90,
+    salvagesInto: [],
+  },
+  {
+    id: 'item-special-rare',
+    name: 'Hullcracker',
+    slug: 'hullcracker',
+    category: 'Special',
+    rarity: 'Rare Weapon',
+    sell: 130,
     salvagesInto: [],
   },
   {
@@ -256,10 +302,18 @@ const QUESTS: Quest[] = [
     items: [
       { itemId: 'item-alpha', qty: 2 }
     ]
+  },
+  {
+    id: 'quest-arc',
+    name: 'Recharge Request',
+    items: [{ itemId: 'item-arc-cell', qty: 1 }]
   }
 ];
 
-const PROGRESS: QuestProgress[] = [{ id: 'quest-one', completed: false }];
+const PROGRESS: QuestProgress[] = [
+  { id: 'quest-one', completed: false },
+  { id: 'quest-arc', completed: false }
+];
 
 const UPGRADES: UpgradePack[] = [
   {
@@ -276,7 +330,7 @@ const BLUEPRINTS: BlueprintState[] = [
 ];
 
 const WORKBENCH_UPGRADES: WorkbenchUpgradeState[] = [
-  { id: 'upgrade-one', name: 'Upgrade One', bench: 'Workshop', level: 1, owned: true }
+  { id: 'upgrade-one', name: 'Upgrade One', bench: 'Workshop', level: 1, owned: false }
 ];
 
 const PROJECTS: Project[] = [
@@ -335,9 +389,9 @@ const context = buildRecommendationContext({
     expect(result.rationale).toContain('workbench upgrades');
   });
 
-  it('falls back to salvage when recycling beats selling', () => {
+  it('falls back to recycle when recycling beats selling', () => {
     const result = recommendItem(getItem('item-beta'), context);
-    expect(result.action).toBe('salvage');
+    expect(result.action).toBe('recycle');
   });
 
   it('forces keep for admin-selected categories', () => {
@@ -362,14 +416,23 @@ const context = buildRecommendationContext({
     const results = recommendItemsMatching('', context);
     const modIndex = results.findIndex((entry) => entry.category === 'Modification');
     const weaponGroup = results.filter((entry) =>
-      ['Weapon', 'Shotgun', 'Pistol', 'LMG', 'Hand Cannon', 'Assault Rifle'].includes(
-        entry.category ?? ''
-      )
+      [
+        'Weapon',
+        'Shotgun',
+        'Pistol',
+        'LMG',
+        'Hand Cannon',
+        'Assault Rifle',
+        'Sniper Rifle',
+        'Special'
+      ].includes(entry.category ?? '')
     );
-    expect(weaponGroup).toHaveLength(6);
+    expect(weaponGroup).toHaveLength(8);
     expect(weaponGroup.map((entry) => entry.name)).toEqual([
       'Nova Cannon',
       'Cyclone Shotgun',
+      'Longsight Sniper',
+      'Hullcracker',
       'Warden Pistol',
       'Parallax Hand Cannon',
       'Tempest LMG',
@@ -449,7 +512,7 @@ const context = buildRecommendationContext({
 
   it('sorts higher rarity items ahead within the same category', () => {
     const results = recommendItemsMatching('mod', context);
-    expect(results.map((rec) => rec.name)).toEqual(['Mod Apex', 'Mod Ridge']);
+    expect(results.map((rec) => rec.name)).toEqual(['Mod Apex', 'Arc Widget', 'Mod Ridge']);
   });
 
   it('supports alphabetical sorting when configured', () => {
@@ -489,6 +552,33 @@ const context = buildRecommendationContext({
     expect(result.projectNeeds[0].projectId).toBe('project-expedition');
   });
 
+  it('surfaces recycling when components feed wishlist crafting chains', () => {
+    const targetEntry: WantListEntry = {
+      itemId: 'item-arc-widget',
+      qty: 1,
+      createdAt: '2024-02-01T00:00:00.000Z'
+    };
+    const dependency: WantListResolvedEntry = {
+      entry: targetEntry,
+      item: getItem('item-arc-widget'),
+      requirements: [{ itemId: 'item-arc-cell', name: 'Arc Powercell', qty: 2, depth: 1 }],
+      products: [],
+      materials: [],
+      recycleSources: []
+    };
+    const recycleContext = buildRecommendationContext({
+      items: ITEMS,
+      quests: [],
+      wantList: [targetEntry],
+      wantListDependencies: [dependency],
+      ignoredCategories: []
+    });
+
+    const result = recommendItem(getItem('item-advanced-arc'), recycleContext);
+    expect(result.action).toBe('recycle');
+    expect(result.rationale).toMatch(/Recycle/);
+  });
+
   it('filters by query', () => {
     const results = recommendItemsMatching('gamma', context);
     expect(results).toHaveLength(1);
@@ -510,7 +600,7 @@ describe('wishlist promotions', () => {
     requirements: [],
     products: [],
     materials: [],
-    salvageSources: []
+    recycleSources: []
   };
 
   const MATERIAL_DEPENDENCY: WantListResolvedEntry = {
@@ -530,7 +620,7 @@ describe('wishlist promotions', () => {
     ],
     products: [],
     materials: [],
-    salvageSources: []
+    recycleSources: []
   };
 
     it('elevates wishlist targets to keep with rationale and chip data', () => {

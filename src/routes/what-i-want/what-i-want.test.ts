@@ -87,9 +87,9 @@ describe('what-i-want page', () => {
 
     await tick();
 
-    const link = target.querySelector('a[href*="/blueprints#"]');
+    const link = target.querySelector('a[href*="/what-i-have#"]');
     expect(link?.textContent).toContain('View recipe');
-    const expectedHref = `${base}/blueprints#blueprint-wishlist-item-blueprint`
+    const expectedHref = `${base}/what-i-have#blueprint-wishlist-item-blueprint`
       .replace(/\/{2,}/g, '/')
       .replace(':/', '://');
     expect(link?.getAttribute('href')).toBe(expectedHref);

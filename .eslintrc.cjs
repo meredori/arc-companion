@@ -12,6 +12,10 @@ module.exports = {
     sourceType: 'module',
     ecmaVersion: 'latest'
   },
+  env: {
+    browser: true,
+    node: true
+  },
   plugins: ['@typescript-eslint'],
   overrides: [
     {

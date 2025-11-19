@@ -17,11 +17,26 @@ import type {
   WantListResolvedEntry,
   WorkbenchUpgradeState
 } from '$lib/types';
+import {
+  QUICK_USE_BENCH_BY_SLUG,
+  QUICK_USE_BENCH_LOOKUP,
+  QUICK_USE_BENCH_PRIORITY
+} from '$lib/utils/bench';
 
 const CATEGORY_PRIORITY_GROUPS: string[][] = [
   ['Augment'],
   ['Shield'],
-  ['Weapon', 'Assault Rifle', 'Battle Rifle', 'Hand Cannon', 'LMG', 'Pistol', 'Shotgun'],
+  [
+    'Weapon',
+    'Assault Rifle',
+    'Battle Rifle',
+    'Hand Cannon',
+    'LMG',
+    'Pistol',
+    'Shotgun',
+    'Sniper Rifle',
+    'Special'
+  ],
   ['Ammunition'],
   ['Modification'],
   ['Quick Use'],
@@ -36,63 +51,6 @@ const CATEGORY_PRIORITY_GROUPS: string[][] = [
   ['Valuable'],
   ['Misc']
 ] as const;
-
-const QUICK_USE_BENCH_PRIORITY = [
-  'utility_bench',
-  'explosives_bench',
-  'med_station',
-  'medical_bench',
-  'workbench',
-  'none'
-] as const;
-
-type QuickUseBenchKey = (typeof QUICK_USE_BENCH_PRIORITY)[number];
-
-const QUICK_USE_BENCH_LOOKUP = new Map<QuickUseBenchKey, number>(
-  QUICK_USE_BENCH_PRIORITY.map((label, index) => [label, index])
-);
-
-const QUICK_USE_BENCH_BY_SLUG = new Map<string, QuickUseBenchKey>([
-  ['adrenaline-shot', 'med_station'],
-  ['bandage', 'workbench'],
-  ['barricade-kit', 'none'],
-  ['binoculars', 'utility_bench'],
-  ['blaze-grenade', 'none'],
-  ['blaze-grenade-trap', 'none'],
-  ['blue-light-stick', 'none'],
-  ['defibrillator', 'med_station'],
-  ['door-blocker', 'utility_bench'],
-  ['gas-grenade', 'explosives_bench'],
-  ['gas-grenade-trap', 'none'],
-  ['green-light-stick', 'utility_bench'],
-  ['heavy-fuze-grenade', 'explosives_bench'],
-  ['herbal-bandage', 'med_station'],
-  ['jolt-mine', 'explosives_bench'],
-  ['light-impact-grenade', 'workbench'],
-  ['lil-smoke-grenade', 'utility_bench'],
-  ['lure-grenade', 'utility_bench'],
-  ['lure-grenade-trap', 'none'],
-  ['noisemaker', 'none'],
-  ['photoelectric-cloak', 'utility_bench'],
-  ['red-light-stick', 'none'],
-  ['remote-raider-flare', 'utility_bench'],
-  ['shield-recharger', 'workbench'],
-  ['showstopper', 'none'],
-  ['shrapnel-grenade', 'explosives_bench'],
-  ['smoke-grenade', 'none'],
-  ['smoke-grenade-trap', 'none'],
-  ['snap-blast-grenade', 'explosives_bench'],
-  ['snap-hook', 'utility_bench'],
-  ['sterilized-bandage', 'med_station'],
-  ['surge-shield-recharger', 'med_station'],
-  ['tagging-grenade', 'none'],
-  ['trigger-nade', 'explosives_bench'],
-  ['vita-shot', 'none'],
-  ['vita-spray', 'medical_bench'],
-  ['wolfpack', 'none'],
-  ['yellow-light-stick', 'none'],
-  ['zipline', 'utility_bench']
-]);
 
 const CATEGORY_RANK_LOOKUP = new Map<string, number>();
 const CATEGORY_GROUP_LOOKUP = new Map<string, string>();
@@ -121,8 +79,9 @@ const RARITY_PRIORITY = ['legendary', 'epic', 'rare', 'uncommon', 'common'] as c
 
 const normalizeCategory = (value?: string | null) => (value ? value.toLowerCase().trim() : '');
 
-function computeSalvageValue(item: ItemRecord): number {
-  return item.salvagesInto.reduce((total, entry) => total + entry.qty * 35, 0);
+function computeRecycleValue(item: ItemRecord): number {
+  const targets = item.recyclesInto ?? item.salvagesInto ?? [];
+  return targets.reduce((total, entry) => total + entry.qty * 35, 0);
 }
 
 function isQuestComplete(quest: Quest, progress: QuestProgress[]): boolean {
@@ -266,7 +225,7 @@ function remainingUpgradeNeeds(itemId: string, context: RecommendationContext) {
   }[] = [];
 
   for (const upgrade of context.upgrades) {
-    if (!ownedWorkbenchUpgrade(upgrade, context.workbenchUpgrades)) {
+    if (ownedWorkbenchUpgrade(upgrade, context.workbenchUpgrades)) {
       continue;
     }
 
@@ -326,7 +285,7 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
   const questNeed = remainingQuestNeeds(item.id, context);
   const upgradeNeed = remainingUpgradeNeeds(item.id, context);
   const projectNeed = remainingProjectNeeds(item.id, context);
-  const salvageValue = computeSalvageValue(item);
+  const salvageValue = computeRecycleValue(item);
   const normalizedCategory = item.category?.toLowerCase().trim();
   const alwaysKeepCategory =
     normalizedCategory && context.alwaysKeepCategories.length > 0
@@ -335,40 +294,15 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
         )
       : false;
 
-  let action: RecommendationAction = 'sell';
-  let rationale = 'No active quests or owned blueprints require this item. Sell extras for coins.';
-
-  if (questNeed.total > 0) {
-    action = 'save';
-    rationale = `Required for ${questNeed.total} quest objective${questNeed.total > 1 ? 's' : ''}.`;
-  } else if (upgradeNeed.total > 0 || projectNeed.total > 0) {
-    action = 'keep';
-    if (upgradeNeed.total > 0 && projectNeed.total > 0) {
-      rationale = `Blueprints and expedition projects will consume ${upgradeNeed.total + projectNeed.total} item${upgradeNeed.total + projectNeed.total > 1 ? 's' : ''}.`;
-    } else if (upgradeNeed.total > 0) {
-      rationale = `Owned workbench upgrades will consume ${upgradeNeed.total} item${
-        upgradeNeed.total > 1 ? 's' : ''
-      }.`;
-    } else {
-      rationale = `Expedition projects still need ${projectNeed.total} item${projectNeed.total > 1 ? 's' : ''}.`;
-    }
-  } else if (alwaysKeepCategory) {
-    action = 'keep';
-    rationale = 'Category flagged as always keep in admin controls.';
-  } else if (salvageValue > item.sell) {
-    action = 'salvage';
-    rationale = 'Recycling yields higher composite value than selling outright.';
-  }
-
   const wishlistSources = context.wishlistSourcesByItem[item.id] ?? [];
-  if (wishlistSources.length > 0) {
-    if (action === 'sell' || action === 'salvage') {
-      action = 'keep';
-    }
-    const uniqueTargets = Array.from(
-      new Set(wishlistSources.map((source) => source.targetName))
-    );
-    const wishlistReason =
+
+  let action: RecommendationAction = 'sell';
+  let rationale = 'Not needed for wishlist targets, upgrades, or projects. Sell extras for coins.';
+
+  const wishlistReason = (() => {
+    if (wishlistSources.length === 0) return '';
+    const uniqueTargets = Array.from(new Set(wishlistSources.map((source) => source.targetName)));
+    const wishlistBase =
       uniqueTargets.length === 1
         ? `Wishlist target ${uniqueTargets[0]} needs this item`
         : `Wishlist targets ${uniqueTargets.join(', ')} need this item`;
@@ -379,13 +313,67 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
           .filter((value): value is string => Boolean(value))
       )
     );
-    const messageBase = notes.length > 0 ? `${wishlistReason} (${notes.join('; ')})` : wishlistReason;
-    const sentence = messageBase.endsWith('.') ? messageBase : `${messageBase}.`;
-    if (rationale) {
-      rationale = rationale.endsWith('.') ? `${rationale} ${sentence}` : `${rationale}. ${sentence}`;
-    } else {
-      rationale = sentence;
+    const messageBase = notes.length > 0 ? `${wishlistBase} (${notes.join('; ')})` : wishlistBase;
+    return messageBase.endsWith('.') ? messageBase : `${messageBase}.`;
+  })();
+
+  if (questNeed.total > 0) {
+    action = 'save';
+    rationale = `Required for ${questNeed.total} quest objective${questNeed.total > 1 ? 's' : ''}.`;
+  } else if (upgradeNeed.total > 0 || projectNeed.total > 0 || wishlistSources.length > 0) {
+    action = 'keep';
+    const keepReasons: string[] = [];
+    if (upgradeNeed.total > 0) {
+      keepReasons.push(
+        `Unowned workbench upgrades will consume ${upgradeNeed.total} item${
+          upgradeNeed.total > 1 ? 's' : ''
+        }.`
+      );
     }
+    if (projectNeed.total > 0) {
+      keepReasons.push(
+        `Incomplete projects still need ${projectNeed.total} item${projectNeed.total > 1 ? 's' : ''}.`
+      );
+    }
+    if (wishlistReason) {
+      keepReasons.push(wishlistReason);
+    }
+    rationale = keepReasons.join(' ');
+  } else if (alwaysKeepCategory) {
+    action = 'keep';
+    rationale = 'Category flagged as always keep in admin controls.';
+  } else {
+    const recycleTargets = item.recyclesInto ?? item.salvagesInto ?? [];
+    const recycleWishlistTargets = recycleTargets.filter(
+      (entry) => (context.wishlistSourcesByItem[entry.itemId]?.length ?? 0) > 0
+    );
+    const recycleUpgradeTargets = recycleTargets.filter(
+      (entry) => remainingUpgradeNeeds(entry.itemId, context).total > 0
+    );
+    const recycleProjectTargets = recycleTargets.filter(
+      (entry) => remainingProjectNeeds(entry.itemId, context).total > 0
+    );
+
+    if (recycleWishlistTargets.length > 0) {
+      action = 'recycle';
+      const targetList = recycleWishlistTargets.map((entry) => entry.name ?? entry.itemId).join(', ');
+      rationale = `Recycle to supply wishlist materials (${targetList}).`;
+    } else if (recycleUpgradeTargets.length > 0) {
+      action = 'recycle';
+      const targetList = recycleUpgradeTargets.map((entry) => entry.name ?? entry.itemId).join(', ');
+      rationale = `Recycle to feed unowned workbench upgrades (${targetList}).`;
+    } else if (recycleProjectTargets.length > 0) {
+      action = 'recycle';
+      const targetList = recycleProjectTargets.map((entry) => entry.name ?? entry.itemId).join(', ');
+      rationale = `Recycle to advance incomplete projects (${targetList}).`;
+    } else if (salvageValue > item.sell) {
+      action = 'recycle';
+      rationale = 'Recycle for better value than selling.';
+    }
+  }
+
+  if (wishlistSources.length > 0 && action !== 'save' && !rationale.includes('Wishlist')) {
+    rationale = rationale.endsWith('.') ? `${rationale} ${wishlistReason}` : `${rationale}. ${wishlistReason}`;
   }
 
   return {
@@ -399,7 +387,7 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
     rationale,
     sellPrice: item.sell,
     salvageValue,
-    salvageBreakdown: item.salvagesInto,
+    salvageBreakdown: item.recyclesInto ?? item.salvagesInto,
     questNeeds: questNeed.details,
     upgradeNeeds: upgradeNeed.details,
     projectNeeds: projectNeed.details,

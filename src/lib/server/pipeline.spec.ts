@@ -1,5 +1,3 @@
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -9,11 +7,7 @@ import {
   normalizeQuests,
   normalizeUpgrades
 } from './pipeline';
-
-const readJson = (relativePath: string) => {
-  const absolute = path.resolve(relativePath);
-  return JSON.parse(readFileSync(absolute, 'utf-8')) as unknown;
-};
+import { loadRawCollection } from '$lib/test-helpers';
 
 const toItemId = (raw: string | undefined | null): string | null => {
   if (!raw) return null;
@@ -35,11 +29,23 @@ const toQuestId = (raw: string | undefined | null): string | null => {
 };
 
 describe('pipeline normalization', () => {
-  const rawItems = readJson('static/data/raw/items.json') as Parameters<typeof normalizeItems>[0];
+  const rawItems = loadRawCollection<Parameters<typeof normalizeItems>[0][number]>(
+    'items',
+    ['data/raw/items.json']
+  );
   const normalizedItems = normalizeItems(rawItems);
-  const rawQuests = readJson('static/data/raw/quests.json') as Parameters<typeof normalizeQuests>[0];
-  const rawModules = readJson('static/data/raw/hideout-modules.json') as Parameters<typeof normalizeUpgrades>[0];
-  const rawProjects = readJson('static/data/raw/projects.json') as Parameters<typeof normalizeProjects>[0];
+  const rawQuests = loadRawCollection<Parameters<typeof normalizeQuests>[0][number]>(
+    'quests',
+    ['data/raw/quests.json']
+  );
+  const rawModules = loadRawCollection<Parameters<typeof normalizeUpgrades>[0][number]>(
+    'hideout',
+    ['data/raw/hideout-modules.json']
+  );
+  const rawProjects = loadRawCollection<Parameters<typeof normalizeProjects>[0][number]>(
+    'projects',
+    ['projects.json', 'data/raw/projects.json']
+  );
 
   it('normalizes items solely from raw exports', () => {
     const expectedIds = new Set(
@@ -126,16 +132,7 @@ describe('pipeline normalization', () => {
   });
 
   it('loads canonical data from raw feeds', async () => {
-    const fetchStub: typeof fetch = async (resource) => {
-      const url = typeof resource === 'string' ? resource : resource.url;
-      const [, rawPath] = url.split('/data/');
-      if (!rawPath) throw new Error(`Unexpected fetch path: ${url}`);
-      const filePath = path.join('static', 'data', rawPath);
-      const payload = readFileSync(filePath, 'utf-8');
-      return new Response(payload, { status: 200, headers: { 'Content-Type': 'application/json' } });
-    };
-
-    const result = await loadCanonicalData(fetchStub, {
+    const result = await loadCanonicalData({
       items: true,
       quests: true,
       chains: true,

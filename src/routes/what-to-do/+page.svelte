@@ -3,6 +3,7 @@
 </svelte:head>
 
 <script lang="ts">
+  import { base } from '$app/paths';
   import { derived } from 'svelte/store';
   import { onMount } from 'svelte';
   import { RecommendationCard, SearchBar, TipsPanel } from '$lib/components';
@@ -29,6 +30,14 @@
   void __whatToDoProps;
 
   const { items, quests: questDefs, workbenchUpgrades: upgradeDefs, projects } = data;
+
+  const whatIHaveTabs = [
+    { id: 'quests', label: 'Quest checklist' },
+    { id: 'workbench-upgrades', label: 'Workbench upgrades' },
+    { id: 'expedition-projects', label: 'Expedition projects' }
+  ];
+
+  const withBase = (href: string) => (base ? `${base}${href}` : href);
 
   onMount(() => {
     hydrateFromCanonical({
@@ -144,6 +153,18 @@
       imports and personalization stores are connected.
     </p>
   </header>
+
+  <div class="mb-4 flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-[0.3em] text-slate-400">
+    <span class="text-slate-500">What I Have tabs</span>
+    {#each whatIHaveTabs as tab}
+      <a
+        class="rounded-full border border-slate-700 bg-slate-900/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-200 transition hover:border-slate-500"
+        href={withBase(`/what-i-have#${tab.id}`)}
+      >
+        {tab.label}
+      </a>
+    {/each}
+  </div>
 
   <section class="section-card space-y-6">
     <SearchBar
