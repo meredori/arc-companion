@@ -81,14 +81,14 @@
 
   const anchorForBlueprint = (blueprint: ItemRecord) => {
     if (blueprint.slug && blueprint.slug.trim()) {
-      return `#blueprint-${blueprint.slug}`;
+      return `blueprint-${blueprint.slug}`;
     }
     const fallback = blueprint.name
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '')
       .replace(/-{2,}/g, '-');
-    return `#blueprint-${fallback || blueprint.id}`;
+    return `blueprint-${fallback || blueprint.id}`;
   };
 
   const recipeLinkForItem = (item: ItemRecord) => {
@@ -96,7 +96,7 @@
     if (!blueprint) return null;
     const anchor = anchorForBlueprint(blueprint);
     return {
-      href: `${base}/blueprints${anchor}`.replace(/\/{2,}/g, '/').replace(':/', '://'),
+      href: `${base}/what-i-have#${anchor}`.replace(/\/{2,}/g, '/').replace(':/', '://'),
       blueprint
     };
   };

@@ -11,17 +11,21 @@ export const load: PageServerLoad = async () => {
     chains: true
   });
 
+  const blueprints = items.filter((item) => item.category?.toLowerCase() === 'blueprint');
+
   return {
     quests,
     workbenchUpgrades,
     items,
     projects,
-    chains
+    chains,
+    blueprints
   } satisfies {
     quests: Quest[];
     workbenchUpgrades: UpgradePack[];
     items: ItemRecord[];
     projects: Project[];
     chains: QuestChain[];
+    blueprints: ItemRecord[];
   };
 };
