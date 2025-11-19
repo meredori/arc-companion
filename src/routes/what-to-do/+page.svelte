@@ -99,7 +99,6 @@
   );
 
   let recommendations = [];
-  let outstandingNeeds = 0;
   let recommendationContext = buildRecommendationContext({
     items,
     quests: questDefs,
@@ -121,12 +120,6 @@
   $: recommendations = recommendItemsMatching(query, recommendationContext, {
     sortMode: recommendationSort
   });
-  $: outstandingNeeds = recommendItemsMatching('', recommendationContext, {
-    sortMode: recommendationSort
-  }).reduce(
-    (total, rec) => total + rec.needs.quests + rec.needs.workshop + rec.needs.projects,
-    0
-  );
   const setRecommendationSort = (mode: RecommendationSort) => {
     settings.setRecommendationSort(mode);
   };

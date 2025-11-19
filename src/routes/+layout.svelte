@@ -24,7 +24,6 @@
 
   const defaultLinks: NavigationLink[] = [
     { href: '/what-to-do', label: 'What To Do' },
-    { href: '/what-i-have', label: 'What I Have' },
     { href: '/what-i-want', label: 'What I Want' },
     { href: '/run', label: 'Run' },
     { href: '/about', label: 'About' }
