@@ -98,7 +98,7 @@
   >
     <div class="flex flex-col items-center gap-2">
       <div
-        class={`flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border bg-gradient-to-br text-base font-semibold uppercase tracking-wide text-white ${rarityClass}`}
+        class={`flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border bg-gradient-to-br text-base font-semibold uppercase tracking-wide text-white ${rarityClass}`}
         aria-hidden="true"
       >
         {#if resolvedImageUrl}
@@ -107,7 +107,7 @@
           <span>{iconLabel || 'ARC'}</span>
         {/if}
       </div>
-      <span class={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${ACTION_STYLES[action]}`}>
+      <span class={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${ACTION_STYLES[action]}`}>
         {ACTION_COPY[action]}
       </span>
     </div>
