@@ -3,6 +3,8 @@
 Baseline implementation scaffolding for the ARC Raiders Companion tool described in `full_design_plan.md`.
 The project is configured for SvelteKit with TypeScript, TailwindCSS, ESLint, Prettier, and Vitest.
 
+© 2025 Meredori.
+
 ## Getting Started
 
 > **Prerequisite:** Node.js 18.17+, 20.6+, or 22+ (see `.npmrc`).
@@ -112,6 +114,12 @@ The normalization pipeline automatically rewrites `imageUrl` fields to `/images/
 > **Heads up:** When rendering those assets in Svelte components, resolve the stored path through
 > `$app/paths`’ `base` helper (e.g. ```${base}${url}```) so prerendering in CI finds the images when the
 > site is deployed under a subdirectory (GitHub Pages).
+
+## Data attribution
+
+This project ships with game data sourced from the [RaidTheory/arcraiders-data](https://github.com/RaidTheory/arcraiders-data)
+repository (also used by [arctracker.io](https://arctracker.io)). If you reuse these JSON exports elsewhere, please
+attribute the data by linking back to the upstream repository and consider including a link to arctracker.io as well.
 
 ## TailwindCSS usage
 
