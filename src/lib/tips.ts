@@ -84,20 +84,6 @@ export function generateRunTips(context: RunTipContext): RunTip[] {
   return tips;
 }
 
-export function tipsForWhatToDo(outstandingNeeds: number): string[] {
-  const tips: string[] = [];
-  if (outstandingNeeds > 0) {
-    tips.push(
-      `Focus on quest items first — ${outstandingNeeds} outstanding objective${
-        outstandingNeeds > 1 ? 's' : ''
-      } remain.`
-    );
-  }
-  tips.push('Use the search filters to match vendors, zones, or crafting outputs.');
-  tips.push('Toggle blueprint ownership to watch recommendations adjust automatically.');
-  return tips;
-}
-
 export function tipsForBlueprints(totalOwned: number, totalAvailable: number): string[] {
   const progress = totalAvailable > 0 ? Math.round((totalOwned / totalAvailable) * 100) : 0;
   return [
