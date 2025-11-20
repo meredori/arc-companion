@@ -21,7 +21,6 @@
     lastRemovedRun
   } from '$lib/stores/app';
   import { buildRecommendationContext, recommendItemsMatching } from '$lib/recommend';
-  import { createRunTipContext, generateRunTips } from '$lib/tips';
   import type { PageData } from './$types';
 
   export let data: PageData;
@@ -31,6 +30,12 @@
   void __runPageProps;
 
   const { items, quests: questDefs, workbenchUpgrades: upgradeDefs, projects } = data;
+
+  const mapLookup = new Map(items.map((item) => [item.id, item] as const));
+  const mapOptions = items
+    .filter((item) => item.category?.toLowerCase().includes('map'))
+    .map((item) => ({ id: item.id, name: item.name }))
+    .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
 
   const recommendationContextStore = derived(
     [quests, blueprints, projectProgress, workbenchUpgrades, wantList, settings],
@@ -53,27 +58,15 @@
       })
   );
 
-  const outstandingNeedsStore = derived(recommendationContextStore, (context) =>
-    recommendItemsMatching('', context).reduce(
-      (total, rec) => total + rec.needs.quests + rec.needs.workshop + rec.needs.projects,
-      0
-    )
+  const recommendationSortStore = derived(settings, ($settings) => $settings.recommendationSort ?? 'category');
+  const lookOutStore = derived([recommendationContextStore, recommendationSortStore], ([context, sort]) =>
+    recommendItemsMatching('', context, { sortMode: sort })
+      .filter((rec) => rec.action === 'keep' || rec.action === 'save')
+      .map((rec) => ({ ...rec, action: 'keep' as const }))
+      .slice(0, 12)
   );
 
   const activeRunStore = derived(runs, ($runs) => $runs.find((run) => !run.endedAt) ?? null);
-
-  const tipsStore = derived(
-    [activeRunStore, runs, settings, outstandingNeedsStore],
-    ([$activeRun, $runs, $settings, $needs]) =>
-      generateRunTips(
-        createRunTipContext({
-          activeRun: $activeRun,
-          runs: $runs,
-          settings: $settings,
-          outstandingNeeds: $needs
-        })
-      )
-  );
 
   const highlightRuns = derived(runs, ($runs) =>
     [...$runs]
@@ -113,7 +106,7 @@
   });
 
   let runForm = createDefaultForm(get(settings).freeLoadoutDefault);
-  let tips = [];
+  let lookOut = [];
   let elapsedSeconds = 0;
   let editingId: string | null = null;
   let editForm = createEditForm();
@@ -149,11 +142,17 @@
     const value = Number(runForm.value);
     const extract = Number(runForm.extracted);
     const deaths = Number(runForm.deaths);
+    const selectedMap = runForm.mapItemId ? mapLookup.get(runForm.mapItemId) : null;
+    const died = runForm.died || (Number.isFinite(deaths) && deaths > 0);
+    const resolvedDeaths = died ? (Number.isFinite(deaths) && deaths > 0 ? deaths : 1) : undefined;
     return {
       totalXp: Number.isFinite(xp) && xp > 0 ? xp : undefined,
       totalValue: Number.isFinite(value) && value > 0 ? value : undefined,
       extractedValue: Number.isFinite(extract) && extract > 0 ? extract : undefined,
-      deaths: Number.isFinite(deaths) && deaths > 0 ? deaths : undefined,
+      deaths: resolvedDeaths,
+      died: died ? true : undefined,
+      mapItemId: selectedMap?.id,
+      mapName: selectedMap?.name,
       notes: runForm.notes ? runForm.notes.trim() : undefined,
       crew: runForm.crew ? runForm.crew.trim() : undefined,
       freeLoadout: runForm.freeLoadout,
@@ -194,6 +193,8 @@
       value: run.totalValue?.toString() ?? '',
       extracted: run.extractedValue?.toString() ?? '',
       deaths: run.deaths?.toString() ?? '',
+      died: run.died ?? Boolean(run.deaths && run.deaths > 0),
+      mapItemId: run.mapItemId ?? '',
       notes: run.notes ?? '',
       crew: run.crew ?? ''
     };
@@ -210,7 +211,14 @@
       totalXp: editForm.xp ? Number(editForm.xp) : undefined,
       totalValue: editForm.value ? Number(editForm.value) : undefined,
       extractedValue: editForm.extracted ? Number(editForm.extracted) : undefined,
-      deaths: editForm.deaths ? Number(editForm.deaths) : undefined,
+      deaths: editForm.died
+        ? editForm.deaths
+          ? Number(editForm.deaths)
+          : 1
+        : undefined,
+      died: editForm.died ? true : undefined,
+      mapItemId: editForm.mapItemId || undefined,
+      mapName: editForm.mapItemId ? mapLookup.get(editForm.mapItemId)?.name : undefined,
       notes: editForm.notes || undefined,
       crew: editForm.crew || undefined
     });
@@ -226,6 +234,8 @@
       value: '',
       extracted: '',
       deaths: '',
+      died: false,
+      mapItemId: '',
       notes: '',
       crew: '',
       freeLoadout
@@ -238,6 +248,8 @@
       value: '',
       extracted: '',
       deaths: '',
+      died: false,
+      mapItemId: '',
       notes: '',
       crew: ''
     };
@@ -253,7 +265,7 @@
     return `${minutes}m ${secs.toString().padStart(2, '0')}s`;
   }
 
-  $: tips = $tipsStore;
+  $: lookOut = $lookOutStore;
   $: {
     const active = $activeRunStore;
     if (active && !active.endedAt) {
@@ -277,7 +289,7 @@
   </header>
 
   <section class="section-card space-y-6">
-    <div class="grid gap-6 lg:grid-cols-[3fr,2fr]">
+    <div class="space-y-6">
       <div class="space-y-6">
         <RunTimer
           label="Active session"
@@ -334,12 +346,22 @@
             </label>
             <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
               Deaths
-              <input
-                class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
-                type="number"
-                min="0"
-                bind:value={runForm.deaths}
-              />
+              <div class="flex flex-col gap-2 rounded-lg border border-slate-800/80 bg-slate-950/70 p-3">
+                <label class="flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-slate-400">
+                  <input type="checkbox" bind:checked={runForm.died} />
+                  Died this run
+                </label>
+                <div class="flex items-center gap-3">
+                  <input
+                    class="w-28 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white disabled:opacity-40"
+                    type="number"
+                    min="0"
+                    placeholder="1"
+                    bind:value={runForm.deaths}
+                    disabled={!runForm.died}
+                  />
+                </div>
+              </div>
             </label>
           </div>
           <div class="grid gap-4 sm:grid-cols-2">
@@ -351,6 +373,28 @@
                 placeholder="Solo, Crew name, etc."
                 bind:value={runForm.crew}
               />
+            </label>
+            <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
+              Map
+              <div class="flex flex-wrap items-center gap-3">
+                <select
+                  class="min-w-[12rem] flex-1 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
+                  bind:value={runForm.mapItemId}
+                >
+                  <option value="">Select a map</option>
+                  {#each mapOptions as option}
+                    <option value={option.id}>{option.name}</option>
+                  {/each}
+                </select>
+                <button
+                  type="button"
+                  class="rounded-full border border-slate-700 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-300 transition hover:border-slate-500"
+                  on:click={() => (runForm.mapItemId = '')}
+                >
+                  Clear
+                </button>
+              </div>
+              <p class="text-[11px] uppercase tracking-[0.3em] text-slate-500">Quick select to track map drops</p>
             </label>
             <label class="flex items-center gap-3 text-xs uppercase tracking-widest text-slate-400">
               <input type="checkbox" bind:checked={runForm.freeLoadout} />
@@ -372,8 +416,41 @@
             {$activeRunStore && !$activeRunStore.endedAt ? 'Save & close run' : 'Log run'}
           </button>
         </form>
+
+        <div class="space-y-3 rounded-2xl border border-slate-800/70 bg-slate-950/70 p-4">
+          <div class="flex items-center justify-between gap-2">
+            <h3 class="text-sm font-semibold uppercase tracking-[0.3em] text-slate-300">Look out list</h3>
+            <span class="text-[11px] uppercase tracking-[0.3em] text-slate-500">Keep/save items</span>
+          </div>
+          {#if lookOut.length === 0}
+            <p class="text-sm text-slate-500">Recommendations will appear once personalization data is available.</p>
+          {:else}
+            <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {#each lookOut as recommendation}
+                <RecommendationCard
+                  variant="token"
+                  name={recommendation.name}
+                  action={recommendation.action}
+                  rarity={recommendation.rarity}
+                  reason={recommendation.rationale}
+                  category={recommendation.category}
+                  slug={recommendation.slug}
+                  imageUrl={recommendation.imageUrl}
+                  sellPrice={recommendation.sellPrice}
+                  salvageValue={recommendation.salvageValue}
+                  salvageBreakdown={recommendation.salvageBreakdown}
+                  questNeeds={recommendation.questNeeds}
+                  upgradeNeeds={recommendation.upgradeNeeds}
+                  projectNeeds={recommendation.projectNeeds}
+                  needs={recommendation.needs}
+                  alwaysKeepCategory={recommendation.alwaysKeepCategory}
+                  wishlistSources={recommendation.wishlistSources}
+                />
+              {/each}
+            </div>
+          {/if}
+        </div>
       </div>
-      <TipsPanel heading="Adaptive run tips" tips={tips} />
     </div>
   </section>
 
@@ -422,6 +499,7 @@
         <thead>
           <tr class="text-xs uppercase tracking-widest text-slate-500">
             <th class="rounded-l-xl bg-slate-900/60 px-3 py-2 text-left">When</th>
+            <th class="bg-slate-900/60 px-3 py-2 text-left">Map</th>
             <th class="bg-slate-900/60 px-3 py-2 text-left">XP</th>
             <th class="bg-slate-900/60 px-3 py-2 text-left">Value</th>
             <th class="bg-slate-900/60 px-3 py-2 text-left">Extract</th>
@@ -433,6 +511,7 @@
           {#each $runs as run}
             <tr class="rounded-xl bg-slate-900/40">
               <td class="rounded-l-xl px-3 py-2">{new Date(run.startedAt).toLocaleString()}</td>
+              <td class="px-3 py-2 text-slate-300">{mapLookup.get(run.mapItemId ?? '')?.name ?? run.mapName ?? '—'}</td>
               <td class="px-3 py-2">{run.totalXp?.toLocaleString() ?? '—'}</td>
               <td class="px-3 py-2">{run.totalValue?.toLocaleString() ?? '—'}</td>
               <td class="px-3 py-2">{run.extractedValue?.toLocaleString() ?? '—'}</td>
@@ -478,11 +557,45 @@
             </label>
             <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
               Deaths
-              <input class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white" type="number" bind:value={editForm.deaths} />
+              <div class="flex flex-col gap-2 rounded-lg border border-slate-800/70 bg-slate-950/70 p-3">
+                <label class="flex items-center gap-2 text-[11px] uppercase tracking-[0.3em] text-slate-400">
+                  <input type="checkbox" bind:checked={editForm.died} />
+                  Died this run
+                </label>
+                <input
+                  class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white disabled:opacity-40"
+                  type="number"
+                  min="0"
+                  placeholder="1"
+                  bind:value={editForm.deaths}
+                  disabled={!editForm.died}
+                />
+              </div>
             </label>
             <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
               Crew
               <input class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white" type="text" bind:value={editForm.crew} />
+            </label>
+            <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
+              Map
+              <div class="flex flex-wrap items-center gap-3">
+                <select
+                  class="min-w-[12rem] flex-1 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white"
+                  bind:value={editForm.mapItemId}
+                >
+                  <option value="">Select a map</option>
+                  {#each mapOptions as option}
+                    <option value={option.id}>{option.name}</option>
+                  {/each}
+                </select>
+                <button
+                  type="button"
+                  class="rounded-full border border-slate-700 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-300 transition hover:border-slate-500"
+                  on:click={() => (editForm.mapItemId = '')}
+                >
+                  Clear
+                </button>
+              </div>
             </label>
           </div>
           <label class="mt-4 flex flex-col gap-2 text-xs uppercase tracking-widest text-slate-400">

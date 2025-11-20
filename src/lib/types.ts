@@ -251,6 +251,9 @@ export interface RunLogEntry {
   totalValue?: number;
   extractedValue?: number;
   deaths?: number;
+  died?: boolean;
+  mapItemId?: string;
+  mapName?: string;
   notes?: string;
   freeLoadout?: boolean;
   crew?: string;
