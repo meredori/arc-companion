@@ -459,7 +459,6 @@ export const runs = {
       totalXp: entry.totalXp,
       totalValue: entry.totalValue,
       extractedValue: entry.extractedValue,
-      deaths: entry.deaths,
       died: entry.died,
       mapItemId: entry.mapItemId,
       mapName: entry.mapName,

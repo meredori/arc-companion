@@ -250,7 +250,6 @@ export interface RunLogEntry {
   totalXp?: number;
   totalValue?: number;
   extractedValue?: number;
-  deaths?: number;
   died?: boolean;
   mapItemId?: string;
   mapName?: string;

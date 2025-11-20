@@ -141,16 +141,12 @@
     const xp = Number(runForm.xp);
     const value = Number(runForm.value);
     const extract = Number(runForm.extracted);
-    const deaths = Number(runForm.deaths);
     const selectedMap = runForm.mapItemId ? mapLookup.get(runForm.mapItemId) : null;
-    const died = runForm.died || (Number.isFinite(deaths) && deaths > 0);
-    const resolvedDeaths = died ? (Number.isFinite(deaths) && deaths > 0 ? deaths : 1) : undefined;
     return {
       totalXp: Number.isFinite(xp) && xp > 0 ? xp : undefined,
       totalValue: Number.isFinite(value) && value > 0 ? value : undefined,
       extractedValue: Number.isFinite(extract) && extract > 0 ? extract : undefined,
-      deaths: resolvedDeaths,
-      died: died ? true : undefined,
+      died: runForm.died ? true : undefined,
       mapItemId: selectedMap?.id,
       mapName: selectedMap?.name,
       notes: runForm.notes ? runForm.notes.trim() : undefined,
@@ -192,8 +188,7 @@
       xp: run.totalXp?.toString() ?? '',
       value: run.totalValue?.toString() ?? '',
       extracted: run.extractedValue?.toString() ?? '',
-      deaths: run.deaths?.toString() ?? '',
-      died: run.died ?? Boolean(run.deaths && run.deaths > 0),
+      died: run.died ?? false,
       mapItemId: run.mapItemId ?? '',
       notes: run.notes ?? '',
       crew: run.crew ?? ''
@@ -211,11 +206,6 @@
       totalXp: editForm.xp ? Number(editForm.xp) : undefined,
       totalValue: editForm.value ? Number(editForm.value) : undefined,
       extractedValue: editForm.extracted ? Number(editForm.extracted) : undefined,
-      deaths: editForm.died
-        ? editForm.deaths
-          ? Number(editForm.deaths)
-          : 1
-        : undefined,
       died: editForm.died ? true : undefined,
       mapItemId: editForm.mapItemId || undefined,
       mapName: editForm.mapItemId ? mapLookup.get(editForm.mapItemId)?.name : undefined,
@@ -233,7 +223,6 @@
       xp: '',
       value: '',
       extracted: '',
-      deaths: '',
       died: false,
       mapItemId: '',
       notes: '',
@@ -247,7 +236,6 @@
       xp: '',
       value: '',
       extracted: '',
-      deaths: '',
       died: false,
       mapItemId: '',
       notes: '',
@@ -344,24 +332,9 @@
                 bind:value={runForm.extracted}
               />
             </label>
-            <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
-              Deaths
-              <div class="flex flex-col gap-2 rounded-lg border border-slate-800/80 bg-slate-950/70 p-3">
-                <label class="flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-slate-400">
-                  <input type="checkbox" bind:checked={runForm.died} />
-                  Died this run
-                </label>
-                <div class="flex items-center gap-3">
-                  <input
-                    class="w-28 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white disabled:opacity-40"
-                    type="number"
-                    min="0"
-                    placeholder="1"
-                    bind:value={runForm.deaths}
-                    disabled={!runForm.died}
-                  />
-                </div>
-              </div>
+            <label class="flex items-center gap-3 text-xs uppercase tracking-widest text-slate-400">
+              <input type="checkbox" bind:checked={runForm.died} />
+              Died this run
             </label>
           </div>
           <div class="grid gap-4 sm:grid-cols-2">
@@ -555,22 +528,9 @@
               Extract
               <input class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white" type="number" bind:value={editForm.extracted} />
             </label>
-            <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
-              Deaths
-              <div class="flex flex-col gap-2 rounded-lg border border-slate-800/70 bg-slate-950/70 p-3">
-                <label class="flex items-center gap-2 text-[11px] uppercase tracking-[0.3em] text-slate-400">
-                  <input type="checkbox" bind:checked={editForm.died} />
-                  Died this run
-                </label>
-                <input
-                  class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white disabled:opacity-40"
-                  type="number"
-                  min="0"
-                  placeholder="1"
-                  bind:value={editForm.deaths}
-                  disabled={!editForm.died}
-                />
-              </div>
+            <label class="flex items-center gap-3 text-xs uppercase tracking-widest text-slate-400">
+              <input type="checkbox" bind:checked={editForm.died} />
+              Died this run
             </label>
             <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
               Crew
