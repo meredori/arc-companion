@@ -1,4 +1,4 @@
-import type { ItemRecycleEntry, RecommendationAction, RecommendationWishlistSource } from '$lib/types';
+import type { RecommendationAction } from '$lib/types';
 
 export type SearchBarInputDetail = {
   value: string;
@@ -13,11 +13,7 @@ export type RecommendationCardProps = {
   category?: string;
   slug?: string;
   imageUrl?: string | null;
-  sellPrice?: number;
-  salvageValue?: number;
-  salvageBreakdown?: ItemRecycleEntry[];
   variant?: 'simple' | 'token';
-  wishlistSources?: RecommendationWishlistSource[];
   showActionBadge?: boolean;
 };
 

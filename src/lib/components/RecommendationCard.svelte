@@ -15,11 +15,7 @@
   export let imageUrl: RecommendationCardProps['imageUrl'] = undefined;
   export let reason: RecommendationCardProps['reason'] = undefined;
   export let usageLines: RecommendationCardProps['usageLines'] = [];
-  export let sellPrice: RecommendationCardProps['sellPrice'] = undefined;
-  export let salvageValue: RecommendationCardProps['salvageValue'] = undefined;
-  export let salvageBreakdown: RecommendationCardProps['salvageBreakdown'] = [];
   export let variant: RecommendationCardProps['variant'] = 'simple';
-  export let wishlistSources: RecommendationCardProps['wishlistSources'] = [];
   export let showActionBadge: RecommendationCardProps['showActionBadge'] = true;
 
   const ACTION_COPY = {
@@ -63,8 +59,6 @@
     const prefix = assets || base || '';
     return `${prefix}${imageUrl}`.replace(/\/{2,}/g, '/');
   })();
-  $: formattedSell = sellPrice !== undefined ? sellPrice.toLocaleString() : null;
-  $: formattedSalvage = salvageValue !== undefined ? salvageValue.toLocaleString() : null;
   $: displayUsageLines = (() => {
     const normalized = (usageLines ?? [])
       .map((line) => line?.trim())

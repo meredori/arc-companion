@@ -470,11 +470,7 @@
                   category={recommendation.category}
                   slug={recommendation.slug}
                   imageUrl={recommendation.imageUrl}
-                  sellPrice={recommendation.sellPrice}
-                  salvageValue={recommendation.salvageValue}
-                  salvageBreakdown={recommendation.salvageBreakdown}
                   usageLines={recommendation.usageLines}
-                  wishlistSources={recommendation.wishlistSources}
                   showActionBadge={false}
                 />
               {/each}
