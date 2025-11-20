@@ -50,13 +50,31 @@ const localImageNames: Set<string> = (() => {
   }
 })();
 
-const resolveImageUrl = (source: string | null | undefined): string | null => {
-  if (!source) return null;
-  const filename = path.basename(source);
-  if (localImageNames.has(filename)) {
-    return `/images/items/${filename}`;
+const resolveImageUrl = (id: string | null, source: string | null | undefined): string | null => {
+  const candidates: string[] = [];
+
+  if (id) {
+    const lower = id.trim().toLowerCase();
+    const withoutPrefix = lower.replace(/^item[_-]/, '');
+    const underscoreName = `${withoutPrefix.replace(/[^a-z0-9]+/g, '_')}.png`;
+    const hyphenName = `${withoutPrefix.replace(/[^a-z0-9]+/g, '-')}.png`;
+    candidates.push(underscoreName);
+    if (hyphenName !== underscoreName) {
+      candidates.push(hyphenName);
+    }
   }
-  return source;
+
+  if (source) {
+    candidates.push(path.basename(source));
+  }
+
+  for (const candidate of candidates) {
+    if (localImageNames.has(candidate)) {
+      return `/images/items/${candidate}`;
+    }
+  }
+
+  return source ?? null;
 };
 
 interface RawItem {
@@ -191,7 +209,7 @@ export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
       craftsFrom: [],
       craftsInto: [],
       notes: englishText(raw.description)?.trim() || null,
-      imageUrl: resolveImageUrl(raw.imageFilename)
+      imageUrl: resolveImageUrl(raw.id, raw.imageFilename)
     });
   }
 
@@ -219,7 +237,7 @@ export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
       slug,
       rarity: raw.rarity ?? null,
       category: raw.type ?? null,
-      imageUrl: resolveImageUrl(raw.imageFilename),
+      imageUrl: resolveImageUrl(raw.id, raw.imageFilename),
       sell: typeof raw.value === 'number' ? raw.value : 0,
       recyclesInto: convertRecycleEntries(recycleSource, nameLookup),
       salvagesInto: convertRecycleEntries(recycleSource, nameLookup),
