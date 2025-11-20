@@ -1,4 +1,4 @@
-export type RecommendationAction = 'save' | 'keep' | 'recycle' | 'sell';
+export type RecommendationAction = 'keep' | 'recycle' | 'sell';
 export type RecommendationSort = 'category' | 'alphabetical';
 
 export interface ItemRecycleEntry {

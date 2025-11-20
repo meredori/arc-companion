@@ -26,14 +26,12 @@
   export let wishlistSources: RecommendationCardProps['wishlistSources'] = [];
 
   const ACTION_COPY = {
-    save: 'Save',
     keep: 'Keep',
     recycle: 'Recycle',
     sell: 'Sell'
   } as const;
 
   const ACTION_STYLES = {
-    save: 'bg-emerald-500/20 text-emerald-200 border border-emerald-400/60',
     keep: 'bg-sky-500/20 text-sky-200 border border-sky-400/60',
     recycle: 'bg-amber-500/20 text-amber-200 border border-amber-400/60',
     sell: 'bg-rose-500/20 text-rose-200 border border-rose-400/60'
@@ -143,38 +141,45 @@
           </div>
         {/if}
 
-        {#if reason}
-          <p class="text-slate-300">{reason}</p>
-        {:else}
-          <p class="text-slate-500">Action rationale will appear once personalization syncs.</p>
+        {#if action !== 'keep'}
+          {#if reason}
+            <p class="text-slate-300">{reason}</p>
+          {:else}
+            <p class="text-slate-500">Action rationale will appear once personalization syncs.</p>
+          {/if}
         {/if}
 
-        {#if action === 'save'}
-          <div class="space-y-1">
-            <p class="text-[10px] uppercase tracking-widest text-slate-400">
-              Quest turn-ins ({needs?.quests ?? 0})
-            </p>
-            <ul class="space-y-1 text-slate-200">
-              {#each questNeeds as quest}
-                <li class="flex items-center justify-between gap-2 rounded-lg border border-slate-800/70 bg-slate-900/60 px-3 py-2">
-                  <span class="truncate">{quest.name}</span>
-                  <span class="inline-flex items-center gap-2 rounded-full border border-slate-700/70 bg-slate-900/80 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-emerald-100">
-                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-300/80"></span>
-                    ×{quest.qty}
-                  </span>
-                </li>
-              {:else}
-                <li class="text-slate-500">All quest needs satisfied.</li>
-              {/each}
-            </ul>
-          </div>
-        {:else if action === 'keep'}
+        {#if action === 'keep'}
           <div class="space-y-2">
-            <p class="text-[10px] uppercase tracking-widest text-slate-400">Keep rationale</p>
+            {#if reason}
+              <p class="text-slate-300">{reason}</p>
+            {:else}
+              <p class="text-slate-500">Action rationale will appear once personalization syncs.</p>
+            {/if}
             {#if alwaysKeepCategory}
               <p class="rounded-lg border border-sky-500/30 bg-sky-500/10 px-2 py-1 text-sky-100">
                 Always keep — {category ?? 'Category'} flagged in admin controls.
               </p>
+            {/if}
+            {#if questNeeds.length > 0}
+              <div>
+                <p class="text-[10px] uppercase tracking-widest text-slate-400">
+                  Quest turn-ins ({needs?.quests ?? 0})
+                </p>
+                <ul class="space-y-1 text-slate-200">
+                  {#each questNeeds as quest}
+                    <li class="flex items-center justify-between gap-2 rounded-lg border border-slate-800/70 bg-slate-900/60 px-3 py-2">
+                      <span class="truncate">{quest.name}</span>
+                      <span class="inline-flex items-center gap-2 rounded-full border border-slate-700/70 bg-slate-900/80 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-emerald-100">
+                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-300/80"></span>
+                        ×{quest.qty}
+                      </span>
+                    </li>
+                  {:else}
+                    <li class="text-slate-500">All quest needs satisfied.</li>
+                  {/each}
+                </ul>
+              </div>
             {/if}
             {#if upgradeNeeds.length > 0}
               <div>
@@ -204,7 +209,7 @@
                 </ul>
               </div>
             {/if}
-            {#if !alwaysKeepCategory && upgradeNeeds.length === 0 && projectNeeds.length === 0}
+            {#if !alwaysKeepCategory && upgradeNeeds.length === 0 && projectNeeds.length === 0 && questNeeds.length === 0}
               <p class="text-slate-500">Future upgrades will call for this soon.</p>
             {/if}
           </div>

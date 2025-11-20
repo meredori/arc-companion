@@ -160,6 +160,10 @@ function collectRequirements(
       if (normalizedCategory && ignoredCategories.has(normalizedCategory)) {
         continue;
       }
+      const isBasicMaterial = normalizedCategory === 'basic material';
+      if (isBasicMaterial && depth > 1) {
+        continue;
+      }
     }
     const existing = acc.get(requirement.itemId);
     if (existing) {

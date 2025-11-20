@@ -31,7 +31,7 @@
 
   const { items, quests: questDefs, workbenchUpgrades: upgradeDefs, projects } = data;
 
-  const mapLookup = new Map(items.map((item) => [item.id, item] as const));
+  const itemLookup = new Map(items.map((item) => [item.id, item] as const));
   const mapOptions = items
     .filter((item) => item.category?.toLowerCase().includes('map'))
     .map((item) => ({ id: item.id, name: item.name }))
@@ -58,13 +58,75 @@
       })
   );
 
-  const recommendationSortStore = derived(settings, ($settings) => $settings.recommendationSort ?? 'category');
-  const lookOutStore = derived([recommendationContextStore, recommendationSortStore], ([context, sort]) =>
-    recommendItemsMatching('', context, { sortMode: sort })
-      .filter((rec) => rec.action === 'keep' || rec.action === 'save')
+  const rarityRank = (rarity?: string) => {
+    const priority = ['legendary', 'epic', 'rare', 'uncommon', 'common'] as const;
+    if (!rarity) return priority.length;
+    const normalized = rarity.toLowerCase().replace(/\s+/g, ' ').trim();
+    const token = normalized.split(/[^a-z]+/i)[0] ?? '';
+    const index = priority.findIndex((label) => label === token);
+    if (index !== -1) return index;
+    const fuzzy = priority.findIndex((label) => normalized.startsWith(label));
+    return fuzzy === -1 ? priority.length : fuzzy;
+  };
+
+  const lookOutStore = derived([recommendationContextStore], ([context]) => {
+    const recommendations = recommendItemsMatching('', context, { sortMode: 'alphabetical' });
+    const wantIds = new Set(context.wantList.map((entry) => entry.itemId));
+    const priorityMap = new Map<string, number>();
+
+    const registerPriority = (itemId: string, rank: number) => {
+      const existing = priorityMap.get(itemId) ?? Number.MAX_SAFE_INTEGER;
+      priorityMap.set(itemId, Math.min(existing, rank));
+    };
+
+    const isDerivedBasicMaterial = (itemId: string) => {
+      const category = itemLookup.get(itemId)?.category?.toLowerCase();
+      return category === 'basic material' && !wantIds.has(itemId);
+    };
+
+    for (const dependency of context.wantListDependencies ?? []) {
+      registerPriority(dependency.entry.itemId, 0);
+      for (const requirement of dependency.requirements) {
+        const category = itemLookup.get(requirement.itemId)?.category?.toLowerCase();
+        const isBasicMaterial = category === 'basic material';
+        if (isBasicMaterial && requirement.depth > 1) {
+          continue;
+        }
+        registerPriority(requirement.itemId, requirement.depth === 1 ? 1 : 2);
+      }
+
+      for (const material of dependency.materials) {
+        if (isDerivedBasicMaterial(material.sourceItemId)) continue;
+        registerPriority(material.sourceItemId, 2);
+      }
+
+      for (const product of dependency.products) {
+        if (isDerivedBasicMaterial(product.itemId)) continue;
+        registerPriority(product.itemId, 2);
+      }
+
+      for (const recycler of dependency.recycleSources) {
+        if (isDerivedBasicMaterial(recycler.sourceItemId)) continue;
+        registerPriority(recycler.sourceItemId, 2);
+      }
+    }
+
+    const rankFor = (itemId: string) => {
+      if (wantIds.has(itemId)) return 0;
+      return priorityMap.get(itemId) ?? Number.MAX_SAFE_INTEGER;
+    };
+
+    return recommendations
+      .filter((rec) => wantIds.has(rec.itemId) || priorityMap.has(rec.itemId))
       .map((rec) => ({ ...rec, action: 'keep' as const }))
-      .slice(0, 12)
-  );
+      .sort((a, b) => {
+        const priorityDiff = rankFor(a.itemId) - rankFor(b.itemId);
+        if (priorityDiff !== 0) return priorityDiff;
+        const rarityDiff = rarityRank(a.rarity) - rarityRank(b.rarity);
+        if (rarityDiff !== 0) return rarityDiff;
+        return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
+      });
+  });
 
   const activeRunStore = derived(runs, ($runs) => $runs.find((run) => !run.endedAt) ?? null);
 
@@ -75,7 +137,7 @@
       .slice(0, 2)
       .map((run) => ({
         name: run.notes || new Date(run.startedAt).toLocaleString(),
-        action: 'save' as const,
+        action: 'keep' as const,
         rarity: run.crew ? `${run.crew} · ${formatDuration(run)}` : formatDuration(run),
         reason: `Extracted ${run.extractedValue?.toLocaleString() ?? 0} coins.`
       }))
@@ -141,7 +203,7 @@
     const xp = Number(runForm.xp);
     const value = Number(runForm.value);
     const extract = Number(runForm.extracted);
-    const selectedMap = runForm.mapItemId ? mapLookup.get(runForm.mapItemId) : null;
+    const selectedMap = runForm.mapItemId ? itemLookup.get(runForm.mapItemId) : null;
     return {
       totalXp: Number.isFinite(xp) && xp > 0 ? xp : undefined,
       totalValue: Number.isFinite(value) && value > 0 ? value : undefined,
@@ -208,7 +270,7 @@
       extractedValue: editForm.extracted ? Number(editForm.extracted) : undefined,
       died: editForm.died ? true : undefined,
       mapItemId: editForm.mapItemId || undefined,
-      mapName: editForm.mapItemId ? mapLookup.get(editForm.mapItemId)?.name : undefined,
+      mapName: editForm.mapItemId ? itemLookup.get(editForm.mapItemId)?.name : undefined,
       notes: editForm.notes || undefined,
       crew: editForm.crew || undefined
     });
@@ -393,7 +455,7 @@
         <div class="space-y-3 rounded-2xl border border-slate-800/70 bg-slate-950/70 p-4">
           <div class="flex items-center justify-between gap-2">
             <h3 class="text-sm font-semibold uppercase tracking-[0.3em] text-slate-300">Look out list</h3>
-            <span class="text-[11px] uppercase tracking-[0.3em] text-slate-500">Keep/save items</span>
+            <span class="text-[11px] uppercase tracking-[0.3em] text-slate-500">Keep targets</span>
           </div>
           {#if lookOut.length === 0}
             <p class="text-sm text-slate-500">Recommendations will appear once personalization data is available.</p>
@@ -484,7 +546,7 @@
           {#each $runs as run}
             <tr class="rounded-xl bg-slate-900/40">
               <td class="rounded-l-xl px-3 py-2">{new Date(run.startedAt).toLocaleString()}</td>
-              <td class="px-3 py-2 text-slate-300">{mapLookup.get(run.mapItemId ?? '')?.name ?? run.mapName ?? '—'}</td>
+              <td class="px-3 py-2 text-slate-300">{itemLookup.get(run.mapItemId ?? '')?.name ?? run.mapName ?? '—'}</td>
               <td class="px-3 py-2">{run.totalXp?.toLocaleString() ?? '—'}</td>
               <td class="px-3 py-2">{run.totalValue?.toLocaleString() ?? '—'}</td>
               <td class="px-3 py-2">{run.extractedValue?.toLocaleString() ?? '—'}</td>

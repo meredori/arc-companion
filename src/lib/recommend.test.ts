@@ -375,9 +375,9 @@ const context = buildRecommendationContext({
   ignoredCategories: []
 });
 
-  it('prefers save for quest items', () => {
+  it('keeps quest items', () => {
     const result = recommendItem(getItem('item-alpha'), context);
-    expect(result.action).toBe('save');
+    expect(result.action).toBe('keep');
     expect(result.needs.quests).toBe(2);
     expect(result.rationale).toContain('Required');
   });
