@@ -4,7 +4,7 @@
 </script>
 
 <script lang="ts">
-  import { base } from '$app/paths';
+  import { assets, base } from '$app/paths';
   import type { RecommendationCardProps } from './types';
 
   export let name: RecommendationCardProps['name'];
@@ -61,10 +61,13 @@
       .slice(0, 3)
       .toUpperCase();
   $: tooltipId = `loot-tooltip-${sanitize(slug ?? name)}`;
-  $: resolvedImageUrl =
-    imageUrl && imageUrl.startsWith('/')
-      ? `${base}${imageUrl}`.replace(/\/{2,}/g, '/')
-      : imageUrl;
+  $: resolvedImageUrl = (() => {
+    if (!imageUrl) return imageUrl;
+    if (!imageUrl.startsWith('/')) return imageUrl;
+
+    const prefix = assets || base || '';
+    return `${prefix}${imageUrl}`.replace(/\/{2,}/g, '/');
+  })();
   $: formattedSell = sellPrice !== undefined ? sellPrice.toLocaleString() : null;
   $: formattedSalvage = salvageValue !== undefined ? salvageValue.toLocaleString() : null;
   $: wishlistSummary = (() => {
