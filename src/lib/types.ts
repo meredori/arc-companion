@@ -196,6 +196,7 @@ export interface ItemRecommendation {
   imageUrl?: string | null;
   action: RecommendationAction;
   rationale: string;
+  usageLines: string[];
   sellPrice: number;
   salvageValue: number;
   salvageBreakdown: ItemRecycleEntry[];

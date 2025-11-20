@@ -16,6 +16,7 @@ export type RecommendationCardProps = {
   action: RecommendationAction;
   rarity?: string;
   reason?: string;
+  usageLines?: string[];
   category?: string;
   slug?: string;
   imageUrl?: string | null;

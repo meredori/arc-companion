@@ -152,6 +152,31 @@ function deriveWishlistSources(
   return result;
 }
 
+function summarizeWishlistSources(
+  sources: RecommendationWishlistSource[]
+): { name: string; notes: string[] }[] {
+  if (!sources || sources.length === 0) return [];
+
+  const map = new Map<string, { name: string; notes: Set<string> }>();
+  for (const source of sources) {
+    const note = source.note?.trim();
+    const entry = map.get(source.targetItemId);
+    if (entry) {
+      if (note) entry.notes.add(note);
+    } else {
+      map.set(source.targetItemId, {
+        name: source.targetName,
+        notes: note ? new Set([note]) : new Set()
+      });
+    }
+  }
+
+  return Array.from(map.values()).map((entry) => ({
+    name: entry.name,
+    notes: Array.from(entry.notes)
+  }));
+}
+
 export function buildRecommendationContext(params: {
   items: ItemRecord[];
   quests: Quest[];
@@ -295,6 +320,7 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
       : false;
 
   const wishlistSources = context.wishlistSourcesByItem[item.id] ?? [];
+  const wishlistSummary = summarizeWishlistSources(wishlistSources);
 
   let action: RecommendationAction = 'sell';
   let rationale = 'Not needed for wishlist targets, upgrades, or projects. Sell extras for coins.';
@@ -376,6 +402,37 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
     rationale = rationale.endsWith('.') ? `${rationale} ${wishlistReason}` : `${rationale}. ${wishlistReason}`;
   }
 
+  const usageLines = (() => {
+    const lines = new Set<string>();
+    const append = (value?: string | null) => {
+      const normalized = value?.trim();
+      if (normalized) lines.add(normalized);
+    };
+
+    wishlistSummary.forEach((target) =>
+      append(
+        `Wishlist target: ${target.name}${
+          target.notes.length > 0 ? ` — ${target.notes.join('; ')}` : ''
+        }`
+      )
+    );
+    if (questNeed.total > 0) {
+      append(`Quest turn-ins remaining: ${questNeed.total}`);
+    }
+    if (upgradeNeed.total > 0) {
+      append(`Workbench upgrades need ${upgradeNeed.total} item${upgradeNeed.total > 1 ? 's' : ''}.`);
+    }
+    if (projectNeed.total > 0) {
+      append(`Projects need ${projectNeed.total} item${projectNeed.total > 1 ? 's' : ''}.`);
+    }
+    if (alwaysKeepCategory) {
+      append(`Always keep — ${item.category ?? 'Category'} flagged for retention.`);
+    }
+    append(rationale);
+
+    return Array.from(lines.values());
+  })();
+
   return {
     itemId: item.id,
     name: item.name,
@@ -385,6 +442,7 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
     imageUrl: item.imageUrl ?? null,
     action,
     rationale,
+    usageLines,
     sellPrice: item.sell,
     salvageValue,
     salvageBreakdown: item.recyclesInto ?? item.salvagesInto,

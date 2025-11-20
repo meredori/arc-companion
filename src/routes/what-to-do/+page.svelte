@@ -240,6 +240,7 @@
               projectNeeds={recommendation.projectNeeds}
               needs={recommendation.needs}
               alwaysKeepCategory={recommendation.alwaysKeepCategory}
+              usageLines={recommendation.usageLines}
               wishlistSources={recommendation.wishlistSources}
             />
           {/each}

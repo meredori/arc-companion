@@ -14,6 +14,7 @@
   export let slug: RecommendationCardProps['slug'] = undefined;
   export let imageUrl: RecommendationCardProps['imageUrl'] = undefined;
   export let reason: RecommendationCardProps['reason'] = undefined;
+  export let usageLines: RecommendationCardProps['usageLines'] = [];
   export let sellPrice: RecommendationCardProps['sellPrice'] = undefined;
   export let salvageValue: RecommendationCardProps['salvageValue'] = undefined;
   export let salvageBreakdown: RecommendationCardProps['salvageBreakdown'] = [];
@@ -69,53 +70,16 @@
   })();
   $: formattedSell = sellPrice !== undefined ? sellPrice.toLocaleString() : null;
   $: formattedSalvage = salvageValue !== undefined ? salvageValue.toLocaleString() : null;
-  $: wishlistSummary = (() => {
-    if (!wishlistSources || wishlistSources.length === 0) return [] as { name: string; notes: string[] }[];
-    const map = new Map<string, { name: string; notes: Set<string> }>();
-    for (const source of wishlistSources) {
-      const note = source.note?.trim();
-      const entry = map.get(source.targetItemId);
-      if (entry) {
-        if (note) entry.notes.add(note);
-      } else {
-        map.set(source.targetItemId, {
-          name: source.targetName,
-          notes: note ? new Set([note]) : new Set()
-        });
-      }
-    }
-    return Array.from(map.values()).map((entry) => ({
-      name: entry.name,
-      notes: Array.from(entry.notes)
-    }));
-  })();
-  $: totalUpgradeQty = upgradeNeeds.reduce((sum, upgrade) => sum + upgrade.qty, 0);
-  $: totalProjectQty = projectNeeds.reduce((sum, project) => sum + project.qty, 0);
-  $: usageLines = (() => {
-    const lines = new Set<string>();
-    const append = (value?: string | null) => {
-      const normalized = value?.trim();
-      if (normalized) lines.add(normalized);
-    };
+  $: displayUsageLines = (() => {
+    const normalized = (usageLines ?? [])
+      .map((line) => line?.trim())
+      .filter((value): value is string => Boolean(value));
+    const unique = Array.from(new Set(normalized));
 
-    wishlistSummary.forEach((target) =>
-      append(`Wishlist target: ${target.name}${target.notes.length > 0 ? ` — ${target.notes.join('; ')}` : ''}`)
-    );
-    if ((needs?.quests ?? 0) > 0) {
-      append(`Quest turn-ins remaining: ${needs?.quests ?? 0}`);
-    }
-    if (totalUpgradeQty > 0) {
-      append(`Workbench upgrades need ${totalUpgradeQty} item${totalUpgradeQty > 1 ? 's' : ''}.`);
-    }
-    if (totalProjectQty > 0) {
-      append(`Projects need ${totalProjectQty} item${totalProjectQty > 1 ? 's' : ''}.`);
-    }
-    if (alwaysKeepCategory) {
-      append(`Always keep — ${category ?? 'Category'} flagged for retention.`);
-    }
-    append(reason);
+    if (unique.length > 0) return unique;
 
-    return Array.from(lines.values());
+    const fallback = reason?.trim();
+    return fallback ? [fallback] : [];
   })();
 </script>
 
@@ -162,9 +126,9 @@
           <p class="text-base font-semibold text-white">{name}</p>
         </header>
 
-        {#if usageLines.length > 0}
+        {#if displayUsageLines.length > 0}
           <ul class="space-y-1 text-slate-200">
-            {#each usageLines as line}
+            {#each displayUsageLines as line}
               <li class="flex items-start gap-2">
                 <span class="mt-1 h-1.5 w-1.5 rounded-full bg-slate-400/70"></span>
                 <span>{line}</span>
@@ -276,9 +240,9 @@
         {[category, rarity].filter(Boolean).join(' · ')}
       </p>
     {/if}
-    {#if usageLines.length > 0}
+    {#if displayUsageLines.length > 0}
       <ul class="mt-2 space-y-1 text-sm text-slate-200">
-        {#each usageLines as line}
+        {#each displayUsageLines as line}
           <li class="flex items-start gap-2">
             <span class="mt-1 h-1.5 w-1.5 rounded-full bg-slate-400/70"></span>
             <span>{line}</span>
