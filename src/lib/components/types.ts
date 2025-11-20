@@ -33,6 +33,7 @@ export type RecommendationCardProps = {
   alwaysKeepCategory?: boolean;
   variant?: 'simple' | 'token';
   wishlistSources?: RecommendationWishlistSource[];
+  showActionBadge?: boolean;
 };
 
 export type ChecklistItem = {

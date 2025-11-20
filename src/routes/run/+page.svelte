@@ -479,6 +479,7 @@
                   needs={recommendation.needs}
                   alwaysKeepCategory={recommendation.alwaysKeepCategory}
                   wishlistSources={recommendation.wishlistSources}
+                  showActionBadge={false}
                 />
               {/each}
             </div>

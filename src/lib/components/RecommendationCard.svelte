@@ -24,6 +24,7 @@
   export let alwaysKeepCategory: RecommendationCardProps['alwaysKeepCategory'] = false;
   export let variant: RecommendationCardProps['variant'] = 'simple';
   export let wishlistSources: RecommendationCardProps['wishlistSources'] = [];
+  export let showActionBadge: RecommendationCardProps['showActionBadge'] = true;
 
   const ACTION_COPY = {
     keep: 'Keep',
@@ -127,7 +128,7 @@
   >
     <div class="flex flex-col items-center gap-1.5">
       <div
-        class={`flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border bg-gradient-to-br text-sm font-semibold uppercase tracking-wide text-white ${rarityClass}`}
+        class={`flex ${showActionBadge ? 'h-16 w-16' : 'h-20 w-20'} items-center justify-center overflow-hidden rounded-2xl border bg-gradient-to-br text-sm font-semibold uppercase tracking-wide text-white ${rarityClass}`}
         aria-hidden="true"
       >
         {#if resolvedImageUrl}
@@ -136,9 +137,11 @@
           <span>{iconLabel || 'ARC'}</span>
         {/if}
       </div>
-      <span class={`rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide ${ACTION_STYLES[action]}`}>
-        {ACTION_COPY[action]}
-      </span>
+      {#if showActionBadge}
+        <span class={`rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide ${ACTION_STYLES[action]}`}>
+          {ACTION_COPY[action]}
+        </span>
+      {/if}
     </div>
 
     <div
