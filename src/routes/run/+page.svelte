@@ -118,7 +118,6 @@
 
     return recommendations
       .filter((rec) => wantIds.has(rec.itemId) || priorityMap.has(rec.itemId))
-      .map((rec) => ({ ...rec, action: 'keep' as const }))
       .sort((a, b) => {
         const priorityDiff = rankFor(a.itemId) - rankFor(b.itemId);
         if (priorityDiff !== 0) return priorityDiff;

@@ -88,6 +88,34 @@
       notes: Array.from(entry.notes)
     }));
   })();
+  $: totalUpgradeQty = upgradeNeeds.reduce((sum, upgrade) => sum + upgrade.qty, 0);
+  $: totalProjectQty = projectNeeds.reduce((sum, project) => sum + project.qty, 0);
+  $: usageLines = (() => {
+    const lines = new Set<string>();
+    const append = (value?: string | null) => {
+      const normalized = value?.trim();
+      if (normalized) lines.add(normalized);
+    };
+
+    wishlistSummary.forEach((target) =>
+      append(`Wishlist target: ${target.name}${target.notes.length > 0 ? ` — ${target.notes.join('; ')}` : ''}`)
+    );
+    if ((needs?.quests ?? 0) > 0) {
+      append(`Quest turn-ins remaining: ${needs?.quests ?? 0}`);
+    }
+    if (totalUpgradeQty > 0) {
+      append(`Workbench upgrades need ${totalUpgradeQty} item${totalUpgradeQty > 1 ? 's' : ''}.`);
+    }
+    if (totalProjectQty > 0) {
+      append(`Projects need ${totalProjectQty} item${totalProjectQty > 1 ? 's' : ''}.`);
+    }
+    if (alwaysKeepCategory) {
+      append(`Always keep — ${category ?? 'Category'} flagged for retention.`);
+    }
+    append(reason);
+
+    return Array.from(lines.values());
+  })();
 </script>
 
 {#if variant === 'token'}
@@ -131,31 +159,21 @@
           <p class="text-base font-semibold text-white">{name}</p>
         </header>
 
-        {#if wishlistSummary.length > 0}
-          <div class="mt-2 flex flex-wrap gap-2">
-            {#each wishlistSummary as target}
-              <span class="rounded-full border border-sky-500/40 bg-sky-500/10 px-2 py-0.5 text-[11px] font-semibold text-sky-100">
-                Wanted for {target.name}{target.notes.length > 0 ? ` — ${target.notes.join('; ')}` : ''}
-              </span>
+        {#if usageLines.length > 0}
+          <ul class="space-y-1 text-slate-200">
+            {#each usageLines as line}
+              <li class="flex items-start gap-2">
+                <span class="mt-1 h-1.5 w-1.5 rounded-full bg-slate-400/70"></span>
+                <span>{line}</span>
+              </li>
             {/each}
-          </div>
-        {/if}
-
-        {#if action !== 'keep'}
-          {#if reason}
-            <p class="text-slate-300">{reason}</p>
-          {:else}
-            <p class="text-slate-500">Action rationale will appear once personalization syncs.</p>
-          {/if}
+          </ul>
+        {:else}
+          <p class="text-slate-500">Action rationale will appear once personalization syncs.</p>
         {/if}
 
         {#if action === 'keep'}
           <div class="space-y-2">
-            {#if reason}
-              <p class="text-slate-300">{reason}</p>
-            {:else}
-              <p class="text-slate-500">Action rationale will appear once personalization syncs.</p>
-            {/if}
             {#if alwaysKeepCategory}
               <p class="rounded-lg border border-sky-500/30 bg-sky-500/10 px-2 py-1 text-sky-100">
                 Always keep — {category ?? 'Category'} flagged in admin controls.
@@ -183,7 +201,7 @@
             {/if}
             {#if upgradeNeeds.length > 0}
               <div>
-                <p class="text-[11px] uppercase tracking-widest text-slate-400">Owned blueprints</p>
+                <p class="text-[11px] uppercase tracking-widest text-slate-400">Workbench upgrades</p>
                 <ul class="mt-1 space-y-1 text-slate-200">
                   {#each upgradeNeeds as upgrade}
                     <li class="flex items-center justify-between gap-2">
@@ -255,17 +273,15 @@
         {[category, rarity].filter(Boolean).join(' · ')}
       </p>
     {/if}
-    {#if wishlistSummary.length > 0}
-      <div class="mt-2 flex flex-wrap gap-2">
-        {#each wishlistSummary as target}
-          <span class="rounded-full border border-sky-500/40 bg-sky-500/10 px-2 py-0.5 text-[11px] font-semibold text-sky-100">
-            Wanted for {target.name}{target.notes.length > 0 ? ` — ${target.notes.join('; ')}` : ''}
-          </span>
+    {#if usageLines.length > 0}
+      <ul class="mt-2 space-y-1 text-sm text-slate-200">
+        {#each usageLines as line}
+          <li class="flex items-start gap-2">
+            <span class="mt-1 h-1.5 w-1.5 rounded-full bg-slate-400/70"></span>
+            <span>{line}</span>
+          </li>
         {/each}
-      </div>
-    {/if}
-    {#if reason}
-      <p class="text-sm text-slate-300">{reason}</p>
+      </ul>
     {:else}
       <p class="text-sm text-slate-500">Rationale copy will be generated alongside data imports.</p>
     {/if}
