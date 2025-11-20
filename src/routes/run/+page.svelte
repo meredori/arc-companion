@@ -459,7 +459,7 @@
           {#if lookOut.length === 0}
             <p class="text-sm text-slate-500">Recommendations will appear once personalization data is available.</p>
           {:else}
-            <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div class="grid gap-2 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8">
               {#each lookOut as recommendation}
                 <RecommendationCard
                   variant="token"

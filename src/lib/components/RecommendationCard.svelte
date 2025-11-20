@@ -121,13 +121,13 @@
 {#if variant === 'token'}
   <button
     type="button"
-    class="group relative w-full rounded-xl border border-slate-900/60 bg-slate-950/50 p-2.5 text-center outline-none transition hover:border-slate-300/60 focus-visible:border-slate-200/70 focus-visible:ring-2 focus-visible:ring-slate-200/30"
+    class="group relative w-full rounded-xl border border-slate-900/60 bg-slate-950/50 p-2 text-center outline-none transition hover:border-slate-300/60 focus-visible:border-slate-200/70 focus-visible:ring-2 focus-visible:ring-slate-200/30"
     aria-describedby={tooltipId}
     aria-label={`Details for ${name}`}
   >
-    <div class="flex flex-col items-center gap-2">
+    <div class="flex flex-col items-center gap-1.5">
       <div
-        class={`flex h-24 w-24 items-center justify-center overflow-hidden rounded-3xl border bg-gradient-to-br text-base font-semibold uppercase tracking-wide text-white ${rarityClass}`}
+        class={`flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border bg-gradient-to-br text-sm font-semibold uppercase tracking-wide text-white ${rarityClass}`}
         aria-hidden="true"
       >
         {#if resolvedImageUrl}
