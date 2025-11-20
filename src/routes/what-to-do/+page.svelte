@@ -3,10 +3,9 @@
 </svelte:head>
 
 <script lang="ts">
-  import { base } from '$app/paths';
   import { derived } from 'svelte/store';
   import { onMount } from 'svelte';
-  import { RecommendationCard, SearchBar, TipsPanel } from '$lib/components';
+  import { RecommendationCard, SearchBar } from '$lib/components';
   import {
     blueprints,
     expandWantList,
@@ -19,7 +18,6 @@
     workbenchUpgrades
   } from '$lib/stores/app';
   import { buildRecommendationContext, recommendItemsMatching } from '$lib/recommend';
-  import { tipsForWhatToDo } from '$lib/tips';
   import type { RecommendationSort } from '$lib/types';
   import type { PageData } from './$types';
 
@@ -30,14 +28,6 @@
   void __whatToDoProps;
 
   const { items, quests: questDefs, workbenchUpgrades: upgradeDefs, projects } = data;
-
-  const whatIHaveTabs = [
-    { id: 'quests', label: 'Quest checklist' },
-    { id: 'workbench-upgrades', label: 'Workbench upgrades' },
-    { id: 'expedition-projects', label: 'Expedition projects' }
-  ];
-
-  const withBase = (href: string) => (base ? `${base}${href}` : href);
 
   onMount(() => {
     hydrateFromCanonical({
@@ -109,8 +99,6 @@
   );
 
   let recommendations = [];
-  let outstandingNeeds = 0;
-  let focusTips: string[] = [];
   let recommendationContext = buildRecommendationContext({
     items,
     quests: questDefs,
@@ -132,14 +120,6 @@
   $: recommendations = recommendItemsMatching(query, recommendationContext, {
     sortMode: recommendationSort
   });
-  $: outstandingNeeds = recommendItemsMatching('', recommendationContext, {
-    sortMode: recommendationSort
-  }).reduce(
-    (total, rec) => total + rec.needs.quests + rec.needs.workshop + rec.needs.projects,
-    0
-  );
-  $: focusTips = tipsForWhatToDo(outstandingNeeds);
-
   const setRecommendationSort = (mode: RecommendationSort) => {
     settings.setRecommendationSort(mode);
   };
@@ -153,18 +133,6 @@
       imports and personalization stores are connected.
     </p>
   </header>
-
-  <div class="mb-4 flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-[0.3em] text-slate-400">
-    <span class="text-slate-500">What I Have tabs</span>
-    {#each whatIHaveTabs as tab}
-      <a
-        class="rounded-full border border-slate-700 bg-slate-900/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-200 transition hover:border-slate-500"
-        href={withBase(`/what-i-have#${tab.id}`)}
-      >
-        {tab.label}
-      </a>
-    {/each}
-  </div>
 
   <section class="section-card space-y-6">
     <SearchBar
@@ -210,76 +178,73 @@
         {/if}
       </p>
     </div>
-    <div class="content-grid">
-      <div class="space-y-4">
-        <div class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-800/70 bg-slate-950/60 px-4 py-3 text-[11px] uppercase tracking-[0.3em] text-slate-400">
-          <span>{recommendations.length} matches</span>
-          <div class="flex flex-wrap items-center gap-3">
-            <span class="text-slate-300">
-              Sorted · {recommendationSort === 'alphabetical'
-                ? 'Alphabetical'
-                : 'Category → Rarity → Name'}
-            </span>
-            <div class="flex overflow-hidden rounded-full border border-slate-800">
-              <button
-                type="button"
-                class={`px-3 py-1 text-[10px] font-semibold tracking-[0.3em] transition ${
-                  recommendationSort === 'category'
-                    ? 'bg-slate-300 text-slate-900'
-                    : 'bg-slate-950/60 text-slate-300 hover:bg-slate-900'
-                }`}
-                aria-pressed={recommendationSort === 'category'}
-                on:click={() => setRecommendationSort('category')}
-              >
-                Category
-              </button>
-              <button
-                type="button"
-                class={`px-3 py-1 text-[10px] font-semibold tracking-[0.3em] transition ${
-                  recommendationSort === 'alphabetical'
-                    ? 'bg-slate-300 text-slate-900'
-                    : 'bg-slate-950/60 text-slate-300 hover:bg-slate-900'
-                }`}
-                aria-pressed={recommendationSort === 'alphabetical'}
-                on:click={() => setRecommendationSort('alphabetical')}
-              >
-                A → Z
-              </button>
-            </div>
+    <div class="space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-800/70 bg-slate-950/60 px-4 py-3 text-[11px] uppercase tracking-[0.3em] text-slate-400">
+        <span>{recommendations.length} matches</span>
+        <div class="flex flex-wrap items-center gap-3">
+          <span class="text-slate-300">
+            Sorted · {recommendationSort === 'alphabetical'
+              ? 'Alphabetical'
+              : 'Category → Rarity → Name'}
+          </span>
+          <div class="flex overflow-hidden rounded-full border border-slate-800">
+            <button
+              type="button"
+              class={`px-3 py-1 text-[10px] font-semibold tracking-[0.3em] transition ${
+                recommendationSort === 'category'
+                  ? 'bg-slate-300 text-slate-900'
+                  : 'bg-slate-950/60 text-slate-300 hover:bg-slate-900'
+              }`}
+              aria-pressed={recommendationSort === 'category'}
+              on:click={() => setRecommendationSort('category')}
+            >
+              Category
+            </button>
+            <button
+              type="button"
+              class={`px-3 py-1 text-[10px] font-semibold tracking-[0.3em] transition ${
+                recommendationSort === 'alphabetical'
+                  ? 'bg-slate-300 text-slate-900'
+                  : 'bg-slate-950/60 text-slate-300 hover:bg-slate-900'
+              }`}
+              aria-pressed={recommendationSort === 'alphabetical'}
+              on:click={() => setRecommendationSort('alphabetical')}
+            >
+              A → Z
+            </button>
           </div>
         </div>
-        {#if recommendations.length === 0}
-          <div class="rounded-2xl border border-dashed border-slate-700/60 bg-slate-950/50 p-6 text-sm text-slate-400">
-            Start typing to filter the canonical loot list. Quest and upgrade states adjust the action
-            and rationale automatically.
-          </div>
-        {:else}
-          <div class="grid gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-            {#each recommendations as recommendation}
-              <RecommendationCard
-                variant="token"
-                name={recommendation.name}
-                action={recommendation.action}
-                rarity={recommendation.rarity}
-                reason={recommendation.rationale}
-                category={recommendation.category}
-                slug={recommendation.slug}
-                imageUrl={recommendation.imageUrl}
-                sellPrice={recommendation.sellPrice}
-                salvageValue={recommendation.salvageValue}
-                salvageBreakdown={recommendation.salvageBreakdown}
-                questNeeds={recommendation.questNeeds}
-                upgradeNeeds={recommendation.upgradeNeeds}
-                projectNeeds={recommendation.projectNeeds}
-                needs={recommendation.needs}
-                alwaysKeepCategory={recommendation.alwaysKeepCategory}
-                wishlistSources={recommendation.wishlistSources}
-              />
-            {/each}
-          </div>
-        {/if}
       </div>
-      <TipsPanel heading="How recommendations adapt" tips={focusTips} />
+      {#if recommendations.length === 0}
+        <div class="rounded-2xl border border-dashed border-slate-700/60 bg-slate-950/50 p-6 text-sm text-slate-400">
+          Start typing to filter the canonical loot list. Quest and upgrade states adjust the action
+          and rationale automatically.
+        </div>
+      {:else}
+        <div class="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+          {#each recommendations as recommendation}
+            <RecommendationCard
+              variant="token"
+              name={recommendation.name}
+              action={recommendation.action}
+              rarity={recommendation.rarity}
+              reason={recommendation.rationale}
+              category={recommendation.category}
+              slug={recommendation.slug}
+              imageUrl={recommendation.imageUrl}
+              sellPrice={recommendation.sellPrice}
+              salvageValue={recommendation.salvageValue}
+              salvageBreakdown={recommendation.salvageBreakdown}
+              questNeeds={recommendation.questNeeds}
+              upgradeNeeds={recommendation.upgradeNeeds}
+              projectNeeds={recommendation.projectNeeds}
+              needs={recommendation.needs}
+              alwaysKeepCategory={recommendation.alwaysKeepCategory}
+              wishlistSources={recommendation.wishlistSources}
+            />
+          {/each}
+        </div>
+      {/if}
     </div>
   </section>
 </section>
