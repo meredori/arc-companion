@@ -473,11 +473,6 @@
                   sellPrice={recommendation.sellPrice}
                   salvageValue={recommendation.salvageValue}
                   salvageBreakdown={recommendation.salvageBreakdown}
-                  questNeeds={recommendation.questNeeds}
-                  upgradeNeeds={recommendation.upgradeNeeds}
-                  projectNeeds={recommendation.projectNeeds}
-                  needs={recommendation.needs}
-                  alwaysKeepCategory={recommendation.alwaysKeepCategory}
                   usageLines={recommendation.usageLines}
                   wishlistSources={recommendation.wishlistSources}
                   showActionBadge={false}

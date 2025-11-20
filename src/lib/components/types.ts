@@ -1,11 +1,4 @@
-import type {
-  ItemRecycleEntry,
-  ProjectNeedDetail,
-  QuestNeedDetail,
-  RecommendationAction,
-  RecommendationWishlistSource,
-  UpgradeNeedDetail
-} from '$lib/types';
+import type { ItemRecycleEntry, RecommendationAction, RecommendationWishlistSource } from '$lib/types';
 
 export type SearchBarInputDetail = {
   value: string;
@@ -23,15 +16,6 @@ export type RecommendationCardProps = {
   sellPrice?: number;
   salvageValue?: number;
   salvageBreakdown?: ItemRecycleEntry[];
-  questNeeds?: QuestNeedDetail[];
-  upgradeNeeds?: UpgradeNeedDetail[];
-  projectNeeds?: ProjectNeedDetail[];
-  needs?: {
-    quests?: number;
-    workshop?: number;
-    projects?: number;
-  };
-  alwaysKeepCategory?: boolean;
   variant?: 'simple' | 'token';
   wishlistSources?: RecommendationWishlistSource[];
   showActionBadge?: boolean;

@@ -18,11 +18,6 @@
   export let sellPrice: RecommendationCardProps['sellPrice'] = undefined;
   export let salvageValue: RecommendationCardProps['salvageValue'] = undefined;
   export let salvageBreakdown: RecommendationCardProps['salvageBreakdown'] = [];
-  export let questNeeds: RecommendationCardProps['questNeeds'] = [];
-  export let upgradeNeeds: RecommendationCardProps['upgradeNeeds'] = [];
-  export let projectNeeds: RecommendationCardProps['projectNeeds'] = [];
-  export let needs: RecommendationCardProps['needs'] = { quests: 0, workshop: 0, projects: 0 };
-  export let alwaysKeepCategory: RecommendationCardProps['alwaysKeepCategory'] = false;
   export let variant: RecommendationCardProps['variant'] = 'simple';
   export let wishlistSources: RecommendationCardProps['wishlistSources'] = [];
   export let showActionBadge: RecommendationCardProps['showActionBadge'] = true;
@@ -108,6 +103,7 @@
       {/if}
     </div>
 
+    
     <div
       id={tooltipId}
       role="tooltip"
@@ -137,94 +133,6 @@
           </ul>
         {:else}
           <p class="text-slate-500">Action rationale will appear once personalization syncs.</p>
-        {/if}
-
-        {#if action === 'keep'}
-          <div class="space-y-2">
-            {#if alwaysKeepCategory}
-              <p class="rounded-lg border border-sky-500/30 bg-sky-500/10 px-2 py-1 text-sky-100">
-                Always keep — {category ?? 'Category'} flagged in admin controls.
-              </p>
-            {/if}
-            {#if questNeeds.length > 0}
-              <div>
-                <p class="text-[10px] uppercase tracking-widest text-slate-400">
-                  Quest turn-ins ({needs?.quests ?? 0})
-                </p>
-                <ul class="space-y-1 text-slate-200">
-                  {#each questNeeds as quest}
-                    <li class="flex items-center justify-between gap-2 rounded-lg border border-slate-800/70 bg-slate-900/60 px-3 py-2">
-                      <span class="truncate">{quest.name}</span>
-                      <span class="inline-flex items-center gap-2 rounded-full border border-slate-700/70 bg-slate-900/80 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-emerald-100">
-                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-300/80"></span>
-                        ×{quest.qty}
-                      </span>
-                    </li>
-                  {:else}
-                    <li class="text-slate-500">All quest needs satisfied.</li>
-                  {/each}
-                </ul>
-              </div>
-            {/if}
-            {#if upgradeNeeds.length > 0}
-              <div>
-                <p class="text-[11px] uppercase tracking-widest text-slate-400">Workbench upgrades</p>
-                <ul class="mt-1 space-y-1 text-slate-200">
-                  {#each upgradeNeeds as upgrade}
-                    <li class="flex items-center justify-between gap-2">
-                      <span class="truncate">{upgrade.name}</span>
-                      <span class="font-semibold text-white">×{upgrade.qty}</span>
-                    </li>
-                  {/each}
-                </ul>
-              </div>
-            {/if}
-            {#if projectNeeds.length > 0}
-              <div>
-                <p class="text-[11px] uppercase tracking-widest text-slate-400">Expedition projects</p>
-                <ul class="mt-1 space-y-1 text-slate-200">
-                  {#each projectNeeds as project}
-                    <li class="space-y-0.5">
-                      <div class="flex items-center justify-between gap-2">
-                        <span class="truncate">{project.projectName} · {project.phaseName}</span>
-                        <span class="font-semibold text-white">×{project.qty}</span>
-                      </div>
-                    </li>
-                  {/each}
-                </ul>
-              </div>
-            {/if}
-            {#if !alwaysKeepCategory && upgradeNeeds.length === 0 && projectNeeds.length === 0 && questNeeds.length === 0}
-              <p class="text-slate-500">Future upgrades will call for this soon.</p>
-            {/if}
-          </div>
-        {:else if action === 'recycle'}
-          <div class="space-y-1">
-            <p class="text-[10px] uppercase tracking-widest text-slate-400">
-              Recycle yield ({formattedSalvage ?? '—'} value)
-            </p>
-            <ul class="space-y-1 text-slate-200">
-              {#each salvageBreakdown as part}
-                <li class="flex items-center justify-between gap-2">
-                  <span class="truncate">{part.name}</span>
-                  <span class="font-semibold text-white">×{part.qty}</span>
-                </li>
-              {:else}
-                <li class="text-slate-500">No recycle output recorded.</li>
-              {/each}
-            </ul>
-          </div>
-        {:else if action === 'sell'}
-          <div class="space-y-1">
-            <p class="text-[10px] uppercase tracking-widest text-slate-400">Sell price</p>
-            {#if formattedSell}
-              <p class="text-2xl font-semibold text-white">
-                {formattedSell}<span class="ml-1 text-base text-slate-400">cr</span>
-              </p>
-            {:else}
-              <p class="text-slate-500">No vendor pricing available.</p>
-            {/if}
-          </div>
         {/if}
       </div>
     </div>
