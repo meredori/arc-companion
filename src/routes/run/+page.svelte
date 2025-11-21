@@ -494,10 +494,24 @@
               />
             </label>
           </div>
-          <label class="flex items-center gap-3 text-xs uppercase tracking-widest text-slate-400">
-            <input type="checkbox" bind:checked={runForm.freeLoadout} />
-            Free loadout active
-          </label>
+          <div class="grid gap-3 sm:grid-cols-2">
+            <label class="flex items-center gap-3 text-xs uppercase tracking-widest text-slate-400">
+              <input
+                class="h-4 w-4 rounded border border-slate-700 bg-slate-900 text-emerald-400 accent-emerald-400"
+                type="checkbox"
+                bind:checked={runForm.freeLoadout}
+              />
+              Free loadout active
+            </label>
+            <label class="flex items-center gap-3 text-xs uppercase tracking-widest text-slate-400">
+              <input
+                class="h-4 w-4 rounded border border-slate-700 bg-slate-900 text-emerald-400 accent-emerald-400"
+                type="checkbox"
+                bind:checked={runForm.died}
+              />
+              Died this run
+            </label>
+          </div>
           <label class="flex flex-col gap-2 text-xs uppercase tracking-widest text-slate-400">
             Notes
             <textarea
