@@ -32,9 +32,4 @@
     </span>
   </div>
   <div class="text-4xl font-bold tracking-tight text-white">{minutes}:{seconds}</div>
-  <div class="flex flex-wrap gap-2 text-xs text-slate-400">
-    <button class="chip muted" disabled>Start</button>
-    <button class="chip muted" disabled>Split</button>
-    <button class="chip muted" disabled>Reset</button>
-  </div>
 </div>

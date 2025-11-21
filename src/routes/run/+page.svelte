@@ -428,44 +428,6 @@
 
       {#if runPhase !== 'idle'}
         <RunTimer label="Active session" elapsed={elapsedSeconds} isRunning={runPhase === 'running'} />
-
-        <div class="space-y-4 rounded-2xl border border-slate-800/70 bg-slate-950/60 p-5">
-          <div class="flex items-center justify-between gap-3">
-            <div class="space-y-1">
-              <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Look out for</p>
-              <p class="text-sm text-slate-300">
-                Priority loot and materials worth grabbing during this run.
-              </p>
-            </div>
-            <span class="rounded-full bg-slate-800 px-3 py-1 text-xs font-semibold text-slate-200">
-              {$lookOutItems.length}
-            </span>
-          </div>
-          {#if $lookOutItems.length === 0}
-            <p class="text-sm text-slate-400">
-              Add wishlist targets, upgrades, or projects to see high-value pickups at a glance.
-            </p>
-          {:else}
-            <div class="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
-              {#each $lookOutItems as item}
-                <div
-                  class={`group relative flex aspect-square items-center justify-center overflow-hidden rounded-xl border p-2 text-center shadow-sm transition hover:border-emerald-500/60 hover:bg-slate-900 bg-gradient-to-br ${rarityClass(item.rarity)}`}
-                  title={`${item.name} · ${item.rationale}`}
-                >
-                  {#if item.imageUrl}
-                    <img src={item.imageUrl} alt={item.name} class="h-full w-full object-contain" loading="lazy" />
-                  {:else}
-                    <span class="text-[11px] text-slate-200">{item.name}</span>
-                  {/if}
-                  <div class="pointer-events-none absolute inset-x-0 bottom-full z-10 mb-2 hidden rounded-lg border border-slate-700 bg-slate-900/95 px-3 py-2 text-[11px] text-slate-200 shadow-xl group-hover:block">
-                    <p class="font-semibold">{item.name}</p>
-                    <p class="mt-1 text-[10px] text-slate-400">{item.rationale}</p>
-                  </div>
-                </div>
-              {/each}
-            </div>
-          {/if}
-        </div>
       {/if}
 
       {#if runPhase === 'stopped'}
@@ -552,6 +514,44 @@
           </button>
         </form>
       {/if}
+
+      <div class="space-y-4 rounded-2xl border border-slate-800/70 bg-slate-950/60 p-5">
+        <div class="flex items-center justify-between gap-3">
+          <div class="space-y-1">
+            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Look out for</p>
+            <p class="text-sm text-slate-300">
+              Priority loot and materials worth grabbing during this run.
+            </p>
+          </div>
+          <span class="rounded-full bg-slate-800 px-3 py-1 text-xs font-semibold text-slate-200">
+            {$lookOutItems.length}
+          </span>
+        </div>
+        {#if $lookOutItems.length === 0}
+          <p class="text-sm text-slate-400">
+            Add wishlist targets, upgrades, or projects to see high-value pickups at a glance.
+          </p>
+        {:else}
+          <div class="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+            {#each $lookOutItems as item}
+              <div
+                class={`group relative flex aspect-square items-center justify-center overflow-hidden rounded-xl border p-2 text-center shadow-sm transition hover:border-emerald-500/60 hover:bg-slate-900 bg-gradient-to-br ${rarityClass(item.rarity)}`}
+                title={`${item.name} · ${item.rationale}`}
+              >
+                {#if item.imageUrl}
+                  <img src={item.imageUrl} alt={item.name} class="h-full w-full object-contain" loading="lazy" />
+                {:else}
+                  <span class="text-[11px] text-slate-200">{item.name}</span>
+                {/if}
+                <div class="pointer-events-none absolute inset-x-0 bottom-full z-10 mb-2 hidden rounded-lg border border-slate-700 bg-slate-900/95 px-3 py-2 text-[11px] text-slate-200 shadow-xl group-hover:block">
+                  <p class="font-semibold">{item.name}</p>
+                  <p class="mt-1 text-[10px] text-slate-400">{item.rationale}</p>
+                </div>
+              </div>
+            {/each}
+          </div>
+        {/if}
+      </div>
     </div>
   </section>
 
