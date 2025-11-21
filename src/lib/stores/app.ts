@@ -187,6 +187,13 @@ function collectRequirements(
   }
 }
 
+function normalizeRunEntry(entry: RunLogEntry & { deaths?: number }) {
+  const { deaths, ...rest } = entry;
+  const legacyDied = typeof deaths === 'number' ? deaths > 0 : undefined;
+  const died = rest.died ?? legacyDied ?? false;
+  return { ...rest, died } satisfies RunLogEntry;
+}
+
 export function expandWantList(
   entries: WantListEntry[],
   items: ItemRecord[],
@@ -444,7 +451,7 @@ export const workbenchUpgrades = {
 };
 
 function sortRuns(entries: RunLogEntry[]) {
-  return [...entries].sort((a, b) => {
+  return [...entries].map(normalizeRunEntry).sort((a, b) => {
     return new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime();
   });
 }
@@ -459,7 +466,7 @@ export const runs = {
       totalXp: entry.totalXp,
       totalValue: entry.totalValue,
       extractedValue: entry.extractedValue,
-      deaths: entry.deaths,
+      died: entry.died ?? false,
       notes: entry.notes,
       freeLoadout: entry.freeLoadout,
       crew: entry.crew,
@@ -472,10 +479,14 @@ export const runs = {
     }));
   },
   updateEntry(id: string, updates: Partial<RunLogEntry>) {
+    const normalizedUpdates =
+      typeof updates.died === 'undefined'
+        ? updates
+        : { ...updates, died: Boolean(updates.died) };
     runStore.update((state) => ({
       ...state,
       entries: sortRuns(
-        state.entries.map((entry) => (entry.id === id ? { ...entry, ...updates } : entry))
+        state.entries.map((entry) => (entry.id === id ? { ...entry, ...normalizedUpdates } : entry))
       )
     }));
   },

@@ -9,6 +9,7 @@
   import { onDestroy } from 'svelte';
   import { derived, get } from 'svelte/store';
   import { RecommendationCard, RunTimer, TipsPanel } from '$lib/components';
+  import { assets, base } from '$app/paths';
   import {
     blueprints,
     expandWantList,
@@ -21,7 +22,6 @@
     lastRemovedRun
   } from '$lib/stores/app';
   import { buildRecommendationContext, recommendItemsMatching } from '$lib/recommend';
-  import { createRunTipContext, generateRunTips } from '$lib/tips';
   import rawMaps from '../../../static/maps.json';
   import type { PageData } from './$types';
 
@@ -63,27 +63,95 @@
       })
   );
 
-  const outstandingNeedsStore = derived(recommendationContextStore, (context) =>
-    recommendItemsMatching('', context).reduce(
-      (total, rec) => total + rec.needs.quests + rec.needs.workshop + rec.needs.projects,
-      0
-    )
-  );
-
   const activeRunStore = derived(runs, ($runs) => $runs.find((run) => !run.endedAt) ?? null);
 
-  const tipsStore = derived(
-    [activeRunStore, runs, settings, outstandingNeedsStore],
-    ([$activeRun, $runs, $settings, $needs]) =>
-      generateRunTips(
-        createRunTipContext({
-          activeRun: $activeRun,
-          runs: $runs,
-          settings: $settings,
-          outstandingNeeds: $needs
-        })
-      )
-  );
+  const resolveImageUrl = (url?: string | null) => {
+    if (!url) return url ?? null;
+    if (!url.startsWith('/')) return url;
+
+    const prefix = assets || base || '';
+    return `${prefix}${url}`.replace(/\/{2,}/g, '/');
+  };
+
+  const rarityGradients: Record<string, string> = {
+    legendary: 'from-amber-500/20 via-amber-600/20 to-amber-900/40 border-amber-400/60 shadow-amber-500/20',
+    epic: 'from-fuchsia-500/20 via-fuchsia-600/20 to-fuchsia-900/40 border-fuchsia-400/60 shadow-fuchsia-500/20',
+    rare: 'from-sky-500/20 via-sky-600/20 to-sky-900/40 border-sky-400/60 shadow-sky-500/20',
+    uncommon: 'from-emerald-500/20 via-emerald-600/20 to-emerald-900/40 border-emerald-400/60 shadow-emerald-500/20',
+    common: 'from-slate-500/10 via-slate-700/10 to-slate-900/30 border-slate-600/60 shadow-slate-700/10',
+    default: 'from-slate-900/60 via-slate-900/50 to-slate-950/80 border-slate-800/70 shadow-slate-900/30'
+  };
+
+  const rarityClass = (rarity?: string | null) =>
+    rarityGradients[rarity?.toLowerCase() ?? 'default'] ?? rarityGradients.default;
+
+  const rarityRank = (rarity?: string | null) => {
+    const priority = ['legendary', 'epic', 'rare', 'uncommon', 'common'];
+    const normalized = rarity?.toLowerCase().replace(/\s+/g, ' ').trim();
+    if (!normalized) return priority.length;
+    const token = normalized.split(/[^a-z]+/i)[0] ?? '';
+    const index = priority.findIndex((label) => label === token);
+    if (index !== -1) return index;
+    const fuzzy = priority.findIndex((label) => normalized.startsWith(label));
+    return fuzzy === -1 ? priority.length : fuzzy;
+  };
+
+  const lookOutItems = derived(recommendationContextStore, (context) => {
+    const recommendations = recommendItemsMatching('', context, { sortMode: 'alphabetical' });
+    const itemLookup = new Map(context.items.map((item) => [item.id, item]));
+    const seen = new Set<string>();
+    return recommendations
+      .filter((rec) => {
+        const totalNeeds = rec.needs.quests + rec.needs.workshop + rec.needs.projects;
+        const hasWishlist = (rec.wishlistSources?.length ?? 0) > 0;
+        const supportsRecycling = rec.action === 'recycle';
+        const category = rec.category?.toLowerCase().trim();
+        const isBasicMaterial = category === 'basic material';
+        if (isBasicMaterial) return false;
+        if (!(totalNeeds > 0 || hasWishlist || supportsRecycling)) return false;
+
+        if (supportsRecycling && !hasWishlist && totalNeeds === 0) {
+          const targets = rec.salvageBreakdown ?? [];
+          const onlyFeedsBasicMaterials =
+            targets.length > 0 &&
+            targets.every((entry) => {
+              const category = itemLookup.get(entry.itemId)?.category;
+              return category?.toLowerCase().trim() === 'basic material';
+            });
+          if (onlyFeedsBasicMaterials) return false;
+        }
+
+        return true;
+      })
+      .filter((rec) => {
+        if (seen.has(rec.itemId)) return false;
+        seen.add(rec.itemId);
+        return true;
+      })
+      .sort((a, b) => {
+        const totalNeedsA = a.needs.quests + a.needs.workshop + a.needs.projects;
+        const totalNeedsB = b.needs.quests + b.needs.workshop + b.needs.projects;
+        const hasWishlistA = (a.wishlistSources?.length ?? 0) > 0;
+        const hasWishlistB = (b.wishlistSources?.length ?? 0) > 0;
+        const isDirectA = totalNeedsA > 0 || hasWishlistA;
+        const isDirectB = totalNeedsB > 0 || hasWishlistB;
+
+        if (isDirectA !== isDirectB) return isDirectA ? -1 : 1;
+
+        const rarityDiff = rarityRank(a.rarity) - rarityRank(b.rarity);
+        if (rarityDiff !== 0) return rarityDiff;
+
+        return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
+      })
+      .map((rec) => ({
+        id: rec.itemId,
+        name: rec.name,
+        imageUrl: resolveImageUrl(rec.imageUrl),
+        rationale: rec.rationale,
+        action: rec.action,
+        rarity: rec.rarity ?? null
+      }));
+  });
 
   const highlightRuns = derived(runs, ($runs) =>
     [...$runs]
@@ -130,7 +198,6 @@
   });
 
   let runForm = createDefaultForm(get(settings).freeLoadoutDefault);
-  let tips = [];
   let elapsedSeconds = 0;
   let editingId: string | null = null;
   let editForm = createEditForm();
@@ -165,12 +232,11 @@
     const xp = Number(runForm.xp);
     const value = Number(runForm.value);
     const extract = Number(runForm.extracted);
-    const deaths = Number(runForm.deaths);
     return {
       totalXp: Number.isFinite(xp) && xp > 0 ? xp : undefined,
       totalValue: Number.isFinite(value) && value > 0 ? value : undefined,
       extractedValue: Number.isFinite(extract) && extract > 0 ? extract : undefined,
-      deaths: Number.isFinite(deaths) && deaths > 0 ? deaths : undefined,
+      died: Boolean(runForm.died),
       notes: runForm.notes ? runForm.notes.trim() : undefined,
       crew: runForm.crew ? runForm.crew.trim() : undefined,
       map: runForm.map || undefined,
@@ -219,7 +285,7 @@
       xp: run.totalXp?.toString() ?? '',
       value: run.totalValue?.toString() ?? '',
       extracted: run.extractedValue?.toString() ?? '',
-      deaths: run.deaths?.toString() ?? '',
+      died: run.died ?? false,
       notes: run.notes ?? '',
       crew: run.crew ?? '',
       map: run.map ?? ''
@@ -237,7 +303,7 @@
       totalXp: editForm.xp ? Number(editForm.xp) : undefined,
       totalValue: editForm.value ? Number(editForm.value) : undefined,
       extractedValue: editForm.extracted ? Number(editForm.extracted) : undefined,
-      deaths: editForm.deaths ? Number(editForm.deaths) : undefined,
+      died: Boolean(editForm.died),
       notes: editForm.notes || undefined,
       crew: editForm.crew || undefined,
       map: editForm.map || undefined
@@ -253,7 +319,7 @@
       xp: '',
       value: '',
       extracted: '',
-      deaths: '',
+      died: false,
       notes: '',
       crew: '',
       map: defaultMapId,
@@ -266,7 +332,7 @@
       xp: '',
       value: '',
       extracted: '',
-      deaths: '',
+      died: false,
       notes: '',
       crew: '',
       map: ''
@@ -288,7 +354,6 @@
     return `${minutes}m ${secs.toString().padStart(2, '0')}s`;
   }
 
-  $: tips = $tipsStore;
   $: {
     const active = $activeRunStore;
     if (active && !active.endedAt) {
@@ -312,117 +377,151 @@
   </header>
 
   <section class="section-card space-y-6">
-    <div class="grid gap-6 lg:grid-cols-[3fr,2fr]">
-      <div class="space-y-6">
-        <RunTimer
-          label="Active session"
-          elapsed={elapsedSeconds}
-          isRunning={$activeRunStore ? !$activeRunStore.endedAt : false}
-        />
-        <div class="flex flex-wrap gap-3">
+    <div class="space-y-6">
+      <RunTimer
+        label="Active session"
+        elapsed={elapsedSeconds}
+        isRunning={$activeRunStore ? !$activeRunStore.endedAt : false}
+      />
+      <div class="flex flex-wrap gap-3">
+        <button
+          type="button"
+          class="rounded-full bg-sky-500/20 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-sky-300 transition hover:bg-sky-500/30"
+          on:click={startRun}
+        >
+          Start run
+        </button>
+        {#if $activeRunStore && !$activeRunStore.endedAt}
           <button
             type="button"
-            class="rounded-full bg-sky-500/20 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-sky-300 transition hover:bg-sky-500/30"
-            on:click={startRun}
+            class="rounded-full bg-emerald-500/20 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-emerald-300 transition hover:bg-emerald-500/30"
+            on:click={endRun}
           >
-            Start run
+            Mark complete
           </button>
-          {#if $activeRunStore && !$activeRunStore.endedAt}
-            <button
-              type="button"
-              class="rounded-full bg-emerald-500/20 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-emerald-300 transition hover:bg-emerald-500/30"
-              on:click={endRun}
-            >
-              Mark complete
-            </button>
-          {/if}
-        </div>
-        <form class="space-y-4" on:submit|preventDefault={submitRun}>
-          <h2 class="text-base font-semibold uppercase tracking-[0.3em] text-slate-400">Run summary</h2>
-          <div class="grid gap-4 sm:grid-cols-2">
-            <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
-              XP earned
-              <input
-                class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
-                type="number"
-                min="0"
-                bind:value={runForm.xp}
-              />
-            </label>
-            <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
-              Total value
-              <input
-                class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
-                type="number"
-                min="0"
-                bind:value={runForm.value}
-              />
-            </label>
-            <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
-              Extracted value
-              <input
-                class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
-                type="number"
-                min="0"
-                bind:value={runForm.extracted}
-              />
-            </label>
-            <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
-              Deaths
-              <input
-                class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
-                type="number"
-                min="0"
-                bind:value={runForm.deaths}
-              />
-            </label>
-          </div>
-          <div class="grid gap-4 sm:grid-cols-2">
-            <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
-              Map quick-select
-              <select
-                class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
-                bind:value={runForm.map}
-              >
-                <option value="">Select a map</option>
-                {#each mapOptions as option}
-                  <option value={option.id}>{option.name}</option>
-                {/each}
-              </select>
-            </label>
-            <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
-              Crew
-              <input
-                class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
-                type="text"
-                placeholder="Solo, Crew name, etc."
-                bind:value={runForm.crew}
-              />
-            </label>
-          </div>
-          <label class="flex items-center gap-3 text-xs uppercase tracking-widest text-slate-400">
-            <input type="checkbox" bind:checked={runForm.freeLoadout} />
-            Free loadout active
-          </label>
-          <label class="flex flex-col gap-2 text-xs uppercase tracking-widest text-slate-400">
-            Notes
-            <textarea
-              class="h-24 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
-              placeholder="Drops, modifiers, or context"
-              bind:value={runForm.notes}
-            ></textarea>
-          </label>
-          <button
-            type="submit"
-            class="rounded-full bg-emerald-500/20 px-5 py-2 text-xs font-semibold uppercase tracking-wide text-emerald-300 transition hover:bg-emerald-500/30"
-          >
-            {$activeRunStore && !$activeRunStore.endedAt ? 'Save & close run' : 'Log run'}
-          </button>
-        </form>
+        {/if}
       </div>
-      <TipsPanel heading="Adaptive run tips" tips={tips} />
+      <form class="space-y-4" on:submit|preventDefault={submitRun}>
+        <h2 class="text-base font-semibold uppercase tracking-[0.3em] text-slate-400">Run summary</h2>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
+            XP earned
+            <input
+              class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
+              type="number"
+              min="0"
+              bind:value={runForm.xp}
+            />
+          </label>
+          <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
+            Total value
+            <input
+              class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
+              type="number"
+              min="0"
+              bind:value={runForm.value}
+            />
+          </label>
+          <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
+            Extracted value
+            <input
+              class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
+              type="number"
+              min="0"
+              bind:value={runForm.extracted}
+            />
+          </label>
+          <label class="flex items-center gap-3 text-xs uppercase tracking-widest text-slate-400 sm:col-span-2">
+            <input
+              class="h-4 w-4 rounded border border-slate-700 bg-slate-900 text-emerald-400 accent-emerald-400"
+              type="checkbox"
+              bind:checked={runForm.died}
+            />
+            Died this run
+          </label>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
+            Map quick-select
+            <select
+              class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
+              bind:value={runForm.map}
+            >
+              <option value="">Select a map</option>
+              {#each mapOptions as option}
+                <option value={option.id}>{option.name}</option>
+              {/each}
+            </select>
+          </label>
+          <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
+            Crew
+            <input
+              class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
+              type="text"
+              placeholder="Solo, Crew name, etc."
+              bind:value={runForm.crew}
+            />
+          </label>
+        </div>
+        <label class="flex items-center gap-3 text-xs uppercase tracking-widest text-slate-400">
+          <input type="checkbox" bind:checked={runForm.freeLoadout} />
+          Free loadout active
+        </label>
+        <label class="flex flex-col gap-2 text-xs uppercase tracking-widest text-slate-400">
+          Notes
+          <textarea
+            class="h-24 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
+            placeholder="Drops, modifiers, or context"
+            bind:value={runForm.notes}
+          ></textarea>
+        </label>
+        <button
+          type="submit"
+          class="rounded-full bg-emerald-500/20 px-5 py-2 text-xs font-semibold uppercase tracking-wide text-emerald-300 transition hover:bg-emerald-500/30"
+        >
+          {$activeRunStore && !$activeRunStore.endedAt ? 'Save & close run' : 'Log run'}
+        </button>
+      </form>
     </div>
-  </section>
+
+    <div class="space-y-4 rounded-2xl border border-slate-800/70 bg-slate-950/60 p-5">
+      <div class="flex items-center justify-between gap-3">
+        <div class="space-y-1">
+          <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Look out for</p>
+          <p class="text-sm text-slate-300">
+            Priority loot and materials worth grabbing during this run.
+          </p>
+        </div>
+        <span class="rounded-full bg-slate-800 px-3 py-1 text-xs font-semibold text-slate-200">
+          {$lookOutItems.length}
+        </span>
+      </div>
+      {#if $lookOutItems.length === 0}
+        <p class="text-sm text-slate-400">
+          Add wishlist targets, upgrades, or projects to see high-value pickups at a glance.
+        </p>
+      {:else}
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+          {#each $lookOutItems as item}
+            <div
+              class={`group relative flex aspect-square items-center justify-center overflow-hidden rounded-xl border p-2 text-center shadow-sm transition hover:border-emerald-500/60 hover:bg-slate-900 bg-gradient-to-br ${rarityClass(item.rarity)}`}
+              title={`${item.name} · ${item.rationale}`}
+            >
+              {#if item.imageUrl}
+                <img src={item.imageUrl} alt={item.name} class="h-full w-full object-contain" loading="lazy" />
+              {:else}
+                <span class="text-[11px] text-slate-200">{item.name}</span>
+              {/if}
+              <div class="pointer-events-none absolute inset-x-0 bottom-full z-10 mb-2 hidden rounded-lg border border-slate-700 bg-slate-900/95 px-3 py-2 text-[11px] text-slate-200 shadow-xl group-hover:block">
+                <p class="font-semibold">{item.name}</p>
+                <p class="mt-1 text-[10px] text-slate-400">{item.rationale}</p>
+              </div>
+            </div>
+          {/each}
+        </div>
+      {/if}
+    </div>
+    </section>
 
   <section class="section-card space-y-6">
     <header class="space-y-3">
@@ -525,9 +624,13 @@
               Extract
               <input class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white" type="number" bind:value={editForm.extracted} />
             </label>
-            <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
-              Deaths
-              <input class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white" type="number" bind:value={editForm.deaths} />
+            <label class="flex items-center gap-3 text-xs uppercase tracking-widest text-slate-400 sm:col-span-3">
+              <input
+                class="h-4 w-4 rounded border border-slate-700 bg-slate-900 text-emerald-400 accent-emerald-400"
+                type="checkbox"
+                bind:checked={editForm.died}
+              />
+              Died this run
             </label>
             <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
               Map
