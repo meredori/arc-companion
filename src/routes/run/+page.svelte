@@ -9,6 +9,7 @@
   import { onDestroy } from 'svelte';
   import { derived, get } from 'svelte/store';
   import { RecommendationCard, RunTimer, TipsPanel } from '$lib/components';
+  import { assets, base } from '$app/paths';
   import {
     blueprints,
     expandWantList,
@@ -64,6 +65,14 @@
 
   const activeRunStore = derived(runs, ($runs) => $runs.find((run) => !run.endedAt) ?? null);
 
+  const resolveImageUrl = (url?: string | null) => {
+    if (!url) return url ?? null;
+    if (!url.startsWith('/')) return url;
+
+    const prefix = assets || base || '';
+    return `${prefix}${url}`.replace(/\/{2,}/g, '/');
+  };
+
   const lookOutItems = derived(recommendationContextStore, (context) => {
     const recommendations = recommendItemsMatching('', context, { sortMode: 'alphabetical' });
     const seen = new Set<string>();
@@ -84,7 +93,7 @@
       .map((rec) => ({
         id: rec.itemId,
         name: rec.name,
-        imageUrl: rec.imageUrl,
+        imageUrl: resolveImageUrl(rec.imageUrl),
         rationale: rec.rationale,
         action: rec.action
       }));
