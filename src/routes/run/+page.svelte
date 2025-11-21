@@ -21,7 +21,6 @@
     lastRemovedRun
   } from '$lib/stores/app';
   import { buildRecommendationContext, recommendItemsMatching } from '$lib/recommend';
-  import { createRunTipContext, generateRunTips } from '$lib/tips';
   import rawMaps from '../../../static/maps.json';
   import type { PageData } from './$types';
 
@@ -63,27 +62,33 @@
       })
   );
 
-  const outstandingNeedsStore = derived(recommendationContextStore, (context) =>
-    recommendItemsMatching('', context).reduce(
-      (total, rec) => total + rec.needs.quests + rec.needs.workshop + rec.needs.projects,
-      0
-    )
-  );
-
   const activeRunStore = derived(runs, ($runs) => $runs.find((run) => !run.endedAt) ?? null);
 
-  const tipsStore = derived(
-    [activeRunStore, runs, settings, outstandingNeedsStore],
-    ([$activeRun, $runs, $settings, $needs]) =>
-      generateRunTips(
-        createRunTipContext({
-          activeRun: $activeRun,
-          runs: $runs,
-          settings: $settings,
-          outstandingNeeds: $needs
-        })
-      )
-  );
+  const lookOutItems = derived(recommendationContextStore, (context) => {
+    const recommendations = recommendItemsMatching('', context, { sortMode: 'alphabetical' });
+    const seen = new Set<string>();
+    return recommendations
+      .filter((rec) => {
+        const totalNeeds = rec.needs.quests + rec.needs.workshop + rec.needs.projects;
+        const hasWishlist = (rec.wishlistSources?.length ?? 0) > 0;
+        const supportsRecycling = rec.action === 'recycle';
+        const category = rec.category?.toLowerCase().trim();
+        const isBasicMaterial = category === 'basic material';
+        return !isBasicMaterial && (totalNeeds > 0 || hasWishlist || supportsRecycling);
+      })
+      .filter((rec) => {
+        if (seen.has(rec.itemId)) return false;
+        seen.add(rec.itemId);
+        return true;
+      })
+      .map((rec) => ({
+        id: rec.itemId,
+        name: rec.name,
+        imageUrl: rec.imageUrl,
+        rationale: rec.rationale,
+        action: rec.action
+      }));
+  });
 
   const highlightRuns = derived(runs, ($runs) =>
     [...$runs]
@@ -130,7 +135,6 @@
   });
 
   let runForm = createDefaultForm(get(settings).freeLoadoutDefault);
-  let tips = [];
   let elapsedSeconds = 0;
   let editingId: string | null = null;
   let editForm = createEditForm();
@@ -165,12 +169,11 @@
     const xp = Number(runForm.xp);
     const value = Number(runForm.value);
     const extract = Number(runForm.extracted);
-    const deaths = Number(runForm.deaths);
     return {
       totalXp: Number.isFinite(xp) && xp > 0 ? xp : undefined,
       totalValue: Number.isFinite(value) && value > 0 ? value : undefined,
       extractedValue: Number.isFinite(extract) && extract > 0 ? extract : undefined,
-      deaths: Number.isFinite(deaths) && deaths > 0 ? deaths : undefined,
+      died: Boolean(runForm.died),
       notes: runForm.notes ? runForm.notes.trim() : undefined,
       crew: runForm.crew ? runForm.crew.trim() : undefined,
       map: runForm.map || undefined,
@@ -219,7 +222,7 @@
       xp: run.totalXp?.toString() ?? '',
       value: run.totalValue?.toString() ?? '',
       extracted: run.extractedValue?.toString() ?? '',
-      deaths: run.deaths?.toString() ?? '',
+      died: run.died ?? false,
       notes: run.notes ?? '',
       crew: run.crew ?? '',
       map: run.map ?? ''
@@ -237,7 +240,7 @@
       totalXp: editForm.xp ? Number(editForm.xp) : undefined,
       totalValue: editForm.value ? Number(editForm.value) : undefined,
       extractedValue: editForm.extracted ? Number(editForm.extracted) : undefined,
-      deaths: editForm.deaths ? Number(editForm.deaths) : undefined,
+      died: Boolean(editForm.died),
       notes: editForm.notes || undefined,
       crew: editForm.crew || undefined,
       map: editForm.map || undefined
@@ -253,7 +256,7 @@
       xp: '',
       value: '',
       extracted: '',
-      deaths: '',
+      died: false,
       notes: '',
       crew: '',
       map: defaultMapId,
@@ -266,7 +269,7 @@
       xp: '',
       value: '',
       extracted: '',
-      deaths: '',
+      died: false,
       notes: '',
       crew: '',
       map: ''
@@ -288,7 +291,6 @@
     return `${minutes}m ${secs.toString().padStart(2, '0')}s`;
   }
 
-  $: tips = $tipsStore;
   $: {
     const active = $activeRunStore;
     if (active && !active.endedAt) {
@@ -367,14 +369,13 @@
                 bind:value={runForm.extracted}
               />
             </label>
-            <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
-              Deaths
+            <label class="flex items-center gap-3 text-xs uppercase tracking-widest text-slate-400 sm:col-span-2">
               <input
-                class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
-                type="number"
-                min="0"
-                bind:value={runForm.deaths}
+                class="h-4 w-4 rounded border border-slate-700 bg-slate-900 text-emerald-400 accent-emerald-400"
+                type="checkbox"
+                bind:checked={runForm.died}
               />
+              Died this run
             </label>
           </div>
           <div class="grid gap-4 sm:grid-cols-2">
@@ -420,7 +421,43 @@
           </button>
         </form>
       </div>
-      <TipsPanel heading="Adaptive run tips" tips={tips} />
+      <div class="space-y-4 rounded-2xl border border-slate-800/70 bg-slate-950/60 p-5">
+        <div class="flex items-center justify-between gap-3">
+          <div class="space-y-1">
+            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Look out for</p>
+            <p class="text-sm text-slate-300">
+              Priority loot and materials worth grabbing during this run.
+            </p>
+          </div>
+          <span class="rounded-full bg-slate-800 px-3 py-1 text-xs font-semibold text-slate-200">
+            {$lookOutItems.length}
+          </span>
+        </div>
+        {#if $lookOutItems.length === 0}
+          <p class="text-sm text-slate-400">
+            Add wishlist targets, upgrades, or projects to see high-value pickups at a glance.
+          </p>
+        {:else}
+          <div class="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+            {#each $lookOutItems as item}
+              <div
+                class="group relative flex aspect-square items-center justify-center overflow-hidden rounded-xl border border-slate-800/70 bg-slate-900/60 p-2 text-center shadow-sm transition hover:border-emerald-500/60 hover:bg-slate-900"
+                title={`${item.name} · ${item.rationale}`}
+              >
+                {#if item.imageUrl}
+                  <img src={item.imageUrl} alt={item.name} class="h-full w-full object-contain" loading="lazy" />
+                {:else}
+                  <span class="text-[11px] text-slate-200">{item.name}</span>
+                {/if}
+                <div class="pointer-events-none absolute inset-x-0 bottom-full z-10 mb-2 hidden rounded-lg border border-slate-700 bg-slate-900/95 px-3 py-2 text-[11px] text-slate-200 shadow-xl group-hover:block">
+                  <p class="font-semibold">{item.name}</p>
+                  <p class="mt-1 text-[10px] text-slate-400">{item.rationale}</p>
+                </div>
+              </div>
+            {/each}
+          </div>
+        {/if}
+      </div>
     </div>
   </section>
 
@@ -525,9 +562,13 @@
               Extract
               <input class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white" type="number" bind:value={editForm.extracted} />
             </label>
-            <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
-              Deaths
-              <input class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white" type="number" bind:value={editForm.deaths} />
+            <label class="flex items-center gap-3 text-xs uppercase tracking-widest text-slate-400 sm:col-span-3">
+              <input
+                class="h-4 w-4 rounded border border-slate-700 bg-slate-900 text-emerald-400 accent-emerald-400"
+                type="checkbox"
+                bind:checked={editForm.died}
+              />
+              Died this run
             </label>
             <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
               Map

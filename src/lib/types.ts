@@ -250,7 +250,7 @@ export interface RunLogEntry {
   totalXp?: number;
   totalValue?: number;
   extractedValue?: number;
-  deaths?: number;
+  died?: boolean;
   notes?: string;
   freeLoadout?: boolean;
   crew?: string;
