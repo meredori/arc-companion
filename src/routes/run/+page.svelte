@@ -22,7 +22,17 @@
   } from '$lib/stores/app';
   import { buildRecommendationContext, recommendItemsMatching } from '$lib/recommend';
   import { createRunTipContext, generateRunTips } from '$lib/tips';
+  import rawMaps from '../../../static/maps.json';
   import type { PageData } from './$types';
+
+  type MapRecord = { id: string; name?: Record<string, string> | null };
+
+  const mapOptions = (rawMaps as MapRecord[])
+    .map((entry) => ({ id: entry.id, name: entry.name?.en ?? entry.id }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  const mapLabelById = new Map(mapOptions.map((entry) => [entry.id, entry.name]));
+  const defaultMapId = mapOptions[0]?.id ?? '';
 
   export let data: PageData;
   export let form: unknown;
@@ -80,12 +90,19 @@
       .filter((run) => run.extractedValue)
       .sort((a, b) => (b.extractedValue ?? 0) - (a.extractedValue ?? 0))
       .slice(0, 2)
-      .map((run) => ({
-        name: run.notes || new Date(run.startedAt).toLocaleString(),
-        action: 'save' as const,
-        rarity: run.crew ? `${run.crew} · ${formatDuration(run)}` : formatDuration(run),
-        reason: `Extracted ${run.extractedValue?.toLocaleString() ?? 0} coins.`
-      }))
+      .map((run) => {
+        const mapLabel = formatMapLabel(run.map);
+        return {
+          name: run.notes || new Date(run.startedAt).toLocaleString(),
+          action: 'save' as const,
+          rarity: [mapLabel, run.crew, formatDuration(run)]
+            .filter(Boolean)
+            .join(' · '),
+          reason: `Extracted ${run.extractedValue?.toLocaleString() ?? 0} coins${
+            mapLabel ? ` on ${mapLabel}` : ''
+          }.`
+        };
+      })
   );
 
   const metrics = derived(runs, ($runs) => {
@@ -156,6 +173,7 @@
       deaths: Number.isFinite(deaths) && deaths > 0 ? deaths : undefined,
       notes: runForm.notes ? runForm.notes.trim() : undefined,
       crew: runForm.crew ? runForm.crew.trim() : undefined,
+      map: runForm.map || undefined,
       freeLoadout: runForm.freeLoadout,
       endedAt: nowIso()
     };
@@ -168,14 +186,22 @@
     if (active && !active.endedAt) {
       runs.updateEntry(active.id, payload);
     } else {
-      runs.add({ ...payload, freeLoadout: payload.freeLoadout ?? settingsValue.freeLoadoutDefault });
-    }
+        runs.add({
+          ...payload,
+          freeLoadout: payload.freeLoadout ?? settingsValue.freeLoadoutDefault,
+          map: payload.map ?? runForm.map ?? defaultMapId
+        });
+      }
     runForm = createDefaultForm(settingsValue.freeLoadoutDefault);
   };
 
   const startRun = () => {
     const settingsValue = get(settings);
-    runs.add({ startedAt: nowIso(), freeLoadout: settingsValue.freeLoadoutDefault });
+    runs.add({
+      startedAt: nowIso(),
+      freeLoadout: settingsValue.freeLoadoutDefault,
+      map: runForm.map || defaultMapId
+    });
     runForm = { ...runForm, freeLoadout: settingsValue.freeLoadoutDefault };
   };
 
@@ -195,7 +221,8 @@
       extracted: run.extractedValue?.toString() ?? '',
       deaths: run.deaths?.toString() ?? '',
       notes: run.notes ?? '',
-      crew: run.crew ?? ''
+      crew: run.crew ?? '',
+      map: run.map ?? ''
     };
   };
 
@@ -212,7 +239,8 @@
       extractedValue: editForm.extracted ? Number(editForm.extracted) : undefined,
       deaths: editForm.deaths ? Number(editForm.deaths) : undefined,
       notes: editForm.notes || undefined,
-      crew: editForm.crew || undefined
+      crew: editForm.crew || undefined,
+      map: editForm.map || undefined
     });
     cancelEdit();
   };
@@ -228,6 +256,7 @@
       deaths: '',
       notes: '',
       crew: '',
+      map: defaultMapId,
       freeLoadout
     };
   }
@@ -239,8 +268,14 @@
       extracted: '',
       deaths: '',
       notes: '',
-      crew: ''
+      crew: '',
+      map: ''
     };
+  }
+
+  function formatMapLabel(mapId?: string | null) {
+    if (!mapId) return null;
+    return mapLabelById.get(mapId) ?? mapId;
   }
 
   function formatDuration(run: { startedAt?: string; endedAt?: string }) {
@@ -344,6 +379,18 @@
           </div>
           <div class="grid gap-4 sm:grid-cols-2">
             <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
+              Map quick-select
+              <select
+                class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
+                bind:value={runForm.map}
+              >
+                <option value="">Select a map</option>
+                {#each mapOptions as option}
+                  <option value={option.id}>{option.name}</option>
+                {/each}
+              </select>
+            </label>
+            <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
               Crew
               <input
                 class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
@@ -352,11 +399,11 @@
                 bind:value={runForm.crew}
               />
             </label>
-            <label class="flex items-center gap-3 text-xs uppercase tracking-widest text-slate-400">
-              <input type="checkbox" bind:checked={runForm.freeLoadout} />
-              Free loadout active
-            </label>
           </div>
+          <label class="flex items-center gap-3 text-xs uppercase tracking-widest text-slate-400">
+            <input type="checkbox" bind:checked={runForm.freeLoadout} />
+            Free loadout active
+          </label>
           <label class="flex flex-col gap-2 text-xs uppercase tracking-widest text-slate-400">
             Notes
             <textarea
@@ -422,6 +469,7 @@
         <thead>
           <tr class="text-xs uppercase tracking-widest text-slate-500">
             <th class="rounded-l-xl bg-slate-900/60 px-3 py-2 text-left">When</th>
+            <th class="bg-slate-900/60 px-3 py-2 text-left">Map</th>
             <th class="bg-slate-900/60 px-3 py-2 text-left">XP</th>
             <th class="bg-slate-900/60 px-3 py-2 text-left">Value</th>
             <th class="bg-slate-900/60 px-3 py-2 text-left">Extract</th>
@@ -433,6 +481,7 @@
           {#each $runs as run}
             <tr class="rounded-xl bg-slate-900/40">
               <td class="rounded-l-xl px-3 py-2">{new Date(run.startedAt).toLocaleString()}</td>
+              <td class="px-3 py-2">{formatMapLabel(run.map) ?? '—'}</td>
               <td class="px-3 py-2">{run.totalXp?.toLocaleString() ?? '—'}</td>
               <td class="px-3 py-2">{run.totalValue?.toLocaleString() ?? '—'}</td>
               <td class="px-3 py-2">{run.extractedValue?.toLocaleString() ?? '—'}</td>
@@ -479,6 +528,18 @@
             <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
               Deaths
               <input class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white" type="number" bind:value={editForm.deaths} />
+            </label>
+            <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
+              Map
+              <select
+                class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white"
+                bind:value={editForm.map}
+              >
+                <option value="">Select a map</option>
+                {#each mapOptions as option}
+                  <option value={option.id}>{option.name}</option>
+                {/each}
+              </select>
             </label>
             <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
               Crew
