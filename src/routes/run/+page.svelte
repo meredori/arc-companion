@@ -323,152 +323,151 @@
   </header>
 
   <section class="section-card space-y-6">
-    <div class="grid gap-6 lg:grid-cols-[3fr,2fr]">
-      <div class="space-y-6">
-        <RunTimer
-          label="Active session"
-          elapsed={elapsedSeconds}
-          isRunning={$activeRunStore ? !$activeRunStore.endedAt : false}
-        />
-        <div class="flex flex-wrap gap-3">
+    <div class="space-y-6">
+      <RunTimer
+        label="Active session"
+        elapsed={elapsedSeconds}
+        isRunning={$activeRunStore ? !$activeRunStore.endedAt : false}
+      />
+      <div class="flex flex-wrap gap-3">
+        <button
+          type="button"
+          class="rounded-full bg-sky-500/20 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-sky-300 transition hover:bg-sky-500/30"
+          on:click={startRun}
+        >
+          Start run
+        </button>
+        {#if $activeRunStore && !$activeRunStore.endedAt}
           <button
             type="button"
-            class="rounded-full bg-sky-500/20 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-sky-300 transition hover:bg-sky-500/30"
-            on:click={startRun}
+            class="rounded-full bg-emerald-500/20 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-emerald-300 transition hover:bg-emerald-500/30"
+            on:click={endRun}
           >
-            Start run
+            Mark complete
           </button>
-          {#if $activeRunStore && !$activeRunStore.endedAt}
-            <button
-              type="button"
-              class="rounded-full bg-emerald-500/20 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-emerald-300 transition hover:bg-emerald-500/30"
-              on:click={endRun}
-            >
-              Mark complete
-            </button>
-          {/if}
-        </div>
-        <form class="space-y-4" on:submit|preventDefault={submitRun}>
-          <h2 class="text-base font-semibold uppercase tracking-[0.3em] text-slate-400">Run summary</h2>
-          <div class="grid gap-4 sm:grid-cols-2">
-            <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
-              XP earned
-              <input
-                class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
-                type="number"
-                min="0"
-                bind:value={runForm.xp}
-              />
-            </label>
-            <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
-              Total value
-              <input
-                class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
-                type="number"
-                min="0"
-                bind:value={runForm.value}
-              />
-            </label>
-            <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
-              Extracted value
-              <input
-                class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
-                type="number"
-                min="0"
-                bind:value={runForm.extracted}
-              />
-            </label>
-            <label class="flex items-center gap-3 text-xs uppercase tracking-widest text-slate-400 sm:col-span-2">
-              <input
-                class="h-4 w-4 rounded border border-slate-700 bg-slate-900 text-emerald-400 accent-emerald-400"
-                type="checkbox"
-                bind:checked={runForm.died}
-              />
-              Died this run
-            </label>
-          </div>
-          <div class="grid gap-4 sm:grid-cols-2">
-            <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
-              Map quick-select
-              <select
-                class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
-                bind:value={runForm.map}
-              >
-                <option value="">Select a map</option>
-                {#each mapOptions as option}
-                  <option value={option.id}>{option.name}</option>
-                {/each}
-              </select>
-            </label>
-            <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
-              Crew
-              <input
-                class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
-                type="text"
-                placeholder="Solo, Crew name, etc."
-                bind:value={runForm.crew}
-              />
-            </label>
-          </div>
-          <label class="flex items-center gap-3 text-xs uppercase tracking-widest text-slate-400">
-            <input type="checkbox" bind:checked={runForm.freeLoadout} />
-            Free loadout active
-          </label>
-          <label class="flex flex-col gap-2 text-xs uppercase tracking-widest text-slate-400">
-            Notes
-            <textarea
-              class="h-24 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
-              placeholder="Drops, modifiers, or context"
-              bind:value={runForm.notes}
-            ></textarea>
-          </label>
-          <button
-            type="submit"
-            class="rounded-full bg-emerald-500/20 px-5 py-2 text-xs font-semibold uppercase tracking-wide text-emerald-300 transition hover:bg-emerald-500/30"
-          >
-            {$activeRunStore && !$activeRunStore.endedAt ? 'Save & close run' : 'Log run'}
-          </button>
-        </form>
-      </div>
-      <div class="space-y-4 rounded-2xl border border-slate-800/70 bg-slate-950/60 p-5">
-        <div class="flex items-center justify-between gap-3">
-          <div class="space-y-1">
-            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Look out for</p>
-            <p class="text-sm text-slate-300">
-              Priority loot and materials worth grabbing during this run.
-            </p>
-          </div>
-          <span class="rounded-full bg-slate-800 px-3 py-1 text-xs font-semibold text-slate-200">
-            {$lookOutItems.length}
-          </span>
-        </div>
-        {#if $lookOutItems.length === 0}
-          <p class="text-sm text-slate-400">
-            Add wishlist targets, upgrades, or projects to see high-value pickups at a glance.
-          </p>
-        {:else}
-          <div class="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
-            {#each $lookOutItems as item}
-              <div
-                class="group relative flex aspect-square items-center justify-center overflow-hidden rounded-xl border border-slate-800/70 bg-slate-900/60 p-2 text-center shadow-sm transition hover:border-emerald-500/60 hover:bg-slate-900"
-                title={`${item.name} · ${item.rationale}`}
-              >
-                {#if item.imageUrl}
-                  <img src={item.imageUrl} alt={item.name} class="h-full w-full object-contain" loading="lazy" />
-                {:else}
-                  <span class="text-[11px] text-slate-200">{item.name}</span>
-                {/if}
-                <div class="pointer-events-none absolute inset-x-0 bottom-full z-10 mb-2 hidden rounded-lg border border-slate-700 bg-slate-900/95 px-3 py-2 text-[11px] text-slate-200 shadow-xl group-hover:block">
-                  <p class="font-semibold">{item.name}</p>
-                  <p class="mt-1 text-[10px] text-slate-400">{item.rationale}</p>
-                </div>
-              </div>
-            {/each}
-          </div>
         {/if}
       </div>
+      <form class="space-y-4" on:submit|preventDefault={submitRun}>
+        <h2 class="text-base font-semibold uppercase tracking-[0.3em] text-slate-400">Run summary</h2>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
+            XP earned
+            <input
+              class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
+              type="number"
+              min="0"
+              bind:value={runForm.xp}
+            />
+          </label>
+          <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
+            Total value
+            <input
+              class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
+              type="number"
+              min="0"
+              bind:value={runForm.value}
+            />
+          </label>
+          <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
+            Extracted value
+            <input
+              class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
+              type="number"
+              min="0"
+              bind:value={runForm.extracted}
+            />
+          </label>
+          <label class="flex items-center gap-3 text-xs uppercase tracking-widest text-slate-400 sm:col-span-2">
+            <input
+              class="h-4 w-4 rounded border border-slate-700 bg-slate-900 text-emerald-400 accent-emerald-400"
+              type="checkbox"
+              bind:checked={runForm.died}
+            />
+            Died this run
+          </label>
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
+            Map quick-select
+            <select
+              class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
+              bind:value={runForm.map}
+            >
+              <option value="">Select a map</option>
+              {#each mapOptions as option}
+                <option value={option.id}>{option.name}</option>
+              {/each}
+            </select>
+          </label>
+          <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-slate-400">
+            Crew
+            <input
+              class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
+              type="text"
+              placeholder="Solo, Crew name, etc."
+              bind:value={runForm.crew}
+            />
+          </label>
+        </div>
+        <label class="flex items-center gap-3 text-xs uppercase tracking-widest text-slate-400">
+          <input type="checkbox" bind:checked={runForm.freeLoadout} />
+          Free loadout active
+        </label>
+        <label class="flex flex-col gap-2 text-xs uppercase tracking-widest text-slate-400">
+          Notes
+          <textarea
+            class="h-24 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
+            placeholder="Drops, modifiers, or context"
+            bind:value={runForm.notes}
+          ></textarea>
+        </label>
+        <button
+          type="submit"
+          class="rounded-full bg-emerald-500/20 px-5 py-2 text-xs font-semibold uppercase tracking-wide text-emerald-300 transition hover:bg-emerald-500/30"
+        >
+          {$activeRunStore && !$activeRunStore.endedAt ? 'Save & close run' : 'Log run'}
+        </button>
+      </form>
     </div>
-  </section>
+
+    <div class="space-y-4 rounded-2xl border border-slate-800/70 bg-slate-950/60 p-5">
+      <div class="flex items-center justify-between gap-3">
+        <div class="space-y-1">
+          <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Look out for</p>
+          <p class="text-sm text-slate-300">
+            Priority loot and materials worth grabbing during this run.
+          </p>
+        </div>
+        <span class="rounded-full bg-slate-800 px-3 py-1 text-xs font-semibold text-slate-200">
+          {$lookOutItems.length}
+        </span>
+      </div>
+      {#if $lookOutItems.length === 0}
+        <p class="text-sm text-slate-400">
+          Add wishlist targets, upgrades, or projects to see high-value pickups at a glance.
+        </p>
+      {:else}
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+          {#each $lookOutItems as item}
+            <div
+              class="group relative flex aspect-square items-center justify-center overflow-hidden rounded-xl border border-slate-800/70 bg-slate-900/60 p-2 text-center shadow-sm transition hover:border-emerald-500/60 hover:bg-slate-900"
+              title={`${item.name} · ${item.rationale}`}
+            >
+              {#if item.imageUrl}
+                <img src={item.imageUrl} alt={item.name} class="h-full w-full object-contain" loading="lazy" />
+              {:else}
+                <span class="text-[11px] text-slate-200">{item.name}</span>
+              {/if}
+              <div class="pointer-events-none absolute inset-x-0 bottom-full z-10 mb-2 hidden rounded-lg border border-slate-700 bg-slate-900/95 px-3 py-2 text-[11px] text-slate-200 shadow-xl group-hover:block">
+                <p class="font-semibold">{item.name}</p>
+                <p class="mt-1 text-[10px] text-slate-400">{item.rationale}</p>
+              </div>
+            </div>
+          {/each}
+        </div>
+      {/if}
+    </div>
+    </section>
 
   <section class="section-card space-y-6">
     <header class="space-y-3">
