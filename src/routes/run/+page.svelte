@@ -85,6 +85,17 @@
   const rarityClass = (rarity?: string | null) =>
     rarityGradients[rarity?.toLowerCase() ?? 'default'] ?? rarityGradients.default;
 
+  const rarityRank = (rarity?: string | null) => {
+    const priority = ['legendary', 'epic', 'rare', 'uncommon', 'common'];
+    const normalized = rarity?.toLowerCase().replace(/\s+/g, ' ').trim();
+    if (!normalized) return priority.length;
+    const token = normalized.split(/[^a-z]+/i)[0] ?? '';
+    const index = priority.findIndex((label) => label === token);
+    if (index !== -1) return index;
+    const fuzzy = priority.findIndex((label) => normalized.startsWith(label));
+    return fuzzy === -1 ? priority.length : fuzzy;
+  };
+
   const lookOutItems = derived(recommendationContextStore, (context) => {
     const recommendations = recommendItemsMatching('', context, { sortMode: 'alphabetical' });
     const itemLookup = new Map(context.items.map((item) => [item.id, item]));
@@ -116,6 +127,21 @@
         if (seen.has(rec.itemId)) return false;
         seen.add(rec.itemId);
         return true;
+      })
+      .sort((a, b) => {
+        const totalNeedsA = a.needs.quests + a.needs.workshop + a.needs.projects;
+        const totalNeedsB = b.needs.quests + b.needs.workshop + b.needs.projects;
+        const hasWishlistA = (a.wishlistSources?.length ?? 0) > 0;
+        const hasWishlistB = (b.wishlistSources?.length ?? 0) > 0;
+        const isDirectA = totalNeedsA > 0 || hasWishlistA;
+        const isDirectB = totalNeedsB > 0 || hasWishlistB;
+
+        if (isDirectA !== isDirectB) return isDirectA ? -1 : 1;
+
+        const rarityDiff = rarityRank(a.rarity) - rarityRank(b.rarity);
+        if (rarityDiff !== 0) return rarityDiff;
+
+        return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
       })
       .map((rec) => ({
         id: rec.itemId,
@@ -481,13 +507,6 @@
               class={`group relative flex aspect-square items-center justify-center overflow-hidden rounded-xl border p-2 text-center shadow-sm transition hover:border-emerald-500/60 hover:bg-slate-900 bg-gradient-to-br ${rarityClass(item.rarity)}`}
               title={`${item.name} · ${item.rationale}`}
             >
-              {#if item.rarity}
-                <span
-                  class="absolute right-2 top-2 rounded-full bg-slate-900/70 px-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-100"
-                >
-                  {item.rarity}
-                </span>
-              {/if}
               {#if item.imageUrl}
                 <img src={item.imageUrl} alt={item.name} class="h-full w-full object-contain" loading="lazy" />
               {:else}
