@@ -73,8 +73,21 @@
     return `${prefix}${url}`.replace(/\/{2,}/g, '/');
   };
 
+  const rarityGradients: Record<string, string> = {
+    legendary: 'from-amber-500/20 via-amber-600/20 to-amber-900/40 border-amber-400/60 shadow-amber-500/20',
+    epic: 'from-fuchsia-500/20 via-fuchsia-600/20 to-fuchsia-900/40 border-fuchsia-400/60 shadow-fuchsia-500/20',
+    rare: 'from-sky-500/20 via-sky-600/20 to-sky-900/40 border-sky-400/60 shadow-sky-500/20',
+    uncommon: 'from-emerald-500/20 via-emerald-600/20 to-emerald-900/40 border-emerald-400/60 shadow-emerald-500/20',
+    common: 'from-slate-500/10 via-slate-700/10 to-slate-900/30 border-slate-600/60 shadow-slate-700/10',
+    default: 'from-slate-900/60 via-slate-900/50 to-slate-950/80 border-slate-800/70 shadow-slate-900/30'
+  };
+
+  const rarityClass = (rarity?: string | null) =>
+    rarityGradients[rarity?.toLowerCase() ?? 'default'] ?? rarityGradients.default;
+
   const lookOutItems = derived(recommendationContextStore, (context) => {
     const recommendations = recommendItemsMatching('', context, { sortMode: 'alphabetical' });
+    const itemLookup = new Map(context.items.map((item) => [item.id, item]));
     const seen = new Set<string>();
     return recommendations
       .filter((rec) => {
@@ -83,7 +96,21 @@
         const supportsRecycling = rec.action === 'recycle';
         const category = rec.category?.toLowerCase().trim();
         const isBasicMaterial = category === 'basic material';
-        return !isBasicMaterial && (totalNeeds > 0 || hasWishlist || supportsRecycling);
+        if (isBasicMaterial) return false;
+        if (!(totalNeeds > 0 || hasWishlist || supportsRecycling)) return false;
+
+        if (supportsRecycling && !hasWishlist && totalNeeds === 0) {
+          const targets = rec.salvageBreakdown ?? [];
+          const onlyFeedsBasicMaterials =
+            targets.length > 0 &&
+            targets.every((entry) => {
+              const category = itemLookup.get(entry.itemId)?.category;
+              return category?.toLowerCase().trim() === 'basic material';
+            });
+          if (onlyFeedsBasicMaterials) return false;
+        }
+
+        return true;
       })
       .filter((rec) => {
         if (seen.has(rec.itemId)) return false;
@@ -95,7 +122,8 @@
         name: rec.name,
         imageUrl: resolveImageUrl(rec.imageUrl),
         rationale: rec.rationale,
-        action: rec.action
+        action: rec.action,
+        rarity: rec.rarity ?? null
       }));
   });
 
@@ -450,9 +478,16 @@
         <div class="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
           {#each $lookOutItems as item}
             <div
-              class="group relative flex aspect-square items-center justify-center overflow-hidden rounded-xl border border-slate-800/70 bg-slate-900/60 p-2 text-center shadow-sm transition hover:border-emerald-500/60 hover:bg-slate-900"
+              class={`group relative flex aspect-square items-center justify-center overflow-hidden rounded-xl border p-2 text-center shadow-sm transition hover:border-emerald-500/60 hover:bg-slate-900 bg-gradient-to-br ${rarityClass(item.rarity)}`}
               title={`${item.name} · ${item.rationale}`}
             >
+              {#if item.rarity}
+                <span
+                  class="absolute right-2 top-2 rounded-full bg-slate-900/70 px-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-100"
+                >
+                  {item.rarity}
+                </span>
+              {/if}
               {#if item.imageUrl}
                 <img src={item.imageUrl} alt={item.name} class="h-full w-full object-contain" loading="lazy" />
               {:else}
