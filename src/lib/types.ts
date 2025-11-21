@@ -254,6 +254,7 @@ export interface RunLogEntry {
   notes?: string;
   freeLoadout?: boolean;
   crew?: string;
+  map?: string;
 }
 
 export interface RunHistoryState {

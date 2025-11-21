@@ -462,7 +462,8 @@ export const runs = {
       deaths: entry.deaths,
       notes: entry.notes,
       freeLoadout: entry.freeLoadout,
-      crew: entry.crew
+      crew: entry.crew,
+      map: entry.map
     };
 
     runStore.update((state) => ({
