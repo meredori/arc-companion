@@ -105,6 +105,7 @@
   let benchFilter = 'all';
   let blueprintFilter: 'any' | 'owned' | 'missing' = 'any';
   let quantityDrafts: Record<string, number> = {};
+  let showFinder = true;
 
   const findBlueprintForItem = (item: ItemRecord) => {
     if (!item.slug && !item.name) return undefined;
@@ -124,6 +125,21 @@
     }
     return 'workbench';
   };
+
+  const resolveImageUrl = (url?: string | null) => {
+    if (!url) return null;
+    if (!url.startsWith('/')) return url;
+    return `${base}${url}`.replace(/\/{2,}/g, '/').replace(':/', '://');
+  };
+
+  const initialsForItem = (item?: ItemRecord | null) =>
+    item?.name
+      ?.split(' ')
+      .map((part) => part[0])
+      .filter(Boolean)
+      .slice(0, 3)
+      .join('')
+      .toUpperCase() || 'ARC';
 
   const nonBlueprintItems = items.filter((item) => item.category?.toLowerCase() !== 'blueprint');
 
@@ -212,147 +228,162 @@
 
   const wishlistHasItem = derived(wantList, ($wantList) => new Set($wantList.map((entry) => entry.itemId)));
 
-  const incrementEntry = (itemId: string) => {
-    const entry = $wantList.find((record) => record.itemId === itemId);
-    if (!entry) return;
-    wantList.update(itemId, { qty: entry.qty + 1 });
-  };
-
-  const decrementEntry = (itemId: string) => {
-    const entry = $wantList.find((record) => record.itemId === itemId);
-    if (!entry) return;
-    const nextQty = Math.max(1, entry.qty - 1);
-    wantList.update(itemId, { qty: nextQty });
-  };
 </script>
 
 <div class="page-stack">
   <header class="space-y-3">
     <h1 class="text-3xl font-semibold">Wishlist Planner</h1>
     <p class="max-w-2xl text-sm text-slate-400">
-      Track upcoming crafts and prioritize material farming. Add items to your wishlist, note why you want
-      them, and inspect the crafting and recycling graph to understand every supporting material.
+      Track upcoming crafts and prioritize material farming. Add items to your wishlist and inspect the
+      crafting and recycling graph to understand every supporting material.
     </p>
   </header>
 
-  <div class="grid gap-6 lg:grid-cols-[2fr,3fr]">
+  <div class="space-y-6">
     <section class="section-card space-y-5">
-      <header class="space-y-3">
-        <h2 class="text-xl font-semibold text-white">Find items to add</h2>
-        <SearchBar
-          label="Search items"
-          placeholder="Search by name, slug, or category"
-          value={search}
-          on:input={({ detail }) => (search = detail.value)}
-        />
-        <div class="flex flex-wrap gap-4 text-xs uppercase tracking-widest text-slate-400">
-          <label class="flex items-center gap-2">
-            <span class="text-slate-500">Workbench</span>
-            <select
-              class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-1 text-[11px] uppercase tracking-widest text-slate-200"
-              bind:value={benchFilter}
-            >
-              {#each benchOptions as option}
-                <option value={option}>{labelForBench(option)}</option>
-              {/each}
-            </select>
-          </label>
-          <label class="flex items-center gap-2">
-            <span class="text-slate-500">Blueprint</span>
-            <select
-              class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-1 text-[11px] uppercase tracking-widest text-slate-200"
-              bind:value={blueprintFilter}
-            >
-              <option value="any">Any</option>
-              <option value="owned">Owned</option>
-              <option value="missing">Missing</option>
-            </select>
-          </label>
+      <header class="flex flex-wrap items-center justify-between gap-3">
+        <div class="space-y-1">
+          <h2 class="text-xl font-semibold text-white">Find items to add</h2>
+          <p class="text-sm text-slate-400">
+            Search across every craftable item to add wishlist targets with their artwork.
+          </p>
         </div>
-
+        <button
+          type="button"
+          class="rounded-full border border-slate-800 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-200 transition hover:border-slate-500"
+          aria-pressed={showFinder}
+          on:click={() => (showFinder = !showFinder)}
+        >
+          {showFinder ? 'Collapse' : 'Expand'}
+        </button>
       </header>
 
-      <div class="space-y-3">
-        <p class="text-xs uppercase tracking-[0.3em] text-slate-500">
-          {#if filteredItems.length === 0}
-            No matches
-          {:else}
-            {filteredItems.length} matches
-          {/if}
-        </p>
-        <ul class="space-y-3">
-          {#each filteredItems.slice(0, 60) as item}
-            {@const recipeLink = recipeLinkForItem(item)}
-            <li class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-800/60 bg-slate-950/60 p-4 text-sm">
-              <div class="space-y-1">
-                <div class="flex items-center gap-2">
-                  <span class="text-base font-semibold text-white">{item.name}</span>
-                  {#if item.category}
-                    <span class="rounded-full border border-slate-700/60 px-2 py-0.5 text-[11px] uppercase tracking-widest text-slate-400">
-                      {item.category}
-                    </span>
-                  {/if}
-                </div>
-                <div class="flex flex-wrap gap-3 text-xs uppercase tracking-widest text-slate-500">
-                  <span>{labelForBench(inferBenchForItem(item))}</span>
-                  {#if findBlueprintForItem(item)}
-                    <span>
-                      {#if blueprintStatusForItem(item, $blueprintStateMap) === 'owned'}
-                        Blueprint owned
-                      {:else if blueprintStatusForItem(item, $blueprintStateMap) === 'missing'}
-                        Blueprint missing
+      {#if showFinder}
+        <div class="space-y-4">
+          <SearchBar
+            label="Search items"
+            placeholder="Search by name, slug, or category"
+            value={search}
+            on:input={({ detail }) => (search = detail.value)}
+          />
+          <div class="flex flex-wrap gap-4 text-xs uppercase tracking-widest text-slate-400">
+            <label class="flex items-center gap-2">
+              <span class="text-slate-500">Workbench</span>
+              <select
+                class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-1 text-[11px] uppercase tracking-widest text-slate-200"
+                bind:value={benchFilter}
+              >
+                {#each benchOptions as option}
+                  <option value={option}>{labelForBench(option)}</option>
+                {/each}
+              </select>
+            </label>
+            <label class="flex items-center gap-2">
+              <span class="text-slate-500">Blueprint</span>
+              <select
+                class="rounded-lg border border-slate-700 bg-slate-900 px-3 py-1 text-[11px] uppercase tracking-widest text-slate-200"
+                bind:value={blueprintFilter}
+              >
+                <option value="any">Any</option>
+                <option value="owned">Owned</option>
+                <option value="missing">Missing</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="space-y-3">
+            <p class="text-xs uppercase tracking-[0.3em] text-slate-500">
+              {#if filteredItems.length === 0}
+                No matches
+              {:else}
+                {filteredItems.length} matches
+              {/if}
+            </p>
+            <ul class="space-y-3">
+              {#each filteredItems.slice(0, 60) as item}
+                {@const recipeLink = recipeLinkForItem(item)}
+                {@const imageUrl = resolveImageUrl(item.imageUrl)}
+                <li class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-800/60 bg-slate-950/60 p-4 text-sm">
+                  <div class="flex flex-1 items-center gap-3">
+                    <div class="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-slate-800/70 bg-slate-900 text-xs font-semibold uppercase tracking-wide text-slate-200">
+                      {#if imageUrl}
+                        <img src={imageUrl} alt={item.name} class="h-full w-full object-cover" loading="lazy" decoding="async" />
                       {:else}
-                        Blueprint unknown
+                        <span>{initialsForItem(item)}</span>
                       {/if}
-                    </span>
-                  {/if}
-                  {#if recipeLink}
-                    <a
-                      class="font-semibold text-sky-300 hover:text-sky-200"
-                      href={recipeLink.href}
+                    </div>
+                    <div class="space-y-1">
+                      <div class="flex items-center gap-2">
+                        <span class="text-base font-semibold text-white">{item.name}</span>
+                        {#if item.category}
+                          <span class="rounded-full border border-slate-700/60 px-2 py-0.5 text-[11px] uppercase tracking-widest text-slate-400">
+                            {item.category}
+                          </span>
+                        {/if}
+                      </div>
+                      <div class="flex flex-wrap gap-3 text-xs uppercase tracking-widest text-slate-500">
+                        <span>{labelForBench(inferBenchForItem(item))}</span>
+                        {#if findBlueprintForItem(item)}
+                          <span>
+                            {#if blueprintStatusForItem(item, $blueprintStateMap) === 'owned'}
+                              Blueprint owned
+                            {:else if blueprintStatusForItem(item, $blueprintStateMap) === 'missing'}
+                              Blueprint missing
+                            {:else}
+                              Blueprint unknown
+                            {/if}
+                          </span>
+                        {/if}
+                        {#if recipeLink}
+                          <a
+                            class="font-semibold text-sky-300 hover:text-sky-200"
+                            href={recipeLink.href}
+                          >
+                            View recipe
+                          </a>
+                        {/if}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <input
+                      type="number"
+                      min="1"
+                      class="w-16 rounded-lg border border-slate-700 bg-slate-900 px-2 py-1 text-right text-sm text-white"
+                      value={getQuantityDraft(item.id)}
+                      on:input={(event) => setQuantityDraft(item.id, Number(event.currentTarget.value))}
+                    />
+                    <button
+                      type="button"
+                      data-testid="add-to-wishlist"
+                      class="rounded-full bg-sky-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-sky-200 transition hover:bg-sky-500/30"
+                      on:click={() => addToWantList(item)}
+                      disabled={$wishlistHasItem.has(item.id)}
                     >
-                      View recipe
-                    </a>
-                  {/if}
-                </div>
-              </div>
-              <div class="flex items-center gap-2">
-                <input
-                  type="number"
-                  min="1"
-                  class="w-16 rounded-lg border border-slate-700 bg-slate-900 px-2 py-1 text-right text-sm text-white"
-                  value={getQuantityDraft(item.id)}
-                  on:input={(event) => setQuantityDraft(item.id, Number(event.currentTarget.value))}
-                />
-                <button
-                  type="button"
-                  data-testid="add-to-wishlist"
-                  class="rounded-full bg-sky-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-sky-200 transition hover:bg-sky-500/30"
-                  on:click={() => addToWantList(item)}
-                  disabled={$wishlistHasItem.has(item.id)}
-                >
-                  {#if $wishlistHasItem.has(item.id)}
-                    Added
-                  {:else}
-                    Add
-                  {/if}
-                </button>
-              </div>
-            </li>
-          {:else}
-            <li class="rounded-2xl border border-dashed border-slate-800/60 bg-slate-950/40 p-5 text-sm text-slate-400">
-              Adjust filters or search terms to locate craft targets.
-            </li>
-          {/each}
-        </ul>
-      </div>
+                      {#if $wishlistHasItem.has(item.id)}
+                        Added
+                      {:else}
+                        Add
+                      {/if}
+                    </button>
+                  </div>
+                </li>
+              {:else}
+                <li class="rounded-2xl border border-dashed border-slate-800/60 bg-slate-950/40 p-5 text-sm text-slate-400">
+                  Adjust filters or search terms to locate craft targets.
+                </li>
+              {/each}
+            </ul>
+          </div>
+        </div>
+      {/if}
     </section>
 
     <section class="section-card space-y-6">
       <header class="space-y-2">
         <h2 class="text-xl font-semibold text-white">Wishlist entries</h2>
         <p class="text-sm text-slate-400">
-          Update quantities, capture notes, and explore upstream dependencies for each wishlist target.
+          Explore upstream dependencies for each wishlist target and plan your pickups.
         </p>
       </header>
 
@@ -364,11 +395,18 @@
         <div class="space-y-5">
           {#each $resolvedEntries as detail}
             {@const recipeLink = detail.item ? recipeLinkForItem(detail.item) : null}
-            {@const recycleOutputs = detail.item?.recyclesInto ?? detail.item?.salvagesInto ?? []}
             {@const recycleSources = detail.recycleSources}
+            {@const detailImage = detail.item ? resolveImageUrl(detail.item.imageUrl) : null}
             <article class="space-y-4 rounded-2xl border border-slate-800/60 bg-slate-950/60 p-5 text-sm text-slate-200">
-              <header class="flex flex-wrap items-center justify-between gap-3">
-                <div class="space-y-1">
+              <div class="flex flex-wrap items-start gap-4">
+                <div class="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-slate-800/70 bg-slate-900 text-xs font-semibold uppercase tracking-wide text-slate-200">
+                  {#if detailImage}
+                    <img src={detailImage} alt={detail.item ? detail.item.name : 'Wishlist item'} class="h-full w-full object-cover" loading="lazy" decoding="async" />
+                  {:else}
+                    <span>{initialsForItem(detail.item)}</span>
+                  {/if}
+                </div>
+                <div class="flex-1 space-y-2">
                   <div class="flex flex-wrap items-center gap-3">
                     <h3 class="text-lg font-semibold text-white">
                       {detail.item ? detail.item.name : detail.entry.itemId}
@@ -386,24 +424,7 @@
                     Added {new Date(detail.entry.createdAt).toLocaleDateString()}
                   </p>
                 </div>
-                <div class="flex items-center gap-2">
-                  <button
-                    type="button"
-                    class="rounded-full bg-slate-800/60 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-200 hover:bg-slate-800"
-                    on:click={() => decrementEntry(detail.entry.itemId)}
-                  >
-                    −
-                  </button>
-                  <span class="min-w-[2rem] text-center text-base font-semibold text-white">
-                    {detail.entry.qty}
-                  </span>
-                  <button
-                    type="button"
-                    class="rounded-full bg-slate-800/60 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-200 hover:bg-slate-800"
-                    on:click={() => incrementEntry(detail.entry.itemId)}
-                  >
-                    +
-                  </button>
+                <div class="flex flex-wrap items-center gap-2">
                   <button
                     type="button"
                     class="rounded-full bg-rose-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-rose-300 hover:bg-rose-500/30"
@@ -412,18 +433,7 @@
                     Remove
                   </button>
                 </div>
-              </header>
-
-              <label class="block space-y-2 text-xs uppercase tracking-widest text-slate-400">
-                Reason
-                <textarea
-                  rows="2"
-                  class="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
-                  value={detail.entry.reason ?? ''}
-                  placeholder="Optional note"
-                  on:change={(event) => wantList.update(detail.entry.itemId, { reason: event.currentTarget.value })}
-                ></textarea>
-              </label>
+              </div>
 
               <div class="grid gap-4 md:grid-cols-2">
                 <div class="space-y-2">
@@ -457,38 +467,10 @@
                         </li>
                       {/each}
                     {:else}
-                      <li class="text-slate-500">
-                        {#if recycleOutputs.length > 0}
-                          No other recorded recycle sources produce this item.
-                        {:else}
-                          This item has no recorded recycle data.
-                        {/if}
-                      </li>
+                      <li class="text-slate-500">This item has no recorded recycle data.</li>
                     {/if}
                   </ul>
                 </div>
-              </div>
-
-              <div class="space-y-2">
-                <h4 class="text-xs uppercase tracking-widest text-slate-400">Recycled into</h4>
-                <ul class="space-y-1 text-sm text-slate-300">
-                  {#if recycleOutputs.length > 0}
-                    {#each recycleOutputs as output}
-                      <li class="flex items-center justify-between gap-3">
-                        <span class="truncate">{output.name}</span>
-                        <span class="font-semibold text-white">×{output.qty}</span>
-                      </li>
-                    {/each}
-                  {:else}
-                    <li class="text-slate-500">
-                      {#if recycleSources.length > 0}
-                        This item lists recycle sources but no recorded outputs.
-                      {:else}
-                        This item has no recorded recycle data.
-                      {/if}
-                    </li>
-                  {/if}
-                </ul>
               </div>
             </article>
           {/each}
