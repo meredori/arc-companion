@@ -4,7 +4,7 @@
 
 <script lang="ts">
   import { base } from '$app/paths';
-  import { derived } from 'svelte/store';
+import { derived, get } from 'svelte/store';
   import { onMount } from 'svelte';
   import { SearchBar } from '$lib/components';
   import {
@@ -19,7 +19,7 @@
   } from '$lib/stores/app';
   import { buildRecommendationContext, recommendItemsMatching } from '$lib/recommend';
   import { BENCH_LABELS, DEFAULT_BENCH_ORDER, QUICK_USE_BENCH_BY_SLUG } from '$lib/utils/bench';
-  import type { ItemRecord, Project, Quest, UpgradePack, WantListRequirement } from '$lib/types';
+  import type { ItemRecord, Project, Quest, UpgradePack, WantListEntry, WantListRequirement } from '$lib/types';
   import type { PageData } from './$types';
 
   export let data: PageData;
@@ -288,21 +288,21 @@
       })
   );
 
-  const buildContextForWishlist = (wishlistEntries: { itemId: string; qty: number }[]) =>
+  const buildContextForWishlist = (wishlistEntries: WantListEntry[]) =>
     buildRecommendationContext({
       items,
       quests: questDefs,
-      questProgress: $quests,
+      questProgress: get(quests),
       upgrades: benchUpgrades,
-      blueprints: $blueprints,
-      workbenchUpgrades: $workbenchState,
+      blueprints: get(blueprints),
+      workbenchUpgrades: get(workbenchState),
       projects,
-      projectProgress: $projectProgress,
-      alwaysKeepCategories: $settings.alwaysKeepCategories ?? [],
-      ignoredCategories: $settings.ignoredWantCategories ?? [],
+      projectProgress: get(projectProgress),
+      alwaysKeepCategories: get(settings).alwaysKeepCategories ?? [],
+      ignoredCategories: get(settings).ignoredWantCategories ?? [],
       wantList: wishlistEntries,
       wantListDependencies: expandWantList(wishlistEntries, items, {
-        ignoredCategories: $settings.ignoredWantCategories ?? []
+        ignoredCategories: get(settings).ignoredWantCategories ?? []
       })
     });
 
@@ -378,7 +378,7 @@
     for (const item of visibleItems) {
       const wishlistEntries = $wishlistHasItem.has(item.id)
         ? $wantList
-        : [...$wantList, { itemId: item.id, qty: getQuantityDraft(item.id) }];
+        : [...$wantList, { itemId: item.id, qty: getQuantityDraft(item.id), createdAt: new Date().toISOString() }];
 
       const context = $wishlistHasItem.has(item.id)
         ? baseContext

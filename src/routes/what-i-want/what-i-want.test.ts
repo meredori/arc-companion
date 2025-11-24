@@ -47,7 +47,9 @@ describe('what-i-want page', () => {
         data: {
           items: [BASE_ITEM],
           blueprints: [],
-          workbenchUpgrades: [UPGRADE]
+          workbenchUpgrades: [UPGRADE],
+          quests: [],
+          projects: []
         },
         form: undefined,
         params: {}
@@ -78,7 +80,9 @@ describe('what-i-want page', () => {
         data: {
           items: [BASE_ITEM, BLUEPRINT_ITEM],
           blueprints: [BLUEPRINT_ITEM],
-          workbenchUpgrades: [UPGRADE]
+          workbenchUpgrades: [UPGRADE],
+          quests: [],
+          projects: []
         },
         form: undefined,
         params: {}
