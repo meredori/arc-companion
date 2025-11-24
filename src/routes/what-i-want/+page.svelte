@@ -85,28 +85,6 @@ import { derived, get } from 'svelte/store';
     blueprintNameLookup.set(`${normalizedName} blueprint`, blueprint);
   }
 
-  const anchorForBlueprint = (blueprint: ItemRecord) => {
-    if (blueprint.slug && blueprint.slug.trim()) {
-      return `blueprint-${blueprint.slug}`;
-    }
-    const fallback = blueprint.name
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '')
-      .replace(/-{2,}/g, '-');
-    return `blueprint-${fallback || blueprint.id}`;
-  };
-
-  const recipeLinkForItem = (item: ItemRecord) => {
-    const blueprint = findBlueprintForItem(item);
-    if (!blueprint) return null;
-    const anchor = anchorForBlueprint(blueprint);
-    return {
-      href: `${base}/what-i-have#${anchor}`.replace(/\/{2,}/g, '/').replace(':/', '://'),
-      blueprint
-    };
-  };
-
   let search = '';
   let benchFilter = 'all';
   let blueprintFilter: 'any' | 'owned' | 'missing' = 'any';
@@ -467,7 +445,6 @@ import { derived, get } from 'svelte/store';
             </p>
             <ul class="space-y-3">
               {#each filteredItems.slice(0, 60) as item}
-                {@const recipeLink = recipeLinkForItem(item)}
                 {@const imageUrl = resolveImageUrl(item.imageUrl)}
                 {@const keepRecycleImpacts = wishlistImpactMap.get(item.id) ?? []}
                 <li class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-800/60 bg-slate-950/60 p-4 text-sm">
@@ -500,14 +477,6 @@ import { derived, get } from 'svelte/store';
                               Blueprint unknown
                             {/if}
                           </span>
-                        {/if}
-                        {#if recipeLink}
-                          <a
-                            class="font-semibold text-sky-300 hover:text-sky-200"
-                            href={recipeLink.href}
-                          >
-                            View recipe
-                          </a>
                         {/if}
                       </div>
                       {#if keepRecycleImpacts.length > 0}
@@ -586,7 +555,6 @@ import { derived, get } from 'svelte/store';
       {:else}
         <div class="space-y-5">
           {#each $resolvedEntries as detail}
-            {@const recipeLink = detail.item ? recipeLinkForItem(detail.item) : null}
             {@const recycleSources = detail.recycleSources}
             {@const detailImage = detail.item ? resolveImageUrl(detail.item.imageUrl) : null}
             <article class="space-y-4 rounded-2xl border border-slate-800/60 bg-slate-950/60 p-5 text-sm text-slate-200">
@@ -603,14 +571,6 @@ import { derived, get } from 'svelte/store';
                     <h3 class="text-lg font-semibold text-white">
                       {detail.item ? detail.item.name : detail.entry.itemId}
                     </h3>
-                    {#if recipeLink}
-                      <a
-                        class="rounded-full border border-sky-700/50 bg-sky-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-sky-200 hover:bg-sky-500/20"
-                        href={recipeLink.href}
-                      >
-                        View recipe
-                      </a>
-                    {/if}
                   </div>
                   <p class="text-xs uppercase tracking-widest text-slate-500">
                     Added {new Date(detail.entry.createdAt).toLocaleDateString()}
