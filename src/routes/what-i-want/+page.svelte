@@ -88,7 +88,6 @@ import { derived, get } from 'svelte/store';
   let search = '';
   let benchFilter = 'all';
   let blueprintFilter: 'any' | 'owned' | 'missing' = 'any';
-  let quantityDrafts: Record<string, number> = {};
   let showFinder = true;
 
   const findBlueprintForItem = (item: ItemRecord) => {
@@ -163,20 +162,8 @@ import { derived, get } from 'svelte/store';
       .join(' ');
   };
 
-  const getQuantityDraft = (itemId: string) => quantityDrafts[itemId] ?? 1;
-  const setQuantityDraft = (itemId: string, value: number) => {
-    const normalized = Number.isFinite(value) ? Math.max(1, Math.round(value)) : 1;
-    quantityDrafts = { ...quantityDrafts, [itemId]: normalized };
-  };
-
   const getDirectRequirements = (requirements: WantListRequirement[] = []) =>
     requirements.filter((requirement) => requirement.depth === 1);
-
-  const clearQuantityDraft = (itemId: string) => {
-    const next = { ...quantityDrafts };
-    delete next[itemId];
-    quantityDrafts = next;
-  };
 
   const blueprintStatusForItem = (item: ItemRecord, stateMap: Map<string, { owned: boolean }>) => {
     const blueprint = findBlueprintForItem(item);
@@ -187,9 +174,7 @@ import { derived, get } from 'svelte/store';
   };
 
   const addToWantList = (item: ItemRecord) => {
-    const qty = getQuantityDraft(item.id);
-    wantList.add({ itemId: item.id, qty });
-    clearQuantityDraft(item.id);
+    wantList.add({ itemId: item.id, qty: 1 });
   };
 
   const removeEntry = (itemId: string) => wantList.remove(itemId);
@@ -361,7 +346,7 @@ import { derived, get } from 'svelte/store';
     for (const item of visibleItems) {
       const wishlistEntries = $wishlistHasItem.has(item.id)
         ? $wantList
-        : [...$wantList, { itemId: item.id, qty: getQuantityDraft(item.id), createdAt: new Date().toISOString() }];
+        : [...$wantList, { itemId: item.id, qty: 1, createdAt: new Date().toISOString() }];
 
       const context = $wishlistHasItem.has(item.id)
         ? baseContext
@@ -507,18 +492,11 @@ import { derived, get } from 'svelte/store';
                       {/if}
                     </div>
                   </div>
-                  <div class="flex items-center gap-2">
-                    <input
-                      type="number"
-                      min="1"
-                      class="w-16 rounded-lg border border-slate-700 bg-slate-900 px-2 py-1 text-right text-sm text-white"
-                      value={getQuantityDraft(item.id)}
-                      on:input={(event) => setQuantityDraft(item.id, Number(event.currentTarget.value))}
-                    />
+                  <div class="flex items-center">
                     <button
                       type="button"
                       data-testid="add-to-wishlist"
-                      class="rounded-full bg-sky-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-sky-200 transition hover:bg-sky-500/30"
+                      class="rounded-full bg-sky-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-sky-200 transition hover:bg-sky-500/30 disabled:cursor-not-allowed disabled:bg-sky-500/10"
                       on:click={() => addToWantList(item)}
                       disabled={$wishlistHasItem.has(item.id)}
                     >
