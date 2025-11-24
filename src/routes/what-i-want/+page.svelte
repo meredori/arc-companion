@@ -317,13 +317,14 @@ import { derived, get } from 'svelte/store';
     return recommendations
       .filter((rec) => rec.wishlistSources?.some((source) => source.targetItemId === targetItemId))
       .filter((rec) => rec.action === 'keep' || rec.action === 'recycle')
+      .filter((rec) => rec.itemId !== targetItemId)
       .filter((rec) => {
         const totalNeeds = rec.needs.quests + rec.needs.workshop + rec.needs.projects;
         const hasWishlist = (rec.wishlistSources?.length ?? 0) > 0;
         const supportsRecycling = rec.action === 'recycle';
         const category = rec.category?.toLowerCase().trim();
         const isBasicMaterial = category === 'basic material';
-        if (isBasicMaterial) return false;
+        if (isBasicMaterial && totalNeeds === 0) return false;
         if (!(totalNeeds > 0 || hasWishlist || supportsRecycling)) return false;
 
         if (supportsRecycling && !hasWishlist && totalNeeds === 0) {
