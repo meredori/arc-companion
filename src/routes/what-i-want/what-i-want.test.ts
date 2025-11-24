@@ -3,6 +3,7 @@ import { tick } from 'svelte';
 import Page from './+page.svelte';
 import { blueprints, hydrateFromCanonical, wantList } from '$lib/stores/app';
 import type { ItemRecord, UpgradePack } from '$lib/types';
+import { applyWeaponVariantAggregation } from '$lib/weapon-variants';
 
 const BASE_ITEM: ItemRecord = {
   id: 'wishlist-item',
@@ -73,6 +74,26 @@ const UNKNOWN_ITEM: ItemRecord = {
   category: 'Quick Use',
   sell: 25,
   salvagesInto: []
+};
+
+const VARIANT_ONE: ItemRecord = {
+  id: 'item-bettina-i',
+  name: 'Bettina I',
+  slug: 'bettina-i',
+  category: 'Assault Rifle',
+  sell: 0,
+  salvagesInto: [],
+  craftsFrom: [{ itemId: 'mat-a', name: 'Mat A', qty: 1 }]
+};
+
+const VARIANT_TWO: ItemRecord = {
+  id: 'item-bettina-ii',
+  name: 'Bettina II',
+  slug: 'bettina-ii',
+  category: 'Assault Rifle',
+  sell: 0,
+  salvagesInto: [],
+  craftsFrom: [{ itemId: 'mat-b', name: 'Mat B', qty: 2 }]
 };
 
 describe('what-i-want page', () => {
@@ -199,6 +220,53 @@ describe('what-i-want page', () => {
     expect(missingView.some((text) => text.includes('Missing Item'))).toBe(true);
     expect(missingView.some((text) => text.includes('Owned Item'))).toBe(false);
     expect(missingView.some((text) => text.includes('Unknown Item'))).toBe(false);
+
+    component.$destroy();
+  });
+
+  it('aggregates weapon variants with dropdown selection and cumulative costs', async () => {
+    const target = document.createElement('div');
+    document.body.appendChild(target);
+
+    const component = new Page({
+      target,
+      props: {
+        data: {
+          items: applyWeaponVariantAggregation([VARIANT_ONE, VARIANT_TWO]),
+          blueprints: [],
+          workbenchUpgrades: [UPGRADE],
+          quests: [],
+          projects: []
+        },
+        form: undefined,
+        params: {}
+      }
+    });
+
+    await tick();
+
+    const variantSelect = target.querySelector('[data-testid="variant-selector"]') as HTMLSelectElement;
+    expect(variantSelect).toBeTruthy();
+    expect(variantSelect?.options.length).toBe(2);
+    variantSelect.value = VARIANT_TWO.id;
+    variantSelect.dispatchEvent(new Event('change', { bubbles: true }));
+    await tick();
+
+    const addButton = target.querySelector('[data-testid="add-to-wishlist"]') as HTMLButtonElement;
+    expect(addButton).toBeTruthy();
+    addButton?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await tick();
+
+    const craftingHeader = Array.from(target.querySelectorAll('h4')).find((node) =>
+      node.textContent?.includes('Crafting requirements')
+    );
+    const craftingList = craftingHeader?.parentElement?.querySelector('ul');
+    const requirementText = Array.from(craftingList?.querySelectorAll('li') ?? []).map(
+      (node) => node.textContent?.trim() ?? ''
+    );
+
+    expect(requirementText.some((text) => text.includes('Mat A') && text.includes('×1'))).toBe(true);
+    expect(requirementText.some((text) => text.includes('Mat B') && text.includes('×2'))).toBe(true);
 
     component.$destroy();
   });

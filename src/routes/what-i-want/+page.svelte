@@ -4,7 +4,7 @@
 
 <script lang="ts">
   import { base } from '$app/paths';
-import { derived, get } from 'svelte/store';
+  import { derived, get } from 'svelte/store';
   import { onMount } from 'svelte';
   import { SearchBar } from '$lib/components';
   import {
@@ -19,7 +19,16 @@ import { derived, get } from 'svelte/store';
   } from '$lib/stores/app';
   import { buildRecommendationContext, recommendItemsMatching } from '$lib/recommend';
   import { BENCH_LABELS, DEFAULT_BENCH_ORDER, QUICK_USE_BENCH_BY_SLUG } from '$lib/utils/bench';
-  import type { ItemRecord, Project, Quest, UpgradePack, WantListEntry, WantListRequirement } from '$lib/types';
+  import { dedupeWeaponVariants } from '$lib/weapon-variants';
+  import type {
+    ItemRecord,
+    Project,
+    Quest,
+    UpgradePack,
+    WantListEntry,
+    WantListRequirement,
+    WeaponVariantOption
+  } from '$lib/types';
   import type { PageData } from './$types';
 
   export let data: PageData;
@@ -29,6 +38,7 @@ import { derived, get } from 'svelte/store';
   void __whatIWantProps;
 
   const items: ItemRecord[] = data.items ?? [];
+  const itemLookup = new Map(items.map((item) => [item.id, item] as const));
   const blueprintItems: ItemRecord[] = data.blueprints ?? [];
   const benchUpgrades: UpgradePack[] = data.workbenchUpgrades ?? [];
   const questDefs: Quest[] = data.quests ?? [];
@@ -138,10 +148,44 @@ import { derived, get } from 'svelte/store';
 
   const initialsForItem = (item?: ItemRecord | null) => initialsForName(item?.name);
 
+  const variantOptionsForItem = (item: ItemRecord): WeaponVariantOption[] => {
+    if (item.variants && item.variants.length > 0) return item.variants;
+    return [
+      {
+        itemId: item.id,
+        name: item.name,
+        slug: item.slug,
+        rarity: item.rarity ?? null,
+        imageUrl: item.imageUrl ?? null,
+        craftsFrom: item.craftsFrom ?? [],
+        tier: item.variantTier ?? 1
+      }
+    ];
+  };
+
+  const variantSelectionKey = (item: ItemRecord) => item.variantBaseId ?? item.id;
+
+  let selectedVariants: Record<string, string> = {};
+
+  const updateVariantSelection = (key: string, value: string) => {
+    selectedVariants = { ...selectedVariants, [key]: value };
+  };
+
+  const resolveSelectedVariant = (item: ItemRecord) => {
+    const key = variantSelectionKey(item);
+    const options = variantOptionsForItem(item);
+    const fallback = options[0];
+    const selectedId = selectedVariants[key] ?? fallback?.itemId ?? item.id;
+    const selectedOption = options.find((option) => option.itemId === selectedId) ?? fallback;
+    const selectedRecord = selectedOption ? itemLookup.get(selectedOption.itemId) ?? item : item;
+    return { key, selectedId, selectedOption, selectedRecord, options };
+  };
+
   const nonBlueprintItems = items.filter((item) => item.category?.toLowerCase() !== 'blueprint');
+  const catalogItems = dedupeWeaponVariants(nonBlueprintItems);
 
   const benchUsage = new Map<string, number>();
-  for (const item of nonBlueprintItems) {
+  for (const item of catalogItems) {
     const key = inferBenchForItem(item);
     benchUsage.set(key, (benchUsage.get(key) ?? 0) + 1);
   }
@@ -149,6 +193,24 @@ import { derived, get } from 'svelte/store';
   const benchOptions = ['all']
     .concat(DEFAULT_BENCH_ORDER.filter((key) => benchUsage.has(key)))
     .concat(Array.from(benchUsage.keys()).filter((key) => !DEFAULT_BENCH_ORDER.includes(key)));
+
+  $: {
+    const nextSelections: Record<string, string> = { ...selectedVariants };
+    let changed = false;
+    for (const item of catalogItems) {
+      const key = variantSelectionKey(item);
+      if (!nextSelections[key]) {
+        const options = variantOptionsForItem(item);
+        if (options[0]) {
+          nextSelections[key] = options[0].itemId;
+          changed = true;
+        }
+      }
+    }
+    if (changed) {
+      selectedVariants = nextSelections;
+    }
+  }
 
   $: if (!benchOptions.includes(benchFilter)) {
     benchFilter = 'all';
@@ -174,36 +236,43 @@ import { derived, get } from 'svelte/store';
   };
 
   const addToWantList = (item: ItemRecord) => {
-    wantList.add({ itemId: item.id, qty: 1 });
+    const selection = resolveSelectedVariant(item);
+    wantList.add({ itemId: selection.selectedRecord.id, qty: 1 });
   };
 
   const removeEntry = (itemId: string) => wantList.remove(itemId);
 
-  let filteredItems: ItemRecord[] = nonBlueprintItems;
+  let filteredItems: ItemRecord[] = catalogItems;
 
   $: {
     const normalizedSearch = search.trim().toLowerCase();
     const blueprintStates = $blueprintStateMap;
-    filteredItems = nonBlueprintItems.filter((item) => {
+    filteredItems = catalogItems.filter((item) => {
+      const selection = resolveSelectedVariant(item);
+
       if (normalizedSearch) {
-        const haystack = `${item.name} ${item.slug} ${item.category ?? ''}`.toLowerCase();
+        const haystackParts = [item.name, item.slug, item.category ?? ''];
+        variantOptionsForItem(item).forEach((variant) => {
+          haystackParts.push(variant.name, variant.slug);
+        });
+        const haystack = haystackParts.join(' ').toLowerCase();
         if (!haystack.includes(normalizedSearch)) {
           return false;
         }
       }
       if (benchFilter !== 'all') {
-        const benchKeyValue = inferBenchForItem(item);
+        const benchKeyValue = inferBenchForItem(selection.selectedRecord);
         if (benchKeyValue !== benchFilter) {
           return false;
         }
       }
       if (blueprintFilter === 'owned') {
-        const state = blueprintStatusForItem(item, blueprintStates);
+        const state = blueprintStatusForItem(selection.selectedRecord, blueprintStates);
         if (state === 'missing') return false;
         return true;
       }
       if (blueprintFilter === 'missing') {
-        const state = blueprintStatusForItem(item, blueprintStates);
+        const state = blueprintStatusForItem(selection.selectedRecord, blueprintStates);
         if (state !== 'missing') return false;
       }
       return true;
@@ -344,15 +413,17 @@ import { derived, get } from 'svelte/store';
     const baseContext = $recommendationContextStore;
 
     for (const item of visibleItems) {
-      const wishlistEntries = $wishlistHasItem.has(item.id)
-        ? $wantList
-        : [...$wantList, { itemId: item.id, qty: 1, createdAt: new Date().toISOString() }];
+      const { key, selectedId } = resolveSelectedVariant(item);
 
-      const context = $wishlistHasItem.has(item.id)
+      const wishlistEntries = $wishlistHasItem.has(selectedId)
+        ? $wantList
+        : [...$wantList, { itemId: selectedId, qty: 1, createdAt: new Date().toISOString() }];
+
+      const context = $wishlistHasItem.has(selectedId)
         ? baseContext
         : buildContextForWishlist(wishlistEntries);
 
-      preview.set(item.id, deriveWishlistImpacts(context, item.id));
+      preview.set(key, deriveWishlistImpacts(context, selectedId));
     }
 
     wishlistImpactMap = preview;
@@ -431,33 +502,43 @@ import { derived, get } from 'svelte/store';
             </p>
             <ul class="space-y-3">
               {#each filteredItems.slice(0, 60) as item}
-                {@const imageUrl = resolveImageUrl(item.imageUrl)}
-                {@const keepRecycleImpacts = wishlistImpactMap.get(item.id) ?? []}
+                {@const selection = resolveSelectedVariant(item)}
+                {@const variantRecord = selection.selectedRecord}
+                {@const variantOption = selection.selectedOption}
+                {@const variantOptions = selection.options}
+                {@const imageUrl = resolveImageUrl(variantOption?.imageUrl ?? variantRecord.imageUrl)}
+                {@const keepRecycleImpacts = wishlistImpactMap.get(selection.key) ?? []}
                 <li class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-800/60 bg-slate-950/60 p-4 text-sm">
                   <div class="flex flex-1 items-center gap-3">
                     <div class="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-slate-800/70 bg-slate-900 text-xs font-semibold uppercase tracking-wide text-slate-200">
                       {#if imageUrl}
-                        <img src={imageUrl} alt={item.name} class="h-full w-full object-cover" loading="lazy" decoding="async" />
+                        <img
+                          src={imageUrl}
+                          alt={variantRecord.name}
+                          class="h-full w-full object-cover"
+                          loading="lazy"
+                          decoding="async"
+                        />
                       {:else}
-                        <span>{initialsForItem(item)}</span>
+                        <span>{initialsForItem(variantRecord)}</span>
                       {/if}
                     </div>
                     <div class="space-y-1">
                       <div class="flex items-center gap-2">
-                        <span class="text-base font-semibold text-white">{item.name}</span>
-                        {#if item.category}
+                        <span class="text-base font-semibold text-white">{variantRecord.name}</span>
+                        {#if variantRecord.category}
                           <span class="rounded-full border border-slate-700/60 px-2 py-0.5 text-[11px] uppercase tracking-widest text-slate-400">
-                            {item.category}
+                            {variantRecord.category}
                           </span>
                         {/if}
                       </div>
                       <div class="flex flex-wrap gap-3 text-xs uppercase tracking-widest text-slate-500">
-                        <span>{labelForBench(inferBenchForItem(item))}</span>
-                        {#if findBlueprintForItem(item)}
+                        <span>{labelForBench(inferBenchForItem(variantRecord))}</span>
+                        {#if findBlueprintForItem(variantRecord)}
                           <span>
-                            {#if blueprintStatusForItem(item, $blueprintStateMap) === 'owned'}
+                            {#if blueprintStatusForItem(variantRecord, $blueprintStateMap) === 'owned'}
                               Blueprint owned
-                            {:else if blueprintStatusForItem(item, $blueprintStateMap) === 'missing'}
+                            {:else if blueprintStatusForItem(variantRecord, $blueprintStateMap) === 'missing'}
                               Blueprint missing
                             {:else}
                               Blueprint unknown
@@ -465,6 +546,25 @@ import { derived, get } from 'svelte/store';
                           </span>
                         {/if}
                       </div>
+                      {#if variantOptions.length > 1}
+                        <div class="flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-widest text-slate-400">
+                          <span class="text-slate-500">Level</span>
+                          <select
+                            class="rounded-lg border border-slate-700 bg-slate-900 px-2 py-1 text-[11px] uppercase tracking-widest text-slate-200"
+                            data-testid="variant-selector"
+                            value={selection.selectedId}
+                            on:change={(event) => {
+                              const target = event.currentTarget;
+                              const value = target instanceof HTMLSelectElement ? target.value : '';
+                              updateVariantSelection(selection.key, value);
+                            }}
+                          >
+                            {#each variantOptions as option}
+                              <option value={option.itemId}>{option.name}</option>
+                            {/each}
+                          </select>
+                        </div>
+                      {/if}
                       {#if keepRecycleImpacts.length > 0}
                         <div class="flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-widest text-slate-400">
                           <span class="text-slate-500">Keep/Recycle</span>
@@ -498,9 +598,9 @@ import { derived, get } from 'svelte/store';
                       data-testid="add-to-wishlist"
                       class="rounded-full bg-sky-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-sky-200 transition hover:bg-sky-500/30 disabled:cursor-not-allowed disabled:bg-sky-500/10"
                       on:click={() => addToWantList(item)}
-                      disabled={$wishlistHasItem.has(item.id)}
+                      disabled={$wishlistHasItem.has(selection.selectedId)}
                     >
-                      {#if $wishlistHasItem.has(item.id)}
+                      {#if $wishlistHasItem.has(selection.selectedId)}
                         Added
                       {:else}
                         Add

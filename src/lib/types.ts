@@ -32,6 +32,19 @@ export interface ItemRecord {
   craftsFrom?: ItemCraftRequirement[];
   craftsInto?: ItemCraftProduct[];
   notes?: string;
+  variantBaseId?: string;
+  variantTier?: number;
+  variants?: WeaponVariantOption[];
+}
+
+export interface WeaponVariantOption {
+  itemId: string;
+  name: string;
+  slug: string;
+  rarity?: string | null;
+  imageUrl?: string | null;
+  craftsFrom: ItemCraftRequirement[];
+  tier: number;
 }
 
 export type ItemOverride = Partial<Pick<ItemRecord, 'category' | 'rarity' | 'notes' | 'imageUrl'>>;

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { buildRecommendationContext, recommendItem, recommendItemsMatching } from './recommend';
+import { applyWeaponVariantAggregation } from './weapon-variants';
 import type {
   BlueprintState,
   ItemRecord,
@@ -13,7 +14,7 @@ import type {
   WorkbenchUpgradeState
 } from './types';
 
-const ITEMS: ItemRecord[] = [
+const ITEMS: ItemRecord[] = applyWeaponVariantAggregation([
   {
     id: 'item-alpha',
     name: 'Alpha Core',
@@ -285,7 +286,7 @@ const ITEMS: ItemRecord[] = [
     sell: 70,
     salvagesInto: [],
   }
-];
+]);
 
 const getItem = (id: string) => {
   const match = ITEMS.find((entry) => entry.id === id);
