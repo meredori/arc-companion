@@ -321,10 +321,13 @@ import { derived, get } from 'svelte/store';
       .filter((rec) => {
         const totalNeeds = rec.needs.quests + rec.needs.workshop + rec.needs.projects;
         const hasWishlist = (rec.wishlistSources?.length ?? 0) > 0;
+        const supportsTargetRequirement = rec.wishlistSources?.some(
+          (source) => source.targetItemId === targetItemId && source.kind === 'requirement'
+        );
         const supportsRecycling = rec.action === 'recycle';
         const category = rec.category?.toLowerCase().trim();
         const isBasicMaterial = category === 'basic material';
-        if (isBasicMaterial && totalNeeds === 0) return false;
+        if (isBasicMaterial && totalNeeds === 0 && !supportsTargetRequirement) return false;
         if (!(totalNeeds > 0 || hasWishlist || supportsRecycling)) return false;
 
         if (supportsRecycling && !hasWishlist && totalNeeds === 0) {
