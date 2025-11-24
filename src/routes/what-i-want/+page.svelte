@@ -212,13 +212,14 @@ import { derived, get } from 'svelte/store';
           return false;
         }
       }
-      if (blueprintFilter !== 'any') {
+      if (blueprintFilter === 'owned') {
         const state = blueprintStatusForItem(item, blueprintStates);
-        if (state === 'unknown') {
-          return false;
-        }
-        if (blueprintFilter === 'owned' && state !== 'owned') return false;
-        if (blueprintFilter === 'missing' && state !== 'missing') return false;
+        if (state === 'missing') return false;
+        return true;
+      }
+      if (blueprintFilter === 'missing') {
+        const state = blueprintStatusForItem(item, blueprintStates);
+        if (state !== 'missing') return false;
       }
       return true;
     });
