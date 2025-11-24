@@ -91,6 +91,7 @@ interface RawItem {
   recipe?: Record<string, number>;
   craftMaterials?: Record<string, number>;
   crafting?: Record<string, number>;
+  upgradeCost?: Record<string, number>;
   imageFilename?: string;
 }
 
@@ -169,6 +170,23 @@ const convertRecipeEntries = (
     .filter((entry): entry is ItemCraftRequirement => entry !== null);
 };
 
+const mergeCraftRequirements = (lists: ItemCraftRequirement[][]): ItemCraftRequirement[] => {
+  const merged = new Map<string, ItemCraftRequirement>();
+
+  for (const list of lists) {
+    for (const entry of list) {
+      const existing = merged.get(entry.itemId);
+      if (existing) {
+        existing.qty += entry.qty;
+      } else {
+        merged.set(entry.itemId, { ...entry });
+      }
+    }
+  }
+
+  return Array.from(merged.values()).sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
+};
+
 const convertRecycleEntries = (
   source: Record<string, number> | undefined,
   lookup: Map<string, string>
@@ -224,9 +242,11 @@ export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
     const englishName = englishText(raw.name, raw.id);
     const slug = slugify(raw.id.replace(/_/g, '-')) || slugify(englishName) || englishName;
     const recycleSource = raw.recyclesInto ?? raw.recyleInto ?? raw.salvagesInto;
-    const craftsRecipe = raw.recipe ?? raw.craftMaterials ?? raw.crafting;
+    const recipeSources = [raw.recipe, raw.craftMaterials, raw.crafting, raw.upgradeCost];
     const notes = englishText(raw.description)?.trim();
-    const craftsEntries = convertRecipeEntries(craftsRecipe, nameLookup);
+    const craftsEntries = mergeCraftRequirements(
+      recipeSources.map((source) => convertRecipeEntries(source, nameLookup))
+    );
     const dependencySet = new Set<string>();
     for (const entry of craftsEntries) {
       dependencySet.add(entry.itemId);

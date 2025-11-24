@@ -72,6 +72,25 @@ describe('pipeline normalization', () => {
     );
   });
 
+  it('converts weapon upgrade costs into crafting requirements', () => {
+    const anvilOne = normalizedItems.find((entry) => entry.id === 'item-anvil-i');
+    const anvilTwo = normalizedItems.find((entry) => entry.id === 'item-anvil-ii');
+
+    expect(anvilOne?.craftsFrom).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ itemId: 'item-mechanical-components', qty: 5 }),
+        expect.objectContaining({ itemId: 'item-simple-gun-parts', qty: 6 })
+      ])
+    );
+
+    expect(anvilTwo?.craftsFrom).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ itemId: 'item-mechanical-components', qty: 3 }),
+        expect.objectContaining({ itemId: 'item-simple-gun-parts', qty: 1 })
+      ])
+    );
+  });
+
   it('derives quest chains, rewards, and requirements from raw data', () => {
     const { quests, chains } = normalizeQuests(rawQuests, { rawItems, items: normalizedItems });
 
