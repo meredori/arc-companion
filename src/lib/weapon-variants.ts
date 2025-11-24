@@ -116,7 +116,7 @@ export const applyWeaponVariantAggregation = (items: ItemRecord[]): ItemRecord[]
   const cumulativeCraftsById = new Map<string, ItemCraftRequirement[]>();
   const variantsByBase = new Map<string, WeaponVariantOption[]>();
 
-  for (const { entries, baseName } of groups.values()) {
+  for (const { entries } of groups.values()) {
     if (entries.length < 2) continue;
 
     const sorted = entries.sort((a, b) => a.tier - b.tier);

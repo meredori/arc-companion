@@ -69,13 +69,6 @@ const categoryGroupKey = (label?: string) => {
   return CATEGORY_GROUP_LOOKUP.get(label.toLowerCase());
 };
 
-const WEAPON_GROUP_KEY = categoryGroupKey('Weapon');
-
-const isWeaponCategory = (label?: string) => {
-  if (!label || !WEAPON_GROUP_KEY) return false;
-  return categoryGroupKey(label) === WEAPON_GROUP_KEY;
-};
-
 const RARITY_PRIORITY = ['legendary', 'epic', 'rare', 'uncommon', 'common'] as const;
 
 const normalizeCategory = (value?: string | null) => (value ? value.toLowerCase().trim() : '');
