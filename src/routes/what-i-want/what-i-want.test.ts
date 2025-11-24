@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { tick } from 'svelte';
-import { base } from '$app/paths';
 import Page from './+page.svelte';
 import { wantList } from '$lib/stores/app';
 import type { ItemRecord, UpgradePack } from '$lib/types';
@@ -70,7 +69,7 @@ describe('what-i-want page', () => {
     component.$destroy();
   });
 
-  it('links craftable items to their blueprint recipes', async () => {
+  it('does not render blueprint recipe links for craftable items', async () => {
     const target = document.createElement('div');
     document.body.appendChild(target);
 
@@ -92,11 +91,7 @@ describe('what-i-want page', () => {
     await tick();
 
     const link = target.querySelector('a[href*="/what-i-have#"]');
-    expect(link?.textContent).toContain('View recipe');
-    const expectedHref = `${base}/what-i-have#blueprint-wishlist-item-blueprint`
-      .replace(/\/{2,}/g, '/')
-      .replace(':/', '://');
-    expect(link?.getAttribute('href')).toBe(expectedHref);
+    expect(link).toBeNull();
 
     component.$destroy();
   });
