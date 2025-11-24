@@ -11,6 +11,7 @@ import type {
   QuestChain,
   UpgradePack
 } from '$lib/types';
+import { applyWeaponVariantAggregation } from '$lib/weapon-variants';
 
 const slugify = (value: string): string =>
   value
@@ -827,7 +828,7 @@ export const loadCanonicalData = async (request: PipelineRequest): Promise<Pipel
 
   let items: ItemRecord[] | undefined;
   if (includeItems && rawItems) {
-    items = normalizeItems(rawItems);
+    items = applyWeaponVariantAggregation(normalizeItems(rawItems));
     if (request.items) {
       result.items = items;
     }

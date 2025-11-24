@@ -22,6 +22,7 @@ import {
   QUICK_USE_BENCH_LOOKUP,
   QUICK_USE_BENCH_PRIORITY
 } from '$lib/utils/bench';
+import { dedupeWeaponVariants } from '$lib/weapon-variants';
 
 const CATEGORY_PRIORITY_GROUPS: string[][] = [
   ['Augment'],
@@ -433,21 +434,9 @@ export function recommendItemsMatching(
 
   const categoryFiltered = filtered.filter(passesIgnoreFilter);
 
-  const weaponVariantPattern = /-([ivxlcdm]+)$/;
+  const dedupedItems = dedupeWeaponVariants(categoryFiltered);
 
-  const filteredWeapons = categoryFiltered.filter((item) => {
-    if (!isWeaponCategory(item.category)) {
-      return true;
-    }
-    const match = item.slug.match(weaponVariantPattern);
-    if (!match) {
-      return true;
-    }
-    const numeral = match[1];
-    return numeral === 'i';
-  });
-
-  const recommendations = filteredWeapons.map((item) => recommendItem(item, context));
+  const recommendations = dedupedItems.map((item) => recommendItem(item, context));
 
   const rarityRank = (rarity?: string) => {
     if (!rarity) return RARITY_PRIORITY.length;
