@@ -6,7 +6,7 @@
   /* eslint-env browser */
   import { derived } from 'svelte/store';
   import { onDestroy, onMount } from 'svelte';
-  import { InnerTabs, QuestChainCards, SearchBar, TipsPanel, type QuestChainCard } from '$lib/components';
+  import { InnerTabs, QuestChainCards, SearchBar, type QuestChainCard } from '$lib/components';
   import {
     blueprints,
     hydrateFromCanonical,
@@ -14,7 +14,6 @@
     quests,
     workbenchUpgrades
   } from '$lib/stores/app';
-  import { tipsForBlueprints, tipsForWorkshop } from '$lib/tips';
   import { createQuestOrderComparator } from '$lib/utils/quest-order';
   import type {
     ItemRecord,
@@ -301,14 +300,6 @@
 
   const toggleBlueprint = (entry: BlueprintEntry) => setBlueprintOwnership(entry, !entry.state.owned);
 
-  const blueprintSummary = derived(blueprints, ($blueprints) => {
-    const owned = $blueprints.filter((bp) => bp.owned).length;
-    return {
-      owned,
-      total: blueprintRecords.length,
-      tips: tipsForBlueprints(owned, blueprintRecords.length)
-    };
-  });
   let workshopFilter = '';
   let blueprintQuery = '';
 
@@ -587,8 +578,7 @@
         .map((level) => level.level);
       return ownedInGroup.length > 0 ? Math.max(max, ...ownedInGroup) : max;
     }, 0);
-    const tips = tipsForWorkshop(ownedLevels, totalLevels, highestOwned);
-    return { totalLevels, ownedLevels, highestOwned, tips };
+    return { totalLevels, ownedLevels, highestOwned };
   })();
 
   $: projectSummary = (() => {
@@ -776,7 +766,6 @@
                 </p>
               {/if}
             </div>
-            <TipsPanel heading="Workbench reminders" tips={workshopSummary.tips} />
           </div>
       </div>
 
@@ -950,7 +939,6 @@
               {/each}
             {/if}
           </div>
-          <TipsPanel heading="Blueprint notes" tips={$blueprintSummary.tips} />
         </div>
       </div>
     </svelte:fragment>

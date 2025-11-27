@@ -54,7 +54,7 @@
     {
       href: '/run',
       title: 'Run Analyzer',
-      description: 'Live run logging with contextual tips and telemetry overlays.'
+      description: 'Live run logging with telemetry overlays.'
     },
     {
       href: '/about',
