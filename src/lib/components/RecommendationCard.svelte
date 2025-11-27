@@ -50,6 +50,7 @@
 
   $: rarityClass =
     rarityChips[rarity ? rarity.toLowerCase() : 'default'] ?? rarityChips.default;
+  $: totalNeeds = (needs?.quests ?? 0) + (needs?.workshop ?? 0) + (needs?.projects ?? 0);
   $: iconLabel =
     category?.slice(0, 3).toUpperCase() ??
     name
@@ -145,6 +146,31 @@
           <p class="text-slate-300">{reason}</p>
         {:else}
           <p class="text-slate-500">Action rationale will appear once personalization syncs.</p>
+        {/if}
+
+        {#if totalNeeds > 0 || alwaysKeepCategory}
+          <div class="flex flex-wrap gap-2 text-[10px] uppercase tracking-widest text-slate-400">
+            {#if needs?.quests}
+              <span class="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2 py-0.5 font-semibold text-emerald-100">
+                Quests ×{needs.quests}
+              </span>
+            {/if}
+            {#if needs?.workshop}
+              <span class="rounded-full border border-sky-500/40 bg-sky-500/10 px-2 py-0.5 font-semibold text-sky-100">
+                Upgrades ×{needs.workshop}
+              </span>
+            {/if}
+            {#if needs?.projects}
+              <span class="rounded-full border border-fuchsia-500/40 bg-fuchsia-500/10 px-2 py-0.5 font-semibold text-fuchsia-100">
+                Projects ×{needs.projects}
+              </span>
+            {/if}
+            {#if alwaysKeepCategory}
+              <span class="rounded-full border border-slate-600 bg-slate-800/80 px-2 py-0.5 font-semibold text-slate-100">
+                Admin keep
+              </span>
+            {/if}
+          </div>
         {/if}
 
         {#if action === 'keep'}
@@ -258,6 +284,31 @@
       <p class="text-sm text-slate-300">{reason}</p>
     {:else}
       <p class="text-sm text-slate-500">Rationale copy will be generated alongside data imports.</p>
+    {/if}
+
+    {#if totalNeeds > 0 || alwaysKeepCategory}
+      <div class="mt-2 flex flex-wrap gap-2 text-[11px] uppercase tracking-widest text-slate-400">
+        {#if needs?.quests}
+          <span class="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2 py-0.5 font-semibold text-emerald-100">
+            Quests ×{needs.quests}
+          </span>
+        {/if}
+        {#if needs?.workshop}
+          <span class="rounded-full border border-sky-500/40 bg-sky-500/10 px-2 py-0.5 font-semibold text-sky-100">
+            Upgrades ×{needs.workshop}
+          </span>
+        {/if}
+        {#if needs?.projects}
+          <span class="rounded-full border border-fuchsia-500/40 bg-fuchsia-500/10 px-2 py-0.5 font-semibold text-fuchsia-100">
+            Projects ×{needs.projects}
+          </span>
+        {/if}
+        {#if alwaysKeepCategory}
+          <span class="rounded-full border border-slate-600 bg-slate-800/80 px-2 py-0.5 font-semibold text-slate-100">
+            Admin keep
+          </span>
+        {/if}
+      </div>
     {/if}
   </article>
 {/if}
