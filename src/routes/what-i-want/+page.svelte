@@ -6,7 +6,7 @@
   import { base } from '$app/paths';
   import { derived, get } from 'svelte/store';
   import { onMount } from 'svelte';
-  import { SearchBar } from '$lib/components';
+  import { ItemIcon, SearchBar } from '$lib/components';
   import {
     blueprints,
     expandWantList,
@@ -118,18 +118,6 @@
     }
     return 'workbench';
   };
-
-  const rarityGradients: Record<string, string> = {
-    legendary: 'from-amber-500/20 via-amber-600/20 to-amber-900/40 border-amber-400/60',
-    epic: 'from-fuchsia-500/20 via-fuchsia-600/20 to-fuchsia-900/40 border-fuchsia-400/60',
-    rare: 'from-sky-500/20 via-sky-600/20 to-sky-900/40 border-sky-400/60',
-    uncommon: 'from-emerald-500/20 via-emerald-600/20 to-emerald-900/40 border-emerald-400/60',
-    common: 'from-slate-500/10 via-slate-700/10 to-slate-900/30 border-slate-600/60',
-    default: 'from-slate-900/60 via-slate-900/50 to-slate-950/80 border-slate-800/70'
-  };
-
-  const rarityClass = (rarity?: string | null) =>
-    rarityGradients[rarity?.toLowerCase() ?? 'default'] ?? rarityGradients.default;
 
   const resolveImageUrl = (url?: string | null) => {
     if (!url) return null;
@@ -510,19 +498,18 @@
                 {@const keepRecycleImpacts = wishlistImpactMap.get(selection.key) ?? []}
                 <li class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-800/60 bg-slate-950/60 p-4 text-sm">
                   <div class="flex flex-1 items-center gap-3">
-                    <div class="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-slate-800/70 bg-slate-900 text-xs font-semibold uppercase tracking-wide text-slate-200">
-                      {#if imageUrl}
-                        <img
-                          src={imageUrl}
-                          alt={variantRecord.name}
-                          class="h-full w-full object-cover"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      {:else}
-                        <span>{initialsForItem(variantRecord)}</span>
-                      {/if}
-                    </div>
+                  <div class="h-16 w-16">
+                    <ItemIcon
+                      className="h-full"
+                      name={variantRecord.name}
+                      rarity={variantRecord.rarity ?? null}
+                      imageUrl={imageUrl}
+                      initials={initialsForItem(variantRecord)}
+                      sizeClass="h-full w-full"
+                      roundedClass="rounded-2xl"
+                      paddingClass="p-2"
+                    />
+                  </div>
                     <div class="space-y-1">
                       <div class="flex items-center gap-2">
                         <span class="text-base font-semibold text-white">{variantRecord.name}</span>
@@ -570,21 +557,18 @@
                           <span class="text-slate-500">Keep/Recycle</span>
                           <div class="flex flex-wrap gap-2">
                             {#each keepRecycleImpacts as preview}
-                              <div
-                                class={`flex h-8 w-8 items-center justify-center overflow-hidden rounded-xl border bg-gradient-to-br text-[9px] font-semibold uppercase tracking-wide text-slate-100 ${rarityClass(preview.rarity)}`}
-                                title={`${preview.name} — ${preview.action === 'recycle' ? 'Recycle' : 'Keep'}`}
-                              >
-                                {#if preview.imageUrl}
-                                  <img
-                                    src={preview.imageUrl}
-                                    alt={preview.name}
-                                    class="h-full w-full object-cover"
-                                    loading="lazy"
-                                    decoding="async"
-                                  />
-                                {:else}
-                                  <span class="px-1 text-[9px]">{initialsForName(preview.name)}</span>
-                                {/if}
+                              <div class="h-8 w-8">
+                                <ItemIcon
+                                  className="h-full"
+                                  name={preview.name}
+                                  rarity={preview.rarity ?? null}
+                                  imageUrl={preview.imageUrl ?? null}
+                                  initials={initialsForName(preview.name)}
+                                  sizeClass="h-full w-full"
+                                  roundedClass="rounded-xl"
+                                  paddingClass="p-1.5"
+                                  tag={preview.action === 'recycle' ? 'recycle' : 'keep'}
+                                />
                               </div>
                             {/each}
                           </div>
