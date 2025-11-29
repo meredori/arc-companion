@@ -12,9 +12,9 @@
   };
 
   const TAG_STYLES: Record<RecommendationAction, string> = {
-    keep: 'bg-sky-500/90 text-white border border-sky-200/60 shadow-sky-500/40',
-    recycle: 'bg-amber-500/90 text-slate-900 border border-amber-200/80 shadow-amber-500/40',
-    sell: 'bg-rose-500/90 text-white border border-rose-200/80 shadow-rose-500/40'
+    keep: 'border-emerald-400/50 bg-emerald-500/10 text-emerald-100',
+    recycle: 'border-amber-400/50 bg-amber-500/10 text-amber-100',
+    sell: 'border-rose-400/50 bg-rose-500/10 text-rose-100'
   } as const;
 
   const TAG_LABEL: Record<RecommendationAction, string> = {
@@ -79,7 +79,7 @@
 
   {#if tag}
     <span
-      class={`pointer-events-none absolute bottom-1 right-1 inline-flex items-center gap-1 rounded-full px-2 py-1 text-[10px] font-semibold uppercase tracking-wide shadow-lg ${TAG_STYLES[tag]}`}
+      class={`pointer-events-none absolute bottom-1 right-1 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide shadow-lg ${TAG_STYLES[tag]}`}
     >
       {TAG_LABEL[tag]}
     </span>

@@ -60,17 +60,21 @@
 {#if variant === 'token'}
   <button
     type="button"
-    class="group relative w-full text-center outline-none focus-visible:ring-2 focus-visible:ring-slate-200/30 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+    class="group relative block aspect-square w-full text-center outline-none focus-visible:ring-2 focus-visible:ring-slate-200/30 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
     aria-describedby={tooltipId}
     aria-label={`Details for ${name}`}
   >
     <ItemIcon
+      className="h-full"
       name={name}
       rarity={rarity ?? null}
       imageUrl={imageUrl ?? null}
       tag={action}
       tooltipId={tooltipId}
       showTooltip={true}
+      sizeClass="h-full w-full"
+      roundedClass="rounded-xl"
+      paddingClass="p-2"
     >
       <ItemTooltip
         slot="tooltip"
