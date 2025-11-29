@@ -17,6 +17,12 @@
     sell: 'border-rose-400/50 bg-rose-500/10 text-rose-100'
   } as const;
 
+  const DOT_STYLES: Record<RecommendationAction, string> = {
+    keep: 'bg-emerald-400 border-emerald-100/80',
+    recycle: 'bg-amber-300 border-amber-50/80',
+    sell: 'bg-rose-400 border-rose-100/80'
+  } as const;
+
   const TAG_LABEL: Record<RecommendationAction, string> = {
     keep: 'Keep',
     recycle: 'Recycle',
@@ -86,10 +92,9 @@
     </span>
   {:else if tag && tagStyle === 'dot'}
     <span
-      class={`pointer-events-none absolute bottom-1 right-1 inline-flex h-3 w-3 items-center justify-center rounded-full border border-white/40 bg-white/20 shadow-md ${TAG_STYLES[tag]}`}
+      class={`pointer-events-none absolute bottom-1.5 right-1.5 inline-flex h-2.5 w-2.5 items-center justify-center rounded-full border shadow-md ${DOT_STYLES[tag]}`}
       aria-label={TAG_LABEL[tag]}
     >
-      <span class="h-2 w-2 rounded-full bg-current" aria-hidden="true" />
     </span>
   {/if}
 
