@@ -1,4 +1,4 @@
-export type RecommendationAction = 'save' | 'keep' | 'recycle' | 'sell';
+export type RecommendationAction = 'keep' | 'recycle' | 'sell';
 export type RecommendationSort = 'category' | 'alphabetical';
 
 export interface ItemRecycleEntry {
@@ -299,18 +299,5 @@ export interface RecommendationContext {
   wantList: WantListEntry[];
   wantListDependencies: WantListResolvedEntry[];
   wishlistSourcesByItem: Record<string, RecommendationWishlistSource[]>;
-}
-
-export interface RunTip {
-  id: string;
-  message: string;
-  level?: 'info' | 'warning' | 'success';
-}
-
-export interface RunTipContext {
-  activeRun?: RunLogEntry | null;
-  recentRuns: RunLogEntry[];
-  settings: AppSettings;
-  outstandingNeeds: number;
 }
 

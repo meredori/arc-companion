@@ -26,14 +26,12 @@
   export let wishlistSources: RecommendationCardProps['wishlistSources'] = [];
 
   const ACTION_COPY = {
-    save: 'Save',
     keep: 'Keep',
     recycle: 'Recycle',
     sell: 'Sell'
   } as const;
 
   const ACTION_STYLES = {
-    save: 'bg-emerald-500/20 text-emerald-200 border border-emerald-400/60',
     keep: 'bg-sky-500/20 text-sky-200 border border-sky-400/60',
     recycle: 'bg-amber-500/20 text-amber-200 border border-amber-400/60',
     sell: 'bg-rose-500/20 text-rose-200 border border-rose-400/60'
@@ -52,6 +50,7 @@
 
   $: rarityClass =
     rarityChips[rarity ? rarity.toLowerCase() : 'default'] ?? rarityChips.default;
+  $: totalNeeds = (needs?.quests ?? 0) + (needs?.workshop ?? 0) + (needs?.projects ?? 0);
   $: iconLabel =
     category?.slice(0, 3).toUpperCase() ??
     name
@@ -149,28 +148,50 @@
           <p class="text-slate-500">Action rationale will appear once personalization syncs.</p>
         {/if}
 
-        {#if action === 'save'}
-          <div class="space-y-1">
-            <p class="text-[10px] uppercase tracking-widest text-slate-400">
-              Quest turn-ins ({needs?.quests ?? 0})
-            </p>
-            <ul class="space-y-1 text-slate-200">
-              {#each questNeeds as quest}
-                <li class="flex items-center justify-between gap-2 rounded-lg border border-slate-800/70 bg-slate-900/60 px-3 py-2">
-                  <span class="truncate">{quest.name}</span>
-                  <span class="inline-flex items-center gap-2 rounded-full border border-slate-700/70 bg-slate-900/80 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-emerald-100">
-                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-300/80"></span>
-                    ×{quest.qty}
-                  </span>
-                </li>
-              {:else}
-                <li class="text-slate-500">All quest needs satisfied.</li>
-              {/each}
-            </ul>
+        {#if totalNeeds > 0 || alwaysKeepCategory}
+          <div class="flex flex-wrap gap-2 text-[10px] uppercase tracking-widest text-slate-400">
+            {#if needs?.quests}
+              <span class="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2 py-0.5 font-semibold text-emerald-100">
+                Quests ×{needs.quests}
+              </span>
+            {/if}
+            {#if needs?.workshop}
+              <span class="rounded-full border border-sky-500/40 bg-sky-500/10 px-2 py-0.5 font-semibold text-sky-100">
+                Upgrades ×{needs.workshop}
+              </span>
+            {/if}
+            {#if needs?.projects}
+              <span class="rounded-full border border-fuchsia-500/40 bg-fuchsia-500/10 px-2 py-0.5 font-semibold text-fuchsia-100">
+                Projects ×{needs.projects}
+              </span>
+            {/if}
+            {#if alwaysKeepCategory}
+              <span class="rounded-full border border-slate-600 bg-slate-800/80 px-2 py-0.5 font-semibold text-slate-100">
+                Admin keep
+              </span>
+            {/if}
           </div>
-        {:else if action === 'keep'}
+        {/if}
+
+        {#if action === 'keep'}
           <div class="space-y-2">
             <p class="text-[10px] uppercase tracking-widest text-slate-400">Keep rationale</p>
+            {#if questNeeds.length > 0}
+              <div>
+                <p class="mb-1 text-[11px] uppercase tracking-widest text-emerald-100">Quest turn-ins</p>
+                <ul class="space-y-1 text-slate-200">
+                  {#each questNeeds as quest}
+                    <li class="flex items-center justify-between gap-2 rounded-lg border border-slate-800/70 bg-slate-900/60 px-3 py-2">
+                      <span class="truncate">{quest.name}</span>
+                      <span class="inline-flex items-center gap-2 rounded-full border border-slate-700/70 bg-slate-900/80 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-emerald-100">
+                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-300/80"></span>
+                        ×{quest.qty}
+                      </span>
+                    </li>
+                  {/each}
+                </ul>
+              </div>
+            {/if}
             {#if alwaysKeepCategory}
               <p class="rounded-lg border border-sky-500/30 bg-sky-500/10 px-2 py-1 text-sky-100">
                 Always keep — {category ?? 'Category'} flagged in admin controls.
@@ -263,6 +284,31 @@
       <p class="text-sm text-slate-300">{reason}</p>
     {:else}
       <p class="text-sm text-slate-500">Rationale copy will be generated alongside data imports.</p>
+    {/if}
+
+    {#if totalNeeds > 0 || alwaysKeepCategory}
+      <div class="mt-2 flex flex-wrap gap-2 text-[11px] uppercase tracking-widest text-slate-400">
+        {#if needs?.quests}
+          <span class="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2 py-0.5 font-semibold text-emerald-100">
+            Quests ×{needs.quests}
+          </span>
+        {/if}
+        {#if needs?.workshop}
+          <span class="rounded-full border border-sky-500/40 bg-sky-500/10 px-2 py-0.5 font-semibold text-sky-100">
+            Upgrades ×{needs.workshop}
+          </span>
+        {/if}
+        {#if needs?.projects}
+          <span class="rounded-full border border-fuchsia-500/40 bg-fuchsia-500/10 px-2 py-0.5 font-semibold text-fuchsia-100">
+            Projects ×{needs.projects}
+          </span>
+        {/if}
+        {#if alwaysKeepCategory}
+          <span class="rounded-full border border-slate-600 bg-slate-800/80 px-2 py-0.5 font-semibold text-slate-100">
+            Admin keep
+          </span>
+        {/if}
+      </div>
     {/if}
   </article>
 {/if}

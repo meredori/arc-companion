@@ -312,7 +312,7 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
   })();
 
   if (questNeed.total > 0) {
-    action = 'save';
+    action = 'keep';
     rationale = `Required for ${questNeed.total} quest objective${questNeed.total > 1 ? 's' : ''}.`;
   } else if (upgradeNeed.total > 0 || projectNeed.total > 0 || wishlistSources.length > 0) {
     action = 'keep';
@@ -366,7 +366,7 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
     }
   }
 
-  if (wishlistSources.length > 0 && action !== 'save' && !rationale.includes('Wishlist')) {
+  if (wishlistSources.length > 0 && !rationale.includes('Wishlist')) {
     rationale = rationale.endsWith('.') ? `${rationale} ${wishlistReason}` : `${rationale}. ${wishlistReason}`;
   }
 

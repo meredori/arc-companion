@@ -297,7 +297,7 @@
     name: string;
     imageUrl: string | null;
     rarity: string | null;
-    action: 'keep' | 'recycle' | 'save' | 'sell';
+    action: 'keep' | 'recycle' | 'sell';
   };
 
   const recommendationContextStore = derived(

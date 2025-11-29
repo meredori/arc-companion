@@ -8,7 +8,7 @@
   import { browser } from '$app/environment';
   import { onDestroy } from 'svelte';
   import { derived, get } from 'svelte/store';
-  import { RecommendationCard, RunTimer, TipsPanel } from '$lib/components';
+  import { RecommendationCard, RunTimer } from '$lib/components';
   import { assets, base } from '$app/paths';
   import {
     blueprints,
@@ -160,7 +160,7 @@
         const mapLabel = formatMapLabel(run.map);
         return {
           name: run.notes || new Date(run.startedAt).toLocaleString(),
-          action: 'save' as const,
+          action: 'keep' as const,
           rarity: [mapLabel, run.crew, formatDuration(run)]
             .filter(Boolean)
             .join(' · '),
@@ -179,20 +179,6 @@
     const totalExtract = $runs.reduce((sum, run) => sum + (run.extractedValue ?? 0), 0);
     const successRate = total > 0 ? Math.round((completed / total) * 100) : 0;
     return { total, completed, totalXp, totalValue, totalExtract, successRate };
-  });
-
-  const dashboardNotes = derived([runs, lastRemovedRun], ([$runs, $lastRemoved]) => {
-    const notes: string[] = [];
-    if ($runs.length === 0) {
-      notes.push('Log your first run to unlock historical analytics.');
-    } else {
-      notes.push('Use the edit controls to keep historical records accurate.');
-    }
-    if ($lastRemoved) {
-      notes.push('A run was deleted — undo is available below.');
-    }
-    notes.push('Exports and charts will appear as the dataset grows.');
-    return notes;
   });
 
   let runForm = createDefaultForm(get(settings).freeLoadoutDefault);
@@ -373,8 +359,8 @@
   <header class="space-y-3">
     <h1 class="text-3xl font-semibold">Run Analyzer</h1>
     <p class="max-w-2xl text-sm text-slate-400">
-      Log real-time run data, monitor pacing, and surface contextual tips. This placeholder layout
-      sketches the final structure for timers, logging, and guidance widgets.
+      Log real-time run data and monitor pacing. This placeholder layout sketches the final structure for
+      timers, logging, and guidance widgets.
     </p>
   </header>
 
@@ -590,7 +576,6 @@
           {/each}
         {/if}
       </div>
-      <TipsPanel heading="Dashboard insights" tips={$dashboardNotes} />
     </div>
 
     <div class="grid gap-4 rounded-2xl border border-slate-800/70 bg-slate-950/60 p-6 text-sm text-slate-300 sm:grid-cols-3">
