@@ -4,7 +4,8 @@
 </script>
 
 <script lang="ts">
-  import { assets, base } from '$app/paths';
+  import ItemIcon from './ItemIcon.svelte';
+  import ItemTooltip from './ItemTooltip.svelte';
   import type { RecommendationCardProps } from './types';
 
   export let name: RecommendationCardProps['name'];
@@ -31,44 +32,9 @@
     sell: 'Sell'
   } as const;
 
-  const ACTION_STYLES = {
-    keep: 'bg-sky-500/20 text-sky-200 border border-sky-400/60',
-    recycle: 'bg-amber-500/20 text-amber-200 border border-amber-400/60',
-    sell: 'bg-rose-500/20 text-rose-200 border border-rose-400/60'
-  } as const;
-
-  const rarityChips: Record<string, string> = {
-    legendary: 'from-amber-400/40 via-amber-600/40 to-amber-800/40 border-amber-400/60',
-    epic: 'from-fuchsia-400/40 via-fuchsia-600/40 to-fuchsia-800/40 border-fuchsia-400/60',
-    rare: 'from-sky-400/40 via-sky-600/40 to-sky-800/40 border-sky-400/60',
-    uncommon: 'from-emerald-400/40 via-emerald-600/40 to-emerald-800/40 border-emerald-400/60',
-    common: 'from-slate-400/30 via-slate-600/30 to-slate-800/30 border-slate-500/60',
-    default: 'from-slate-500/30 via-slate-700/30 to-slate-900/30 border-slate-700/60'
-  };
-
   const sanitize = (value: string) => value.replace(/[^a-z0-9-]/gi, '-').toLowerCase();
-
-  $: rarityClass =
-    rarityChips[rarity ? rarity.toLowerCase() : 'default'] ?? rarityChips.default;
   $: totalNeeds = (needs?.quests ?? 0) + (needs?.workshop ?? 0) + (needs?.projects ?? 0);
-  $: iconLabel =
-    category?.slice(0, 3).toUpperCase() ??
-    name
-      .split(' ')
-      .map((word) => word[0])
-      .join('')
-      .slice(0, 3)
-      .toUpperCase();
   $: tooltipId = `loot-tooltip-${sanitize(slug ?? name)}`;
-  $: resolvedImageUrl = (() => {
-    if (!imageUrl) return imageUrl;
-    if (!imageUrl.startsWith('/')) return imageUrl;
-
-    const prefix = assets || base || '';
-    return `${prefix}${imageUrl}`.replace(/\/{2,}/g, '/');
-  })();
-  $: formattedSell = sellPrice !== undefined ? sellPrice.toLocaleString() : null;
-  $: formattedSalvage = salvageValue !== undefined ? salvageValue.toLocaleString() : null;
   $: wishlistSummary = (() => {
     if (!wishlistSources || wishlistSources.length === 0) return [] as { name: string; notes: string[] }[];
     const map = new Map<string, { name: string; notes: Set<string> }>();
@@ -94,171 +60,41 @@
 {#if variant === 'token'}
   <button
     type="button"
-    class="group relative w-full rounded-xl border border-slate-900/60 bg-slate-950/50 p-2.5 text-center outline-none transition hover:border-slate-300/60 focus-visible:border-slate-200/70 focus-visible:ring-2 focus-visible:ring-slate-200/30"
+    class="group relative block aspect-square w-full text-center outline-none focus-visible:ring-2 focus-visible:ring-slate-200/30 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
     aria-describedby={tooltipId}
     aria-label={`Details for ${name}`}
   >
-    <div class="flex flex-col items-center gap-2">
-      <div
-        class={`flex h-24 w-24 items-center justify-center overflow-hidden rounded-3xl border bg-gradient-to-br text-base font-semibold uppercase tracking-wide text-white ${rarityClass}`}
-        aria-hidden="true"
-      >
-        {#if resolvedImageUrl}
-          <img src={resolvedImageUrl} alt={name} class="h-full w-full object-cover" loading="lazy" decoding="async" />
-        {:else}
-          <span>{iconLabel || 'ARC'}</span>
-        {/if}
-      </div>
-      <span class={`rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide ${ACTION_STYLES[action]}`}>
-        {ACTION_COPY[action]}
-      </span>
-    </div>
-
-    <div
-      id={tooltipId}
-      role="tooltip"
-      class="pointer-events-none absolute left-1/2 top-0 z-20 hidden w-56 -translate-x-1/2 -translate-y-full rounded-2xl border border-slate-800/80 bg-slate-950/95 p-4 text-left text-xs text-slate-100 shadow-2xl shadow-black/60 transition group-hover:flex group-focus-visible:flex"
+    <ItemIcon
+      className="h-full"
+      name={name}
+      rarity={rarity ?? null}
+      imageUrl={imageUrl ?? null}
+      tag={action}
+      tooltipId={tooltipId}
+      showTooltip={true}
+      sizeClass="h-full w-full"
+      roundedClass="rounded-xl"
+      paddingClass="p-2"
     >
-      <div class="space-y-2">
-        <header class="space-y-1">
-          <div class="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-widest text-slate-400">
-            {#if category}
-              <span class="rounded-full border border-slate-700/70 px-2 py-0.5">{category}</span>
-            {/if}
-            {#if rarity}
-              <span class="rounded-full border border-slate-700/50 px-2 py-0.5 text-slate-200">{rarity}</span>
-            {/if}
-          </div>
-          <p class="text-base font-semibold text-white">{name}</p>
-        </header>
-
-        {#if wishlistSummary.length > 0}
-          <div class="mt-2 flex flex-wrap gap-2">
-            {#each wishlistSummary as target}
-              <span class="rounded-full border border-sky-500/40 bg-sky-500/10 px-2 py-0.5 text-[11px] font-semibold text-sky-100">
-                Wanted for {target.name}{target.notes.length > 0 ? ` — ${target.notes.join('; ')}` : ''}
-              </span>
-            {/each}
-          </div>
-        {/if}
-
-        {#if reason}
-          <p class="text-slate-300">{reason}</p>
-        {:else}
-          <p class="text-slate-500">Action rationale will appear once personalization syncs.</p>
-        {/if}
-
-        {#if totalNeeds > 0 || alwaysKeepCategory}
-          <div class="flex flex-wrap gap-2 text-[10px] uppercase tracking-widest text-slate-400">
-            {#if needs?.quests}
-              <span class="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2 py-0.5 font-semibold text-emerald-100">
-                Quests ×{needs.quests}
-              </span>
-            {/if}
-            {#if needs?.workshop}
-              <span class="rounded-full border border-sky-500/40 bg-sky-500/10 px-2 py-0.5 font-semibold text-sky-100">
-                Upgrades ×{needs.workshop}
-              </span>
-            {/if}
-            {#if needs?.projects}
-              <span class="rounded-full border border-fuchsia-500/40 bg-fuchsia-500/10 px-2 py-0.5 font-semibold text-fuchsia-100">
-                Projects ×{needs.projects}
-              </span>
-            {/if}
-            {#if alwaysKeepCategory}
-              <span class="rounded-full border border-slate-600 bg-slate-800/80 px-2 py-0.5 font-semibold text-slate-100">
-                Admin keep
-              </span>
-            {/if}
-          </div>
-        {/if}
-
-        {#if action === 'keep'}
-          <div class="space-y-2">
-            <p class="text-[10px] uppercase tracking-widest text-slate-400">Keep rationale</p>
-            {#if questNeeds.length > 0}
-              <div>
-                <p class="mb-1 text-[11px] uppercase tracking-widest text-emerald-100">Quest turn-ins</p>
-                <ul class="space-y-1 text-slate-200">
-                  {#each questNeeds as quest}
-                    <li class="flex items-center justify-between gap-2 rounded-lg border border-slate-800/70 bg-slate-900/60 px-3 py-2">
-                      <span class="truncate">{quest.name}</span>
-                      <span class="inline-flex items-center gap-2 rounded-full border border-slate-700/70 bg-slate-900/80 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-emerald-100">
-                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-300/80"></span>
-                        ×{quest.qty}
-                      </span>
-                    </li>
-                  {/each}
-                </ul>
-              </div>
-            {/if}
-            {#if alwaysKeepCategory}
-              <p class="rounded-lg border border-sky-500/30 bg-sky-500/10 px-2 py-1 text-sky-100">
-                Always keep — {category ?? 'Category'} flagged in admin controls.
-              </p>
-            {/if}
-            {#if upgradeNeeds.length > 0}
-              <div>
-                <p class="text-[11px] uppercase tracking-widest text-slate-400">Owned blueprints</p>
-                <ul class="mt-1 space-y-1 text-slate-200">
-                  {#each upgradeNeeds as upgrade}
-                    <li class="flex items-center justify-between gap-2">
-                      <span class="truncate">{upgrade.name}</span>
-                      <span class="font-semibold text-white">×{upgrade.qty}</span>
-                    </li>
-                  {/each}
-                </ul>
-              </div>
-            {/if}
-            {#if projectNeeds.length > 0}
-              <div>
-                <p class="text-[11px] uppercase tracking-widest text-slate-400">Expedition projects</p>
-                <ul class="mt-1 space-y-1 text-slate-200">
-                  {#each projectNeeds as project}
-                    <li class="space-y-0.5">
-                      <div class="flex items-center justify-between gap-2">
-                        <span class="truncate">{project.projectName} · {project.phaseName}</span>
-                        <span class="font-semibold text-white">×{project.qty}</span>
-                      </div>
-                    </li>
-                  {/each}
-                </ul>
-              </div>
-            {/if}
-            {#if !alwaysKeepCategory && upgradeNeeds.length === 0 && projectNeeds.length === 0}
-              <p class="text-slate-500">Future upgrades will call for this soon.</p>
-            {/if}
-          </div>
-        {:else if action === 'recycle'}
-          <div class="space-y-1">
-            <p class="text-[10px] uppercase tracking-widest text-slate-400">
-              Recycle yield ({formattedSalvage ?? '—'} value)
-            </p>
-            <ul class="space-y-1 text-slate-200">
-              {#each salvageBreakdown as part}
-                <li class="flex items-center justify-between gap-2">
-                  <span class="truncate">{part.name}</span>
-                  <span class="font-semibold text-white">×{part.qty}</span>
-                </li>
-              {:else}
-                <li class="text-slate-500">No recycle output recorded.</li>
-              {/each}
-            </ul>
-          </div>
-        {:else if action === 'sell'}
-          <div class="space-y-1">
-            <p class="text-[10px] uppercase tracking-widest text-slate-400">Sell price</p>
-            {#if formattedSell}
-              <p class="text-2xl font-semibold text-white">
-                {formattedSell}<span class="ml-1 text-base text-slate-400">cr</span>
-              </p>
-            {:else}
-              <p class="text-slate-500">No vendor pricing available.</p>
-            {/if}
-          </div>
-        {/if}
-      </div>
-    </div>
+      <ItemTooltip
+        slot="tooltip"
+        id={tooltipId}
+        name={name}
+        action={action}
+        rarity={rarity}
+        category={category}
+        reason={reason}
+        sellPrice={sellPrice}
+        salvageValue={salvageValue}
+        salvageBreakdown={salvageBreakdown}
+        questNeeds={questNeeds}
+        upgradeNeeds={upgradeNeeds}
+        projectNeeds={projectNeeds}
+        needs={needs}
+        alwaysKeepCategory={alwaysKeepCategory}
+        wishlistSources={wishlistSources}
+      />
+    </ItemIcon>
   </button>
 {:else}
   <article class="recommendation-card">
@@ -272,11 +108,15 @@
       </p>
     {/if}
     {#if wishlistSummary.length > 0}
-      <div class="mt-2 flex flex-wrap gap-2">
+      <div class="mt-2 space-y-2">
         {#each wishlistSummary as target}
-          <span class="rounded-full border border-sky-500/40 bg-sky-500/10 px-2 py-0.5 text-[11px] font-semibold text-sky-100">
-            Wanted for {target.name}{target.notes.length > 0 ? ` — ${target.notes.join('; ')}` : ''}
-          </span>
+          <div class="rounded-lg border border-sky-500/40 bg-sky-500/10 px-2.5 py-2">
+            <p class="text-[10px] uppercase tracking-widest text-sky-200">Wishlist target</p>
+            <p class="text-sm font-semibold text-white">{target.name}</p>
+            {#if target.notes.length > 0}
+              <p class="text-[11px] text-sky-100/90">{target.notes.join('; ')}</p>
+            {/if}
+          </div>
         {/each}
       </div>
     {/if}

@@ -8,8 +8,7 @@
   import { browser } from '$app/environment';
   import { onDestroy } from 'svelte';
   import { derived, get } from 'svelte/store';
-  import { RecommendationCard, RunTimer } from '$lib/components';
-  import { assets, base } from '$app/paths';
+  import { ItemIcon, ItemTooltip, RecommendationCard, RunTimer } from '$lib/components';
   import {
     blueprints,
     expandWantList,
@@ -65,23 +64,8 @@
 
   const resolveImageUrl = (url?: string | null) => {
     if (!url) return url ?? null;
-    if (!url.startsWith('/')) return url;
-
-    const prefix = assets || base || '';
-    return `${prefix}${url}`.replace(/\/{2,}/g, '/');
+    return url.replace(/\/{2,}/g, '/');
   };
-
-  const rarityGradients: Record<string, string> = {
-    legendary: 'from-amber-500/20 via-amber-600/20 to-amber-900/40 border-amber-400/60 shadow-amber-500/20',
-    epic: 'from-fuchsia-500/20 via-fuchsia-600/20 to-fuchsia-900/40 border-fuchsia-400/60 shadow-fuchsia-500/20',
-    rare: 'from-sky-500/20 via-sky-600/20 to-sky-900/40 border-sky-400/60 shadow-sky-500/20',
-    uncommon: 'from-emerald-500/20 via-emerald-600/20 to-emerald-900/40 border-emerald-400/60 shadow-emerald-500/20',
-    common: 'from-slate-500/10 via-slate-700/10 to-slate-900/30 border-slate-600/60 shadow-slate-700/10',
-    default: 'from-slate-900/60 via-slate-900/50 to-slate-950/80 border-slate-800/70 shadow-slate-900/30'
-  };
-
-  const rarityClass = (rarity?: string | null) =>
-    rarityGradients[rarity?.toLowerCase() ?? 'default'] ?? rarityGradients.default;
 
   const rarityRank = (rarity?: string | null) => {
     const priority = ['legendary', 'epic', 'rare', 'uncommon', 'common'];
@@ -144,10 +128,21 @@
       .map((rec) => ({
         id: rec.itemId,
         name: rec.name,
+        slug: rec.slug,
+        category: rec.category ?? null,
         imageUrl: resolveImageUrl(rec.imageUrl),
         rationale: rec.rationale,
         action: rec.action,
-        rarity: rec.rarity ?? null
+        rarity: rec.rarity ?? null,
+        needs: rec.needs,
+        wishlistSources: rec.wishlistSources ?? [],
+        sellPrice: rec.sellPrice,
+        salvageValue: rec.salvageValue,
+        salvageBreakdown: rec.salvageBreakdown ?? [],
+        questNeeds: rec.questNeeds ?? [],
+        upgradeNeeds: rec.upgradeNeeds ?? [],
+        projectNeeds: rec.projectNeeds ?? [],
+        alwaysKeepCategory: rec.alwaysKeepCategory ?? false
       }));
   });
 
@@ -534,19 +529,39 @@
         {:else}
           <div class="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
             {#each $lookOutItems as item}
-              <div
-                class={`group relative flex aspect-square items-center justify-center overflow-hidden rounded-xl border p-2 text-center shadow-sm transition hover:border-emerald-500/60 hover:bg-slate-900 bg-gradient-to-br ${rarityClass(item.rarity)}`}
-                title={`${item.name} · ${item.rationale}`}
-              >
-                {#if item.imageUrl}
-                  <img src={item.imageUrl} alt={item.name} class="h-full w-full object-contain" loading="lazy" />
-                {:else}
-                  <span class="text-[11px] text-slate-200">{item.name}</span>
-                {/if}
-                <div class="pointer-events-none absolute inset-x-0 bottom-full z-10 mb-2 hidden rounded-lg border border-slate-700 bg-slate-900/95 px-3 py-2 text-[11px] text-slate-200 shadow-xl group-hover:block">
-                  <p class="font-semibold">{item.name}</p>
-                  <p class="mt-1 text-[10px] text-slate-400">{item.rationale}</p>
-                </div>
+              {@const tooltipId = `lookout-${(item.slug ?? item.id ?? item.name).replace(/[^a-z0-9-]/gi, '-').toLowerCase()}`}
+              <div class="aspect-square">
+                <ItemIcon
+                  className="h-full"
+                  name={item.name}
+                  rarity={item.rarity ?? null}
+                  imageUrl={item.imageUrl ?? null}
+                  tag={item.action}
+                  tooltipId={tooltipId}
+                  showTooltip={true}
+                  sizeClass="h-full w-full"
+                  roundedClass="rounded-xl"
+                  paddingClass="p-2"
+                >
+                  <ItemTooltip
+                    slot="tooltip"
+                    id={tooltipId}
+                    name={item.name}
+                    action={item.action}
+                    rarity={item.rarity}
+                    category={item.category}
+                    reason={item.rationale}
+                    sellPrice={item.sellPrice}
+                    salvageValue={item.salvageValue}
+                    salvageBreakdown={item.salvageBreakdown}
+                    questNeeds={item.questNeeds}
+                    upgradeNeeds={item.upgradeNeeds}
+                    projectNeeds={item.projectNeeds}
+                    needs={item.needs}
+                    alwaysKeepCategory={item.alwaysKeepCategory}
+                    wishlistSources={item.wishlistSources}
+                  />
+                </ItemIcon>
               </div>
             {/each}
           </div>

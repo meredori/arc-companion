@@ -1,5 +1,7 @@
 export { default as SearchBar } from './SearchBar.svelte';
 export { default as RecommendationCard } from './RecommendationCard.svelte';
+export { default as ItemIcon } from './ItemIcon.svelte';
+export { default as ItemTooltip } from './ItemTooltip.svelte';
 export { default as QuestChecklist } from './QuestChecklist.svelte';
 export { default as QuestChainCards } from './QuestChainCards.svelte';
 export { default as RunTimer } from './RunTimer.svelte';
