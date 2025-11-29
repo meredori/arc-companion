@@ -102,7 +102,7 @@
     <div
       id={tooltipId}
       role="tooltip"
-      class="pointer-events-none absolute left-1/2 top-full z-20 hidden max-w-md -translate-x-1/2 translate-y-2 rounded-xl border border-slate-800/80 bg-slate-950/95 p-4 text-left text-xs text-slate-100 shadow-2xl shadow-black/60 transition group-hover:flex group-focus-within:flex"
+      class="pointer-events-none absolute left-1/2 top-full z-20 hidden min-w-[18rem] max-w-md -translate-x-1/2 translate-y-2 rounded-xl border border-slate-800/80 bg-slate-950/95 p-4 text-left text-xs text-slate-100 shadow-2xl shadow-black/60 transition group-hover:flex group-focus-within:flex"
     >
       <slot name="tooltip" />
     </div>
