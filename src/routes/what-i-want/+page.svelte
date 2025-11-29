@@ -619,15 +619,19 @@
         <div class="space-y-5">
           {#each $resolvedEntries as detail}
             {@const recycleSources = detail.recycleSources}
-            {@const detailImage = detail.item ? resolveImageUrl(detail.item.imageUrl) : null}
             <article class="space-y-4 rounded-2xl border border-slate-800/60 bg-slate-950/60 p-5 text-sm text-slate-200">
               <div class="flex flex-wrap items-start gap-4">
-                <div class="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-slate-800/70 bg-slate-900 text-xs font-semibold uppercase tracking-wide text-slate-200">
-                  {#if detailImage}
-                    <img src={detailImage} alt={detail.item ? detail.item.name : 'Wishlist item'} class="h-full w-full object-cover" loading="lazy" decoding="async" />
-                  {:else}
-                    <span>{initialsForItem(detail.item)}</span>
-                  {/if}
+                <div class="h-16 w-16">
+                  <ItemIcon
+                    className="h-full"
+                    name={detail.item ? detail.item.name : 'Wishlist item'}
+                    rarity={detail.item?.rarity ?? null}
+                    imageUrl={detail.item?.imageUrl ?? null}
+                    initials={initialsForItem(detail.item)}
+                    sizeClass="h-full w-full"
+                    roundedClass="rounded-2xl"
+                    paddingClass="p-2"
+                  />
                 </div>
                 <div class="flex-1 space-y-2">
                   <div class="flex flex-wrap items-center gap-3">
