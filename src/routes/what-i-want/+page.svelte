@@ -565,8 +565,6 @@
                                   sizeClass="h-full w-full"
                                   roundedClass="rounded-xl"
                                   paddingClass="p-1.5"
-                                  tag={preview.action === 'recycle' ? 'recycle' : 'keep'}
-                                  tagStyle="dot"
                                 />
                               </div>
                             {/each}
