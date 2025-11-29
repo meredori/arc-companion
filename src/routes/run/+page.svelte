@@ -9,7 +9,6 @@
   import { onDestroy } from 'svelte';
   import { derived, get } from 'svelte/store';
   import { ItemIcon, ItemTooltip, RecommendationCard, RunTimer } from '$lib/components';
-  import { assets, base } from '$app/paths';
   import {
     blueprints,
     expandWantList,
@@ -65,10 +64,7 @@
 
   const resolveImageUrl = (url?: string | null) => {
     if (!url) return url ?? null;
-    if (!url.startsWith('/')) return url;
-
-    const prefix = assets || base || '';
-    return `${prefix}${url}`.replace(/\/{2,}/g, '/');
+    return url.replace(/\/{2,}/g, '/');
   };
 
   const rarityRank = (rarity?: string | null) => {

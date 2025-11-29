@@ -3,7 +3,6 @@
 </svelte:head>
 
 <script lang="ts">
-  import { base } from '$app/paths';
   import { derived, get } from 'svelte/store';
   import { onMount } from 'svelte';
   import { ItemIcon, SearchBar } from '$lib/components';
@@ -121,8 +120,7 @@
 
   const resolveImageUrl = (url?: string | null) => {
     if (!url) return null;
-    if (!url.startsWith('/')) return url;
-    return `${base}${url}`.replace(/\/{2,}/g, '/').replace(':/', '://');
+    return url.replace(/\/{2,}/g, '/');
   };
 
   const initialsForName = (value?: string | null) =>

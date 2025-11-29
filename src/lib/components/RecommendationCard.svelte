@@ -60,39 +60,37 @@
 {#if variant === 'token'}
   <button
     type="button"
-    class="group relative w-full rounded-xl border border-slate-900/60 bg-slate-950/50 p-2.5 text-center outline-none transition hover:border-slate-300/60 focus-visible:border-slate-200/70 focus-visible:ring-2 focus-visible:ring-slate-200/30"
+    class="group relative w-full text-center outline-none focus-visible:ring-2 focus-visible:ring-slate-200/30 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
     aria-describedby={tooltipId}
     aria-label={`Details for ${name}`}
   >
-    <div class="flex flex-col items-center gap-2">
-      <ItemIcon
+    <ItemIcon
+      name={name}
+      rarity={rarity ?? null}
+      imageUrl={imageUrl ?? null}
+      tag={action}
+      tooltipId={tooltipId}
+      showTooltip={true}
+    >
+      <ItemTooltip
+        slot="tooltip"
+        id={tooltipId}
         name={name}
-        rarity={rarity ?? null}
-        imageUrl={imageUrl ?? null}
-        tag={action}
-        tooltipId={tooltipId}
-        showTooltip={true}
-      >
-        <ItemTooltip
-          slot="tooltip"
-          id={tooltipId}
-          name={name}
-          action={action}
-          rarity={rarity}
-          category={category}
-          reason={reason}
-          sellPrice={sellPrice}
-          salvageValue={salvageValue}
-          salvageBreakdown={salvageBreakdown}
-          questNeeds={questNeeds}
-          upgradeNeeds={upgradeNeeds}
-          projectNeeds={projectNeeds}
-          needs={needs}
-          alwaysKeepCategory={alwaysKeepCategory}
-          wishlistSources={wishlistSources}
-        />
-      </ItemIcon>
-    </div>
+        action={action}
+        rarity={rarity}
+        category={category}
+        reason={reason}
+        sellPrice={sellPrice}
+        salvageValue={salvageValue}
+        salvageBreakdown={salvageBreakdown}
+        questNeeds={questNeeds}
+        upgradeNeeds={upgradeNeeds}
+        projectNeeds={projectNeeds}
+        needs={needs}
+        alwaysKeepCategory={alwaysKeepCategory}
+        wishlistSources={wishlistSources}
+      />
+    </ItemIcon>
   </button>
 {:else}
   <article class="recommendation-card">

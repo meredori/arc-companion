@@ -36,12 +36,22 @@
   export let className = '';
 
   $: rarityClass = rarityGradients[rarity?.toLowerCase() ?? 'default'] ?? rarityGradients.default;
+  const isAbsolute = (url: string) => /^https?:\/\//i.test(url) || url.startsWith('//');
+
   $: resolvedImageUrl = (() => {
     if (!imageUrl) return imageUrl;
-    if (!imageUrl.startsWith('/')) return imageUrl;
+    if (isAbsolute(imageUrl)) return imageUrl;
 
     const prefix = assets || base || '';
-    return `${prefix}${imageUrl}`.replace(/\/{2,}/g, '/');
+    const normalized = imageUrl.replace(/\/{2,}/g, '/');
+
+    if (prefix && normalized.startsWith(prefix)) {
+      return normalized;
+    }
+
+    if (!normalized.startsWith('/')) return normalized;
+
+    return `${prefix}${normalized}`.replace(/\/{2,}/g, '/');
   })();
   $: fallbackInitials = initials ||
     name
@@ -79,7 +89,7 @@
     <div
       id={tooltipId}
       role="tooltip"
-      class="pointer-events-none absolute left-1/2 top-0 z-20 hidden w-64 -translate-x-1/2 -translate-y-full rounded-2xl border border-slate-800/80 bg-slate-950/95 p-4 text-left text-xs text-slate-100 shadow-2xl shadow-black/60 transition group-hover:flex group-focus-within:flex"
+      class="pointer-events-none absolute left-0 right-0 top-full z-20 hidden w-full translate-y-2 rounded-xl border border-slate-800/80 bg-slate-950/95 p-4 text-left text-xs text-slate-100 shadow-2xl shadow-black/60 transition group-hover:flex group-focus-within:flex"
     >
       <slot name="tooltip" />
     </div>
