@@ -34,6 +34,7 @@
   export let roundedClass = 'rounded-3xl';
   export let paddingClass = 'p-2';
   export let className = '';
+  export let tagStyle: 'badge' | 'dot' = 'badge';
 
   $: rarityClass = rarityGradients[rarity?.toLowerCase() ?? 'default'] ?? rarityGradients.default;
   const isAbsolute = (url: string) => /^https?:\/\//i.test(url) || url.startsWith('//');
@@ -77,11 +78,18 @@
     {/if}
   </div>
 
-  {#if tag}
+  {#if tag && tagStyle === 'badge'}
     <span
       class={`pointer-events-none absolute bottom-1 right-1 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide shadow-lg ${TAG_STYLES[tag]}`}
     >
       {TAG_LABEL[tag]}
+    </span>
+  {:else if tag && tagStyle === 'dot'}
+    <span
+      class={`pointer-events-none absolute bottom-1 right-1 inline-flex h-3 w-3 items-center justify-center rounded-full border border-white/40 bg-white/20 shadow-md ${TAG_STYLES[tag]}`}
+      aria-label={TAG_LABEL[tag]}
+    >
+      <span class="h-2 w-2 rounded-full bg-current" aria-hidden="true" />
     </span>
   {/if}
 
