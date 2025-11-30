@@ -100,9 +100,20 @@
 
   const { items, quests: questDefs, workbenchUpgrades: upgradeDefs, projects } = data;
 
+  const expeditionProjectsCompleted = derived(projectProgress, ($projectProgress) => {
+    if (projects.length === 0) return false;
+    return projects.every((project) =>
+      project.phases.every((phase) =>
+        phase.requirements.every(
+          (req) => ($projectProgress?.[project.id]?.[phase.id]?.[req.itemId] ?? 0) >= req.qty
+        )
+      )
+    );
+  });
+
   const recommendationContextStore = derived(
-    [quests, blueprints, projectProgress, workbenchUpgrades, wantList, settings],
-    ([$quests, $blueprints, $projectProgress, $workbench, $wantList, $settings]) =>
+    [quests, blueprints, projectProgress, workbenchUpgrades, wantList, settings, expeditionProjectsCompleted],
+    ([$quests, $blueprints, $projectProgress, $workbench, $wantList, $settings, $projectsDone]) =>
       buildRecommendationContext({
         items,
         quests: questDefs,
@@ -117,7 +128,10 @@
         wantList: $wantList,
         wantListDependencies: expandWantList($wantList, items, {
           ignoredCategories: $settings.ignoredWantCategories ?? []
-        })
+        }),
+        expeditionPlanningEnabled:
+          ($settings.expeditionPlanningEnabled ?? false) && ($projectsDone ?? false),
+        expeditionMinStackValue: $settings.expeditionMinStackValue ?? 500
       })
   );
 
