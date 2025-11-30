@@ -120,7 +120,12 @@
 
   const resolveImageUrl = (url?: string | null) => {
     if (!url) return url ?? null;
-    return url.replace(/\/{2,}/g, '/');
+    const match = url.match(/^(https?:)(\/+)(.*)$/i);
+    if (!match) {
+      return url.replace(/\/{2,}/g, '/');
+    }
+    const [, scheme, , rest] = match;
+    return `${scheme}//${rest.replace(/\/{2,}/g, '/')}`;
   };
 
   const rarityRank = (rarity?: string | null) => {
@@ -243,7 +248,7 @@
       groups.push({
         id: 'arc-drops',
         title: 'ARC drops',
-        description: 'Dropped by ARC bots and machines.',
+        description: '',
         items: arcDrops
       });
     }
@@ -281,7 +286,7 @@
       groups.push({
         id: 'general-loot',
         title: 'General loot',
-        description: 'No location hints; keep an eye out anywhere.',
+        description: '',
         items: general
       });
     }
