@@ -2,12 +2,14 @@
   import type { RecommendationCardProps } from './types';
 
   const ACTION_COPY = {
+    expedition: 'Expedition',
     keep: 'Keep',
     recycle: 'Recycle',
     sell: 'Sell'
   } as const;
 
   const ACTION_STYLES = {
+    expedition: 'border-amber-300/70 bg-amber-500/10 text-amber-50',
     keep: 'border-emerald-400/50 bg-emerald-500/10 text-emerald-100',
     recycle: 'border-amber-400/50 bg-amber-500/10 text-amber-100',
     sell: 'border-rose-400/50 bg-rose-500/10 text-rose-100'
@@ -32,13 +34,17 @@
   export let wishlistSources: RecommendationCardProps['wishlistSources'] = [];
   export let foundIn: RecommendationCardProps['foundIn'] = [];
   export let botSources: RecommendationCardProps['botSources'] = [];
+  export let expeditionCandidate: RecommendationCardProps['expeditionCandidate'] = false;
   export let expeditionPlanningEnabled: RecommendationCardProps['expeditionPlanningEnabled'] = false;
+  let displayAction: RecommendationCardProps['action'] | 'expedition' = action;
 
   $: totalNeeds = (needs?.quests ?? 0) + (needs?.workshop ?? 0) + (needs?.projects ?? 0);
   $: formattedSell = sellPrice !== undefined ? sellPrice.toLocaleString() : null;
   $: formattedStackSell =
     stackSellValue !== undefined ? stackSellValue.toLocaleString() : null;
   $: formattedSalvage = salvageValue !== undefined ? salvageValue.toLocaleString() : null;
+  $: displayAction =
+    expeditionPlanningEnabled && expeditionCandidate ? 'expedition' : action;
   $: wishlistSummary = (() => {
     if (!wishlistSources || wishlistSources.length === 0) return [] as { name: string; notes: string[] }[];
     const map = new Map<string, { name: string; notes: Set<string> }>();
@@ -73,8 +79,8 @@
     </div>
     <div class="flex items-center gap-2">
       <p class="text-base font-semibold text-white">{name}</p>
-      <span class={`rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${ACTION_STYLES[action]}`}>
-        {ACTION_COPY[action]}
+      <span class={`rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${ACTION_STYLES[displayAction]}`}>
+        {ACTION_COPY[displayAction]}
       </span>
     </div>
   </header>
@@ -89,7 +95,7 @@
       {#if formattedStackSell}
         <span
           class={`rounded-full border px-2 py-0.5 font-semibold ${
-            expeditionPlanningEnabled
+            expeditionPlanningEnabled && expeditionCandidate
               ? 'border-amber-400/70 bg-amber-500/10 text-amber-100'
               : 'border-slate-700/60 bg-slate-900/70 text-slate-200'
           }`}

@@ -286,6 +286,40 @@ const ITEMS: ItemRecord[] = applyWeaponVariantAggregation(
     rarity: 'Uncommon Utility',
     sell: 70,
     salvagesInto: [],
+  },
+  {
+    id: 'item-stack-matrix',
+    name: 'Stack Matrix',
+    slug: 'stack-matrix',
+    category: 'Valuable',
+    rarity: 'Common Valuable',
+    sell: 60,
+    stackSize: 12,
+    salvagesInto: [],
+    craftsInto: [
+      { productId: 'item-stack-product-low', productName: 'Stack Product Low', qty: 1 },
+      { productId: 'item-stack-product-high', productName: 'Stack Product High', qty: 1 }
+    ]
+  },
+  {
+    id: 'item-stack-product-low',
+    name: 'Stack Product Low',
+    slug: 'stack-product-low',
+    category: 'Valuable',
+    rarity: 'Uncommon Valuable',
+    sell: 200,
+    stackSize: 2,
+    salvagesInto: []
+  },
+  {
+    id: 'item-stack-product-high',
+    name: 'Stack Product High',
+    slug: 'stack-product-high',
+    category: 'Valuable',
+    rarity: 'Rare Valuable',
+    sell: 150,
+    stackSize: 5,
+    salvagesInto: []
   }
   ].map((item) => ({ stackSize: 1, ...item }))
 );
@@ -530,6 +564,13 @@ const context = buildRecommendationContext({
     expect(alphabeticalOrder).not.toEqual(defaultOrder);
   });
 
+  it('sorts by stack sell value when requested', () => {
+    const sorted = recommendItemsMatching('', context, { sortMode: 'stackValue' });
+    expect(sorted[0].itemId).toBe('item-stack-product-high');
+    expect(sorted[0].stackSellValue).toBe(750);
+    expect(sorted[1].stackSellValue).toBeLessThanOrEqual(sorted[0].stackSellValue ?? 0);
+  });
+
   it('treats material subcategories as one group sorted by rarity', () => {
     const materialResults = recommendItemsMatching('', context).filter((rec) =>
       ['Topside Material', 'Refined Material', 'Material', 'Basic Material', 'Recyclable'].includes(
@@ -553,6 +594,29 @@ const context = buildRecommendationContext({
     expect(result.action).toBe('keep');
     expect(result.needs.projects).toBe(1);
     expect(result.projectNeeds[0].projectId).toBe('project-expedition');
+  });
+
+  it('prioritizes the highest-value expedition target and tags the item', () => {
+    const expeditionContext = buildRecommendationContext({
+      items: ITEMS,
+      quests: QUESTS,
+      questProgress: PROGRESS,
+      upgrades: UPGRADES,
+      blueprints: BLUEPRINTS,
+      workbenchUpgrades: WORKBENCH_UPGRADES,
+      projects: PROJECTS,
+      projectProgress: PROJECT_PROGRESS,
+      alwaysKeepCategories: ['Key'],
+      ignoredCategories: [],
+      expeditionPlanningEnabled: true,
+      expeditionMinStackValue: 500
+    });
+
+    const result = recommendItem(getItem('item-stack-matrix'), expeditionContext);
+    expect(result.expeditionCandidate).toBe(true);
+    expect(result.action).toBe('keep');
+    expect(result.rationale).toContain('Stack Product High');
+    expect(result.rationale).not.toContain('Stack Product Low');
   });
 
   it('surfaces recycling when components feed wishlist crafting chains', () => {

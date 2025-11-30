@@ -307,6 +307,7 @@
               needs={recommendation.needs}
               alwaysKeepCategory={recommendation.alwaysKeepCategory}
               wishlistSources={recommendation.wishlistSources}
+              expeditionCandidate={recommendation.expeditionCandidate}
               expeditionPlanningEnabled={$settings.expeditionPlanningEnabled}
             />
           {/each}

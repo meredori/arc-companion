@@ -56,6 +56,7 @@
     upgradeNeeds: RecommendationEntry['upgradeNeeds'];
     projectNeeds: RecommendationEntry['projectNeeds'];
     alwaysKeepCategory: RecommendationEntry['alwaysKeepCategory'];
+    expeditionCandidate?: boolean;
     foundIn: string[];
     botSources: BotRecord[];
   };
@@ -181,6 +182,13 @@
         const isDirectA = totalNeedsA > 0 || hasWishlistA;
         const isDirectB = totalNeedsB > 0 || hasWishlistB;
 
+        const expeditionA =
+          context.expeditionPlanningEnabled && (a.expeditionCandidate ?? false);
+        const expeditionB =
+          context.expeditionPlanningEnabled && (b.expeditionCandidate ?? false);
+
+        if (expeditionA !== expeditionB) return expeditionA ? -1 : 1;
+
         if (isDirectA !== isDirectB) return isDirectA ? -1 : 1;
 
         const rarityDiff = rarityRank(a.rarity) - rarityRank(b.rarity);
@@ -208,6 +216,7 @@
         upgradeNeeds: rec.upgradeNeeds ?? [],
         projectNeeds: rec.projectNeeds ?? [],
         alwaysKeepCategory: rec.alwaysKeepCategory ?? false,
+        expeditionCandidate: rec.expeditionCandidate ?? false,
         foundIn: itemLookup.get(rec.itemId)?.foundIn ?? [],
         botSources: []
       }));
@@ -721,7 +730,11 @@
                           name={item.name}
                           rarity={item.rarity ?? null}
                           imageUrl={item.imageUrl ?? null}
-                          tag={item.action}
+                          tag={
+                            $settings.expeditionPlanningEnabled && item.expeditionCandidate
+                              ? 'expedition'
+                              : item.action
+                          }
                           tagStyle="dot"
                           tooltipId={tooltipId}
                           showTooltip={true}
@@ -750,6 +763,7 @@
                             wishlistSources={item.wishlistSources}
                             foundIn={item.foundIn}
                             botSources={item.botSources?.map((bot) => ({ id: bot.id, name: bot.name })) ?? []}
+                            expeditionCandidate={item.expeditionCandidate}
                             expeditionPlanningEnabled={$settings.expeditionPlanningEnabled ?? false}
                           />
                         </ItemIcon>
@@ -779,7 +793,11 @@
                       name={item.name}
                       rarity={item.rarity ?? null}
                       imageUrl={item.imageUrl ?? null}
-                      tag={item.action}
+                      tag={
+                        $settings.expeditionPlanningEnabled && item.expeditionCandidate
+                          ? 'expedition'
+                          : item.action
+                      }
                       tagStyle="dot"
                       tooltipId={tooltipId}
                       showTooltip={true}
@@ -808,6 +826,7 @@
                         wishlistSources={item.wishlistSources}
                         foundIn={item.foundIn}
                         botSources={item.botSources?.map((bot) => ({ id: bot.id, name: bot.name })) ?? []}
+                        expeditionCandidate={item.expeditionCandidate}
                         expeditionPlanningEnabled={$settings.expeditionPlanningEnabled ?? false}
                       />
                     </ItemIcon>

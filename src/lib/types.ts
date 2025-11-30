@@ -219,6 +219,7 @@ export interface ItemRecommendation {
   questNeeds: QuestNeedDetail[];
   upgradeNeeds: UpgradeNeedDetail[];
   projectNeeds: ProjectNeedDetail[];
+  expeditionCandidate?: boolean;
   alwaysKeepCategory?: boolean;
   needs: {
     quests: number;
