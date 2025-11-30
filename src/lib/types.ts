@@ -1,5 +1,5 @@
 export type RecommendationAction = 'keep' | 'recycle' | 'sell';
-export type RecommendationSort = 'category' | 'alphabetical';
+export type RecommendationSort = 'category' | 'alphabetical' | 'stackValue';
 
 export interface ItemRecycleEntry {
   itemId: string;
@@ -284,6 +284,14 @@ export interface AppSettings {
   alwaysKeepCategories: string[];
   ignoredWantCategories: string[];
   recommendationSort: RecommendationSort;
+  expeditionPlanningEnabled: boolean;
+  expeditionMinStackValue: number;
+}
+
+export interface StackCraftTarget {
+  productId: string;
+  productName: string;
+  sellValue: number;
 }
 
 export interface RecommendationContext {
@@ -300,5 +308,9 @@ export interface RecommendationContext {
   wantList: WantListEntry[];
   wantListDependencies: WantListResolvedEntry[];
   wishlistSourcesByItem: Record<string, RecommendationWishlistSource[]>;
+  expeditionPlanningEnabled: boolean;
+  expeditionMinStackValue: number;
+  stackSellValueByItemId: Record<string, number>;
+  stackCraftTargetsByItemId: Record<string, StackCraftTarget[]>;
 }
 

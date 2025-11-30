@@ -71,6 +71,17 @@
     settings.toggleIgnoredWantCategory(category);
   };
 
+  const toggleExpeditionPlanning = (enabled: boolean) => {
+    settings.toggleExpeditionPlanning(enabled);
+    if (enabled) {
+      settings.setRecommendationSort('stackValue');
+    }
+  };
+
+  const setExpeditionMinStackValue = (value: number) => {
+    settings.setExpeditionMinStackValue(value);
+  };
+
   const clearIgnoredCategories = () => settings.setIgnoredWantCategories([]);
 
   const itemsWithOverrides = derived(itemOverrides, ($overrides) =>
@@ -94,7 +105,9 @@
         wantList: $wantList,
         wantListDependencies: expandWantList($wantList, $items, {
           ignoredCategories: $settings.ignoredWantCategories ?? []
-        })
+        }),
+        expeditionPlanningEnabled: $settings.expeditionPlanningEnabled ?? false,
+        expeditionMinStackValue: $settings.expeditionMinStackValue ?? 500
       })
   );
 
@@ -111,7 +124,9 @@
     alwaysKeepCategories: [],
     ignoredCategories: [],
     wantList: [],
-    wantListDependencies: []
+    wantListDependencies: [],
+    expeditionPlanningEnabled: false,
+    expeditionMinStackValue: 500
   });
 
   $: recommendationContext = $contextStore;
@@ -141,6 +156,36 @@
       value={query}
       on:input={({ detail }) => (query = detail.value)}
     />
+    <div class="space-y-3 rounded-2xl border border-slate-800/70 bg-slate-950/60 p-4">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <label class="flex items-center gap-3 text-sm font-semibold text-slate-200">
+          <input
+            type="checkbox"
+            class="h-4 w-4 rounded border-slate-700/70 bg-slate-900 text-amber-400 focus:ring-amber-400"
+            checked={$settings.expeditionPlanningEnabled}
+            on:change={(event) => toggleExpeditionPlanning(event.currentTarget.checked)}
+          />
+          <span>Expedition value planning</span>
+        </label>
+        <div class="flex items-center gap-2 text-xs text-slate-300">
+          <label for="stack-threshold" class="uppercase tracking-[0.25em] text-slate-400">
+            Min stack value
+          </label>
+          <input
+            id="stack-threshold"
+            type="number"
+            min="0"
+            class="w-24 rounded border border-slate-800 bg-slate-900 px-3 py-1 text-right text-sm text-slate-100 focus:border-amber-400 focus:outline-none focus:ring focus:ring-amber-400/30"
+            value={$settings.expeditionMinStackValue ?? 500}
+            on:change={(event) => setExpeditionMinStackValue(Number(event.currentTarget.value || 0))}
+            disabled={!$settings.expeditionPlanningEnabled}
+          />
+        </div>
+      </div>
+      <p class="text-xs text-slate-400">
+        Plan for expedition cash runs by prioritizing items that craft into stacks worth at least your target sell value.
+      </p>
+    </div>
     <div class="space-y-2">
       <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] uppercase tracking-widest text-slate-400">
         <span class="text-slate-500">Ignore categories</span>
@@ -183,9 +228,14 @@
         <span>{recommendations.length} matches</span>
         <div class="flex flex-wrap items-center gap-3">
           <span class="text-slate-300">
-            Sorted · {recommendationSort === 'alphabetical'
-              ? 'Alphabetical'
-              : 'Category → Rarity → Name'}
+            Sorted ·
+            {#if recommendationSort === 'alphabetical'}
+              Alphabetical
+            {:else if recommendationSort === 'stackValue'}
+              Stack Value (Expedition)
+            {:else}
+              Category → Rarity → Name
+            {/if}
           </span>
           <div class="flex overflow-hidden rounded-full border border-slate-800">
             <button
@@ -212,6 +262,20 @@
             >
               A → Z
             </button>
+            {#if $settings.expeditionPlanningEnabled}
+              <button
+                type="button"
+                class={`px-3 py-1 text-[10px] font-semibold tracking-[0.3em] transition ${
+                  recommendationSort === 'stackValue'
+                    ? 'bg-amber-300 text-slate-900'
+                    : 'bg-slate-950/60 text-slate-300 hover:bg-slate-900'
+                }`}
+                aria-pressed={recommendationSort === 'stackValue'}
+                on:click={() => setRecommendationSort('stackValue')}
+              >
+                Stack Value
+              </button>
+            {/if}
           </div>
         </div>
       </div>
