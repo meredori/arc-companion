@@ -248,9 +248,27 @@
       });
     }
 
-    for (const bucket of Array.from(locationBuckets.values()).sort((a, b) =>
-      a.label.localeCompare(b.label, undefined, { sensitivity: 'base' })
-    )) {
+    const sortedLocationBuckets = Array.from(locationBuckets.values())
+      .map((bucket) => {
+        const bestRarity = bucket.items.reduce(
+          (min, item) => Math.min(min, rarityRank(item.rarity)),
+          Number.POSITIVE_INFINITY
+        );
+        return { bucket, bestRarity };
+      })
+      .sort((a, b) => {
+        if (b.bucket.items.length !== a.bucket.items.length) {
+          return b.bucket.items.length - a.bucket.items.length;
+        }
+
+        if (a.bestRarity !== b.bestRarity) {
+          return a.bestRarity - b.bestRarity;
+        }
+
+        return a.bucket.label.localeCompare(b.bucket.label, undefined, { sensitivity: 'base' });
+      });
+
+    for (const { bucket } of sortedLocationBuckets) {
       groups.push({
         id: `loot-${bucket.label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
         title: `${bucket.label} loot`,
@@ -683,9 +701,7 @@
                     </span>
                   </div>
 
-                  <div
-                    class="grid grid-cols-[repeat(auto-fit,minmax(4.5rem,1fr))] gap-3 sm:gap-4"
-                  >
+                  <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                     {#each group.items as item}
                       {@const tooltipId = `lookout-${(item.slug ?? item.id ?? item.name)
                         .replace(/[^a-z0-9-]/gi, '-')
@@ -697,6 +713,7 @@
                           rarity={item.rarity ?? null}
                           imageUrl={item.imageUrl ?? null}
                           tag={item.action}
+                          tagStyle="dot"
                           tooltipId={tooltipId}
                           showTooltip={true}
                           sizeClass="h-full w-full"
@@ -751,6 +768,7 @@
                       rarity={item.rarity ?? null}
                       imageUrl={item.imageUrl ?? null}
                       tag={item.action}
+                      tagStyle="dot"
                       tooltipId={tooltipId}
                       showTooltip={true}
                       sizeClass="h-full w-full"
