@@ -11,6 +11,7 @@ import type {
   RecommendationContext,
   RecommendationSort,
   RecommendationWishlistSource,
+  StackCraftTarget,
   RunLogEntry,
   UpgradePack,
   WantListEntry,
@@ -77,6 +78,14 @@ function computeRecycleValue(item: ItemRecord): number {
   const targets = item.recyclesInto ?? item.salvagesInto ?? [];
   return targets.reduce((total, entry) => total + entry.qty * 35, 0);
 }
+
+const appendSentence = (current: string, addition: string) => {
+  if (!addition) return current;
+  if (!current) return addition;
+  const trimmed = current.trim();
+  const suffix = trimmed.endsWith('.') ? '' : '.';
+  return `${trimmed}${suffix} ${addition}`;
+};
 
 function isQuestComplete(quest: Quest, progress: QuestProgress[]): boolean {
   const record = progress.find((entry) => entry.id === quest.id);
@@ -146,6 +155,32 @@ function deriveWishlistSources(
   return result;
 }
 
+function computeStackPlanningData(items: ItemRecord[]) {
+  const itemLookup = new Map(items.map((item) => [item.id, item] as const));
+
+  const stackSellValueByItemId: Record<string, number> = {};
+  const stackCraftTargetsByItemId: Record<string, StackCraftTarget[]> = {};
+
+  for (const item of items) {
+    for (const craft of item.craftsInto ?? []) {
+      const product = itemLookup.get(craft.productId);
+      const productValue = (product?.sell ?? 0) * (craft.qty ?? 1);
+      if (productValue <= 0) continue;
+      const nextValue = Math.max(stackSellValueByItemId[item.id] ?? 0, productValue);
+      stackSellValueByItemId[item.id] = nextValue;
+      const targets = stackCraftTargetsByItemId[item.id] ?? [];
+      targets.push({
+        productId: craft.productId,
+        productName: craft.productName ?? product?.name ?? craft.productId,
+        sellValue: productValue
+      });
+      stackCraftTargetsByItemId[item.id] = targets;
+    }
+  }
+
+  return { stackSellValueByItemId, stackCraftTargetsByItemId };
+}
+
 export function buildRecommendationContext(params: {
   items: ItemRecord[];
   quests: Quest[];
@@ -159,6 +194,8 @@ export function buildRecommendationContext(params: {
   wantList?: WantListEntry[];
   wantListDependencies?: WantListResolvedEntry[];
   ignoredCategories?: string[];
+  expeditionPlanningEnabled?: boolean;
+  expeditionMinStackValue?: number;
 }): RecommendationContext {
   const wantList = params.wantList ?? [];
   const wantListDependencies = params.wantListDependencies ?? [];
@@ -167,6 +204,8 @@ export function buildRecommendationContext(params: {
     wantList,
     wantListDependencies
   );
+  const { stackSellValueByItemId, stackCraftTargetsByItemId } =
+    computeStackPlanningData(params.items);
   return {
     items: params.items,
     quests: params.quests,
@@ -180,7 +219,11 @@ export function buildRecommendationContext(params: {
     ignoredCategories: params.ignoredCategories ?? [],
     wantList,
     wantListDependencies,
-    wishlistSourcesByItem
+    wishlistSourcesByItem,
+    expeditionPlanningEnabled: params.expeditionPlanningEnabled ?? false,
+    expeditionMinStackValue: params.expeditionMinStackValue ?? 500,
+    stackSellValueByItemId,
+    stackCraftTargetsByItemId
   };
 }
 
@@ -366,6 +409,61 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
     }
   }
 
+  if (context.expeditionPlanningEnabled) {
+    const threshold = context.expeditionMinStackValue ?? 0;
+    const stackValue = context.stackSellValueByItemId[item.id] ?? 0;
+    const stackTargets = (context.stackCraftTargetsByItemId[item.id] ?? []).filter(
+      (entry) => entry.sellValue >= threshold
+    );
+    const salvageStackTargets = (item.recyclesInto ?? item.salvagesInto ?? []).flatMap(
+      (salvage) =>
+        (context.stackCraftTargetsByItemId[salvage.itemId] ?? [])
+          .filter((entry) => entry.sellValue >= threshold)
+          .map((entry) => ({
+            ...entry,
+            materialId: salvage.itemId,
+            materialName: salvage.name ?? salvage.itemId
+          }))
+    );
+    const hasHardNeed =
+      alwaysKeepCategory ||
+      questNeed.total > 0 ||
+      upgradeNeed.total > 0 ||
+      projectNeed.total > 0 ||
+      wishlistSources.length > 0;
+
+    if (stackTargets.length > 0) {
+      const targetList = stackTargets
+        .map((entry) => `${entry.productName} (₡${entry.sellValue.toLocaleString()})`)
+        .join(', ');
+      rationale = appendSentence(
+        rationale,
+        `Expedition planning: Keep to craft ${targetList}.`
+      );
+      if (!hasHardNeed) {
+        action = 'keep';
+      }
+    } else if (salvageStackTargets.length > 0) {
+      const stackNames = Array.from(new Set(salvageStackTargets.map((entry) => entry.productName)));
+      const materials = Array.from(
+        new Set(salvageStackTargets.map((entry) => entry.materialName ?? entry.materialId))
+      );
+      rationale = appendSentence(
+        rationale,
+        `Expedition planning: Recycle for ${materials.join(', ')} to support ${stackNames.join(', ')}.`
+      );
+      if (!hasHardNeed && action === 'sell') {
+        action = 'recycle';
+      }
+    } else if (!hasHardNeed && stackValue < threshold) {
+      rationale = appendSentence(
+        rationale,
+        `Expedition planning: Sell items worth under ₡${threshold.toLocaleString()}.`
+      );
+      action = 'sell';
+    }
+  }
+
   if (wishlistSources.length > 0 && !rationale.includes('Wishlist')) {
     rationale = rationale.endsWith('.') ? `${rationale} ${wishlistReason}` : `${rationale}. ${wishlistReason}`;
   }
@@ -456,6 +554,16 @@ export function recommendItemsMatching(
     const benchKey = QUICK_USE_BENCH_BY_SLUG.get(recommendation.slug) ?? 'none';
     return QUICK_USE_BENCH_LOOKUP.get(benchKey) ?? QUICK_USE_BENCH_PRIORITY.length;
   };
+
+  if (sortMode === 'stackValue' && context.expeditionPlanningEnabled) {
+    return recommendations.sort((a, b) => {
+      const stackDiff =
+        (context.stackSellValueByItemId[b.itemId] ?? 0) -
+        (context.stackSellValueByItemId[a.itemId] ?? 0);
+      if (stackDiff !== 0) return stackDiff;
+      return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
+    });
+  }
 
   if (sortMode === 'alphabetical') {
     return recommendations.sort((a, b) =>

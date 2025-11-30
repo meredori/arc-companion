@@ -97,7 +97,9 @@ const defaultSettings: AppSettings = {
   approvalToken: undefined,
   alwaysKeepCategories: [],
   ignoredWantCategories: [],
-  recommendationSort: 'category'
+  recommendationSort: 'category',
+  expeditionPlanningEnabled: false,
+  expeditionMinStackValue: 500
 };
 
 const questStore = createPersistentStore<QuestProgress[]>(STORAGE_KEYS.quests, []);
@@ -528,6 +530,20 @@ export const settings = {
     settingsStore.update((current) => ({
       ...current,
       recommendationSort: mode
+    }));
+  },
+  toggleExpeditionPlanning(enabled?: boolean) {
+    settingsStore.update((current) => ({
+      ...current,
+      expeditionPlanningEnabled:
+        typeof enabled === 'boolean' ? enabled : !current.expeditionPlanningEnabled
+    }));
+  },
+  setExpeditionMinStackValue(value: number) {
+    const normalized = Math.max(0, Math.round(value));
+    settingsStore.update((current) => ({
+      ...current,
+      expeditionMinStackValue: normalized
     }));
   },
   toggleIgnoredWantCategory(category: string) {
