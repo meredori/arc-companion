@@ -34,6 +34,30 @@
     drops?: string[];
   };
 
+  type RecommendationEntry = ReturnType<typeof recommendItemsMatching>[number];
+
+  type LookOutItem = {
+    id: string;
+    name: string;
+    slug?: string;
+    category: string | null;
+    imageUrl: string | null;
+    rationale: string;
+    action: RecommendationEntry['action'];
+    rarity: string | null;
+    needs: RecommendationEntry['needs'];
+    wishlistSources: RecommendationEntry['wishlistSources'];
+    sellPrice?: number;
+    salvageValue?: number;
+    salvageBreakdown: RecommendationEntry['salvageBreakdown'];
+    questNeeds: RecommendationEntry['questNeeds'];
+    upgradeNeeds: RecommendationEntry['upgradeNeeds'];
+    projectNeeds: RecommendationEntry['projectNeeds'];
+    alwaysKeepCategory: RecommendationEntry['alwaysKeepCategory'];
+    foundIn: string[];
+    botSources: BotRecord[];
+  };
+
   const normalizeItemId = (raw: string): string =>
     `item-${raw.trim().toLowerCase().replace(/^item[_-]/, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')}`;
 
@@ -110,7 +134,7 @@
     return fuzzy === -1 ? priority.length : fuzzy;
   };
 
-  const lookOutItems = derived(recommendationContextStore, (context) => {
+  const lookOutItems = derived(recommendationContextStore, (context): LookOutItem[] => {
     const recommendations = recommendItemsMatching('', context, { sortMode: 'alphabetical' });
     const itemLookup = new Map(context.items.map((item) => [item.id, item]));
     const seen = new Set<string>();
@@ -175,7 +199,8 @@
         upgradeNeeds: rec.upgradeNeeds ?? [],
         projectNeeds: rec.projectNeeds ?? [],
         alwaysKeepCategory: rec.alwaysKeepCategory ?? false,
-        foundIn: itemLookup.get(rec.itemId)?.foundIn ?? []
+        foundIn: itemLookup.get(rec.itemId)?.foundIn ?? [],
+        botSources: []
       }));
   });
 
