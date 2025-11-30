@@ -324,6 +324,7 @@ function remainingProjectNeeds(itemId: string, context: RecommendationContext) {
 }
 
 export function recommendItem(item: ItemRecord, context: RecommendationContext): ItemRecommendation {
+  const itemLookup = new Map(context.items.map((entry) => [entry.id, entry] as const));
   const questNeed = remainingQuestNeeds(item.id, context);
   const upgradeNeed = remainingUpgradeNeeds(item.id, context);
   const projectNeed = remainingProjectNeeds(item.id, context);
@@ -423,6 +424,10 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
       .filter((entry) => entry.sellValue >= threshold)
       .sort((a, b) => b.sellValue - a.sellValue);
     const salvageStackTargets = (item.recyclesInto ?? item.salvagesInto ?? [])
+      .filter((salvage) => {
+        const salvageItem = itemLookup.get(salvage.itemId);
+        return salvageItem?.category?.toLowerCase().trim() !== 'basic material';
+      })
       .flatMap((salvage) =>
         (context.stackCraftTargetsByItemId[salvage.itemId] ?? [])
           .filter((entry) => entry.sellValue >= threshold)
@@ -439,6 +444,7 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
     const bestExpeditionTarget = [bestCraftTarget, bestSalvageTarget]
       .filter(Boolean)
       .sort((a, b) => (b?.sellValue ?? 0) - (a?.sellValue ?? 0))[0];
+    const effectiveStackValue = Math.max(stackValue, bestExpeditionTarget?.sellValue ?? 0);
     const hasHardNeed =
       alwaysKeepCategory ||
       questNeed.total > 0 ||
@@ -446,9 +452,9 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
       projectNeed.total > 0 ||
       wishlistSources.length > 0;
 
-    expeditionCandidate = stackValue >= threshold;
+    expeditionCandidate = effectiveStackValue >= threshold && effectiveStackValue > 0;
 
-    if (expeditionCandidate && stackValue > 0) {
+    if (expeditionCandidate) {
       if (bestExpeditionTarget) {
         rationale = appendSentence(
           rationale,
@@ -457,14 +463,14 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
         if (!hasHardNeed) {
           action = 'materialId' in bestExpeditionTarget ? 'recycle' : 'keep';
         }
-      } else if (!hasHardNeed) {
+      } else if (!hasHardNeed && stackValue > 0) {
         rationale = appendSentence(
           rationale,
           `Expedition planning: Stack worth ₡${stackValue.toLocaleString()} meets your threshold.`
         );
         action = 'keep';
       }
-    } else if (!hasHardNeed && stackValue < threshold) {
+    } else if (!hasHardNeed && effectiveStackValue < threshold && action === 'sell') {
       rationale = appendSentence(
         rationale,
         `Expedition planning: Sell items worth under ₡${threshold.toLocaleString()}.`
@@ -571,6 +577,8 @@ export function recommendItemsMatching(
     return recommendations.sort((a, b) => {
       const stackDiff = (b.stackSellValue ?? 0) - (a.stackSellValue ?? 0);
       if (stackDiff !== 0) return stackDiff;
+      const rarityDiff = rarityRank(a.rarity) - rarityRank(b.rarity);
+      if (rarityDiff !== 0) return rarityDiff;
       return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
     });
   }
