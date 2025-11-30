@@ -16,6 +16,8 @@
   export let imageUrl: RecommendationCardProps['imageUrl'] = undefined;
   export let reason: RecommendationCardProps['reason'] = undefined;
   export let sellPrice: RecommendationCardProps['sellPrice'] = undefined;
+  export let stackSize: RecommendationCardProps['stackSize'] = undefined;
+  export let stackSellValue: RecommendationCardProps['stackSellValue'] = undefined;
   export let salvageValue: RecommendationCardProps['salvageValue'] = undefined;
   export let salvageBreakdown: RecommendationCardProps['salvageBreakdown'] = [];
   export let questNeeds: RecommendationCardProps['questNeeds'] = [];
@@ -25,6 +27,7 @@
   export let alwaysKeepCategory: RecommendationCardProps['alwaysKeepCategory'] = false;
   export let variant: RecommendationCardProps['variant'] = 'simple';
   export let wishlistSources: RecommendationCardProps['wishlistSources'] = [];
+  export let expeditionPlanningEnabled: RecommendationCardProps['expeditionPlanningEnabled'] = false;
 
   const ACTION_COPY = {
     keep: 'Keep',
@@ -35,6 +38,8 @@
   const sanitize = (value: string) => value.replace(/[^a-z0-9-]/gi, '-').toLowerCase();
   $: totalNeeds = (needs?.quests ?? 0) + (needs?.workshop ?? 0) + (needs?.projects ?? 0);
   $: tooltipId = `loot-tooltip-${sanitize(slug ?? name)}`;
+  $: formattedStackSellValue =
+    stackSellValue !== undefined ? stackSellValue.toLocaleString() : undefined;
   $: wishlistSummary = (() => {
     if (!wishlistSources || wishlistSources.length === 0) return [] as { name: string; notes: string[] }[];
     const map = new Map<string, { name: string; notes: Set<string> }>();
@@ -85,6 +90,8 @@
         category={category}
         reason={reason}
         sellPrice={sellPrice}
+        stackSize={stackSize}
+        stackSellValue={stackSellValue}
         salvageValue={salvageValue}
         salvageBreakdown={salvageBreakdown}
         questNeeds={questNeeds}
@@ -93,6 +100,7 @@
         needs={needs}
         alwaysKeepCategory={alwaysKeepCategory}
         wishlistSources={wishlistSources}
+        expeditionPlanningEnabled={expeditionPlanningEnabled}
       />
     </ItemIcon>
   </button>
@@ -106,6 +114,26 @@
       <p class="text-xs uppercase tracking-widest text-slate-500">
         {[category, rarity].filter(Boolean).join(' · ')}
       </p>
+    {/if}
+    {#if stackSize || formattedStackSellValue}
+      <div class="mt-2 flex flex-wrap gap-2 text-[11px] uppercase tracking-widest text-slate-300">
+        {#if stackSize}
+          <span class="rounded-full border border-slate-700 bg-slate-900/70 px-2 py-0.5 font-semibold text-slate-100">
+            Stack ×{stackSize}
+          </span>
+        {/if}
+        {#if formattedStackSellValue}
+          <span
+            class={`rounded-full border px-2 py-0.5 font-semibold ${
+              expeditionPlanningEnabled
+                ? 'border-amber-400/70 bg-amber-500/10 text-amber-100'
+                : 'border-slate-700 bg-slate-900/60 text-slate-200'
+            }`}
+          >
+            Stack ₡{formattedStackSellValue}
+          </span>
+        {/if}
+      </div>
     {/if}
     {#if wishlistSummary.length > 0}
       <div class="mt-2 space-y-2">

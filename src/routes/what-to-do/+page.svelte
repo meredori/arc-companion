@@ -297,6 +297,8 @@
               slug={recommendation.slug}
               imageUrl={recommendation.imageUrl}
               sellPrice={recommendation.sellPrice}
+              stackSize={recommendation.stackSize}
+              stackSellValue={recommendation.stackSellValue}
               salvageValue={recommendation.salvageValue}
               salvageBreakdown={recommendation.salvageBreakdown}
               questNeeds={recommendation.questNeeds}
@@ -305,6 +307,7 @@
               needs={recommendation.needs}
               alwaysKeepCategory={recommendation.alwaysKeepCategory}
               wishlistSources={recommendation.wishlistSources}
+              expeditionPlanningEnabled={$settings.expeditionPlanningEnabled}
             />
           {/each}
         </div>

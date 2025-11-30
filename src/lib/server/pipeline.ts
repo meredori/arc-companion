@@ -44,6 +44,16 @@ const normalizeFoundIn = (value: string | string[] | undefined): string[] => {
   return Array.from(new Set(normalized));
 };
 
+const normalizeStackSize = (value: unknown): number => {
+  if (Number.isFinite(value) && value) {
+    const numeric = Number(value);
+    if (numeric > 0) {
+      return Math.floor(numeric);
+    }
+  }
+  return 1;
+};
+
 const toItemId = (raw: string | undefined | null): string | null => {
   if (!raw) return null;
   const normalized = raw.trim();
@@ -98,6 +108,7 @@ interface RawItem {
   type?: string;
   rarity?: string;
   value?: number;
+  stackSize?: number;
   recyclesInto?: Record<string, number>;
   recyleInto?: Record<string, number>;
   salvagesInto?: Record<string, number>;
@@ -229,6 +240,7 @@ export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
     if (!itemId) continue;
     const englishName = englishText(raw.name, raw.id);
     const slug = slugify(raw.id.replace(/_/g, '-')) || slugify(englishName) || englishName;
+    const stackSize = normalizeStackSize(raw.stackSize);
 
     provisionalItems.push({
       id: itemId,
@@ -238,6 +250,7 @@ export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
       category: raw.type ?? null,
       foundIn: normalizeFoundIn(raw.foundIn),
       sell: typeof raw.value === 'number' ? raw.value : 0,
+      stackSize,
       recyclesInto: [],
       salvagesInto: [],
       craftsFrom: [],
@@ -259,6 +272,7 @@ export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
     const recycleSource = raw.recyclesInto ?? raw.recyleInto ?? raw.salvagesInto;
     const recipeSources = [raw.recipe, raw.craftMaterials, raw.crafting, raw.upgradeCost];
     const notes = englishText(raw.description)?.trim();
+    const stackSize = normalizeStackSize(raw.stackSize);
     const craftsEntries = mergeCraftRequirements(
       recipeSources.map((source) => convertRecipeEntries(source, nameLookup))
     );
@@ -276,6 +290,7 @@ export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
       imageUrl: resolveImageUrl(raw.id, raw.imageFilename),
       foundIn: normalizeFoundIn(raw.foundIn),
       sell: typeof raw.value === 'number' ? raw.value : 0,
+      stackSize,
       recyclesInto: convertRecycleEntries(recycleSource, nameLookup),
       salvagesInto: convertRecycleEntries(recycleSource, nameLookup),
       craftsFrom: craftsEntries,

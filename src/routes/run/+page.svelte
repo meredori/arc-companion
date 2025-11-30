@@ -734,6 +734,8 @@
                             category={item.category}
                             reason={item.rationale}
                             sellPrice={item.sellPrice}
+                            stackSize={item.stackSize}
+                            stackSellValue={item.stackSellValue}
                             salvageValue={item.salvageValue}
                             salvageBreakdown={item.salvageBreakdown}
                             questNeeds={item.questNeeds}
@@ -744,6 +746,7 @@
                             wishlistSources={item.wishlistSources}
                             foundIn={item.foundIn}
                             botSources={item.botSources?.map((bot) => ({ id: bot.id, name: bot.name })) ?? []}
+                            expeditionPlanningEnabled={$settings.expeditionPlanningEnabled ?? false}
                           />
                         </ItemIcon>
                       </div>
@@ -789,6 +792,8 @@
                         category={item.category}
                         reason={item.rationale}
                         sellPrice={item.sellPrice}
+                        stackSize={item.stackSize}
+                        stackSellValue={item.stackSellValue}
                         salvageValue={item.salvageValue}
                         salvageBreakdown={item.salvageBreakdown}
                         questNeeds={item.questNeeds}
@@ -799,6 +804,7 @@
                         wishlistSources={item.wishlistSources}
                         foundIn={item.foundIn}
                         botSources={item.botSources?.map((bot) => ({ id: bot.id, name: bot.name })) ?? []}
+                        expeditionPlanningEnabled={$settings.expeditionPlanningEnabled ?? false}
                       />
                     </ItemIcon>
                   </div>

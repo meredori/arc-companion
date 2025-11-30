@@ -20,6 +20,8 @@ export type RecommendationCardProps = {
   slug?: string;
   imageUrl?: string | null;
   sellPrice?: number;
+  stackSize?: number;
+  stackSellValue?: number;
   salvageValue?: number;
   salvageBreakdown?: ItemRecycleEntry[];
   questNeeds?: QuestNeedDetail[];
@@ -35,6 +37,7 @@ export type RecommendationCardProps = {
   wishlistSources?: RecommendationWishlistSource[];
   foundIn?: string[];
   botSources?: Array<{ id: string; name: string }>;
+  expeditionPlanningEnabled?: boolean;
 };
 
 export type ChecklistItem = {

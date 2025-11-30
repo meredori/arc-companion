@@ -20,6 +20,8 @@
   export let category: RecommendationCardProps['category'] = undefined;
   export let reason: RecommendationCardProps['reason'] = undefined;
   export let sellPrice: RecommendationCardProps['sellPrice'] = undefined;
+  export let stackSize: RecommendationCardProps['stackSize'] = undefined;
+  export let stackSellValue: RecommendationCardProps['stackSellValue'] = undefined;
   export let salvageValue: RecommendationCardProps['salvageValue'] = undefined;
   export let salvageBreakdown: RecommendationCardProps['salvageBreakdown'] = [];
   export let questNeeds: RecommendationCardProps['questNeeds'] = [];
@@ -30,9 +32,12 @@
   export let wishlistSources: RecommendationCardProps['wishlistSources'] = [];
   export let foundIn: RecommendationCardProps['foundIn'] = [];
   export let botSources: RecommendationCardProps['botSources'] = [];
+  export let expeditionPlanningEnabled: RecommendationCardProps['expeditionPlanningEnabled'] = false;
 
   $: totalNeeds = (needs?.quests ?? 0) + (needs?.workshop ?? 0) + (needs?.projects ?? 0);
   $: formattedSell = sellPrice !== undefined ? sellPrice.toLocaleString() : null;
+  $: formattedStackSell =
+    stackSellValue !== undefined ? stackSellValue.toLocaleString() : null;
   $: formattedSalvage = salvageValue !== undefined ? salvageValue.toLocaleString() : null;
   $: wishlistSummary = (() => {
     if (!wishlistSources || wishlistSources.length === 0) return [] as { name: string; notes: string[] }[];
@@ -73,6 +78,27 @@
       </span>
     </div>
   </header>
+
+  {#if stackSize || formattedStackSell}
+    <div class="flex flex-wrap gap-2 text-[10px] uppercase tracking-widest text-slate-300">
+      {#if stackSize}
+        <span class="rounded-full border border-slate-700/60 bg-slate-900/70 px-2 py-0.5 font-semibold text-slate-100">
+          Stack ×{stackSize}
+        </span>
+      {/if}
+      {#if formattedStackSell}
+        <span
+          class={`rounded-full border px-2 py-0.5 font-semibold ${
+            expeditionPlanningEnabled
+              ? 'border-amber-400/70 bg-amber-500/10 text-amber-100'
+              : 'border-slate-700/60 bg-slate-900/70 text-slate-200'
+          }`}
+        >
+          Stack ₡{formattedStackSell}
+        </span>
+      {/if}
+    </div>
+  {/if}
 
   {#if (foundIn?.length ?? 0) > 0 || (botSources?.length ?? 0) > 0}
     <div class="flex flex-wrap gap-1 text-[10px] uppercase tracking-widest text-slate-300">
@@ -212,6 +238,15 @@
         <p class="text-2xl font-semibold text-white">
           {formattedSell}<span class="ml-1 text-base text-slate-400">cr</span>
         </p>
+        {#if expeditionPlanningEnabled && formattedStackSell}
+          <p class="text-lg font-semibold text-amber-100">
+            Stack sell value {formattedStackSell}<span class="ml-1 text-sm text-amber-200">cr</span>
+          </p>
+        {:else if formattedStackSell}
+          <p class="text-sm text-slate-300">
+            Stack sell value {formattedStackSell}<span class="ml-1 text-[11px] text-slate-400">cr</span>
+          </p>
+        {/if}
       {:else}
         <p class="text-slate-500">No vendor pricing available.</p>
       {/if}

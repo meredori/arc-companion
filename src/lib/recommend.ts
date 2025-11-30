@@ -162,9 +162,14 @@ function computeStackPlanningData(items: ItemRecord[]) {
   const stackCraftTargetsByItemId: Record<string, StackCraftTarget[]> = {};
 
   for (const item of items) {
+    const baseStackValue = item.sell * item.stackSize;
+    if (baseStackValue > 0) {
+      stackSellValueByItemId[item.id] = Math.max(stackSellValueByItemId[item.id] ?? 0, baseStackValue);
+    }
+
     for (const craft of item.craftsInto ?? []) {
       const product = itemLookup.get(craft.productId);
-      const productValue = (product?.sell ?? 0) * (craft.qty ?? 1);
+      const productValue = (product?.sell ?? 0) * (craft.qty ?? 1) * (product?.stackSize ?? 1);
       if (productValue <= 0) continue;
       const nextValue = Math.max(stackSellValueByItemId[item.id] ?? 0, productValue);
       stackSellValueByItemId[item.id] = nextValue;
@@ -323,6 +328,7 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
   const upgradeNeed = remainingUpgradeNeeds(item.id, context);
   const projectNeed = remainingProjectNeeds(item.id, context);
   const salvageValue = computeRecycleValue(item);
+  const stackSellValue = item.sell * item.stackSize;
   const normalizedCategory = item.category?.toLowerCase().trim();
   const alwaysKeepCategory =
     normalizedCategory && context.alwaysKeepCategories.length > 0
@@ -478,6 +484,8 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
     action,
     rationale,
     sellPrice: item.sell,
+    stackSize: item.stackSize,
+    stackSellValue,
     salvageValue,
     salvageBreakdown: item.recyclesInto ?? item.salvagesInto,
     questNeeds: questNeed.details,
