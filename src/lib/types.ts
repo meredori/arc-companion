@@ -28,6 +28,7 @@ export interface ItemRecord {
   imageUrl?: string | null;
   foundIn?: string[];
   sell: number;
+  stackSize: number;
   recyclesInto?: ItemRecycleEntry[];
   salvagesInto: ItemRecycleEntry[];
   craftsFrom?: ItemCraftRequirement[];
@@ -211,11 +212,14 @@ export interface ItemRecommendation {
   action: RecommendationAction;
   rationale: string;
   sellPrice: number;
+  stackSize: number;
+  stackSellValue: number;
   salvageValue: number;
   salvageBreakdown: ItemRecycleEntry[];
   questNeeds: QuestNeedDetail[];
   upgradeNeeds: UpgradeNeedDetail[];
   projectNeeds: ProjectNeedDetail[];
+  expeditionCandidate?: boolean;
   alwaysKeepCategory?: boolean;
   needs: {
     quests: number;

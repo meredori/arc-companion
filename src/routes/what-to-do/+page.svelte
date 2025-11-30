@@ -71,6 +71,17 @@
     settings.toggleIgnoredWantCategory(category);
   };
 
+  const expeditionProjectsCompleted = derived(projectProgress, ($projectProgress) => {
+    if (projects.length === 0) return false;
+    return projects.every((project) =>
+      project.phases.every((phase) =>
+        phase.requirements.every(
+          (req) => ($projectProgress?.[project.id]?.[phase.id]?.[req.itemId] ?? 0) >= req.qty
+        )
+      )
+    );
+  });
+
   const toggleExpeditionPlanning = (enabled: boolean) => {
     settings.toggleExpeditionPlanning(enabled);
     if (enabled) {
@@ -89,8 +100,17 @@
   );
 
   const contextStore = derived(
-    [quests, blueprints, settings, itemsWithOverrides, projectProgress, workbenchUpgrades, wantList],
-    ([$quests, $blueprints, $settings, $items, $projectProgress, $workbench, $wantList]) =>
+    [
+      quests,
+      blueprints,
+      settings,
+      itemsWithOverrides,
+      projectProgress,
+      workbenchUpgrades,
+      wantList,
+      expeditionProjectsCompleted
+    ],
+    ([$quests, $blueprints, $settings, $items, $projectProgress, $workbench, $wantList, $projectsDone]) =>
       buildRecommendationContext({
         items: $items,
         quests: questDefs,
@@ -106,7 +126,8 @@
         wantListDependencies: expandWantList($wantList, $items, {
           ignoredCategories: $settings.ignoredWantCategories ?? []
         }),
-        expeditionPlanningEnabled: $settings.expeditionPlanningEnabled ?? false,
+        expeditionPlanningEnabled:
+          ($settings.expeditionPlanningEnabled ?? false) && ($projectsDone ?? false),
         expeditionMinStackValue: $settings.expeditionMinStackValue ?? 500
       })
   );
@@ -156,36 +177,45 @@
       value={query}
       on:input={({ detail }) => (query = detail.value)}
     />
-    <div class="space-y-3 rounded-2xl border border-slate-800/70 bg-slate-950/60 p-4">
-      <div class="flex flex-wrap items-center justify-between gap-3">
-        <label class="flex items-center gap-3 text-sm font-semibold text-slate-200">
-          <input
-            type="checkbox"
-            class="h-4 w-4 rounded border-slate-700/70 bg-slate-900 text-amber-400 focus:ring-amber-400"
-            checked={$settings.expeditionPlanningEnabled}
-            on:change={(event) => toggleExpeditionPlanning(event.currentTarget.checked)}
-          />
-          <span>Expedition value planning</span>
-        </label>
-        <div class="flex items-center gap-2 text-xs text-slate-300">
-          <label for="stack-threshold" class="uppercase tracking-[0.25em] text-slate-400">
-            Min stack value
+    {#if $expeditionProjectsCompleted}
+      <div class="space-y-3 rounded-2xl border border-slate-800/70 bg-slate-950/60 p-4">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <label class="flex items-center gap-3 text-sm font-semibold text-slate-200">
+            <input
+              type="checkbox"
+              class="h-4 w-4 rounded border-slate-700/70 bg-slate-900 text-amber-400 focus:ring-amber-400"
+              checked={$settings.expeditionPlanningEnabled}
+              on:change={(event) => toggleExpeditionPlanning(event.currentTarget.checked)}
+            />
+            <span>Expedition value planning</span>
           </label>
-          <input
-            id="stack-threshold"
-            type="number"
-            min="0"
-            class="w-24 rounded border border-slate-800 bg-slate-900 px-3 py-1 text-right text-sm text-slate-100 focus:border-amber-400 focus:outline-none focus:ring focus:ring-amber-400/30"
-            value={$settings.expeditionMinStackValue ?? 500}
-            on:change={(event) => setExpeditionMinStackValue(Number(event.currentTarget.value || 0))}
-            disabled={!$settings.expeditionPlanningEnabled}
-          />
+          <div class="flex items-center gap-2 text-xs text-slate-300">
+            <label for="stack-threshold" class="uppercase tracking-[0.25em] text-slate-400">
+              Min stack value
+            </label>
+            <input
+              id="stack-threshold"
+              type="number"
+              min="0"
+              class="w-24 rounded border border-slate-800 bg-slate-900 px-3 py-1 text-right text-sm text-slate-100 focus:border-amber-400 focus:outline-none focus:ring focus:ring-amber-400/30"
+              value={$settings.expeditionMinStackValue ?? 500}
+              on:change={(event) => setExpeditionMinStackValue(Number(event.currentTarget.value || 0))}
+              disabled={!$settings.expeditionPlanningEnabled}
+            />
+          </div>
         </div>
+        <p class="text-xs text-slate-400">
+          Plan for expedition cash runs by prioritizing items that craft into stacks worth at least your target sell value.
+        </p>
       </div>
-      <p class="text-xs text-slate-400">
-        Plan for expedition cash runs by prioritizing items that craft into stacks worth at least your target sell value.
-      </p>
-    </div>
+    {:else}
+      <div class="rounded-2xl border border-dashed border-slate-800/70 bg-slate-950/60 p-4 text-sm text-slate-300">
+        <p class="font-semibold text-white">Finish expedition projects to enable planner</p>
+        <p class="text-xs text-slate-400">
+          Mark every expedition phase complete in the Expedition projects tab before turning on stack value planning.
+        </p>
+      </div>
+    {/if}
     <div class="space-y-2">
       <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] uppercase tracking-widest text-slate-400">
         <span class="text-slate-500">Ignore categories</span>
@@ -297,6 +327,8 @@
               slug={recommendation.slug}
               imageUrl={recommendation.imageUrl}
               sellPrice={recommendation.sellPrice}
+              stackSize={recommendation.stackSize}
+              stackSellValue={recommendation.stackSellValue}
               salvageValue={recommendation.salvageValue}
               salvageBreakdown={recommendation.salvageBreakdown}
               questNeeds={recommendation.questNeeds}
@@ -305,6 +337,8 @@
               needs={recommendation.needs}
               alwaysKeepCategory={recommendation.alwaysKeepCategory}
               wishlistSources={recommendation.wishlistSources}
+              expeditionCandidate={recommendation.expeditionCandidate}
+              expeditionPlanningEnabled={$settings.expeditionPlanningEnabled}
             />
           {/each}
         </div>

@@ -11,6 +11,7 @@ const BASE_ITEM: ItemRecord = {
   slug: 'wishlist-item',
   category: 'Quick Use',
   sell: 100,
+  stackSize: 1,
   salvagesInto: []
 };
 
@@ -20,6 +21,7 @@ const BLUEPRINT_ITEM: ItemRecord = {
   slug: 'wishlist-item-blueprint',
   category: 'Blueprint',
   sell: 0,
+  stackSize: 1,
   salvagesInto: []
 };
 
@@ -37,6 +39,7 @@ const OWNED_ITEM: ItemRecord = {
   slug: 'owned-item',
   category: 'Quick Use',
   sell: 100,
+  stackSize: 1,
   salvagesInto: []
 };
 
@@ -46,6 +49,7 @@ const OWNED_BLUEPRINT: ItemRecord = {
   slug: 'owned-item-blueprint',
   category: 'Blueprint',
   sell: 0,
+  stackSize: 1,
   salvagesInto: []
 };
 
@@ -55,6 +59,7 @@ const MISSING_ITEM: ItemRecord = {
   slug: 'missing-item',
   category: 'Quick Use',
   sell: 50,
+  stackSize: 1,
   salvagesInto: []
 };
 
@@ -64,6 +69,7 @@ const MISSING_BLUEPRINT: ItemRecord = {
   slug: 'missing-item-blueprint',
   category: 'Blueprint',
   sell: 0,
+  stackSize: 1,
   salvagesInto: []
 };
 
@@ -73,6 +79,7 @@ const UNKNOWN_ITEM: ItemRecord = {
   slug: 'unknown-item',
   category: 'Quick Use',
   sell: 25,
+  stackSize: 1,
   salvagesInto: []
 };
 
@@ -82,6 +89,7 @@ const VARIANT_ONE: ItemRecord = {
   slug: 'bettina-i',
   category: 'Assault Rifle',
   sell: 0,
+  stackSize: 1,
   salvagesInto: [],
   craftsFrom: [{ itemId: 'mat-a', name: 'Mat A', qty: 1 }]
 };
@@ -92,6 +100,7 @@ const VARIANT_TWO: ItemRecord = {
   slug: 'bettina-ii',
   category: 'Assault Rifle',
   sell: 0,
+  stackSize: 1,
   salvagesInto: [],
   craftsFrom: [{ itemId: 'mat-b', name: 'Mat B', qty: 2 }]
 };
