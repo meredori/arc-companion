@@ -33,6 +33,8 @@ export type RecommendationCardProps = {
   alwaysKeepCategory?: boolean;
   variant?: 'simple' | 'token';
   wishlistSources?: RecommendationWishlistSource[];
+  foundIn?: string[];
+  botSources?: Array<{ id: string; name: string }>;
 };
 
 export type ChecklistItem = {

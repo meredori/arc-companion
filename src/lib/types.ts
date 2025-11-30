@@ -26,6 +26,7 @@ export interface ItemRecord {
   rarity?: string;
   category?: string;
   imageUrl?: string | null;
+  foundIn?: string[];
   sell: number;
   recyclesInto?: ItemRecycleEntry[];
   salvagesInto: ItemRecycleEntry[];

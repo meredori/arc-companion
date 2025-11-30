@@ -28,6 +28,8 @@
   export let needs: RecommendationCardProps['needs'] = { quests: 0, workshop: 0, projects: 0 };
   export let alwaysKeepCategory: RecommendationCardProps['alwaysKeepCategory'] = false;
   export let wishlistSources: RecommendationCardProps['wishlistSources'] = [];
+  export let foundIn: RecommendationCardProps['foundIn'] = [];
+  export let botSources: RecommendationCardProps['botSources'] = [];
 
   $: totalNeeds = (needs?.quests ?? 0) + (needs?.workshop ?? 0) + (needs?.projects ?? 0);
   $: formattedSell = sellPrice !== undefined ? sellPrice.toLocaleString() : null;
@@ -71,6 +73,21 @@
       </span>
     </div>
   </header>
+
+  {#if (foundIn?.length ?? 0) > 0 || (botSources?.length ?? 0) > 0}
+    <div class="flex flex-wrap gap-1 text-[10px] uppercase tracking-widest text-slate-300">
+      {#if (botSources?.length ?? 0) > 0}
+        <span class="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 font-semibold text-emerald-100">
+          ARC: {botSources.map((bot) => bot.name).join(', ')}
+        </span>
+      {/if}
+      {#each foundIn ?? [] as location}
+        <span class="rounded-full border border-slate-700/60 bg-slate-800/70 px-2 py-0.5 font-semibold text-slate-200">
+          {location}
+        </span>
+      {/each}
+    </div>
+  {/if}
 
   {#if wishlistSummary.length > 0}
     <div class="space-y-2">
