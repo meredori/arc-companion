@@ -254,7 +254,7 @@
       groups.push({
         id: `loot-${bucket.label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
         title: `${bucket.label} loot`,
-        description: `Search ${bucket.label} loot spots and containers.`,
+        description: '',
         items: bucket.items
       });
     }
@@ -270,6 +270,10 @@
 
     return groups;
   });
+
+  const lookOutItemsByRarity = derived(lookOutItems, ($lookOutItems) =>
+    [...$lookOutItems].sort((a, b) => rarityRank(a.rarity) - rarityRank(b.rarity))
+  );
 
   const highlightRuns = derived(runs, ($runs) =>
     [...$runs]
@@ -308,6 +312,7 @@
   let startedAt: string | null = null;
   let endedAt: string | null = null;
   let runPhase: 'idle' | 'running' | 'stopped' = 'idle';
+  let groupByLocation = true;
   const intervalSet = browser
     ? window.setInterval.bind(window)
     : globalThis.setInterval.bind(globalThis);
@@ -636,95 +641,146 @@
       {/if}
 
       <div class="space-y-4 rounded-2xl border border-slate-800/70 bg-slate-950/60 p-5">
-        <div class="flex items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center justify-between gap-3">
           <div class="space-y-1">
             <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Look out for</p>
             <p class="text-sm text-slate-300">
               Priority loot and materials worth grabbing during this run.
             </p>
           </div>
-          <span class="rounded-full bg-slate-800 px-3 py-1 text-xs font-semibold text-slate-200">
-            {$lookOutItems.length}
-          </span>
+          <div class="flex flex-wrap items-center gap-3">
+            <label class="flex items-center gap-2 text-[11px] uppercase tracking-widest text-slate-400">
+              <input
+                class="h-4 w-4 rounded border border-slate-700 bg-slate-900 text-emerald-400 accent-emerald-400"
+                type="checkbox"
+                bind:checked={groupByLocation}
+              />
+              Group by location
+            </label>
+            <span class="rounded-full bg-slate-800 px-3 py-1 text-xs font-semibold text-slate-200">
+              {$lookOutItems.length}
+            </span>
+          </div>
         </div>
         {#if $lookOutItems.length === 0}
           <p class="text-sm text-slate-400">
             Add wishlist targets, upgrades, or projects to see high-value pickups at a glance.
           </p>
         {:else}
-          <div class="space-y-4">
-            {#each $lookOutGroups as group (group.id)}
-              <div class="space-y-3 rounded-xl border border-slate-800/70 bg-slate-950/80 p-3">
-                <div class="flex items-center justify-between gap-3">
-                  <div class="space-y-1">
-                    <p class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">{group.title}</p>
-                    <p class="text-[13px] text-slate-400">{group.description}</p>
-                  </div>
-                  <span class="rounded-full bg-slate-900 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-200">
-                    {group.items.length}
-                  </span>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
-                  {#each group.items as item}
-                    {@const tooltipId = `lookout-${(item.slug ?? item.id ?? item.name)
-                      .replace(/[^a-z0-9-]/gi, '-')
-                      .toLowerCase()}`}
-                    <div class="aspect-square space-y-2">
-                      <ItemIcon
-                        className="h-full"
-                        name={item.name}
-                        rarity={item.rarity ?? null}
-                        imageUrl={item.imageUrl ?? null}
-                        tag={item.action}
-                        tooltipId={tooltipId}
-                        showTooltip={true}
-                        sizeClass="h-full w-full"
-                        roundedClass="rounded-xl"
-                        paddingClass="p-2"
-                      >
-                        <ItemTooltip
-                          slot="tooltip"
-                          id={tooltipId}
-                          name={item.name}
-                          action={item.action}
-                          rarity={item.rarity}
-                          category={item.category}
-                          reason={item.rationale}
-                          sellPrice={item.sellPrice}
-                          salvageValue={item.salvageValue}
-                          salvageBreakdown={item.salvageBreakdown}
-                          questNeeds={item.questNeeds}
-                          upgradeNeeds={item.upgradeNeeds}
-                          projectNeeds={item.projectNeeds}
-                          needs={item.needs}
-                          alwaysKeepCategory={item.alwaysKeepCategory}
-                          wishlistSources={item.wishlistSources}
-                          foundIn={item.foundIn}
-                          botSources={item.botSources?.map((bot) => ({ id: bot.id, name: bot.name })) ?? []}
-                        />
-                      </ItemIcon>
-
-                      {#if (item.botSources?.length ?? 0) > 0 || (item.foundIn?.length ?? 0) > 0}
-                        <div class="flex flex-wrap gap-1 text-[10px] uppercase tracking-widest text-slate-300">
-                          {#if (item.botSources?.length ?? 0) > 0}
-                            <span class="rounded-full bg-emerald-500/10 px-2 py-0.5 font-semibold text-emerald-100 ring-1 ring-emerald-500/40">
-                              ARC: {item.botSources.map((bot) => bot.name).join(', ')}
-                            </span>
-                          {/if}
-                          {#each item.foundIn ?? [] as location}
-                            <span class="rounded-full bg-slate-800/70 px-2 py-0.5 font-semibold text-slate-200 ring-1 ring-slate-700/60">
-                              {location}
-                            </span>
-                          {/each}
-                        </div>
+          {#if groupByLocation}
+            <div class="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+              {#each $lookOutGroups as group (group.id)}
+                <div class="space-y-3 rounded-xl border border-slate-800/70 bg-slate-950/80 p-3">
+                  <div class="flex items-center justify-between gap-3">
+                    <div class="space-y-1">
+                      <p class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">{group.title}</p>
+                      {#if group.description}
+                        <p class="text-[13px] text-slate-400">{group.description}</p>
                       {/if}
                     </div>
-                  {/each}
+                    <span class="rounded-full bg-slate-900 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-200">
+                      {group.items.length}
+                    </span>
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+                    {#each group.items as item}
+                      {@const tooltipId = `lookout-${(item.slug ?? item.id ?? item.name)
+                        .replace(/[^a-z0-9-]/gi, '-')
+                        .toLowerCase()}`}
+                      <div class="aspect-square">
+                        <ItemIcon
+                          className="h-full"
+                          name={item.name}
+                          rarity={item.rarity ?? null}
+                          imageUrl={item.imageUrl ?? null}
+                          tag={item.action}
+                          tooltipId={tooltipId}
+                          showTooltip={true}
+                          sizeClass="h-full w-full"
+                          roundedClass="rounded-xl"
+                          paddingClass="p-2"
+                        >
+                          <ItemTooltip
+                            slot="tooltip"
+                            id={tooltipId}
+                            name={item.name}
+                            action={item.action}
+                            rarity={item.rarity}
+                            category={item.category}
+                            reason={item.rationale}
+                            sellPrice={item.sellPrice}
+                            salvageValue={item.salvageValue}
+                            salvageBreakdown={item.salvageBreakdown}
+                            questNeeds={item.questNeeds}
+                            upgradeNeeds={item.upgradeNeeds}
+                            projectNeeds={item.projectNeeds}
+                            needs={item.needs}
+                            alwaysKeepCategory={item.alwaysKeepCategory}
+                            wishlistSources={item.wishlistSources}
+                            foundIn={item.foundIn}
+                            botSources={item.botSources?.map((bot) => ({ id: bot.id, name: bot.name })) ?? []}
+                          />
+                        </ItemIcon>
+                      </div>
+                    {/each}
+                  </div>
                 </div>
+              {/each}
+            </div>
+          {:else}
+            <div class="space-y-3 rounded-xl border border-slate-800/70 bg-slate-950/80 p-3">
+              <div class="flex items-center justify-between gap-3">
+                <p class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">Priority items</p>
+                <span class="rounded-full bg-slate-900 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-200">
+                  {$lookOutItemsByRarity.length}
+                </span>
               </div>
-            {/each}
-          </div>
+
+              <div class="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+                {#each $lookOutItemsByRarity as item}
+                  {@const tooltipId = `lookout-${(item.slug ?? item.id ?? item.name)
+                    .replace(/[^a-z0-9-]/gi, '-')
+                    .toLowerCase()}`}
+                  <div class="aspect-square">
+                    <ItemIcon
+                      className="h-full"
+                      name={item.name}
+                      rarity={item.rarity ?? null}
+                      imageUrl={item.imageUrl ?? null}
+                      tag={item.action}
+                      tooltipId={tooltipId}
+                      showTooltip={true}
+                      sizeClass="h-full w-full"
+                      roundedClass="rounded-xl"
+                      paddingClass="p-2"
+                    >
+                      <ItemTooltip
+                        slot="tooltip"
+                        id={tooltipId}
+                        name={item.name}
+                        action={item.action}
+                        rarity={item.rarity}
+                        category={item.category}
+                        reason={item.rationale}
+                        sellPrice={item.sellPrice}
+                        salvageValue={item.salvageValue}
+                        salvageBreakdown={item.salvageBreakdown}
+                        questNeeds={item.questNeeds}
+                        upgradeNeeds={item.upgradeNeeds}
+                        projectNeeds={item.projectNeeds}
+                        needs={item.needs}
+                        alwaysKeepCategory={item.alwaysKeepCategory}
+                        wishlistSources={item.wishlistSources}
+                        foundIn={item.foundIn}
+                        botSources={item.botSources?.map((bot) => ({ id: bot.id, name: bot.name })) ?? []}
+                      />
+                    </ItemIcon>
+                  </div>
+                {/each}
+              </div>
+            </div>
+          {/if}
         {/if}
       </div>
     </div>
