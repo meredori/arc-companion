@@ -31,6 +31,19 @@ const englishText = (value: unknown, fallback: string | null = null): string => 
   return fallback ?? '';
 };
 
+const normalizeFoundIn = (value: string | string[] | undefined): string[] => {
+  if (!value) return [];
+  const tokens = Array.isArray(value)
+    ? value.flatMap((entry) => `${entry}`.split(','))
+    : value.split(',');
+
+  const normalized = tokens
+    .map((entry) => entry.trim())
+    .filter((entry) => entry.length > 0);
+
+  return Array.from(new Set(normalized));
+};
+
 const toItemId = (raw: string | undefined | null): string | null => {
   if (!raw) return null;
   const normalized = raw.trim();
@@ -93,6 +106,7 @@ interface RawItem {
   crafting?: Record<string, number>;
   upgradeCost?: Record<string, number>;
   imageFilename?: string;
+  foundIn?: string | string[];
 }
 
 interface RawQuest {
@@ -222,6 +236,7 @@ export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
       slug,
       rarity: raw.rarity ?? null,
       category: raw.type ?? null,
+      foundIn: normalizeFoundIn(raw.foundIn),
       sell: typeof raw.value === 'number' ? raw.value : 0,
       recyclesInto: [],
       salvagesInto: [],
@@ -259,6 +274,7 @@ export const normalizeItems = (rawItems: RawItem[]): ItemRecord[] => {
       rarity: raw.rarity ?? null,
       category: raw.type ?? null,
       imageUrl: resolveImageUrl(raw.id, raw.imageFilename),
+      foundIn: normalizeFoundIn(raw.foundIn),
       sell: typeof raw.value === 'number' ? raw.value : 0,
       recyclesInto: convertRecycleEntries(recycleSource, nameLookup),
       salvagesInto: convertRecycleEntries(recycleSource, nameLookup),

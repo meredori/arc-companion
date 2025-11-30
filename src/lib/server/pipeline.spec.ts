@@ -70,6 +70,9 @@ describe('pipeline normalization', () => {
         expect.objectContaining({ productId: 'item-magnetic-accelerator' })
       ])
     );
+
+    const arcAlloy = normalizedItems.find((entry) => entry.id === 'item-arc-alloy');
+    expect(arcAlloy?.foundIn).toEqual(expect.arrayContaining(['ARC']));
   });
 
   it('converts weapon upgrade costs into crafting requirements', () => {

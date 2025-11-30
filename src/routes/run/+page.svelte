@@ -21,10 +21,42 @@
     lastRemovedRun
   } from '$lib/stores/app';
   import { buildRecommendationContext, recommendItemsMatching } from '$lib/recommend';
+  import rawBots from '../../../static/bots.json';
   import rawMaps from '../../../static/maps.json';
   import type { PageData } from './$types';
 
   type MapRecord = { id: string; name?: Record<string, string> | null };
+
+  type BotRecord = {
+    id: string;
+    name: string;
+    image?: string | null;
+    drops?: string[];
+  };
+
+  const normalizeItemId = (raw: string): string =>
+    `item-${raw.trim().toLowerCase().replace(/^item[_-]/, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')}`;
+
+  const bots = (rawBots as BotRecord[]).map((entry) => ({
+    ...entry,
+    image: entry.image ?? null,
+    drops: entry.drops ?? []
+  }));
+
+  const botDropsByItemId = (() => {
+    const map = new Map<string, BotRecord[]>();
+
+    for (const bot of bots) {
+      for (const drop of bot.drops ?? []) {
+        const itemId = normalizeItemId(drop);
+        const existing = map.get(itemId) ?? [];
+        existing.push(bot);
+        map.set(itemId, existing);
+      }
+    }
+
+    return map;
+  })();
 
   const mapOptions = (rawMaps as MapRecord[])
     .map((entry) => ({ id: entry.id, name: entry.name?.en ?? entry.id }))
@@ -142,8 +174,76 @@
         questNeeds: rec.questNeeds ?? [],
         upgradeNeeds: rec.upgradeNeeds ?? [],
         projectNeeds: rec.projectNeeds ?? [],
-        alwaysKeepCategory: rec.alwaysKeepCategory ?? false
+        alwaysKeepCategory: rec.alwaysKeepCategory ?? false,
+        foundIn: itemLookup.get(rec.itemId)?.foundIn ?? []
       }));
+  });
+
+  const lookOutGroups = derived(lookOutItems, ($lookOutItems) => {
+    const arcDrops: typeof $lookOutItems = [];
+    const locationBuckets = new Map<string, { label: string; items: typeof $lookOutItems }>();
+    const general: typeof $lookOutItems = [];
+
+    for (const item of $lookOutItems) {
+      const botSources = botDropsByItemId.get(item.id) ?? [];
+      const foundIn = item.foundIn ?? [];
+      const enriched = { ...item, botSources, foundIn };
+
+      if (botSources.length > 0) {
+        arcDrops.push(enriched);
+        continue;
+      }
+
+      if (foundIn.length > 0) {
+        for (const location of foundIn) {
+          const key = location.toLowerCase();
+          const bucket = locationBuckets.get(key) ?? { label: location, items: [] as typeof $lookOutItems };
+          bucket.items.push(enriched);
+          locationBuckets.set(key, bucket);
+        }
+        continue;
+      }
+
+      general.push(enriched);
+    }
+
+    const groups: Array<{
+      id: string;
+      title: string;
+      description: string;
+      items: typeof $lookOutItems;
+    }> = [];
+
+    if (arcDrops.length > 0) {
+      groups.push({
+        id: 'arc-drops',
+        title: 'ARC drops',
+        description: 'Dropped by ARC bots and machines.',
+        items: arcDrops
+      });
+    }
+
+    for (const bucket of Array.from(locationBuckets.values()).sort((a, b) =>
+      a.label.localeCompare(b.label, undefined, { sensitivity: 'base' })
+    )) {
+      groups.push({
+        id: `loot-${bucket.label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+        title: `${bucket.label} loot`,
+        description: `Search ${bucket.label} loot spots and containers.`,
+        items: bucket.items
+      });
+    }
+
+    if (general.length > 0) {
+      groups.push({
+        id: 'general-loot',
+        title: 'General loot',
+        description: 'No location hints; keep an eye out anywhere.',
+        items: general
+      });
+    }
+
+    return groups;
   });
 
   const highlightRuns = derived(runs, ($runs) =>
@@ -527,41 +627,76 @@
             Add wishlist targets, upgrades, or projects to see high-value pickups at a glance.
           </p>
         {:else}
-          <div class="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
-            {#each $lookOutItems as item}
-              {@const tooltipId = `lookout-${(item.slug ?? item.id ?? item.name).replace(/[^a-z0-9-]/gi, '-').toLowerCase()}`}
-              <div class="aspect-square">
-                <ItemIcon
-                  className="h-full"
-                  name={item.name}
-                  rarity={item.rarity ?? null}
-                  imageUrl={item.imageUrl ?? null}
-                  tag={item.action}
-                  tooltipId={tooltipId}
-                  showTooltip={true}
-                  sizeClass="h-full w-full"
-                  roundedClass="rounded-xl"
-                  paddingClass="p-2"
-                >
-                  <ItemTooltip
-                    slot="tooltip"
-                    id={tooltipId}
-                    name={item.name}
-                    action={item.action}
-                    rarity={item.rarity}
-                    category={item.category}
-                    reason={item.rationale}
-                    sellPrice={item.sellPrice}
-                    salvageValue={item.salvageValue}
-                    salvageBreakdown={item.salvageBreakdown}
-                    questNeeds={item.questNeeds}
-                    upgradeNeeds={item.upgradeNeeds}
-                    projectNeeds={item.projectNeeds}
-                    needs={item.needs}
-                    alwaysKeepCategory={item.alwaysKeepCategory}
-                    wishlistSources={item.wishlistSources}
-                  />
-                </ItemIcon>
+          <div class="space-y-4">
+            {#each $lookOutGroups as group (group.id)}
+              <div class="space-y-3 rounded-xl border border-slate-800/70 bg-slate-950/80 p-3">
+                <div class="flex items-center justify-between gap-3">
+                  <div class="space-y-1">
+                    <p class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">{group.title}</p>
+                    <p class="text-[13px] text-slate-400">{group.description}</p>
+                  </div>
+                  <span class="rounded-full bg-slate-900 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-200">
+                    {group.items.length}
+                  </span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+                  {#each group.items as item}
+                    {@const tooltipId = `lookout-${(item.slug ?? item.id ?? item.name)
+                      .replace(/[^a-z0-9-]/gi, '-')
+                      .toLowerCase()}`}
+                    <div class="aspect-square space-y-2">
+                      <ItemIcon
+                        className="h-full"
+                        name={item.name}
+                        rarity={item.rarity ?? null}
+                        imageUrl={item.imageUrl ?? null}
+                        tag={item.action}
+                        tooltipId={tooltipId}
+                        showTooltip={true}
+                        sizeClass="h-full w-full"
+                        roundedClass="rounded-xl"
+                        paddingClass="p-2"
+                      >
+                        <ItemTooltip
+                          slot="tooltip"
+                          id={tooltipId}
+                          name={item.name}
+                          action={item.action}
+                          rarity={item.rarity}
+                          category={item.category}
+                          reason={item.rationale}
+                          sellPrice={item.sellPrice}
+                          salvageValue={item.salvageValue}
+                          salvageBreakdown={item.salvageBreakdown}
+                          questNeeds={item.questNeeds}
+                          upgradeNeeds={item.upgradeNeeds}
+                          projectNeeds={item.projectNeeds}
+                          needs={item.needs}
+                          alwaysKeepCategory={item.alwaysKeepCategory}
+                          wishlistSources={item.wishlistSources}
+                          foundIn={item.foundIn}
+                          botSources={item.botSources?.map((bot) => ({ id: bot.id, name: bot.name })) ?? []}
+                        />
+                      </ItemIcon>
+
+                      {#if (item.botSources?.length ?? 0) > 0 || (item.foundIn?.length ?? 0) > 0}
+                        <div class="flex flex-wrap gap-1 text-[10px] uppercase tracking-widest text-slate-300">
+                          {#if (item.botSources?.length ?? 0) > 0}
+                            <span class="rounded-full bg-emerald-500/10 px-2 py-0.5 font-semibold text-emerald-100 ring-1 ring-emerald-500/40">
+                              ARC: {item.botSources.map((bot) => bot.name).join(', ')}
+                            </span>
+                          {/if}
+                          {#each item.foundIn ?? [] as location}
+                            <span class="rounded-full bg-slate-800/70 px-2 py-0.5 font-semibold text-slate-200 ring-1 ring-slate-700/60">
+                              {location}
+                            </span>
+                          {/each}
+                        </div>
+                      {/if}
+                    </div>
+                  {/each}
+                </div>
               </div>
             {/each}
           </div>
