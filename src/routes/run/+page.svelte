@@ -48,6 +48,8 @@
     needs: RecommendationEntry['needs'];
     wishlistSources: RecommendationEntry['wishlistSources'];
     sellPrice?: number;
+    stackSize?: number;
+    stackSellValue?: number;
     salvageValue?: number;
     salvageBreakdown: RecommendationEntry['salvageBreakdown'];
     questNeeds: RecommendationEntry['questNeeds'];
@@ -198,6 +200,8 @@
         needs: rec.needs,
         wishlistSources: rec.wishlistSources ?? [],
         sellPrice: rec.sellPrice,
+        stackSize: rec.stackSize,
+        stackSellValue: rec.stackSellValue,
         salvageValue: rec.salvageValue,
         salvageBreakdown: rec.salvageBreakdown ?? [],
         questNeeds: rec.questNeeds ?? [],

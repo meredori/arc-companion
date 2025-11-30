@@ -14,10 +14,11 @@ import type {
   WorkbenchUpgradeState
 } from './types';
 
-const ITEMS: ItemRecord[] = applyWeaponVariantAggregation([
-  {
-    id: 'item-alpha',
-    name: 'Alpha Core',
+const ITEMS: ItemRecord[] = applyWeaponVariantAggregation(
+  [
+    {
+      id: 'item-alpha',
+      name: 'Alpha Core',
     slug: 'alpha-core',
     category: 'Power',
     rarity: 'Epic Component',
@@ -286,7 +287,8 @@ const ITEMS: ItemRecord[] = applyWeaponVariantAggregation([
     sell: 70,
     salvagesInto: [],
   }
-]);
+  ].map((item) => ({ stackSize: 1, ...item }))
+);
 
 const getItem = (id: string) => {
   const match = ITEMS.find((entry) => entry.id === id);
