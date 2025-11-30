@@ -683,7 +683,9 @@
                     </span>
                   </div>
 
-                  <div class="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+                  <div
+                    class="grid grid-cols-[repeat(auto-fit,minmax(4.5rem,1fr))] gap-3 sm:gap-4"
+                  >
                     {#each group.items as item}
                       {@const tooltipId = `lookout-${(item.slug ?? item.id ?? item.name)
                         .replace(/[^a-z0-9-]/gi, '-')
@@ -737,7 +739,7 @@
                 </span>
               </div>
 
-              <div class="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+              <div class="grid grid-cols-[repeat(auto-fit,minmax(4.5rem,1fr))] gap-3 sm:gap-4">
                 {#each $lookOutItemsByRarity as item}
                   {@const tooltipId = `lookout-${(item.slug ?? item.id ?? item.name)
                     .replace(/[^a-z0-9-]/gi, '-')
