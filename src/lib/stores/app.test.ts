@@ -95,7 +95,7 @@ describe('expandWantList', () => {
         }
       ]
     }
-  ];
+  ].map((item) => ({ stackSize: 1, ...item }));
 
   const wantEntries: WantListEntry[] = [
     {

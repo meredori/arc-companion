@@ -14,10 +14,11 @@ import type {
   WorkbenchUpgradeState
 } from './types';
 
-const ITEMS: ItemRecord[] = applyWeaponVariantAggregation([
-  {
-    id: 'item-alpha',
-    name: 'Alpha Core',
+const ITEMS: ItemRecord[] = applyWeaponVariantAggregation(
+  [
+    {
+      id: 'item-alpha',
+      name: 'Alpha Core',
     slug: 'alpha-core',
     category: 'Power',
     rarity: 'Epic Component',
@@ -285,8 +286,111 @@ const ITEMS: ItemRecord[] = applyWeaponVariantAggregation([
     rarity: 'Uncommon Utility',
     sell: 70,
     salvagesInto: [],
+  },
+  {
+    id: 'item-stack-matrix',
+    name: 'Stack Matrix',
+    slug: 'stack-matrix',
+    category: 'Valuable',
+    rarity: 'Common Valuable',
+    sell: 60,
+    stackSize: 12,
+    salvagesInto: [],
+    craftsInto: [
+      { productId: 'item-stack-product-low', productName: 'Stack Product Low', qty: 1 },
+      { productId: 'item-stack-product-high', productName: 'Stack Product High', qty: 1 }
+    ]
+  },
+  {
+    id: 'item-stack-product-low',
+    name: 'Stack Product Low',
+    slug: 'stack-product-low',
+    category: 'Valuable',
+    rarity: 'Uncommon Valuable',
+    sell: 200,
+    stackSize: 2,
+    salvagesInto: []
+  },
+  {
+    id: 'item-stack-product-high',
+    name: 'Stack Product High',
+    slug: 'stack-product-high',
+    category: 'Valuable',
+    rarity: 'Rare Valuable',
+    sell: 150,
+    stackSize: 5,
+    salvagesInto: []
+  },
+  {
+    id: 'item-stack-tie-legendary',
+    name: 'Stack Tie Legendary',
+    slug: 'stack-tie-legendary',
+    category: 'Valuable',
+    rarity: 'Legendary Valuable',
+    sell: 50,
+    stackSize: 2,
+    salvagesInto: []
+  },
+  {
+    id: 'item-stack-tie-rare',
+    name: 'Stack Tie Rare',
+    slug: 'stack-tie-rare',
+    category: 'Valuable',
+    rarity: 'Rare Valuable',
+    sell: 50,
+    stackSize: 2,
+    salvagesInto: []
+  },
+  {
+    id: 'item-expedition-product',
+    name: 'Expedition Artifact',
+    slug: 'expedition-artifact',
+    category: 'Valuable',
+    rarity: 'Epic Valuable',
+    sell: 300,
+    stackSize: 3,
+    salvagesInto: []
+  },
+  {
+    id: 'mat-expedition-refined',
+    name: 'Refined Expedition Alloy',
+    slug: 'refined-expedition-alloy',
+    category: 'Refined Material',
+    rarity: 'Rare Material',
+    sell: 45,
+    salvagesInto: [],
+    craftsInto: [{ productId: 'item-expedition-product', productName: 'Expedition Artifact', qty: 1 }]
+  },
+  {
+    id: 'mat-basic-expedition',
+    name: 'Basic Expedition Shard',
+    slug: 'basic-expedition-shard',
+    category: 'Basic Material',
+    rarity: 'Common Material',
+    sell: 10,
+    salvagesInto: [],
+    craftsInto: [{ productId: 'item-expedition-product', productName: 'Expedition Artifact', qty: 1 }]
+  },
+  {
+    id: 'item-salvage-for-expedition',
+    name: 'Salvaged Frame',
+    slug: 'salvaged-frame',
+    category: 'Recyclable',
+    rarity: 'Uncommon Salvage',
+    sell: 35,
+    salvagesInto: [{ itemId: 'mat-expedition-refined', name: 'Refined Expedition Alloy', qty: 3 }]
+  },
+  {
+    id: 'item-salvage-basic',
+    name: 'Basic Salvage Chunk',
+    slug: 'basic-salvage-chunk',
+    category: 'Recyclable',
+    rarity: 'Common Salvage',
+    sell: 30,
+    salvagesInto: [{ itemId: 'mat-basic-expedition', name: 'Basic Expedition Shard', qty: 2 }]
   }
-]);
+  ].map((item) => ({ stackSize: 1, ...item }))
+);
 
 const getItem = (id: string) => {
   const match = ITEMS.find((entry) => entry.id === id);
@@ -528,13 +632,35 @@ const context = buildRecommendationContext({
     expect(alphabeticalOrder).not.toEqual(defaultOrder);
   });
 
+  it('sorts by stack sell value when requested', () => {
+    const sorted = recommendItemsMatching('', context, { sortMode: 'stackValue' });
+    expect(sorted[0].itemId).toBe('item-expedition-product');
+    expect(sorted[0].stackSellValue).toBe(900);
+    expect(sorted[1].stackSellValue).toBeLessThanOrEqual(sorted[0].stackSellValue ?? 0);
+  });
+
+  it('breaks stack value ties by rarity', () => {
+    const sorted = recommendItemsMatching('', context, { sortMode: 'stackValue' });
+    const legendaryIndex = sorted.findIndex((entry) => entry.itemId === 'item-stack-tie-legendary');
+    const rareIndex = sorted.findIndex((entry) => entry.itemId === 'item-stack-tie-rare');
+    expect(legendaryIndex).toBeGreaterThanOrEqual(0);
+    expect(rareIndex).toBeGreaterThan(legendaryIndex);
+  });
+
   it('treats material subcategories as one group sorted by rarity', () => {
     const materialResults = recommendItemsMatching('', context).filter((rec) =>
       ['Topside Material', 'Refined Material', 'Material', 'Basic Material', 'Recyclable'].includes(
         rec.category ?? ''
       )
     );
-    expect(materialResults.map((rec) => rec.name)).toEqual(['Refined Matrix', 'Topside Alloy']);
+    expect(materialResults.map((rec) => rec.name)).toEqual([
+      'Refined Matrix',
+      'Refined Expedition Alloy',
+      'Topside Alloy',
+      'Salvaged Frame',
+      'Basic Expedition Shard',
+      'Basic Salvage Chunk'
+    ]);
   });
 
   it('combines nature and trinket categories before rarity ordering', () => {
@@ -551,6 +677,72 @@ const context = buildRecommendationContext({
     expect(result.action).toBe('keep');
     expect(result.needs.projects).toBe(1);
     expect(result.projectNeeds[0].projectId).toBe('project-expedition');
+  });
+
+  it('prioritizes the highest-value expedition target and tags the item', () => {
+    const expeditionContext = buildRecommendationContext({
+      items: ITEMS,
+      quests: QUESTS,
+      questProgress: PROGRESS,
+      upgrades: UPGRADES,
+      blueprints: BLUEPRINTS,
+      workbenchUpgrades: WORKBENCH_UPGRADES,
+      projects: PROJECTS,
+      projectProgress: PROJECT_PROGRESS,
+      alwaysKeepCategories: ['Key'],
+      ignoredCategories: [],
+      expeditionPlanningEnabled: true,
+      expeditionMinStackValue: 500
+    });
+
+    const result = recommendItem(getItem('item-stack-matrix'), expeditionContext);
+    expect(result.expeditionCandidate).toBe(true);
+    expect(result.action).toBe('keep');
+    expect(result.rationale).toContain('Stack Product High');
+    expect(result.rationale).not.toContain('Stack Product Low');
+  });
+
+  it('recycles salvage that feeds high-value expedition crafts', () => {
+    const expeditionContext = buildRecommendationContext({
+      items: ITEMS,
+      quests: QUESTS,
+      questProgress: PROGRESS,
+      upgrades: UPGRADES,
+      blueprints: BLUEPRINTS,
+      workbenchUpgrades: WORKBENCH_UPGRADES,
+      projects: PROJECTS,
+      projectProgress: PROJECT_PROGRESS,
+      alwaysKeepCategories: ['Key'],
+      ignoredCategories: [],
+      expeditionPlanningEnabled: true,
+      expeditionMinStackValue: 500
+    });
+
+    const result = recommendItem(getItem('item-salvage-for-expedition'), expeditionContext);
+    expect(result.expeditionCandidate).toBe(true);
+    expect(result.action).toBe('recycle');
+    expect(result.rationale).toContain('Expedition Artifact');
+  });
+
+  it('ignores basic materials when finding expedition salvage targets', () => {
+    const expeditionContext = buildRecommendationContext({
+      items: ITEMS,
+      quests: QUESTS,
+      questProgress: PROGRESS,
+      upgrades: UPGRADES,
+      blueprints: BLUEPRINTS,
+      workbenchUpgrades: WORKBENCH_UPGRADES,
+      projects: PROJECTS,
+      projectProgress: PROJECT_PROGRESS,
+      alwaysKeepCategories: ['Key'],
+      ignoredCategories: [],
+      expeditionPlanningEnabled: true,
+      expeditionMinStackValue: 500
+    });
+
+    const result = recommendItem(getItem('item-salvage-basic'), expeditionContext);
+    expect(result.expeditionCandidate).toBe(false);
+    expect(result.rationale).not.toContain('Expedition Artifact');
   });
 
   it('surfaces recycling when components feed wishlist crafting chains', () => {
