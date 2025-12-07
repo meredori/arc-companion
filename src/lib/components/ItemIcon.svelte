@@ -47,13 +47,30 @@
   export let tagStyle: 'badge' | 'dot' = 'badge';
 
   $: rarityClass = rarityGradients[rarity?.toLowerCase() ?? 'default'] ?? rarityGradients.default;
-  const isAbsolute = (url: string) => /^https?:\/\//i.test(url) || url.startsWith('//');
+  const normalizeRemoteUrl = (url: string) => {
+    const trimmed = url.trim();
+
+    if (trimmed.startsWith('//')) return `https:${trimmed}`;
+
+    const protocolMatch = trimmed.match(/^(https?):/i);
+    if (!protocolMatch) return null;
+
+    const protocol = protocolMatch[1].toLowerCase();
+    const afterProtocol = trimmed.slice(protocolMatch[0].length);
+    const withLeadingSlashes = afterProtocol.startsWith('//')
+      ? afterProtocol
+      : `//${afterProtocol.replace(/^\/+/, '')}`;
+
+    return `${protocol}:${withLeadingSlashes}`;
+  };
 
   $: resolvedImageUrl = (() => {
     if (!imageUrl) return imageUrl;
-    if (isAbsolute(imageUrl)) return imageUrl;
 
-    const normalized = imageUrl.replace(/\/{2,}/g, '/');
+    const remote = normalizeRemoteUrl(imageUrl);
+    if (remote) return remote;
+
+    const normalized = imageUrl.trim().replace(/\/{2,}/g, '/');
 
     if (normalized.startsWith('/')) return normalized;
 
