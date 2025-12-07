@@ -30,13 +30,6 @@ The project is configured for SvelteKit with TypeScript, TailwindCSS, ESLint, Pr
    ```
    Static assets are emitted into the `build/` directory by `@sveltejs/adapter-static`.
 
-### Environment Configuration
-
-- `BASE_PATH` &mdash; Optional environment variable consumed by `svelte.config.js` to support GitHub
-  Pages style deployments (e.g. `BASE_PATH=/project-name`). Local development ignores this value.
-  When adding links or redirects, build URLs with `$app/paths`’ `base` helper or derive targets from
-  `url.pathname` so navigation works both locally and when the site is served from a subdirectory.
-
 ## Project Structure
 
 ```
@@ -70,10 +63,6 @@ GitHub Actions workflows (`.github/workflows/ci.yml`) execute on pull requests a
 - Install dependencies (`npm install`)
 - Run `npm run lint`, `npm run check`, and `npm test`
 - Build the static site (`npm run build`)
-- Upload the `build/` directory as a GitHub Pages artifact for preview deployments
-
-Artifacts generated on pull requests can be previewed using GitHub Pages environments. Pushes to
-`main` publish an artifact suitable for production deployment.
 
 ## Data ingestion & assets
 
@@ -110,10 +99,6 @@ store. Once a phase reaches 100 %, the What To Do recommendations stop flaggin
 
 Drop loot art into `static/images/items/` using snake_case filenames (e.g. `advanced_arc_powercell.png`).
 The normalization pipeline automatically rewrites `imageUrl` fields to `/images/items/<file>` when possible.
-
-> **Heads up:** When rendering those assets in Svelte components, resolve the stored path through
-> `$app/paths`’ `base` helper (e.g. ```${base}${url}```) so prerendering in CI finds the images when the
-> site is deployed under a subdirectory (GitHub Pages).
 
 ## Data attribution
 
