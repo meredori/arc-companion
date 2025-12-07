@@ -10,19 +10,19 @@
     "no": "Ferro IV",
     "da": "Ferro IV",
     "it": "Ferro IV",
-    "ru": "Ferro IV",
-    "ja": "Ferro IV",
+    "ru": "Ферро IV",
+    "ja": "フェロ IV",
     "zh-TW": "Ferro IV",
     "uk": "Ferro IV",
     "zh-CN": "Ferro IV",
-    "kr": "Ferro IV",
+    "kr": "페로 IV",
     "tr": "Ferro IV",
     "hr": "Ferro IV",
     "sr": "Ferro IV"
   },
   "description": {
     "en": "Packs a punch, but must be reloaded between every shot.",
-    "de": "Schlägt hart zu, muss aber nach jedem Schuss nachgeladen werden.",
+    "de": "Gute Durchschlagskraft, muss aber nach jedem Schuss nachgeladen werden.",
     "fr": "Frappe fort, mais doit être rechargé entre chaque tir.",
     "es": "Golpea fuerte, pero debe recargarse entre cada disparo.",
     "pt": "Dá um soco forte, mas deve ser recarregada entre cada tiro.",
@@ -55,8 +55,12 @@
   "salvagesInto": {
     "metal_parts": 2
   },
+  "upgradeCost": {
+    "mechanical_components": 1,
+    "simple_gun_parts": 1
+  },
   "imageFilename": "https://cdn.arctracker.io/items/ferro.png",
-  "updatedAt": "11/03/2025",
+  "updatedAt": "11/24/2025",
   "weightKg": 8,
   "effects": {
     "Durability": {
@@ -68,7 +72,7 @@
       "pl": "Wytrzymałość",
       "no": "Holdbarhet",
       "da": "Holdbarhed",
-      "it": "Durabilità",
+      "it": "Tenuta",
       "ru": "Прочность",
       "ja": "耐久性",
       "zh-TW": "耐久度",
@@ -110,7 +114,7 @@
       "pl": "Pojemność magazynka",
       "no": "Magasinstørrelse",
       "da": "Magasinstørrelse",
-      "it": "Dimensione caricatore",
+      "it": "Dimensioni caricatore",
       "ru": "Размер магазина",
       "ja": "マガジンサイズ",
       "zh-TW": "彈匣容量",
@@ -145,20 +149,20 @@
     },
     "ARC Armor Penetration": {
       "en": "ARC Armor Penetration",
-      "de": "ARC-Rüstungsdurchdringung",
+      "de": "ARC-Panzerungsdurchdringung",
       "fr": "Pénétration d'armure ARC",
       "es": "Penetración de armadura ARC",
       "pt": "Penetração de armadura ARC",
       "pl": "Przebicie pancerza ARC",
       "no": "ARC-rustningspenetrering",
       "da": "ARC-rustningspenetrering",
-      "it": "Penetrazione armatura ARC",
+      "it": "Penetrazione armature ARC",
       "ru": "Пробитие брони ARC",
       "ja": "ARC装甲貫通",
       "zh-TW": "ARC 裝甲穿透",
       "uk": "Пробиття броні ARC",
       "zh-CN": "ARC 装甲穿透",
-      "kr": "ARC 방어구 관통",
+      "kr": "아크 방어구 관통",
       "tr": "ARC Zırh Delme",
       "hr": "ARC Probijanje Oklopa",
       "sr": "ARC Probijanje Oklopa",
@@ -185,5 +189,6 @@
       "sr": "Modifikatori Nadogradnje",
       "value": "39% Reduced Reload Time"
     }
-  }
+  },
+  "isWeapon": true
 }

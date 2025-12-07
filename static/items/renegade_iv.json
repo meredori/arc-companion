@@ -15,7 +15,7 @@
     "no": "Renegade IV",
     "ja": "レネゲード IV",
     "fr": "Renégat IV",
-    "es": "Renegade IV",
+    "es": "Renegado IV",
     "hr": "Renegade IV",
     "pt": "Renegade IV",
     "da": "Renegade IV"
@@ -23,7 +23,7 @@
   "effects": {
     "Reduced Dispersion Recovery Time": {
       "en": "Reduced Dispersion Recovery Time",
-      "de": "Reduzierte Streuungs-Erholungszeit",
+      "de": "Verringerte Streuungs-Erholungszeit",
       "uk": "Зменшений час відновлення розкиду",
       "ru": "Уменьшенное время восстановления разброса",
       "zh-TW": "減少擴散恢復時間",
@@ -71,7 +71,7 @@
       "zh-TW": "耐久度",
       "tr": "Dayanıklılık",
       "zh-CN": "耐久度",
-      "it": "Durabilità",
+      "it": "Tenuta",
       "kr": "내구도",
       "sr": "Издржљивост",
       "pl": "Wytrzymałość",
@@ -113,7 +113,7 @@
       "zh-TW": "彈匣容量",
       "tr": "Şarjör Boyutu",
       "zh-CN": "弹匣容量",
-      "it": "Dimensione caricatore",
+      "it": "Dimensioni caricatore",
       "kr": "탄창 크기",
       "sr": "Величина оквира",
       "pl": "Rozmiar magazynka",
@@ -149,14 +149,14 @@
     },
     "ARC Armor Penetration": {
       "en": "ARC Armor Penetration",
-      "de": "ARC-Rüstungsdurchdringung",
+      "de": "ARC-Panzerungsdurchdringung",
       "uk": "Пробиття броні ARC",
       "ru": "Пробитие брони ARC",
       "zh-TW": "ARC 護甲穿透",
       "tr": "ARC Zırh Delme",
       "zh-CN": "ARC 护甲穿透",
-      "it": "Penetrazione armatura ARC",
-      "kr": "ARC 방어구 관통",
+      "it": "Penetrazione armature ARC",
+      "kr": "아크 방어구 관통",
       "sr": "ARC пробијање оклопа",
       "pl": "Przebicie pancerza ARC",
       "no": "ARC rustningspenetrering",
@@ -179,13 +179,13 @@
   "stationLevelRequired": 1,
   "description": {
     "en": "Lever-action battle rifle with high damage output, accuracy, and headshot damage.",
-    "de": "Unterhebelrepetierer-Kampfgewehr mit hoher Schadensleistung, Genauigkeit und Kopfschusschaden.",
+    "de": "Richtet bei Körpertreffern und insbesondere bei Kopfschüssen hohen Schaden an und ist präzise.",
     "uk": "Бойова гвинтівка з важільним механізмом із високим пошкодженням, точністю та пошкодженням від пострілів у голову.",
     "ru": "Боевая винтовка с рычажным механизмом с высоким уроном, точностью и уроном от выстрелов в голову.",
     "zh-TW": "槓桿式戰鬥步槍，具有高傷害輸出、精準度和爆頭傷害。",
     "tr": "Yüksek hasar çıkışı, isabetlilik ve kafadan vuruş hasarına sahip mandalı kuyruklu savaş tüfeği.",
     "zh-CN": "杠杆式战斗步枪，具有高伤害输出、精准度和爆头伤害。",
-    "it": "Fucile da battaglia a leva con alto danno, precisione e danno da colpo alla testa.",
+    "it": "Fucile da battaglia a leva con alto Danni, precisione e Danni da colpo alla testa.",
     "kr": "높은 피해량, 정확도 및 헤드샷 피해를 가진 레버 액션 전투 소총.",
     "sr": "Борбена пушка са полугом са високим оштећењем, прецизношћу и оштећењем од хитца у главу.",
     "pl": "Karabin bojowy z dźwignią o wysokich obrażeniach, celności i obrażeniach od strzałów w głowę.",
@@ -206,5 +206,6 @@
   "agility": 55.8,
   "stealth": 16,
   "imageFilename": "https://cdn.arctracker.io/items/renegade.png",
-  "updatedAt": "11/12/2025"
+  "updatedAt": "11/12/2025",
+  "isWeapon": true
 }

@@ -10,19 +10,19 @@
     "no": "Ferro III",
     "da": "Ferro III",
     "it": "Ferro III",
-    "ru": "Ferro III",
-    "ja": "Ferro III",
+    "ru": "Ферро III",
+    "ja": "フェロ III",
     "zh-TW": "Ferro III",
     "uk": "Ferro III",
     "zh-CN": "Ferro III",
-    "kr": "Ferro III",
+    "kr": "페로 III",
     "tr": "Ferro III",
     "hr": "Ferro III",
     "sr": "Ferro III"
   },
   "description": {
     "en": "Packs a punch, but must be reloaded between every shot.",
-    "de": "Schlägt hart zu, muss aber nach jedem Schuss nachgeladen werden.",
+    "de": "Gute Durchschlagskraft, muss aber nach jedem Schuss nachgeladen werden.",
     "fr": "Frappe fort, mais doit être rechargé entre chaque tir.",
     "es": "Golpea fuerte, pero debe recargarse entre cada disparo.",
     "pt": "Dá um soco forte, mas deve ser recarregado entre cada tiro.",
@@ -40,7 +40,7 @@
     "hr": "Zadaje snažan udarac, ali se mora puniti između svakog hica.",
     "sr": "Zadaje snažan udarac, ali mora da se punjenje između svakog hica."
   },
-  "type": "Weapon",
+  "type": "Battle Rifle",
   "rarity": "Common",
   "value": 2000,
   "weightKg": 8,
@@ -54,7 +54,7 @@
       "pl": "Wytrzymałość",
       "no": "Holdbarhet",
       "da": "Holdbarhed",
-      "it": "Durabilità",
+      "it": "Tenuta",
       "ru": "Прочность",
       "ja": "耐久性",
       "zh-TW": "耐久度",
@@ -96,7 +96,7 @@
       "pl": "Rozmiar magazynka",
       "no": "Magasinstørrelse",
       "da": "Magasinstørrelse",
-      "it": "Dimensione caricatore",
+      "it": "Dimensioni caricatore",
       "ru": "Размер магазина",
       "ja": "マガジンサイズ",
       "zh-TW": "彈匣容量",
@@ -131,20 +131,20 @@
     },
     "ARC Armor Penetration": {
       "en": "ARC Armor Penetration",
-      "de": "ARC-Rüstungsdurchdringung",
+      "de": "ARC-Panzerungsdurchdringung",
       "fr": "Pénétration d'armure ARC",
       "es": "Penetración de armadura ARC",
       "pt": "Penetração de armadura ARC",
       "pl": "Przebicie pancerza ARC",
       "no": "ARC-rustningspenetrering",
       "da": "ARC-rustningspenetrering",
-      "it": "Penetrazione armatura ARC",
+      "it": "Penetrazione armature ARC",
       "ru": "Пробитие брони ARC",
       "ja": "ARC装甲貫通",
       "zh-TW": "ARC 護甲穿透",
       "uk": "Пробиття броні ARC",
       "zh-CN": "ARC 护甲穿透",
-      "kr": "ARC 방어구 관통",
+      "kr": "아크 방어구 관통",
       "tr": "ARC Zırh Delme",
       "hr": "ARC probijanje oklopa",
       "sr": "ARC probijanje oklopa",
@@ -173,13 +173,14 @@
     }
   },
   "imageFilename": "https://cdn.arctracker.io/items/ferro.png",
-  "updatedAt": "11/17/2025",
+  "updatedAt": "11/24/2025",
   "recyclesInto": {
     "metal_parts": 6,
     "simple_gun_parts": 1
   },
   "upgradeCost": {
-    "mechanical_components": 1,
+    "metal_parts": 9,
     "simple_gun_parts": 1
-  }
+  },
+  "isWeapon": true
 }
