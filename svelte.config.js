@@ -22,7 +22,10 @@ const config = {
       handleHttpError: ({ status, path, referrer }) => {
         const allowlisted404 = ['/admin'];
         if (basePath) {
-          allowlisted404.push(`${basePath.replace(/\/$/, '')}/admin`);
+          const base = basePath.replace(/\/$/, '');
+          allowlisted404.push(`${base}/admin`, `${base}/favicon.svg`);
+        } else {
+          allowlisted404.push('/favicon.svg');
         }
 
         if (status === 404 && allowlisted404.includes(path)) {
