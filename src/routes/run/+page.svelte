@@ -705,6 +705,10 @@
                       {@const tooltipId = `lookout-${(item.slug ?? item.id ?? item.name)
                         .replace(/[^a-z0-9-]/gi, '-')
                         .toLowerCase()}`}
+                      {@const expeditionStackCandidate =
+                        ($settings.expeditionPlanningEnabled ?? false) &&
+                        item.expeditionCandidate &&
+                        (item.stackSellValue ?? 0) >= ($settings.expeditionMinStackValue ?? 500)}
                       <div class="aspect-square">
                         <ItemIcon
                           className="h-full"
@@ -712,9 +716,7 @@
                           rarity={item.rarity ?? null}
                           imageUrl={item.imageUrl ?? null}
                           tag={
-                            $settings.expeditionPlanningEnabled && item.expeditionCandidate
-                              ? 'expedition'
-                              : item.action
+                            expeditionStackCandidate ? 'expedition' : item.action
                           }
                           tagStyle="dot"
                           tooltipId={tooltipId}
@@ -746,6 +748,7 @@
                             botSources={item.botSources?.map((bot) => ({ id: bot.id, name: bot.name })) ?? []}
                             expeditionCandidate={item.expeditionCandidate}
                             expeditionPlanningEnabled={$settings.expeditionPlanningEnabled ?? false}
+                            expeditionMinStackValue={$settings.expeditionMinStackValue ?? 500}
                           />
                         </ItemIcon>
                       </div>
@@ -768,6 +771,10 @@
                   {@const tooltipId = `lookout-${(item.slug ?? item.id ?? item.name)
                     .replace(/[^a-z0-9-]/gi, '-')
                     .toLowerCase()}`}
+                  {@const expeditionStackCandidate =
+                    ($settings.expeditionPlanningEnabled ?? false) &&
+                    item.expeditionCandidate &&
+                    (item.stackSellValue ?? 0) >= ($settings.expeditionMinStackValue ?? 500)}
                   <div class="aspect-square">
                     <ItemIcon
                       className="h-full"
@@ -775,9 +782,7 @@
                       rarity={item.rarity ?? null}
                       imageUrl={item.imageUrl ?? null}
                       tag={
-                        $settings.expeditionPlanningEnabled && item.expeditionCandidate
-                          ? 'expedition'
-                          : item.action
+                        expeditionStackCandidate ? 'expedition' : item.action
                       }
                       tagStyle="dot"
                       tooltipId={tooltipId}
@@ -809,6 +814,7 @@
                         botSources={item.botSources?.map((bot) => ({ id: bot.id, name: bot.name })) ?? []}
                         expeditionCandidate={item.expeditionCandidate}
                         expeditionPlanningEnabled={$settings.expeditionPlanningEnabled ?? false}
+                        expeditionMinStackValue={$settings.expeditionMinStackValue ?? 500}
                       />
                     </ItemIcon>
                   </div>
@@ -838,7 +844,11 @@
           </div>
         {:else}
           {#each $highlightRuns as run}
-            <RecommendationCard {...run} />
+            <RecommendationCard
+              {...run}
+              expeditionPlanningEnabled={$settings.expeditionPlanningEnabled ?? false}
+              expeditionMinStackValue={$settings.expeditionMinStackValue ?? 500}
+            />
           {/each}
         {/if}
       </div>

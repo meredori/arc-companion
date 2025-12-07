@@ -343,6 +343,7 @@
               wishlistSources={recommendation.wishlistSources}
               expeditionCandidate={recommendation.expeditionCandidate}
               expeditionPlanningEnabled={$settings.expeditionPlanningEnabled}
+              expeditionMinStackValue={$settings.expeditionMinStackValue ?? 500}
             />
           {/each}
         </div>

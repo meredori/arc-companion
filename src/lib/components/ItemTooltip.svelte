@@ -36,15 +36,20 @@
   export let botSources: RecommendationCardProps['botSources'] = [];
   export let expeditionCandidate: RecommendationCardProps['expeditionCandidate'] = false;
   export let expeditionPlanningEnabled: RecommendationCardProps['expeditionPlanningEnabled'] = false;
+  export let expeditionMinStackValue: RecommendationCardProps['expeditionMinStackValue'] = 500;
   let displayAction: RecommendationCardProps['action'] | 'expedition' = action;
+  let expeditionStackCandidate = false;
 
   $: totalNeeds = (needs?.quests ?? 0) + (needs?.workshop ?? 0) + (needs?.projects ?? 0);
   $: formattedSell = sellPrice !== undefined ? sellPrice.toLocaleString() : null;
   $: formattedStackSell =
     stackSellValue !== undefined ? stackSellValue.toLocaleString() : null;
   $: formattedSalvage = salvageValue !== undefined ? salvageValue.toLocaleString() : null;
-  $: displayAction =
-    expeditionPlanningEnabled && expeditionCandidate ? 'expedition' : action;
+  $: expeditionStackCandidate =
+    expeditionPlanningEnabled &&
+    expeditionCandidate &&
+    (stackSellValue ?? 0) >= (expeditionMinStackValue ?? 0);
+  $: displayAction = expeditionStackCandidate ? 'expedition' : action;
   $: wishlistSummary = (() => {
     if (!wishlistSources || wishlistSources.length === 0) return [] as { name: string; notes: string[] }[];
     const map = new Map<string, { name: string; notes: Set<string> }>();
@@ -95,7 +100,7 @@
       {#if formattedStackSell}
         <span
           class={`rounded-full border px-2 py-0.5 font-semibold ${
-            expeditionPlanningEnabled && expeditionCandidate
+            expeditionStackCandidate
               ? 'border-amber-400/70 bg-amber-500/10 text-amber-100'
               : 'border-slate-700/60 bg-slate-900/70 text-slate-200'
           }`}

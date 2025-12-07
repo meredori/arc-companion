@@ -39,6 +39,7 @@ export type RecommendationCardProps = {
   botSources?: Array<{ id: string; name: string }>;
   expeditionCandidate?: boolean;
   expeditionPlanningEnabled?: boolean;
+  expeditionMinStackValue?: number;
 };
 
 export type ChecklistItem = {
