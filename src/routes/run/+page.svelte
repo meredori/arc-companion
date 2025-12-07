@@ -21,6 +21,7 @@
     lastRemovedRun
   } from '$lib/stores/app';
   import { buildRecommendationContext, recommendItemsMatching } from '$lib/recommend';
+  import { filterVisibleItems } from '$lib/utils/items';
   import rawBots from '../../../static/bots.json';
   import rawMaps from '../../../static/maps.json';
   import type { PageData } from './$types';
@@ -100,6 +101,8 @@
 
   const { items, quests: questDefs, workbenchUpgrades: upgradeDefs, projects } = data;
 
+  const visibleItems = derived(settings, ($settings) => filterVisibleItems(items, $settings));
+
   const expeditionProjectsCompleted = derived(projectProgress, ($projectProgress) => {
     if (projects.length === 0) return false;
     return projects.every((project) =>
@@ -112,10 +115,19 @@
   });
 
   const recommendationContextStore = derived(
-    [quests, blueprints, projectProgress, workbenchUpgrades, wantList, settings, expeditionProjectsCompleted],
-    ([$quests, $blueprints, $projectProgress, $workbench, $wantList, $settings, $projectsDone]) =>
+    [
+      quests,
+      blueprints,
+      projectProgress,
+      workbenchUpgrades,
+      wantList,
+      settings,
+      expeditionProjectsCompleted,
+      visibleItems
+    ],
+    ([$quests, $blueprints, $projectProgress, $workbench, $wantList, $settings, $projectsDone, $visibleItems]) =>
       buildRecommendationContext({
-        items,
+        items: $visibleItems,
         quests: questDefs,
         questProgress: $quests,
         upgrades: upgradeDefs,
@@ -126,7 +138,7 @@
         alwaysKeepCategories: $settings.alwaysKeepCategories ?? [],
         ignoredCategories: $settings.ignoredWantCategories ?? [],
         wantList: $wantList,
-        wantListDependencies: expandWantList($wantList, items, {
+        wantListDependencies: expandWantList($wantList, $visibleItems, {
           ignoredCategories: $settings.ignoredWantCategories ?? []
         }),
         expeditionPlanningEnabled:

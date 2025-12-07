@@ -18,6 +18,7 @@
     workbenchUpgrades
   } from '$lib/stores/app';
   import { buildRecommendationContext, recommendItemsMatching } from '$lib/recommend';
+  import { filterVisibleItems } from '$lib/utils/items';
   import type { RecommendationSort } from '$lib/types';
   import type { PageData } from './$types';
 
@@ -52,21 +53,6 @@
     return new Set(entries);
   });
 
-  const categoryLookup = new Map<string, string>();
-  for (const item of items) {
-    const category = item.category?.trim();
-    if (!category) continue;
-    const normalized = normalizeCategory(category);
-    if (!normalized) continue;
-    if (!categoryLookup.has(normalized)) {
-      categoryLookup.set(normalized, category);
-    }
-  }
-
-  const categoryOptions = Array.from(categoryLookup.values()).sort((a, b) =>
-    a.localeCompare(b, undefined, { sensitivity: 'base' })
-  );
-
   const toggleIgnoredCategory = (category: string) => {
     settings.toggleIgnoredWantCategory(category);
   };
@@ -95,9 +81,27 @@
 
   const clearIgnoredCategories = () => settings.setIgnoredWantCategories([]);
 
-  const itemsWithOverrides = derived(itemOverrides, ($overrides) =>
-    items.map((item) => ({ ...item, ...($overrides[item.id] ?? {}) }))
-  );
+  const itemsWithOverrides = derived([itemOverrides, settings], ([$overrides, $settings]) => {
+    const withOverrides = items.map((item) => ({ ...item, ...($overrides[item.id] ?? {}) }));
+    return filterVisibleItems(withOverrides, $settings);
+  });
+
+  const categoryOptions = derived(itemsWithOverrides, ($items) => {
+    const categoryLookup = new Map<string, string>();
+    for (const item of $items) {
+      const category = item.category?.trim();
+      if (!category) continue;
+      const normalized = normalizeCategory(category);
+      if (!normalized) continue;
+      if (!categoryLookup.has(normalized)) {
+        categoryLookup.set(normalized, category);
+      }
+    }
+
+    return Array.from(categoryLookup.values()).sort((a, b) =>
+      a.localeCompare(b, undefined, { sensitivity: 'base' })
+    );
+  });
 
   const contextStore = derived(
     [
@@ -134,7 +138,7 @@
 
   let recommendations = [];
   let recommendationContext = buildRecommendationContext({
-    items,
+    items: filterVisibleItems(items),
     quests: questDefs,
     questProgress: [],
     upgrades: upgradeDefs,
@@ -230,7 +234,7 @@
         {/if}
       </div>
       <div class="flex flex-wrap gap-2">
-        {#each categoryOptions as category}
+        {#each $categoryOptions as category}
           {@const normalized = normalizeCategory(category)}
           <button
             type="button"

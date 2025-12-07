@@ -54,6 +54,16 @@ describe('settings store', () => {
     expect(get(settings).recommendationSort).toBe('alphabetical');
     settings.reset();
   });
+
+  it('toggles hiding zero-value loot items', () => {
+    settings.reset();
+    expect(get(settings).hideZeroSellItems).toBe(true);
+    settings.toggleHideZeroSellItems(false);
+    expect(get(settings).hideZeroSellItems).toBe(false);
+    settings.toggleHideZeroSellItems();
+    expect(get(settings).hideZeroSellItems).toBe(true);
+    settings.reset();
+  });
 });
 
 describe('expandWantList', () => {

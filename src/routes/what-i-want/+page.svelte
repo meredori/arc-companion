@@ -18,6 +18,7 @@
   } from '$lib/stores/app';
   import { buildRecommendationContext, recommendItemsMatching } from '$lib/recommend';
   import { BENCH_LABELS, DEFAULT_BENCH_ORDER, QUICK_USE_BENCH_BY_SLUG } from '$lib/utils/bench';
+  import { filterVisibleItems } from '$lib/utils/items';
   import { dedupeWeaponVariants } from '$lib/weapon-variants';
   import type {
     ItemRecord,
@@ -37,11 +38,15 @@
   void __whatIWantProps;
 
   const items: ItemRecord[] = data.items ?? [];
-  const itemLookup = new Map(items.map((item) => [item.id, item] as const));
   const blueprintItems: ItemRecord[] = data.blueprints ?? [];
   const benchUpgrades: UpgradePack[] = data.workbenchUpgrades ?? [];
   const questDefs: Quest[] = data.quests ?? [];
   const projects: Project[] = data.projects ?? [];
+
+  const visibleItems = derived(settings, ($settings) => filterVisibleItems(items, $settings));
+
+  let itemLookup = new Map(items.map((item) => [item.id, item] as const));
+  $: itemLookup = new Map($visibleItems.map((item) => [item.id, item] as const));
 
   onMount(() => {
     hydrateFromCanonical({
@@ -73,9 +78,9 @@
   });
 
   const resolvedEntries = derived(
-    [wantList, settings],
-    ([$wantList, $settings]) =>
-      expandWantList($wantList, items, {
+    [wantList, settings, visibleItems],
+    ([$wantList, $settings, $visibleItems]) =>
+      expandWantList($wantList, $visibleItems, {
         ignoredCategories: $settings.ignoredWantCategories ?? []
       })
   );
@@ -167,18 +172,27 @@
     return { key, selectedId, selectedOption, selectedRecord, options };
   };
 
-  const nonBlueprintItems = items.filter((item) => item.category?.toLowerCase() !== 'blueprint');
-  const catalogItems = dedupeWeaponVariants(nonBlueprintItems);
+  let nonBlueprintItems: ItemRecord[] = [];
+  $: nonBlueprintItems = $visibleItems.filter((item) => item.category?.toLowerCase() !== 'blueprint');
 
-  const benchUsage = new Map<string, number>();
-  for (const item of catalogItems) {
-    const key = inferBenchForItem(item);
-    benchUsage.set(key, (benchUsage.get(key) ?? 0) + 1);
+  let catalogItems: ItemRecord[] = [];
+  $: catalogItems = dedupeWeaponVariants(nonBlueprintItems);
+
+  let benchUsage = new Map<string, number>();
+  $: {
+    const usage = new Map<string, number>();
+    for (const item of catalogItems) {
+      const key = inferBenchForItem(item);
+      usage.set(key, (usage.get(key) ?? 0) + 1);
+    }
+    benchUsage = usage;
   }
 
-  const benchOptions = ['all']
-    .concat(DEFAULT_BENCH_ORDER.filter((key) => benchUsage.has(key)))
-    .concat(Array.from(benchUsage.keys()).filter((key) => !DEFAULT_BENCH_ORDER.includes(key)));
+  let benchOptions: string[] = [];
+  $:
+    benchOptions = ['all']
+      .concat(DEFAULT_BENCH_ORDER.filter((key) => benchUsage.has(key)))
+      .concat(Array.from(benchUsage.keys()).filter((key) => !DEFAULT_BENCH_ORDER.includes(key)));
 
   $: {
     const nextSelections: Record<string, string> = { ...selectedVariants };
@@ -287,10 +301,10 @@
   };
 
   const recommendationContextStore = derived(
-    [quests, blueprints, projectProgress, workbenchState, wantList, settings],
-    ([$quests, $blueprints, $projectProgress, $workbench, $wantList, $settings]) =>
+    [quests, blueprints, projectProgress, workbenchState, wantList, settings, visibleItems],
+    ([$quests, $blueprints, $projectProgress, $workbench, $wantList, $settings, $visibleItems]) =>
       buildRecommendationContext({
-        items,
+        items: $visibleItems,
         quests: questDefs,
         questProgress: $quests,
         upgrades: benchUpgrades,
@@ -301,7 +315,7 @@
         alwaysKeepCategories: $settings.alwaysKeepCategories ?? [],
         ignoredCategories: $settings.ignoredWantCategories ?? [],
         wantList: $wantList,
-        wantListDependencies: expandWantList($wantList, items, {
+        wantListDependencies: expandWantList($wantList, $visibleItems, {
           ignoredCategories: $settings.ignoredWantCategories ?? []
         })
       })
@@ -309,7 +323,7 @@
 
   const buildContextForWishlist = (wishlistEntries: WantListEntry[]) =>
     buildRecommendationContext({
-      items,
+      items: get(visibleItems),
       quests: questDefs,
       questProgress: get(quests),
       upgrades: benchUpgrades,
@@ -320,7 +334,7 @@
       alwaysKeepCategories: get(settings).alwaysKeepCategories ?? [],
       ignoredCategories: get(settings).ignoredWantCategories ?? [],
       wantList: wishlistEntries,
-      wantListDependencies: expandWantList(wishlistEntries, items, {
+      wantListDependencies: expandWantList(wishlistEntries, get(visibleItems), {
         ignoredCategories: get(settings).ignoredWantCategories ?? []
       })
     });

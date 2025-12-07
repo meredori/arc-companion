@@ -290,6 +290,7 @@ export interface AppSettings {
   recommendationSort: RecommendationSort;
   expeditionPlanningEnabled: boolean;
   expeditionMinStackValue: number;
+  hideZeroSellItems: boolean;
 }
 
 export interface StackCraftTarget {

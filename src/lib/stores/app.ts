@@ -99,7 +99,8 @@ const defaultSettings: AppSettings = {
   ignoredWantCategories: [],
   recommendationSort: 'category',
   expeditionPlanningEnabled: false,
-  expeditionMinStackValue: 500
+  expeditionMinStackValue: 500,
+  hideZeroSellItems: true
 };
 
 const questStore = createPersistentStore<QuestProgress[]>(STORAGE_KEYS.quests, []);
@@ -530,6 +531,12 @@ export const settings = {
     settingsStore.update((current) => ({
       ...current,
       recommendationSort: mode
+    }));
+  },
+  toggleHideZeroSellItems(enabled?: boolean) {
+    settingsStore.update((current) => ({
+      ...current,
+      hideZeroSellItems: typeof enabled === 'boolean' ? enabled : !current.hideZeroSellItems
     }));
   },
   toggleExpeditionPlanning(enabled?: boolean) {

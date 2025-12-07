@@ -3,7 +3,7 @@
 </svelte:head>
 
 <script lang="ts">
-  import { resetAllStores } from '$lib/stores/app';
+  import { resetAllStores, settings } from '$lib/stores/app';
   import { clearAppStorage } from '$lib/persist';
 
   const EXTRA_STORAGE_KEYS = ['what-i-have-tabs'];
@@ -27,6 +27,29 @@
   </header>
 
   <div class="space-y-6">
+    <div class="section-card space-y-4">
+      <div class="space-y-2">
+        <h2 class="text-xl font-semibold">Display preferences</h2>
+        <p class="text-sm text-slate-400">
+          Choose whether to hide items worth zero coins from loot lists, recommendations, and categories.
+        </p>
+      </div>
+      <div class="space-y-2">
+        <label class="flex items-center gap-3 text-sm font-semibold text-slate-200">
+          <input
+            type="checkbox"
+            class="h-4 w-4 rounded border-slate-700/70 bg-slate-900 text-amber-400 focus:ring-amber-400"
+            checked={$settings.hideZeroSellItems ?? true}
+            on:change={(event) => settings.toggleHideZeroSellItems(event.currentTarget.checked)}
+          />
+          <span>Hide zero-value loot and empty categories</span>
+        </label>
+        <p class="text-xs text-slate-400">
+          When enabled, items with no sell value and categories that only contain them stay hidden from lists.
+        </p>
+      </div>
+    </div>
+
     <div class="section-card space-y-4">
       <div class="space-y-2">
         <h2 class="text-xl font-semibold">Reset stored data</h2>
