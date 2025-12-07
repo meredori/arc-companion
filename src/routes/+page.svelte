@@ -7,8 +7,6 @@
 </svelte:head>
 
 <script lang="ts">
-  import { base } from '$app/paths';
-
   type RootPageData = {
     landing?: {
       cards?: LandingCard[];
@@ -21,8 +19,6 @@
   export let params;
   const __rootPageProps = { data, form, params };
   void __rootPageProps;
-
-  const withBase = (href: string) => (base ? `${base}${href}` : href);
 
   type LandingCard = {
     href: string;
@@ -88,7 +84,7 @@
 
   <div class="grid gap-5 md:grid-cols-2">
     {#each cards as card}
-      <a class="section-card transition-transform duration-200 hover:-translate-y-1" href={withBase(card.href)}>
+      <a class="section-card transition-transform duration-200 hover:-translate-y-1" href={card.href}>
         <h2 class="text-xl font-semibold">{cardTitle(card)}</h2>
         {#if cardDescription(card)}
           <p class="mt-2 text-sm text-slate-400">{cardDescription(card)}</p>

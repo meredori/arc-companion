@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { assets, base } from '$app/paths';
   import type { RecommendationAction } from '$lib/types';
 
   type ItemTag = RecommendationAction | 'expedition';
@@ -54,16 +53,11 @@
     if (!imageUrl) return imageUrl;
     if (isAbsolute(imageUrl)) return imageUrl;
 
-    const prefix = assets || base || '';
     const normalized = imageUrl.replace(/\/{2,}/g, '/');
 
-    if (prefix && normalized.startsWith(prefix)) {
-      return normalized;
-    }
+    if (normalized.startsWith('/')) return normalized;
 
-    if (!normalized.startsWith('/')) return normalized;
-
-    return `${prefix}${normalized}`.replace(/\/{2,}/g, '/');
+    return `/${normalized}`.replace(/\/{2,}/g, '/');
   })();
   $: fallbackInitials = initials ||
     name
