@@ -37,9 +37,6 @@ export type RecommendationCardProps = {
   wishlistSources?: RecommendationWishlistSource[];
   foundIn?: string[];
   botSources?: Array<{ id: string; name: string }>;
-  expeditionCandidate?: boolean;
-  expeditionPlanningEnabled?: boolean;
-  expeditionMinStackValue?: number;
 };
 
 export type ChecklistItem = {

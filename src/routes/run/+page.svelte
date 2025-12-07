@@ -58,7 +58,6 @@
     upgradeNeeds: RecommendationEntry['upgradeNeeds'];
     projectNeeds: RecommendationEntry['projectNeeds'];
     alwaysKeepCategory: RecommendationEntry['alwaysKeepCategory'];
-    expeditionCandidate?: boolean;
     foundIn: string[];
     botSources: BotRecord[];
   };
@@ -104,29 +103,9 @@
 
   const visibleItems = derived(settings, ($settings) => filterVisibleItems(items, $settings));
 
-  const expeditionProjectsCompleted = derived(projectProgress, ($projectProgress) => {
-    if (projects.length === 0) return false;
-    return projects.every((project) =>
-      project.phases.every((phase) =>
-        phase.requirements.every(
-          (req) => ($projectProgress?.[project.id]?.[phase.id]?.[req.itemId] ?? 0) >= req.qty
-        )
-      )
-    );
-  });
-
   const recommendationContextStore = derived(
-    [
-      quests,
-      blueprints,
-      projectProgress,
-      workbenchUpgrades,
-      wantList,
-      settings,
-      expeditionProjectsCompleted,
-      visibleItems
-    ],
-    ([$quests, $blueprints, $projectProgress, $workbench, $wantList, $settings, $projectsDone, $visibleItems]) =>
+    [quests, blueprints, projectProgress, workbenchUpgrades, wantList, settings, visibleItems],
+    ([$quests, $blueprints, $projectProgress, $workbench, $wantList, $settings, $visibleItems]) =>
       buildRecommendationContext({
         items: $visibleItems,
         quests: questDefs,
@@ -141,10 +120,7 @@
         wantList: $wantList,
         wantListDependencies: expandWantList($wantList, $visibleItems, {
           ignoredCategories: $settings.ignoredWantCategories ?? []
-        }),
-        expeditionPlanningEnabled:
-          ($settings.expeditionPlanningEnabled ?? false) && ($projectsDone ?? false),
-        expeditionMinStackValue: $settings.expeditionMinStackValue ?? 500
+        })
       })
   );
 
@@ -172,10 +148,7 @@
   const lookOutItems = derived(recommendationContextStore, (context): LookOutItem[] => {
     const recommendations = recommendItemsMatching('', context, { sortMode: 'alphabetical' });
     const itemLookup = new Map(context.items.map((item) => [item.id, item]));
-    const filtered = filterLookOutRecommendations(recommendations, {
-      expeditionPlanningEnabled: context.expeditionPlanningEnabled,
-      itemLookup
-    });
+    const filtered = filterLookOutRecommendations(recommendations, { itemLookup });
 
     return filtered.map((rec) => ({
         id: rec.itemId,
@@ -197,7 +170,6 @@
         upgradeNeeds: rec.upgradeNeeds ?? [],
         projectNeeds: rec.projectNeeds ?? [],
         alwaysKeepCategory: rec.alwaysKeepCategory ?? false,
-        expeditionCandidate: rec.expeditionCandidate ?? false,
         foundIn: itemLookup.get(rec.itemId)?.foundIn ?? [],
         botSources: []
       }));
@@ -705,19 +677,13 @@
                       {@const tooltipId = `lookout-${(item.slug ?? item.id ?? item.name)
                         .replace(/[^a-z0-9-]/gi, '-')
                         .toLowerCase()}`}
-                      {@const expeditionStackCandidate =
-                        ($settings.expeditionPlanningEnabled ?? false) &&
-                        item.expeditionCandidate &&
-                        (item.stackSellValue ?? 0) >= ($settings.expeditionMinStackValue ?? 500)}
                       <div class="aspect-square">
                         <ItemIcon
                           className="h-full"
                           name={item.name}
                           rarity={item.rarity ?? null}
                           imageUrl={item.imageUrl ?? null}
-                          tag={
-                            expeditionStackCandidate ? 'expedition' : item.action
-                          }
+                          tag={item.action}
                           tagStyle="dot"
                           tooltipId={tooltipId}
                           showTooltip={true}
@@ -746,9 +712,6 @@
                             wishlistSources={item.wishlistSources}
                             foundIn={item.foundIn}
                             botSources={item.botSources?.map((bot) => ({ id: bot.id, name: bot.name })) ?? []}
-                            expeditionCandidate={item.expeditionCandidate}
-                            expeditionPlanningEnabled={$settings.expeditionPlanningEnabled ?? false}
-                            expeditionMinStackValue={$settings.expeditionMinStackValue ?? 500}
                           />
                         </ItemIcon>
                       </div>
@@ -771,19 +734,13 @@
                   {@const tooltipId = `lookout-${(item.slug ?? item.id ?? item.name)
                     .replace(/[^a-z0-9-]/gi, '-')
                     .toLowerCase()}`}
-                  {@const expeditionStackCandidate =
-                    ($settings.expeditionPlanningEnabled ?? false) &&
-                    item.expeditionCandidate &&
-                    (item.stackSellValue ?? 0) >= ($settings.expeditionMinStackValue ?? 500)}
                   <div class="aspect-square">
                     <ItemIcon
                       className="h-full"
                       name={item.name}
                       rarity={item.rarity ?? null}
                       imageUrl={item.imageUrl ?? null}
-                      tag={
-                        expeditionStackCandidate ? 'expedition' : item.action
-                      }
+                      tag={item.action}
                       tagStyle="dot"
                       tooltipId={tooltipId}
                       showTooltip={true}
@@ -812,9 +769,6 @@
                         wishlistSources={item.wishlistSources}
                         foundIn={item.foundIn}
                         botSources={item.botSources?.map((bot) => ({ id: bot.id, name: bot.name })) ?? []}
-                        expeditionCandidate={item.expeditionCandidate}
-                        expeditionPlanningEnabled={$settings.expeditionPlanningEnabled ?? false}
-                        expeditionMinStackValue={$settings.expeditionMinStackValue ?? 500}
                       />
                     </ItemIcon>
                   </div>
@@ -846,8 +800,6 @@
           {#each $highlightRuns as run}
             <RecommendationCard
               {...run}
-              expeditionPlanningEnabled={$settings.expeditionPlanningEnabled ?? false}
-              expeditionMinStackValue={$settings.expeditionMinStackValue ?? 500}
             />
           {/each}
         {/if}

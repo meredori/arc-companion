@@ -1,30 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import RecommendationCard from './RecommendationCard.svelte';
 
-describe('RecommendationCard expedition labels', () => {
+describe('RecommendationCard action labels', () => {
   const baseProps = {
     name: 'Test Item',
     action: 'keep' as const,
-    stackSellValue: 200,
-    expeditionPlanningEnabled: true,
-    expeditionMinStackValue: 500,
-    expeditionCandidate: true
+    stackSellValue: 750
   };
 
   const getBadgeText = (target: HTMLElement) =>
     target.querySelector('header span')?.textContent?.trim();
 
-  it('shows expedition when the item stack meets the threshold', () => {
-    const target = document.createElement('div');
-    new RecommendationCard({
-      target,
-      props: { ...baseProps, stackSellValue: 750 }
-    });
-
-    expect(getBadgeText(target)).toBe('Expedition');
-  });
-
-  it('shows keep when the item is a component for an expedition craft', () => {
+  it('shows the keep label when action is keep', () => {
     const target = document.createElement('div');
     new RecommendationCard({
       target,
@@ -34,7 +21,7 @@ describe('RecommendationCard expedition labels', () => {
     expect(getBadgeText(target)).toBe('Keep');
   });
 
-  it('shows recycle when recycling feeds an expedition craft', () => {
+  it('shows the recycle label when action is recycle', () => {
     const target = document.createElement('div');
     new RecommendationCard({
       target,

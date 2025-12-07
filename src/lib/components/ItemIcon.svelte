@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { RecommendationAction } from '$lib/types';
 
-  type ItemTag = RecommendationAction | 'expedition';
+  type ItemTag = RecommendationAction;
 
   const rarityGradients: Record<string, string> = {
     legendary: 'from-amber-500/20 via-amber-600/20 to-amber-900/40 border-amber-400/60 shadow-amber-500/20',
@@ -13,21 +13,18 @@
   };
 
   const TAG_STYLES: Record<ItemTag, string> = {
-    expedition: 'border-amber-300/70 bg-amber-400/10 text-amber-50',
     keep: 'border-emerald-400/50 bg-emerald-500/10 text-emerald-100',
     recycle: 'border-amber-400/50 bg-amber-500/10 text-amber-100',
     sell: 'border-rose-400/50 bg-rose-500/10 text-rose-100'
   } as const;
 
   const DOT_STYLES: Record<ItemTag, string> = {
-    expedition: 'bg-amber-300 border-amber-100/90',
     keep: 'bg-emerald-400 border-emerald-100/80',
     recycle: 'bg-amber-300 border-amber-50/80',
     sell: 'bg-rose-400 border-rose-100/80'
   } as const;
 
   const TAG_LABEL: Record<ItemTag, string> = {
-    expedition: 'Expedition',
     keep: 'Keep',
     recycle: 'Recycle',
     sell: 'Sell'

@@ -632,15 +632,15 @@ const context = buildRecommendationContext({
     expect(alphabeticalOrder).not.toEqual(defaultOrder);
   });
 
-  it('sorts by stack sell value when requested', () => {
-    const sorted = recommendItemsMatching('', context, { sortMode: 'stackValue' });
+  it('sorts by individual item value when requested', () => {
+    const sorted = recommendItemsMatching('', context, { sortMode: 'value' });
     expect(sorted[0].itemId).toBe('item-expedition-product');
-    expect(sorted[0].stackSellValue).toBe(900);
-    expect(sorted[1].stackSellValue).toBeLessThanOrEqual(sorted[0].stackSellValue ?? 0);
+    expect(sorted[0].sellPrice).toBe(300);
+    expect(sorted[1].sellPrice).toBeLessThanOrEqual(sorted[0].sellPrice ?? 0);
   });
 
-  it('breaks stack value ties by rarity', () => {
-    const sorted = recommendItemsMatching('', context, { sortMode: 'stackValue' });
+  it('breaks item value ties by rarity', () => {
+    const sorted = recommendItemsMatching('', context, { sortMode: 'value' });
     const legendaryIndex = sorted.findIndex((entry) => entry.itemId === 'item-stack-tie-legendary');
     const rareIndex = sorted.findIndex((entry) => entry.itemId === 'item-stack-tie-rare');
     expect(legendaryIndex).toBeGreaterThanOrEqual(0);
@@ -670,79 +670,13 @@ const context = buildRecommendationContext({
     expect(natureResults.map((rec) => rec.name)).toEqual(['Trinket Charm', 'Nature Root']);
   });
 
-  it('flags items required for expedition projects', () => {
+  it('flags items required for projects', () => {
     const projectItem = ITEMS.find((entry) => entry.id === 'item-topside-rare');
     if (!projectItem) throw new Error('expected project fixture');
     const result = recommendItem(projectItem, context);
     expect(result.action).toBe('keep');
     expect(result.needs.projects).toBe(1);
     expect(result.projectNeeds[0].projectId).toBe('project-expedition');
-  });
-
-  it('prioritizes the highest-value expedition target and tags the item', () => {
-    const expeditionContext = buildRecommendationContext({
-      items: ITEMS,
-      quests: QUESTS,
-      questProgress: PROGRESS,
-      upgrades: UPGRADES,
-      blueprints: BLUEPRINTS,
-      workbenchUpgrades: WORKBENCH_UPGRADES,
-      projects: PROJECTS,
-      projectProgress: PROJECT_PROGRESS,
-      alwaysKeepCategories: ['Key'],
-      ignoredCategories: [],
-      expeditionPlanningEnabled: true,
-      expeditionMinStackValue: 500
-    });
-
-    const result = recommendItem(getItem('item-stack-matrix'), expeditionContext);
-    expect(result.expeditionCandidate).toBe(true);
-    expect(result.action).toBe('keep');
-    expect(result.rationale).toContain('Stack Product High');
-    expect(result.rationale).not.toContain('Stack Product Low');
-  });
-
-  it('recycles salvage that feeds high-value expedition crafts', () => {
-    const expeditionContext = buildRecommendationContext({
-      items: ITEMS,
-      quests: QUESTS,
-      questProgress: PROGRESS,
-      upgrades: UPGRADES,
-      blueprints: BLUEPRINTS,
-      workbenchUpgrades: WORKBENCH_UPGRADES,
-      projects: PROJECTS,
-      projectProgress: PROJECT_PROGRESS,
-      alwaysKeepCategories: ['Key'],
-      ignoredCategories: [],
-      expeditionPlanningEnabled: true,
-      expeditionMinStackValue: 500
-    });
-
-    const result = recommendItem(getItem('item-salvage-for-expedition'), expeditionContext);
-    expect(result.expeditionCandidate).toBe(true);
-    expect(result.action).toBe('recycle');
-    expect(result.rationale).toContain('Expedition Artifact');
-  });
-
-  it('ignores basic materials when finding expedition salvage targets', () => {
-    const expeditionContext = buildRecommendationContext({
-      items: ITEMS,
-      quests: QUESTS,
-      questProgress: PROGRESS,
-      upgrades: UPGRADES,
-      blueprints: BLUEPRINTS,
-      workbenchUpgrades: WORKBENCH_UPGRADES,
-      projects: PROJECTS,
-      projectProgress: PROJECT_PROGRESS,
-      alwaysKeepCategories: ['Key'],
-      ignoredCategories: [],
-      expeditionPlanningEnabled: true,
-      expeditionMinStackValue: 500
-    });
-
-    const result = recommendItem(getItem('item-salvage-basic'), expeditionContext);
-    expect(result.expeditionCandidate).toBe(false);
-    expect(result.rationale).not.toContain('Expedition Artifact');
   });
 
   it('surfaces recycling when components feed wishlist crafting chains', () => {
