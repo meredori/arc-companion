@@ -24,6 +24,7 @@
   import { filterVisibleItems } from '$lib/utils/items';
   import rawBots from '../../../static/bots.json';
   import rawMaps from '../../../static/maps.json';
+  import { filterLookOutRecommendations } from './lookout';
   import type { PageData } from './$types';
 
   type MapRecord = { id: string; name?: Record<string, string> | null };
@@ -171,58 +172,12 @@
   const lookOutItems = derived(recommendationContextStore, (context): LookOutItem[] => {
     const recommendations = recommendItemsMatching('', context, { sortMode: 'alphabetical' });
     const itemLookup = new Map(context.items.map((item) => [item.id, item]));
-    const seen = new Set<string>();
-    return recommendations
-      .filter((rec) => {
-        const totalNeeds = rec.needs.quests + rec.needs.workshop + rec.needs.projects;
-        const hasWishlist = (rec.wishlistSources?.length ?? 0) > 0;
-        const supportsRecycling = rec.action === 'recycle';
-        const category = rec.category?.toLowerCase().trim();
-        const isBasicMaterial = category === 'basic material';
-        if (isBasicMaterial) return false;
-        if (!(totalNeeds > 0 || hasWishlist || supportsRecycling)) return false;
+    const filtered = filterLookOutRecommendations(recommendations, {
+      expeditionPlanningEnabled: context.expeditionPlanningEnabled,
+      itemLookup
+    });
 
-        if (supportsRecycling && !hasWishlist && totalNeeds === 0) {
-          const targets = rec.salvageBreakdown ?? [];
-          const onlyFeedsBasicMaterials =
-            targets.length > 0 &&
-            targets.every((entry) => {
-              const category = itemLookup.get(entry.itemId)?.category;
-              return category?.toLowerCase().trim() === 'basic material';
-            });
-          if (onlyFeedsBasicMaterials) return false;
-        }
-
-        return true;
-      })
-      .filter((rec) => {
-        if (seen.has(rec.itemId)) return false;
-        seen.add(rec.itemId);
-        return true;
-      })
-      .sort((a, b) => {
-        const totalNeedsA = a.needs.quests + a.needs.workshop + a.needs.projects;
-        const totalNeedsB = b.needs.quests + b.needs.workshop + b.needs.projects;
-        const hasWishlistA = (a.wishlistSources?.length ?? 0) > 0;
-        const hasWishlistB = (b.wishlistSources?.length ?? 0) > 0;
-        const isDirectA = totalNeedsA > 0 || hasWishlistA;
-        const isDirectB = totalNeedsB > 0 || hasWishlistB;
-
-        const expeditionA =
-          context.expeditionPlanningEnabled && (a.expeditionCandidate ?? false);
-        const expeditionB =
-          context.expeditionPlanningEnabled && (b.expeditionCandidate ?? false);
-
-        if (expeditionA !== expeditionB) return expeditionA ? -1 : 1;
-
-        if (isDirectA !== isDirectB) return isDirectA ? -1 : 1;
-
-        const rarityDiff = rarityRank(a.rarity) - rarityRank(b.rarity);
-        if (rarityDiff !== 0) return rarityDiff;
-
-        return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' });
-      })
-      .map((rec) => ({
+    return filtered.map((rec) => ({
         id: rec.itemId,
         name: rec.name,
         slug: rec.slug,
