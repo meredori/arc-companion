@@ -28,7 +28,9 @@ The project is configured for SvelteKit with TypeScript, TailwindCSS, ESLint, Pr
    ```bash
    npm run build
    ```
-   Static assets are emitted into the `build/` directory by `@sveltejs/adapter-static`.
+   Static assets are emitted into the `build/` directory by `@sveltejs/adapter-static`. The site assumes
+   root-level hosting, so built pages and images resolve directly from `/` without any base path
+   configuration.
 
 ## Project Structure
 

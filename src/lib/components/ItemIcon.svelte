@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { assets, base } from '$app/paths';
   import type { RecommendationAction } from '$lib/types';
 
   type ItemTag = RecommendationAction | 'expedition';
@@ -48,22 +47,34 @@
   export let tagStyle: 'badge' | 'dot' = 'badge';
 
   $: rarityClass = rarityGradients[rarity?.toLowerCase() ?? 'default'] ?? rarityGradients.default;
-  const isAbsolute = (url: string) => /^https?:\/\//i.test(url) || url.startsWith('//');
+  const normalizeRemoteUrl = (url: string) => {
+    const trimmed = url.trim();
+
+    if (trimmed.startsWith('//')) return `https:${trimmed}`;
+
+    const protocolMatch = trimmed.match(/^(https?):/i);
+    if (!protocolMatch) return null;
+
+    const protocol = protocolMatch[1].toLowerCase();
+    const afterProtocol = trimmed.slice(protocolMatch[0].length);
+    const withLeadingSlashes = afterProtocol.startsWith('//')
+      ? afterProtocol
+      : `//${afterProtocol.replace(/^\/+/, '')}`;
+
+    return `${protocol}:${withLeadingSlashes}`;
+  };
 
   $: resolvedImageUrl = (() => {
     if (!imageUrl) return imageUrl;
-    if (isAbsolute(imageUrl)) return imageUrl;
 
-    const prefix = assets || base || '';
-    const normalized = imageUrl.replace(/\/{2,}/g, '/');
+    const remote = normalizeRemoteUrl(imageUrl);
+    if (remote) return remote;
 
-    if (prefix && normalized.startsWith(prefix)) {
-      return normalized;
-    }
+    const normalized = imageUrl.trim().replace(/\/{2,}/g, '/');
 
-    if (!normalized.startsWith('/')) return normalized;
+    if (normalized.startsWith('/')) return normalized;
 
-    return `${prefix}${normalized}`.replace(/\/{2,}/g, '/');
+    return `/${normalized}`.replace(/\/{2,}/g, '/');
   })();
   $: fallbackInitials = initials ||
     name
