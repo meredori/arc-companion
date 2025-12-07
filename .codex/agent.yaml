@@ -1,0 +1,21 @@
+project:
+  name: ARC Raiders Companion
+  description: >-
+    SvelteKit-based companion tool for ARC Raiders, providing recommendation and tracking pages
+    powered by shared stores and normalized game data.
+tech_stack:
+  framework: SvelteKit
+  languages:
+    - TypeScript
+  styling:
+    - TailwindCSS
+  tooling:
+    - ESLint
+    - Prettier
+    - Vitest
+quality_checks:
+  instructions:
+    - Run npm run lint
+    - Run npm run check
+    - Run npm test
+    - Run npm run build
