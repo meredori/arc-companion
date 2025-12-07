@@ -4,14 +4,14 @@
     "en": "Stitcher I",
     "de": "Stitcher I",
     "fr": "Sutureur I",
-    "es": "Stitcher I",
+    "es": "Costurero I",
     "pt": "Stitcher I",
     "pl": "Stitcher I",
     "no": "Stitcher I",
     "da": "Stitcher I",
     "it": "Stitcher I",
     "ru": "Сшиватель I",
-    "ja": "ステッチャー I",
+    "ja": "スティッチャー I",
     "zh-TW": "縫合者 I",
     "uk": "Зшивач I",
     "zh-CN": "缝合者 I",
@@ -22,7 +22,7 @@
   },
   "description": {
     "en": "Deals good damage, but has quite a low fire-rate and can be hard to control.",
-    "de": "Verursacht guten Schaden, hat aber eine recht niedrige Feuerrate und kann schwer zu kontrollieren sein.",
+    "de": "Richtet ordentlichen Schaden an, hat aber eine recht niedrige Feuerrate und ist schwer zu kontrollieren.",
     "fr": "Inflige de bons dégâts, mais a une cadence de tir assez faible et peut être difficile à contrôler.",
     "es": "Causa buen daño, pero tiene una cadencia de fuego bastante baja y puede ser difícil de controlar.",
     "pt": "Causa bom dano, mas tem uma taxa de disparo bastante baixa e pode ser difícil de controlar.",
@@ -40,15 +40,18 @@
     "hr": "Zadaje dobru štetu, ali ima prilično nisku brzinu paljbe i može biti teško kontrolirati.",
     "sr": "Zadaje dobru štetu, ali ima prilično nisku brzinu paljbe i može biti teško kontrolisati."
   },
-  "type": "Weapon",
+  "type": "SMG",
   "rarity": "Common",
   "value": 800,
   "recyclesInto": {
     "metal_parts": 3,
     "rubber_parts": 2
   },
+  "salvagesInto": {
+    "metal_parts": 3
+  },
   "imageFilename": "https://cdn.arctracker.io/items/stitcher.png",
-  "updatedAt": "11/03/2025",
+  "updatedAt": "11/20/2025",
   "recipe": {
     "metal_parts": 8,
     "rubber_parts": 4
@@ -68,7 +71,7 @@
       "pl": "Wytrzymałość",
       "no": "Holdbarhet",
       "da": "Holdbarhed",
-      "it": "Durabilità",
+      "it": "Tenuta",
       "ru": "Прочность",
       "ja": "耐久性",
       "zh-TW": "耐久度",
@@ -145,24 +148,25 @@
     },
     "ARC Armor Penetration": {
       "en": "ARC Armor Penetration",
-      "de": "ARC-Panzerdurchschlag",
+      "de": "ARC-Panzerungsdurchdringung",
       "fr": "Pénétration d'armure ARC",
       "es": "Penetración de armadura ARC",
       "pt": "Penetração de armadura ARC",
       "pl": "Przebicie pancerza ARC",
       "no": "ARC-rustningspenetrasjon",
       "da": "ARC-rustningspenetration",
-      "it": "Penetrazione armatura ARC",
+      "it": "Penetrazione armature ARC",
       "ru": "Бронепробитие ARC",
       "ja": "ARC装甲貫通",
       "zh-TW": "ARC 護甲穿透",
       "uk": "Бронепробиття ARC",
       "zh-CN": "ARC 护甲穿透",
-      "kr": "ARC 방어구 관통",
+      "kr": "아크 방어구 관통",
       "tr": "ARC Zırh Delme",
       "hr": "ARC probijanje oklopa",
       "sr": "ARC probijanje oklopa",
       "value": "Very Weak"
     }
-  }
+  },
+  "isWeapon": true
 }

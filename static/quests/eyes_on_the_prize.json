@@ -1,6 +1,6 @@
 {
   "id": "ss10m",
-  "updatedAt": "11/12/2025",
+  "updatedAt": "11/23/2025",
   "name": {
     "en": "Eyes on the Prize",
     "de": "Die Augen auf den Preis",
@@ -15,12 +15,15 @@
     "kr": "목표에 집중",
     "ru": "Взгляд на приз",
     "zh-CN": "紧盯目标",
-    "ja": "目標を見据えて",
+    "ja": "目を離せない件",
     "tr": "Gözler Ödülde",
     "zh-TW": "緊盯目標",
     "sr": "Oči na Nagradi",
     "hr": "Oči na Nagradi"
   },
+  "map": [
+    "buried_city"
+  ],
   "trader": "Tian Wen",
   "description": {
     "en": "Everything's been calm around my drop-offs since you helped out, but that doesn't mean it'll stay that way for long. I've set up surveillance at one of my most used spots in Buried City, to prevent future tampering. Only problem is, it needs power to go live.",
@@ -33,7 +36,7 @@
     "da": "Alt har været roligt omkring mine afleveringssteder siden du hjalp, men det betyder ikke, at det forbliver sådan længe. Jeg har sat overvågning op på et af mine mest brugte steder i Buried City for at forhindre fremtidig manipulation. Det eneste problem er, at det har brug for strøm for at blive aktiveret.",
     "it": "Tutto è stato tranquillo nei miei punti di consegna da quando hai aiutato, ma questo non significa che rimarrà così a lungo. Ho installato una sorveglianza in uno dei miei posti più usati a Buried City, per prevenire future manomissioni. L'unico problema è che ha bisogno di energia per attivarsi.",
     "uk": "Все було спокійно навколо моїх точок скидання відтоді, як ти допоміг, але це не означає, що так буде довго. Я встановив спостереження в одному з найбільш використовуваних місць у Похованому Місті, щоб запобігти майбутнім втручанням. Єдина проблема - йому потрібне живлення, щоб запрацювати.",
-    "kr": "네가 도와준 이후로 내 투하 지점 주변은 조용했지만, 그게 오래 갈 거라는 뜻은 아니야. 앞으로의 훼손을 막기 위해 매장된 도시에서 가장 자주 쓰는 장소 중 한 곳에 감시 장비를 설치했어. 유일한 문제는 작동하려면 전력이 필요하다는 거야.",
+    "kr": "네가 도와준 이후로 내 투하 지점 주변은 조용했지만, 그게 오래 갈 거라는 뜻은 아니야. 앞으로의 훼손을 막기 위해 파묻힌 도시에서 가장 자주 쓰는 장소 중 한 곳에 감시 장비를 설치했어. 유일한 문제는 작동하려면 전력이 필요하다는 거야.",
     "ru": "Всё было спокойно вокруг моих точек сброса с тех пор, как ты помог, но это не значит, что так будет долго. Я установил наблюдение в одном из самых используемых мест в Погребённом Городе, чтобы предотвратить будущие вмешательства. Единственная проблема - ему нужно питание, чтобы заработать.",
     "zh-CN": "自从你帮忙之后，我的投放点周围一直很平静，但这不意味着会一直这样。我在埋葬之城最常用的地点之一设置了监控，以防止未来的破坏。唯一的问题是，它需要电力才能启动。",
     "ja": "君が手伝ってくれてから受け渡し場所の周辺は静かだが、それが長く続くとは限らない。将来の改ざんを防ぐため、埋もれた街で最もよく使う場所の一つに監視装置を設置した。唯一の問題は、稼働させるには電力が必要だということだ。",
@@ -57,7 +60,7 @@
       "kr": "남부 역 남서쪽의 한적한 옥상 테라스를 찾아 파란색 방수포를 찾기",
       "ru": "Найти уединённую террасу на крыше к юго-западу от Южной станции, ищите синие брезенты",
       "zh-CN": "找到南站西南方向的隐蔽屋顶露台，寻找蓝色防水布",
-      "ja": "南駅の南西にある人里離れた屋上テラスを見つけ、青いタープを探す",
+      "ja": "南ステーションの南西にある青い防水シートを探し、人けのない屋上を見つける",
       "tr": "Güney İstasyonu'nun güneybatısındaki tenha çatı terasını bul, mavi brandaları ara",
       "zh-TW": "找到南站西南方向的隱蔽屋頂露台，尋找藍色防水布",
       "sr": "Pronađi povučenu krovnu terasu jugozapadne od Južne Stanice, traži plave cerade",
@@ -77,7 +80,7 @@
       "kr": "전선 3개를 사용하여 태양광 패널 재배선하기",
       "ru": "Перемонтировать солнечную панель, используя 3 провода",
       "zh-CN": "使用3根电线重新连接太阳能板",
-      "ja": "ワイヤー3本を使って太陽光パネルを配線し直す",
+      "ja": "ワイヤーを3本使ってソーラーパネルを配線し直す",
       "tr": "3 Kablo kullanarak güneş panelini yeniden kablola",
       "zh-TW": "使用3根電線重新連接太陽能板",
       "sr": "Ponovo poveži solarni panel koristeći 3 Žice",

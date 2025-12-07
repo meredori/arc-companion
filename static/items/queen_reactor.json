@@ -3,8 +3,8 @@
   "tip": "The Queen Reactor is a legendary item only acquired by defeating The Queen that can be recycled into crafting materials.",
   "name": {
     "en": "Queen Reactor",
-    "de": "Königinnenreaktor",
-    "fr": "Réacteur de reine",
+    "de": "Königin-Reaktor",
+    "fr": "Réacteur de Reine",
     "es": "Reactor de reina",
     "pt": "Reator da rainha",
     "pl": "Reaktor królowej",
@@ -23,14 +23,14 @@
   },
   "description": {
     "en": "Can be recycled into crafting materials.",
-    "de": "Kann zu Handwerksmaterialien recycelt werden.",
+    "de": "Kann zu Herstellungsmaterialien recycelt werden.",
     "fr": "Peut être recyclé en matériaux d'artisanat.",
     "es": "Puede reciclarse en materiales de fabricación.",
     "pt": "Pode ser reciclado em materiais de fabricação.",
     "pl": "Może być przetworzony na materiały rzemieślnicze.",
     "no": "Kan resirkuleres til håndverksmateriell.",
     "da": "Kan genbruges til håndværksmaterialer.",
-    "it": "Può essere riciclato in materiali da crafting.",
+    "it": "Si può riciclare in materiali da creazione.",
     "ru": "Можно переработать в материалы для крафта.",
     "ja": "クラフト素材にリサイクル可能。",
     "zh-TW": "可回收為製作材料。",
@@ -49,6 +49,7 @@
     "power_rod": 1,
     "magnetic_accelerator": 1
   },
+  "foundIn": "ARC",
   "imageFilename": "https://cdn.arctracker.io/items/queen_part.png",
   "updatedAt": "10/30/2025"
 }

@@ -3,7 +3,7 @@
   "name": {
     "en": "ARC Thermo Lining",
     "de": "ARC-Thermofütterung",
-    "fr": "Doublure thermique ARC",
+    "fr": "Doublure Thermique ARC",
     "es": "Revestimiento térmico ARC",
     "pt": "Revestimento térmico ARC",
     "pl": "Wyściółka termiczna ARC",
@@ -11,11 +11,11 @@
     "da": "ARC-termofor",
     "it": "Rivestimento termico ARC",
     "ru": "Термоподкладка ARC",
-    "ja": "ARCサーモライニング",
+    "ja": "ARC耐熱裏地",
     "zh-TW": "ARC熱能襯裡",
     "uk": "Термопідкладка ARC",
     "zh-CN": "ARC热能衬里",
-    "kr": "ARC 보온 안감",
+    "kr": "아크 발열 안감",
     "tr": "ARC Termo Astar",
     "hr": "ARC termo obloga",
     "sr": "ARC termo obloga"
@@ -47,7 +47,7 @@
     "de": "Kann zu Herstellungsmaterialien recycelt werden.",
     "sr": "Može se reciklirati u materijale za izradu.",
     "es": "Se puede reciclar en materiales de fabricación.",
-    "it": "Può essere riciclato in materiali da creazione."
+    "it": "Si può riciclare in materiali da creazione."
   },
   "weightKg": 1,
   "stackSize": 3,
