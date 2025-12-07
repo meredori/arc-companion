@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { tick } from 'svelte';
 import Page from './+page.svelte';
-import { blueprints, hydrateFromCanonical, wantList } from '$lib/stores/app';
+import { blueprints, hydrateFromCanonical, settings, wantList } from '$lib/stores/app';
 import type { ItemRecord, UpgradePack } from '$lib/types';
 import { applyWeaponVariantAggregation } from '$lib/weapon-variants';
 
@@ -110,6 +110,8 @@ describe('what-i-want page', () => {
     document.body.innerHTML = '';
     wantList.clear();
     blueprints.reset();
+    settings.reset();
+    settings.toggleHideZeroSellItems(false);
   });
 
   it('renders items and allows adding them to the wishlist', async () => {
