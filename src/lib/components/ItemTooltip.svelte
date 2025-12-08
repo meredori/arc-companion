@@ -2,14 +2,12 @@
   import type { RecommendationCardProps } from './types';
 
   const ACTION_COPY = {
-    expedition: 'Expedition',
     keep: 'Keep',
     recycle: 'Recycle',
     sell: 'Sell'
   } as const;
 
   const ACTION_STYLES = {
-    expedition: 'border-amber-300/70 bg-amber-500/10 text-amber-50',
     keep: 'border-emerald-400/50 bg-emerald-500/10 text-emerald-100',
     recycle: 'border-amber-400/50 bg-amber-500/10 text-amber-100',
     sell: 'border-rose-400/50 bg-rose-500/10 text-rose-100'
@@ -34,17 +32,14 @@
   export let wishlistSources: RecommendationCardProps['wishlistSources'] = [];
   export let foundIn: RecommendationCardProps['foundIn'] = [];
   export let botSources: RecommendationCardProps['botSources'] = [];
-  export let expeditionCandidate: RecommendationCardProps['expeditionCandidate'] = false;
-  export let expeditionPlanningEnabled: RecommendationCardProps['expeditionPlanningEnabled'] = false;
-  let displayAction: RecommendationCardProps['action'] | 'expedition' = action;
-
+  let displayAction: RecommendationCardProps['action'] = action;
+  
   $: totalNeeds = (needs?.quests ?? 0) + (needs?.workshop ?? 0) + (needs?.projects ?? 0);
   $: formattedSell = sellPrice !== undefined ? sellPrice.toLocaleString() : null;
   $: formattedStackSell =
     stackSellValue !== undefined ? stackSellValue.toLocaleString() : null;
   $: formattedSalvage = salvageValue !== undefined ? salvageValue.toLocaleString() : null;
-  $: displayAction =
-    expeditionPlanningEnabled && expeditionCandidate ? 'expedition' : action;
+  $: displayAction = action;
   $: wishlistSummary = (() => {
     if (!wishlistSources || wishlistSources.length === 0) return [] as { name: string; notes: string[] }[];
     const map = new Map<string, { name: string; notes: Set<string> }>();
@@ -93,13 +88,7 @@
         </span>
       {/if}
       {#if formattedStackSell}
-        <span
-          class={`rounded-full border px-2 py-0.5 font-semibold ${
-            expeditionPlanningEnabled && expeditionCandidate
-              ? 'border-amber-400/70 bg-amber-500/10 text-amber-100'
-              : 'border-slate-700/60 bg-slate-900/70 text-slate-200'
-          }`}
-        >
+        <span class="rounded-full border border-slate-700/60 bg-slate-900/70 px-2 py-0.5 font-semibold text-slate-200">
           Stack ₡{formattedStackSell}
         </span>
       {/if}
@@ -244,11 +233,7 @@
         <p class="text-2xl font-semibold text-white">
           {formattedSell}<span class="ml-1 text-base text-slate-400">cr</span>
         </p>
-        {#if expeditionPlanningEnabled && formattedStackSell}
-          <p class="text-lg font-semibold text-amber-100">
-            Stack sell value {formattedStackSell}<span class="ml-1 text-sm text-amber-200">cr</span>
-          </p>
-        {:else if formattedStackSell}
+        {#if formattedStackSell}
           <p class="text-sm text-slate-300">
             Stack sell value {formattedStackSell}<span class="ml-1 text-[11px] text-slate-400">cr</span>
           </p>

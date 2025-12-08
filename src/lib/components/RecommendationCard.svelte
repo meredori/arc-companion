@@ -27,19 +27,15 @@
   export let alwaysKeepCategory: RecommendationCardProps['alwaysKeepCategory'] = false;
   export let variant: RecommendationCardProps['variant'] = 'simple';
   export let wishlistSources: RecommendationCardProps['wishlistSources'] = [];
-  export let expeditionCandidate: RecommendationCardProps['expeditionCandidate'] = false;
-  export let expeditionPlanningEnabled: RecommendationCardProps['expeditionPlanningEnabled'] = false;
-  let displayAction: RecommendationCardProps['action'] | 'expedition' = action;
+  let displayAction: RecommendationCardProps['action'] = action;
 
   const ACTION_COPY = {
-    expedition: 'Expedition',
     keep: 'Keep',
     recycle: 'Recycle',
     sell: 'Sell'
   } as const;
 
   const ACTION_STYLES = {
-    expedition: 'rounded-full border border-amber-300/70 bg-amber-500/10 text-amber-50',
     keep: 'badge badge-action-keep',
     recycle: 'badge badge-action-recycle',
     sell: 'badge badge-action-sell'
@@ -48,8 +44,7 @@
   const sanitize = (value: string) => value.replace(/[^a-z0-9-]/gi, '-').toLowerCase();
   $: totalNeeds = (needs?.quests ?? 0) + (needs?.workshop ?? 0) + (needs?.projects ?? 0);
   $: tooltipId = `loot-tooltip-${sanitize(slug ?? name)}`;
-  $: displayAction =
-    expeditionPlanningEnabled && expeditionCandidate ? 'expedition' : action;
+  $: displayAction = action;
   $: formattedStackSellValue =
     stackSellValue !== undefined ? stackSellValue.toLocaleString() : undefined;
   $: wishlistSummary = (() => {
@@ -112,8 +107,6 @@
         needs={needs}
         alwaysKeepCategory={alwaysKeepCategory}
         wishlistSources={wishlistSources}
-        expeditionCandidate={expeditionCandidate}
-        expeditionPlanningEnabled={expeditionPlanningEnabled}
       />
     </ItemIcon>
   </button>
@@ -136,13 +129,7 @@
           </span>
         {/if}
         {#if formattedStackSellValue}
-          <span
-            class={`rounded-full border px-2 py-0.5 font-semibold ${
-              expeditionPlanningEnabled && expeditionCandidate
-                ? 'border-amber-400/70 bg-amber-500/10 text-amber-100'
-                : 'border-slate-700 bg-slate-900/60 text-slate-200'
-            }`}
-          >
+          <span class="rounded-full border border-slate-700 bg-slate-900/60 px-2 py-0.5 font-semibold text-slate-200">
             Stack ₡{formattedStackSellValue}
           </span>
         {/if}

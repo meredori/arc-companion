@@ -23,6 +23,16 @@ const ITEMS: ItemRecord[] = [
     sell: 200,
     stackSize: 1,
     salvagesInto: []
+  },
+  {
+    id: 'mat-basic',
+    name: 'Basic Resin',
+    slug: 'basic-resin',
+    category: 'Basic Material',
+    rarity: 'Common Material',
+    sell: 5,
+    stackSize: 10,
+    salvagesInto: []
   }
 ];
 
@@ -50,42 +60,7 @@ const buildRecommendation = (overrides: Partial<ItemRecommendation>): ItemRecomm
 });
 
 describe('filterLookOutRecommendations', () => {
-  it('keeps expedition-only items when expedition planning is enabled', () => {
-    const recommendations = [
-      buildRecommendation({ expeditionCandidate: true }),
-      buildRecommendation({
-        itemId: 'item-quest-component',
-        name: 'Quest Component',
-        slug: 'quest-component',
-        category: 'Modification',
-        rarity: 'Uncommon Component',
-        needs: { quests: 1, workshop: 0, projects: 0 }
-      })
-    ];
-
-    const filtered = filterLookOutRecommendations(recommendations, {
-      expeditionPlanningEnabled: true,
-      itemLookup
-    });
-
-    expect(filtered.map((rec) => rec.itemId)).toEqual([
-      'item-expedition-trinket',
-      'item-quest-component'
-    ]);
-  });
-
-  it('drops expedition-only items when expedition planning is disabled', () => {
-    const recommendations = [buildRecommendation({ expeditionCandidate: true })];
-
-    const filtered = filterLookOutRecommendations(recommendations, {
-      expeditionPlanningEnabled: false,
-      itemLookup
-    });
-
-    expect(filtered).toHaveLength(0);
-  });
-
-  it('sorts expedition candidates ahead of other items when enabled', () => {
+  it('keeps items with direct quest needs', () => {
     const recommendations = [
       buildRecommendation({
         itemId: 'item-quest-component',
@@ -95,17 +70,50 @@ describe('filterLookOutRecommendations', () => {
         rarity: 'Uncommon Component',
         needs: { quests: 1, workshop: 0, projects: 0 }
       }),
-      buildRecommendation({ expeditionCandidate: true })
+      buildRecommendation({ itemId: 'item-expedition-trinket', needs: { quests: 0, workshop: 0, projects: 0 } })
     ];
 
-    const filtered = filterLookOutRecommendations(recommendations, {
-      expeditionPlanningEnabled: true,
-      itemLookup
-    });
+    const filtered = filterLookOutRecommendations(recommendations, { itemLookup });
+
+    expect(filtered.map((rec) => rec.itemId)).toEqual(['item-quest-component']);
+  });
+
+  it('drops items that only recycle into basic materials', () => {
+    const recommendations = [
+      buildRecommendation({
+        itemId: 'item-expedition-trinket',
+        action: 'recycle',
+        salvageBreakdown: [{ itemId: 'mat-basic', name: 'Basic Resin', qty: 2 }]
+      })
+    ];
+
+    const filtered = filterLookOutRecommendations(recommendations, { itemLookup });
+
+    expect(filtered).toHaveLength(0);
+  });
+
+  it('sorts direct needs ahead of supporting recyclables', () => {
+    const recommendations = [
+      buildRecommendation({
+        itemId: 'item-quest-component',
+        name: 'Quest Component',
+        slug: 'quest-component',
+        category: 'Modification',
+        rarity: 'Uncommon Component',
+        needs: { quests: 1, workshop: 0, projects: 0 }
+      }),
+      buildRecommendation({
+        itemId: 'item-expedition-trinket',
+        action: 'recycle',
+        salvageBreakdown: [{ itemId: 'item-quest-component', name: 'Quest Component', qty: 1 }]
+      })
+    ];
+
+    const filtered = filterLookOutRecommendations(recommendations, { itemLookup });
 
     expect(filtered.map((rec) => rec.itemId)).toEqual([
-      'item-expedition-trinket',
-      'item-quest-component'
+      'item-quest-component',
+      'item-expedition-trinket'
     ]);
   });
 });

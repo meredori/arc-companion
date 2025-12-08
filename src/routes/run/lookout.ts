@@ -1,7 +1,6 @@
 import type { ItemRecord, ItemRecommendation } from '$lib/types';
 
 type LookOutFilterOptions = {
-  expeditionPlanningEnabled: boolean;
   itemLookup: Map<string, ItemRecord>;
 };
 
@@ -18,7 +17,7 @@ const rarityRank = (rarity?: string | null) => {
 
 export const filterLookOutRecommendations = (
   recommendations: ItemRecommendation[],
-  { expeditionPlanningEnabled, itemLookup }: LookOutFilterOptions
+  { itemLookup }: LookOutFilterOptions
 ) => {
   const seen = new Set<string>();
 
@@ -31,8 +30,7 @@ export const filterLookOutRecommendations = (
       const isBasicMaterial = category === 'basic material';
       if (isBasicMaterial) return false;
 
-      const isExpeditionCandidate = expeditionPlanningEnabled && (rec.expeditionCandidate ?? false);
-      if (!isExpeditionCandidate && !(totalNeeds > 0 || hasWishlist || supportsRecycling)) {
+      if (!(totalNeeds > 0 || hasWishlist || supportsRecycling)) {
         return false;
       }
 
@@ -61,11 +59,6 @@ export const filterLookOutRecommendations = (
       const hasWishlistB = (b.wishlistSources?.length ?? 0) > 0;
       const isDirectA = totalNeedsA > 0 || hasWishlistA;
       const isDirectB = totalNeedsB > 0 || hasWishlistB;
-
-      const expeditionA = expeditionPlanningEnabled && (a.expeditionCandidate ?? false);
-      const expeditionB = expeditionPlanningEnabled && (b.expeditionCandidate ?? false);
-
-      if (expeditionA !== expeditionB) return expeditionA ? -1 : 1;
 
       if (isDirectA !== isDirectB) return isDirectA ? -1 : 1;
 
