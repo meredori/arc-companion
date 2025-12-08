@@ -43,7 +43,7 @@ jobs:
             exit 0
           fi
 
-          rsync -av --delete --exclude='.git' /tmp/arcraiders-data/ static/
+          rsync -av --delete --exclude='.git' --exclude='favicon.svg' /tmp/arcraiders-data/ static/
 
           if git diff --quiet -- static; then
             echo "No content changes after sync."
