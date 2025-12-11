@@ -92,6 +92,28 @@ describe('filterLookOutRecommendations', () => {
     expect(filtered).toHaveLength(0);
   });
 
+  it('drops recyclables that only feed wishlist via basic materials', () => {
+    const recommendations = [
+      buildRecommendation({
+        itemId: 'item-expedition-trinket',
+        action: 'recycle',
+        salvageBreakdown: [{ itemId: 'mat-basic', name: 'Basic Resin', qty: 2 }],
+        wishlistSources: [
+          {
+            targetItemId: 'mat-basic',
+            targetName: 'Basic Resin',
+            note: 'restock',
+            kind: 'requirement'
+          }
+        ]
+      })
+    ];
+
+    const filtered = filterLookOutRecommendations(recommendations, { itemLookup });
+
+    expect(filtered).toHaveLength(0);
+  });
+
   it('sorts direct needs ahead of supporting recyclables', () => {
     const recommendations = [
       buildRecommendation({

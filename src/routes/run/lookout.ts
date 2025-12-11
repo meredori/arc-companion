@@ -34,7 +34,7 @@ export const filterLookOutRecommendations = (
         return false;
       }
 
-      if (supportsRecycling && !hasWishlist && totalNeeds === 0) {
+      if (supportsRecycling && totalNeeds === 0) {
         const targets = rec.salvageBreakdown ?? [];
         const onlyFeedsBasicMaterials =
           targets.length > 0 &&
