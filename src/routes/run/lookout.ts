@@ -27,7 +27,8 @@ export const filterLookOutRecommendations = (
       const hasWishlist = (rec.wishlistSources?.length ?? 0) > 0;
       const supportsRecycling = rec.action === 'recycle';
       const category = rec.category?.toLowerCase().trim();
-      const isBasicMaterial = category === 'basic material';
+      const type = rec.type?.toLowerCase().trim();
+      const isBasicMaterial = category === 'basic material' || type === 'basic material';
       if (isBasicMaterial) return false;
 
       if (!(totalNeeds > 0 || hasWishlist || supportsRecycling)) {
@@ -40,7 +41,10 @@ export const filterLookOutRecommendations = (
           targets.length > 0 &&
           targets.every((entry) => {
             const targetCategory = itemLookup.get(entry.itemId)?.category;
-            return targetCategory?.toLowerCase().trim() === 'basic material';
+            const targetType = entry.type ?? itemLookup.get(entry.itemId)?.type;
+            const normalizedCategory = targetCategory?.toLowerCase().trim();
+            const normalizedType = targetType?.toLowerCase().trim();
+            return normalizedCategory === 'basic material' || normalizedType === 'basic material';
           });
         if (onlyFeedsBasicMaterials) return false;
       }
