@@ -15,6 +15,12 @@ const rarityRank = (rarity?: string | null) => {
   return fuzzy === -1 ? priority.length : fuzzy;
 };
 
+const isBasicMaterial = (category?: string | null, type?: string | null) => {
+  const normalizedCategory = category?.toLowerCase().trim();
+  const normalizedType = type?.toLowerCase().trim();
+  return normalizedCategory === 'basic material' || normalizedType === 'basic material';
+};
+
 export const filterLookOutRecommendations = (
   recommendations: ItemRecommendation[],
   { itemLookup }: LookOutFilterOptions
@@ -28,23 +34,28 @@ export const filterLookOutRecommendations = (
       const supportsRecycling = rec.action === 'recycle';
       const category = rec.category?.toLowerCase().trim();
       const type = rec.type?.toLowerCase().trim();
-      const isBasicMaterial = category === 'basic material' || type === 'basic material';
-      if (isBasicMaterial) return false;
+      if (isBasicMaterial(category, type)) return false;
 
       if (!(totalNeeds > 0 || hasWishlist || supportsRecycling)) {
         return false;
       }
 
       if (supportsRecycling && totalNeeds === 0) {
+        const wishlistOnlyBasicMaterials =
+          hasWishlist &&
+          rec.wishlistSources?.every((source) => {
+            const item = itemLookup.get(source.targetItemId);
+            return isBasicMaterial(item?.category, item?.type);
+          });
+        if (wishlistOnlyBasicMaterials) return false;
+
         const targets = rec.salvageBreakdown ?? [];
         const onlyFeedsBasicMaterials =
           targets.length > 0 &&
           targets.every((entry) => {
             const targetCategory = itemLookup.get(entry.itemId)?.category;
             const targetType = entry.type ?? itemLookup.get(entry.itemId)?.type;
-            const normalizedCategory = targetCategory?.toLowerCase().trim();
-            const normalizedType = targetType?.toLowerCase().trim();
-            return normalizedCategory === 'basic material' || normalizedType === 'basic material';
+            return isBasicMaterial(targetCategory, targetType);
           });
         if (onlyFeedsBasicMaterials) return false;
       }
