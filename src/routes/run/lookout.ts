@@ -1,4 +1,5 @@
 import type { ItemRecord, ItemRecommendation } from '$lib/types';
+import { isBasicMaterial } from '$lib/utils/materials';
 
 type LookOutFilterOptions = {
   itemLookup: Map<string, ItemRecord>;
@@ -13,12 +14,6 @@ const rarityRank = (rarity?: string | null) => {
   if (index !== -1) return index;
   const fuzzy = priority.findIndex((label) => normalized.startsWith(label));
   return fuzzy === -1 ? priority.length : fuzzy;
-};
-
-const isBasicMaterial = (category?: string | null, type?: string | null) => {
-  const normalizedCategory = category?.toLowerCase().trim();
-  const normalizedType = type?.toLowerCase().trim();
-  return normalizedCategory === 'basic material' || normalizedType === 'basic material';
 };
 
 export const filterLookOutRecommendations = (
