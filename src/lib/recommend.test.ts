@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { buildRecommendationContext, recommendItem, recommendItemsMatching } from './recommend';
+import { expandWantList } from './stores/app';
 import { applyWeaponVariantAggregation } from './weapon-variants';
 import type {
   BlueprintState,
@@ -657,9 +658,7 @@ const context = buildRecommendationContext({
       'Refined Matrix',
       'Refined Expedition Alloy',
       'Topside Alloy',
-      'Salvaged Frame',
-      'Basic Expedition Shard',
-      'Basic Salvage Chunk'
+      'Salvaged Frame'
     ]);
   });
 
@@ -770,14 +769,14 @@ describe('wishlist promotions', () => {
     });
   });
 
-    it('promotes prerequisite materials referenced by wishlist dependencies', () => {
-      const context = buildRecommendationContext({
-        items: ITEMS,
-        quests: [],
-        wantList: [MATERIAL_DEPENDENCY.entry],
-        wantListDependencies: [MATERIAL_DEPENDENCY],
-        ignoredCategories: []
-      });
+  it('promotes prerequisite materials referenced by wishlist dependencies', () => {
+    const context = buildRecommendationContext({
+      items: ITEMS,
+      quests: [],
+      wantList: [MATERIAL_DEPENDENCY.entry],
+      wantListDependencies: [MATERIAL_DEPENDENCY],
+      ignoredCategories: []
+    });
     const recommendation = recommendItem(
       ITEMS.find((item) => item.id === 'item-beta')!,
       context
@@ -787,5 +786,75 @@ describe('wishlist promotions', () => {
     expect(
       recommendation.wishlistSources?.some((source) => source.kind === 'requirement')
     ).toBe(true);
+  });
+});
+
+describe('basic material wishlist exclusion', () => {
+  const CHEMICALS: ItemRecord = {
+    id: 'mat-chemicals',
+    name: 'Chemicals',
+    slug: 'chemicals',
+    category: 'Basic Material',
+    type: 'Basic Material',
+    sell: 10,
+    stackSize: 10,
+    salvagesInto: [],
+    craftsInto: [],
+    craftsFrom: []
+  };
+
+  const EXPLOSIVE_COMPOUND: ItemRecord = {
+    id: 'item-explosive-compound',
+    name: 'Explosive Compound',
+    slug: 'explosive-compound',
+    category: 'Refined Material',
+    sell: 100,
+    stackSize: 10,
+    craftsFrom: [{ itemId: CHEMICALS.id, name: CHEMICALS.name, qty: 3 }],
+    salvagesInto: [],
+    craftsInto: []
+  };
+
+  const WOLFPACK: ItemRecord = {
+    id: 'wp-wolfpack',
+    name: 'Wolfpack',
+    slug: 'wolfpack',
+    category: 'Special',
+    sell: 2500,
+    stackSize: 1,
+    craftsFrom: [{ itemId: EXPLOSIVE_COMPOUND.id, name: EXPLOSIVE_COMPOUND.name, qty: 1 }],
+    salvagesInto: [],
+    craftsInto: []
+  };
+
+  const VITA_SHOT: ItemRecord = {
+    id: 'quickuse-vita-shot',
+    name: 'Vita Shot',
+    slug: 'vita-shot',
+    category: 'Quick Use',
+    sell: 80,
+    stackSize: 5,
+    recyclesInto: [{ itemId: CHEMICALS.id, name: CHEMICALS.name, qty: 2 }],
+    salvagesInto: []
+  };
+
+  const items = [CHEMICALS, EXPLOSIVE_COMPOUND, WOLFPACK, VITA_SHOT];
+
+  it('does not recommend recyclables that only satisfy wishlist basic materials', () => {
+    const wantList: WantListEntry[] = [
+      { itemId: WOLFPACK.id, qty: 1, createdAt: '2024-03-01T00:00:00.000Z' }
+    ];
+    const dependencies = expandWantList(wantList, items);
+    const context = buildRecommendationContext({
+      items,
+      quests: [],
+      wantList,
+      wantListDependencies: dependencies,
+      ignoredCategories: []
+    });
+
+    const recommendations = recommendItemsMatching('', context, { sortMode: 'alphabetical' });
+
+    expect(recommendations.some((rec) => rec.itemId === VITA_SHOT.id)).toBe(false);
   });
 });

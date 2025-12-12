@@ -1,4 +1,5 @@
 import type { ItemRecord, ItemRecommendation } from '$lib/types';
+import { isBasicMaterial } from '$lib/utils/materials';
 
 type LookOutFilterOptions = {
   itemLookup: Map<string, ItemRecord>;
@@ -27,20 +28,29 @@ export const filterLookOutRecommendations = (
       const hasWishlist = (rec.wishlistSources?.length ?? 0) > 0;
       const supportsRecycling = rec.action === 'recycle';
       const category = rec.category?.toLowerCase().trim();
-      const isBasicMaterial = category === 'basic material';
-      if (isBasicMaterial) return false;
+      const type = rec.type?.toLowerCase().trim();
+      if (isBasicMaterial(category, type)) return false;
 
       if (!(totalNeeds > 0 || hasWishlist || supportsRecycling)) {
         return false;
       }
 
-      if (supportsRecycling && !hasWishlist && totalNeeds === 0) {
+      if (supportsRecycling && totalNeeds === 0) {
+        const wishlistOnlyBasicMaterials =
+          hasWishlist &&
+          rec.wishlistSources?.every((source) => {
+            const item = itemLookup.get(source.targetItemId);
+            return isBasicMaterial(item?.category, item?.type);
+          });
+        if (wishlistOnlyBasicMaterials) return false;
+
         const targets = rec.salvageBreakdown ?? [];
         const onlyFeedsBasicMaterials =
           targets.length > 0 &&
           targets.every((entry) => {
             const targetCategory = itemLookup.get(entry.itemId)?.category;
-            return targetCategory?.toLowerCase().trim() === 'basic material';
+            const targetType = entry.type ?? itemLookup.get(entry.itemId)?.type;
+            return isBasicMaterial(targetCategory, targetType);
           });
         if (onlyFeedsBasicMaterials) return false;
       }

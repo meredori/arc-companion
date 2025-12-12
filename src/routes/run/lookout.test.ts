@@ -92,6 +92,91 @@ describe('filterLookOutRecommendations', () => {
     expect(filtered).toHaveLength(0);
   });
 
+  it('drops recyclables that only feed wishlist via basic materials', () => {
+    const recommendations = [
+      buildRecommendation({
+        itemId: 'item-expedition-trinket',
+        action: 'recycle',
+        salvageBreakdown: [{ itemId: 'mat-basic', name: 'Basic Resin', qty: 2 }],
+        wishlistSources: [
+          {
+            targetItemId: 'mat-basic',
+            targetName: 'Basic Resin',
+            note: 'restock',
+            kind: 'requirement'
+          }
+        ]
+      })
+    ];
+
+    const filtered = filterLookOutRecommendations(recommendations, { itemLookup });
+
+    expect(filtered).toHaveLength(0);
+  });
+
+  it('drops items flagged as basic material by type', () => {
+    const recommendations = [
+      buildRecommendation({
+        itemId: 'mat-basic',
+        name: 'Basic Resin',
+        slug: 'basic-resin',
+        category: 'Material',
+        type: 'Basic Material'
+      })
+    ];
+
+    const filtered = filterLookOutRecommendations(recommendations, { itemLookup });
+
+    expect(filtered).toHaveLength(0);
+  });
+
+  it('drops recyclable wishlist items when breakdown entries mark basic material type', () => {
+    const recommendations = [
+      buildRecommendation({
+        itemId: 'item-expedition-trinket',
+        action: 'recycle',
+        salvageBreakdown: [{ itemId: 'unknown-basic', name: 'Unknown Basic', qty: 1, type: 'Basic Material' }],
+        wishlistSources: [
+          {
+            targetItemId: 'unknown-basic',
+            targetName: 'Unknown Basic',
+            note: 'restock',
+            kind: 'requirement'
+          }
+        ]
+      })
+    ];
+
+    const filtered = filterLookOutRecommendations(recommendations, { itemLookup });
+
+    expect(filtered).toHaveLength(0);
+  });
+
+  it('drops recyclable wishlist items when wishlist targets are basic materials even if the breakdown has other items', () => {
+    const recommendations = [
+      buildRecommendation({
+        itemId: 'item-expedition-trinket',
+        action: 'recycle',
+        salvageBreakdown: [
+          { itemId: 'item-quest-component', name: 'Quest Component', qty: 1 },
+          { itemId: 'mat-basic', name: 'Basic Resin', qty: 1 }
+        ],
+        wishlistSources: [
+          {
+            targetItemId: 'mat-basic',
+            targetName: 'Basic Resin',
+            note: 'restock',
+            kind: 'requirement'
+          }
+        ]
+      })
+    ];
+
+    const filtered = filterLookOutRecommendations(recommendations, { itemLookup });
+
+    expect(filtered).toHaveLength(0);
+  });
+
   it('sorts direct needs ahead of supporting recyclables', () => {
     const recommendations = [
       buildRecommendation({

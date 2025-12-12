@@ -5,6 +5,7 @@ export interface ItemRecycleEntry {
   itemId: string;
   name: string;
   qty: number;
+  type?: string;
 }
 
 export interface ItemCraftRequirement {
@@ -25,6 +26,7 @@ export interface ItemRecord {
   slug: string;
   rarity?: string;
   category?: string;
+  type?: string;
   imageUrl?: string | null;
   foundIn?: string[];
   sell: number;
@@ -207,6 +209,7 @@ export interface ItemRecommendation {
   name: string;
   slug: string;
   category?: string;
+  type?: string;
   rarity?: string;
   imageUrl?: string | null;
   action: RecommendationAction;

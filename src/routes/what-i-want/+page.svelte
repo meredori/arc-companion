@@ -19,6 +19,7 @@
   import { buildRecommendationContext, recommendItemsMatching } from '$lib/recommend';
   import { BENCH_LABELS, DEFAULT_BENCH_ORDER, QUICK_USE_BENCH_BY_SLUG } from '$lib/utils/bench';
   import { filterVisibleItems } from '$lib/utils/items';
+  import { isBasicMaterial } from '$lib/utils/materials';
   import { dedupeWeaponVariants } from '$lib/weapon-variants';
   import type {
     ItemRecord,
@@ -359,8 +360,9 @@
         );
         const supportsRecycling = rec.action === 'recycle';
         const category = rec.category?.toLowerCase().trim();
-        const isBasicMaterial = category === 'basic material';
-        if (isBasicMaterial && totalNeeds === 0 && !supportsTargetRequirement) return false;
+        const type = rec.type?.toLowerCase().trim();
+        const basicMaterial = isBasicMaterial(category, type);
+        if (basicMaterial && totalNeeds === 0 && !supportsTargetRequirement) return false;
         if (!(totalNeeds > 0 || hasWishlist || supportsRecycling)) return false;
 
         if (supportsRecycling && !hasWishlist && totalNeeds === 0) {
@@ -369,7 +371,8 @@
             targets.length > 0 &&
             targets.every((entry) => {
               const recycledCategory = itemLookup.get(entry.itemId)?.category;
-              return recycledCategory?.toLowerCase().trim() === 'basic material';
+              const recycledType = entry.type ?? itemLookup.get(entry.itemId)?.type;
+              return isBasicMaterial(recycledCategory, recycledType);
             });
           if (onlyFeedsBasicMaterials) return false;
         }
