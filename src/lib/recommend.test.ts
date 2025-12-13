@@ -840,7 +840,7 @@ describe('basic material wishlist exclusion', () => {
 
   const items = [CHEMICALS, EXPLOSIVE_COMPOUND, WOLFPACK, VITA_SHOT];
 
-  it('does not recommend recyclables that only satisfy wishlist basic materials', () => {
+  it('marks recyclables that only satisfy wishlist basic materials as sell', () => {
     const wantList: WantListEntry[] = [
       { itemId: WOLFPACK.id, qty: 1, createdAt: '2024-03-01T00:00:00.000Z' }
     ];
@@ -855,6 +855,9 @@ describe('basic material wishlist exclusion', () => {
 
     const recommendations = recommendItemsMatching('', context, { sortMode: 'alphabetical' });
 
-    expect(recommendations.some((rec) => rec.itemId === VITA_SHOT.id)).toBe(false);
+    const vitaShot = recommendations.find((rec) => rec.itemId === VITA_SHOT.id);
+    expect(vitaShot).toBeDefined();
+    expect(vitaShot?.action).toBe('sell');
+    expect(vitaShot?.rationale.toLowerCase()).toContain('not needed');
   });
 });

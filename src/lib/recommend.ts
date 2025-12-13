@@ -287,6 +287,7 @@ function remainingProjectNeeds(itemId: string, context: RecommendationContext) {
 }
 
 export function recommendItem(item: ItemRecord, context: RecommendationContext): ItemRecommendation {
+  const itemLookup = new Map(context.items.map((entry) => [entry.id, entry] as const));
   const questNeed = remainingQuestNeeds(item.id, context);
   const upgradeNeed = remainingUpgradeNeeds(item.id, context);
   const projectNeed = remainingProjectNeeds(item.id, context);
@@ -350,13 +351,18 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
     rationale = 'Category flagged as always keep in admin controls.';
   } else {
     const recycleTargets = item.recyclesInto ?? item.salvagesInto ?? [];
-    const recycleWishlistTargets = recycleTargets.filter(
+    const nonBasicRecycleTargets = recycleTargets.filter((entry) => {
+      const target = itemLookup.get(entry.itemId);
+      const entryType = entry.type ?? target?.type;
+      return !isBasicMaterial(target?.category, entryType);
+    });
+    const recycleWishlistTargets = nonBasicRecycleTargets.filter(
       (entry) => (context.wishlistSourcesByItem[entry.itemId]?.length ?? 0) > 0
     );
-    const recycleUpgradeTargets = recycleTargets.filter(
+    const recycleUpgradeTargets = nonBasicRecycleTargets.filter(
       (entry) => remainingUpgradeNeeds(entry.itemId, context).total > 0
     );
-    const recycleProjectTargets = recycleTargets.filter(
+    const recycleProjectTargets = nonBasicRecycleTargets.filter(
       (entry) => remainingProjectNeeds(entry.itemId, context).total > 0
     );
 
@@ -372,7 +378,7 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
       action = 'recycle';
       const targetList = recycleProjectTargets.map((entry) => entry.name ?? entry.itemId).join(', ');
       rationale = `Recycle to advance incomplete projects (${targetList}).`;
-    } else if (salvageValue > item.sell) {
+    } else if (nonBasicRecycleTargets.length > 0 && salvageValue > item.sell) {
       action = 'recycle';
       rationale = 'Recycle for better value than selling.';
     }
