@@ -453,6 +453,40 @@ export function recommendItemsMatching(
 
   const recommendations = dedupedItems.map((item) => recommendItem(item, context));
 
+  const basicMaterialFiltered = recommendations.filter((rec) => {
+    if (isBasicMaterial(rec.category, rec.type)) return false;
+
+    const breakdown = rec.salvageBreakdown ?? [];
+    const onlyBasicBreakdown =
+      breakdown.length > 0 &&
+      breakdown.every((entry) => {
+        const target = itemLookup.get(entry.itemId);
+        const entryType = entry.type ?? target?.type;
+        return isBasicMaterial(target?.category, entryType);
+      });
+
+    const hasWishlist = (rec.wishlistSources?.length ?? 0) > 0;
+    const hasDirectNeeds = rec.needs.quests + rec.needs.workshop + rec.needs.projects > 0;
+
+    if (!hasDirectNeeds && !hasWishlist && onlyBasicBreakdown) {
+      return false;
+    }
+
+    if (rec.action === 'recycle') {
+      const wishlistOnlyBasic =
+        (rec.wishlistSources?.length ?? 0) > 0 &&
+        rec.wishlistSources?.every((source) => {
+          const target = itemLookup.get(source.targetItemId);
+          return isBasicMaterial(target?.category, target?.type);
+        });
+      if (wishlistOnlyBasic) return false;
+
+      if (onlyBasicBreakdown) return false;
+    }
+
+    return true;
+  });
+
   const rarityRank = (rarity?: string) => {
     if (!rarity) return RARITY_PRIORITY.length;
     const normalized = rarity.toLowerCase().replace(/\s+/g, ' ').trim();
@@ -480,7 +514,7 @@ export function recommendItemsMatching(
   };
 
   if (sortMode === 'value') {
-    return recommendations.sort((a, b) => {
+    return basicMaterialFiltered.sort((a, b) => {
       const valueDiff = (b.sellPrice ?? 0) - (a.sellPrice ?? 0);
       if (valueDiff !== 0) return valueDiff;
       const rarityDiff = rarityRank(a.rarity) - rarityRank(b.rarity);
@@ -490,12 +524,12 @@ export function recommendItemsMatching(
   }
 
   if (sortMode === 'alphabetical') {
-    return recommendations.sort((a, b) =>
+    return basicMaterialFiltered.sort((a, b) =>
       a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
     );
   }
 
-  return recommendations.sort((a, b) => {
+  return basicMaterialFiltered.sort((a, b) => {
     const rankDiff = categoryRank(a.category) - categoryRank(b.category);
     if (rankDiff !== 0) return rankDiff;
 
