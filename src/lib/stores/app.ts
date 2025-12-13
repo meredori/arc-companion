@@ -18,6 +18,7 @@ import type {
   WorkbenchUpgradeState
 } from '$lib/types';
 import { loadFromStorage, removeFromStorage, saveToStorage } from '$lib/persist';
+import { isBasicMaterial } from '$lib/utils/materials';
 
 const STORAGE_VERSION = 'v1';
 const STORAGE_KEYS = {
@@ -157,6 +158,9 @@ function collectRequirements(
     const totalQty = requirement.qty * multiplier;
     const next = itemLookup.get(requirement.itemId);
     if (next) {
+      if (isBasicMaterial(next.category, next.type)) {
+        continue;
+      }
       const normalizedCategory = normalizeCategoryValue(next.category);
       if (normalizedCategory && ignoredCategories.has(normalizedCategory)) {
         continue;
@@ -204,6 +208,7 @@ export function expandWantList(
 
   const shouldIgnoreItem = (record?: ItemRecord | null) => {
     if (!record) return false;
+    if (isBasicMaterial(record.category, record.type)) return true;
     const normalized = normalizeCategoryValue(record.category);
     if (!normalized) return false;
     return ignoredCategories.has(normalized);
@@ -230,6 +235,11 @@ export function expandWantList(
 
     for (const recycle of item.recyclesInto ?? item.salvagesInto ?? []) {
       if (!recycle || recycle.qty <= 0) continue;
+      const recycledItem = itemLookup.get(recycle.itemId);
+      const recycledType = recycle.type ?? recycledItem?.type;
+      if (isBasicMaterial(recycledItem?.category, recycledType)) {
+        continue;
+      }
       const bucket = recyclersByMaterial.get(recycle.itemId) ?? [];
       bucket.push({ item, qty: recycle.qty, name: recycle.name ?? recycle.itemId });
       recyclersByMaterial.set(recycle.itemId, bucket);
@@ -269,6 +279,10 @@ export function expandWantList(
       for (const salvage of item.salvagesInto ?? []) {
         if (!salvage || salvage.qty <= 0) continue;
         const recycledItem = itemLookup.get(salvage.itemId);
+        const recycledType = salvage.type ?? recycledItem?.type;
+        if (isBasicMaterial(recycledItem?.category, recycledType)) {
+          continue;
+        }
         const recycledCategory = normalizeCategoryValue(recycledItem?.category);
         if (recycledCategory && ignoredCategories.has(recycledCategory)) {
           continue;

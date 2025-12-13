@@ -23,6 +23,7 @@ import {
   QUICK_USE_BENCH_PRIORITY
 } from '$lib/utils/bench';
 import { dedupeWeaponVariants } from '$lib/weapon-variants';
+import { isBasicMaterial } from '$lib/utils/materials';
 
 const CATEGORY_PRIORITY_GROUPS: string[][] = [
   ['Augment'],
@@ -99,6 +100,7 @@ function deriveWishlistSources(
   wantList: WantListEntry[],
   dependencies: WantListResolvedEntry[]
 ): Record<string, RecommendationWishlistSource[]> {
+  const itemLookup = new Map(items.map((item) => [item.id, item] as const));
   const nameLookup = new Map(items.map((item) => [item.id, item.name]));
   const sources = new Map<string, RecommendationWishlistSource[]>();
 
@@ -108,17 +110,25 @@ function deriveWishlistSources(
     sources.set(itemId, existing);
   };
 
+  const isBasicWishlistTarget = (itemId: string) => {
+    const item = itemLookup.get(itemId);
+    return isBasicMaterial(item?.category, item?.type);
+  };
+
   for (const detail of dependencies) {
     const targetName =
       detail.item?.name ?? nameLookup.get(detail.entry.itemId) ?? detail.entry.itemId;
     const note = detail.entry.reason;
-    register(detail.entry.itemId, {
-      targetItemId: detail.entry.itemId,
-      targetName,
-      note,
-      kind: 'target'
-    });
+    if (!isBasicWishlistTarget(detail.entry.itemId)) {
+      register(detail.entry.itemId, {
+        targetItemId: detail.entry.itemId,
+        targetName,
+        note,
+        kind: 'target'
+      });
+    }
     for (const requirement of detail.requirements) {
+      if (isBasicWishlistTarget(requirement.itemId)) continue;
       register(requirement.itemId, {
         targetItemId: detail.entry.itemId,
         targetName,
@@ -130,6 +140,7 @@ function deriveWishlistSources(
 
   for (const entry of wantList) {
     if (sources.has(entry.itemId)) continue;
+    if (isBasicWishlistTarget(entry.itemId)) continue;
     const targetName = nameLookup.get(entry.itemId) ?? entry.itemId;
     register(entry.itemId, {
       targetItemId: entry.itemId,
@@ -276,6 +287,7 @@ function remainingProjectNeeds(itemId: string, context: RecommendationContext) {
 }
 
 export function recommendItem(item: ItemRecord, context: RecommendationContext): ItemRecommendation {
+  const itemLookup = new Map(context.items.map((entry) => [entry.id, entry] as const));
   const questNeed = remainingQuestNeeds(item.id, context);
   const upgradeNeed = remainingUpgradeNeeds(item.id, context);
   const projectNeed = remainingProjectNeeds(item.id, context);
@@ -339,13 +351,18 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
     rationale = 'Category flagged as always keep in admin controls.';
   } else {
     const recycleTargets = item.recyclesInto ?? item.salvagesInto ?? [];
-    const recycleWishlistTargets = recycleTargets.filter(
+    const nonBasicRecycleTargets = recycleTargets.filter((entry) => {
+      const target = itemLookup.get(entry.itemId);
+      const entryType = entry.type ?? target?.type;
+      return !isBasicMaterial(target?.category, entryType);
+    });
+    const recycleWishlistTargets = nonBasicRecycleTargets.filter(
       (entry) => (context.wishlistSourcesByItem[entry.itemId]?.length ?? 0) > 0
     );
-    const recycleUpgradeTargets = recycleTargets.filter(
+    const recycleUpgradeTargets = nonBasicRecycleTargets.filter(
       (entry) => remainingUpgradeNeeds(entry.itemId, context).total > 0
     );
-    const recycleProjectTargets = recycleTargets.filter(
+    const recycleProjectTargets = nonBasicRecycleTargets.filter(
       (entry) => remainingProjectNeeds(entry.itemId, context).total > 0
     );
 
@@ -361,7 +378,7 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
       action = 'recycle';
       const targetList = recycleProjectTargets.map((entry) => entry.name ?? entry.itemId).join(', ');
       rationale = `Recycle to advance incomplete projects (${targetList}).`;
-    } else if (salvageValue > item.sell) {
+    } else if (nonBasicRecycleTargets.length > 0 && salvageValue > item.sell) {
       action = 'recycle';
       rationale = 'Recycle for better value than selling.';
     }
@@ -376,6 +393,7 @@ export function recommendItem(item: ItemRecord, context: RecommendationContext):
     name: item.name,
     slug: item.slug,
     category: item.category,
+    type: item.type,
     rarity: item.rarity,
     imageUrl: item.imageUrl ?? null,
     action,
@@ -411,6 +429,7 @@ export function recommendItemsMatching(
       .filter((value) => value.length > 0)
   );
   const wantListAllowSet = new Set(context.wantList.map((entry) => entry.itemId));
+  const itemLookup = new Map(context.items.map((item) => [item.id, item] as const));
 
   const passesIgnoreFilter = (item: ItemRecord) => {
     const category = normalizeCategory(item.category);
