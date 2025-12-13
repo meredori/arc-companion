@@ -429,7 +429,6 @@ export function recommendItemsMatching(
       .filter((value) => value.length > 0)
   );
   const wantListAllowSet = new Set(context.wantList.map((entry) => entry.itemId));
-  const itemLookup = new Map(context.items.map((item) => [item.id, item] as const));
 
   const passesIgnoreFilter = (item: ItemRecord) => {
     const category = normalizeCategory(item.category);
