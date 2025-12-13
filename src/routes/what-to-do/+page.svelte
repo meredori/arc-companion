@@ -204,6 +204,15 @@
               Category → Rarity → Name
             {/if}
           </span>
+          <label class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.3em] text-slate-300">
+            <input
+              type="checkbox"
+              class="h-3.5 w-3.5 rounded border-slate-700/70 bg-slate-900 text-amber-400 focus:ring-amber-400"
+              checked={$settings.hideZeroSellItems ?? false}
+              on:change={(event) => settings.toggleHideZeroSellItems(event.currentTarget.checked)}
+            />
+            <span>Hide zero-value items</span>
+          </label>
           <div class="flex overflow-hidden rounded-full border border-slate-800">
             <button
               type="button"
