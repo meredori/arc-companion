@@ -658,7 +658,9 @@ const context = buildRecommendationContext({
       'Refined Matrix',
       'Refined Expedition Alloy',
       'Topside Alloy',
-      'Salvaged Frame'
+      'Salvaged Frame',
+      'Basic Expedition Shard',
+      'Basic Salvage Chunk'
     ]);
   });
 

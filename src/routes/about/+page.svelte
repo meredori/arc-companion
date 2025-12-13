@@ -39,7 +39,7 @@
           <input
             type="checkbox"
             class="h-4 w-4 rounded border-slate-700/70 bg-slate-900 text-amber-400 focus:ring-amber-400"
-            checked={$settings.hideZeroSellItems ?? true}
+            checked={$settings.hideZeroSellItems ?? false}
             on:change={(event) => settings.toggleHideZeroSellItems(event.currentTarget.checked)}
           />
           <span>Hide zero-value loot and empty categories</span>

@@ -99,7 +99,7 @@ const defaultSettings: AppSettings = {
   alwaysKeepCategories: [],
   ignoredWantCategories: [],
   recommendationSort: 'category',
-  hideZeroSellItems: true
+  hideZeroSellItems: false
 };
 
 const questStore = createPersistentStore<QuestProgress[]>(STORAGE_KEYS.quests, []);
