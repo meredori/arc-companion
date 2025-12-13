@@ -7,6 +7,7 @@ const WEAPON_CATEGORY_LABELS = new Set(
     'battle rifle',
     'hand cannon',
     'lmg',
+    'smg',
     'pistol',
     'shotgun',
     'sniper rifle',

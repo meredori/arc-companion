@@ -34,6 +34,7 @@ const CATEGORY_PRIORITY_GROUPS: string[][] = [
     'Battle Rifle',
     'Hand Cannon',
     'LMG',
+    'SMG',
     'Pistol',
     'Shotgun',
     'Sniper Rifle',

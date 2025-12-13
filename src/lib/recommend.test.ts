@@ -100,6 +100,15 @@ const ITEMS: ItemRecord[] = applyWeaponVariantAggregation(
     salvagesInto: [],
   },
   {
+    id: 'item-smg-rare',
+    name: 'Helix SMG',
+    slug: 'helix-smg',
+    category: 'SMG',
+    rarity: 'Rare Weapon',
+    sell: 92,
+    salvagesInto: [],
+  },
+  {
     id: 'item-sniper-epic',
     name: 'Longsight Sniper',
     slug: 'longsight-sniper',
@@ -527,17 +536,19 @@ const context = buildRecommendationContext({
         'Shotgun',
         'Pistol',
         'LMG',
+        'SMG',
         'Hand Cannon',
         'Assault Rifle',
         'Sniper Rifle',
         'Special'
       ].includes(entry.category ?? '')
     );
-    expect(weaponGroup).toHaveLength(8);
+    expect(weaponGroup).toHaveLength(9);
     expect(weaponGroup.map((entry) => entry.name)).toEqual([
       'Nova Cannon',
       'Cyclone Shotgun',
       'Longsight Sniper',
+      'Helix SMG',
       'Hullcracker',
       'Warden Pistol',
       'Parallax Hand Cannon',
