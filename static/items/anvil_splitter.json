@@ -9,7 +9,7 @@
     "he": "מפצל אנוויל",
     "hr": "Nakovanj Razdvajač",
     "it": "Spaccaincudini",
-    "ja": "アンヴィルスプリッター",
+    "ja": "アンヴィル・スプリッター",
     "ko-KR": "앤빌 스플리터",
     "no": "Anvil-splitter",
     "pl": "Rozdzielacz Anvil",
@@ -105,7 +105,7 @@
   "salvagesInto": {
     "mechanical_components": 2
   },
-  "imageFilename": "https://cdn.arctracker.io/items/anvil_splitter.png",
+  "imageFilename": "https://cdn.arctracker.io/items/v2/anvil_splitter.png",
   "updatedAt": "01/09/2026",
   "addedIn": "base"
 }

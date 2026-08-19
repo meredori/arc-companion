@@ -75,7 +75,8 @@
     "discordBot": "בוט Discord",
     "squads": "צוותים",
     "stash": "מצבור",
-    "seasons": "עונות"
+    "seasons": "עונות",
+    "traders": "סוחרים"
   },
   "MapEvents": {
     "startsIn": "מתחיל בעוד",
@@ -109,8 +110,10 @@
       "uncoveredCaches": "מצבורים שנחשפו",
       "launchTowerLoot": "שלל מגדל השיגור",
       "hiddenBunker": "בונקר נסתר",
+      "closeScrutiny": "בדיקה מדוקדקת",
       "none": "ללא",
       "birdCity": "עיר הציפורים",
+      "beachcombing": "Beachcombing",
       "hurricane": "הוריקן"
     }
   },
@@ -195,7 +198,12 @@
     "stashModeActive": "כמויות ממחסן מסונכרן",
     "lastSynced": "סונכרן",
     "syncStash": "סנכרן מחסן",
-    "season3": "עונה 3"
+    "season3": "עונה 3",
+    "dealDamage": "גרימת נזק למכונות ARC",
+    "completeObjective": "השלמת יעד",
+    "skillPointReward": "נקודת מיומנות",
+    "earnedDuringExpedition": "ההתקדמות מצטברת בתוך חלון המסע. כל שלב שהושלם מעניק נקודת מיומנות 1 עבור ה-Raider הבא שלך.",
+    "season4": "משלחת 4"
   },
   "HideoutPage": {
     "level": "רמה",
@@ -577,7 +585,13 @@
     },
     "attachments": "אביזרים",
     "upgradePath": "מסלול שדרוג",
-    "currentTier": "נוכחי"
+    "currentTier": "נוכחי",
+    "soldByTraders": "נמכר על ידי סוחרים",
+    "vendorCost": "עלות",
+    "vendorLimit": "הגבלה: {count}",
+    "vendorRefreshDaily": "מתחדש מדי יום",
+    "vendorRefreshHourly": "מתחדש מדי שעה",
+    "vendorRefreshHours": "מתחדש כל {hours} שעות"
   },
   "ItemsListPage": {
     "searchPlaceholder": "חפש פריטים...",
@@ -653,7 +667,9 @@
     "stashTitle": "מעקב מחסן - ARC Raiders",
     "stashDescription": "סנכרון ומעקב אוטומטי אחר מלאי המחסן, הציוד והמטבעות שלך ב-ARC Raiders. חבר את חשבון המשחק שלך לקבלת עדכונים בזמן אמת.",
     "projectNotFoundTitle": "הפרויקט לא נמצא - ARC Raiders",
-    "projectNotFoundDescription": "הפרויקט המבוקש לא נמצא."
+    "projectNotFoundDescription": "הפרויקט המבוקש לא נמצא.",
+    "tradersTitle": "סוחרים - ARC Raiders | ARCTracker.io",
+    "tradersDescription": "עיין בכל הסוחרים ב-ARC Raiders. צפה במלאי החנות ובמשימות המשויכות לכל סוחר."
   },
   "OverlayPage": {
     "pageTitle": "אפליקציית Overlay מלווה",
@@ -714,7 +730,8 @@
     "theSpaceport": "נמל החלל",
     "buriedCity": "העיר הקבורה",
     "theBlueGate": "השער הכחול",
-    "stellaMontis": "Stella Montis"
+    "stellaMontis": "Stella Montis",
+    "rivenTides": "גאות ושפל שסועים"
   },
   "TermsPage": {
     "title": "תנאי שימוש",
@@ -820,14 +837,21 @@
     "premiumActivatedDesc": "תודה על תמיכתך ב-ARCTracker! מנוי הפרימיום שלך פעיל כעת.",
     "premiumBenefitsTitle": "הטבות הפרימיום שלך",
     "manageSubscriptionTitle": "ניהול המנוי שלך",
-    "manageSubscriptionDesc": "תוכל לצפות בפרטי המנוי שלך ולנהל את החיוב דרך דף ההגדרות או פורטל התשלומים של Tebex.",
+    "manageSubscriptionDesc": "ניתן לצפות בפרטי המנוי ולנהל את החיובים דרך דף ההגדרות או פורטל התשלומים.",
     "goToSettings": "עבור להגדרות",
     "tebexPaymentPortal": "פורטל תשלומים Tebex",
     "backToHome": "חזרה לדף הבית",
     "benefitUnlimitedPins": "נעיצות פרטיות ומסלולי שלל ללא הגבלה",
     "benefitUnlimitedPinsDesc": "צרו נעיצות פרטיות ומסלולי שלל ללא הגבלה בכל מפה",
     "benefitAutoSync": "סנכרון מחסן אוטומטי",
-    "benefitAutoSyncDesc": "מסנכרן אוטומטית את המחסן, הציוד וההתקדמות שלך מהמשחק כל 30 דקות"
+    "benefitAutoSyncDesc": "מסנכרן אוטומטית את המחסן, הציוד וההתקדמות שלך מהמשחק כל 30 דקות",
+    "managedByPolar": "המינוי מנוהל על ידי Polar",
+    "polarPaymentPortal": "פורטל התשלומים של Polar",
+    "upgradeToYearly": "שדרוג למנוי שנתי",
+    "upgradeToYearlyDesc": "עבור לחיוב שנתי וחסוך 44%. תקבל זיכוי עבור יתרת הזמן במנוי החודשי שלך.",
+    "upgradeSuccess": "השדרוג למנוי שנתי בוצע בהצלחה!",
+    "upgradeError": "השדרוג נכשל. אנא נסה שוב.",
+    "upgradeSaving": "חסוך {percent}%"
   },
   "Favorites": {
     "addToList": "הוסף לרשימה",
@@ -943,7 +967,9 @@
       "decentLoot": "שלל סביר",
       "sparseLoot": "שלל דליל",
       "regions": "אזורים",
-      "landmarks": "ציוני דרך"
+      "landmarks": "ציוני דרך",
+      "hurricaneCache": "מטמון הוריקן",
+      "buriedCache": "מטמון קבור"
     },
     "questDetails": "פרטי משימה",
     "viewQuest": "צפה במשימה",
@@ -2045,7 +2071,9 @@
     "supplyCallStation": "עמדת קריאה לאספקה",
     "trainExtraction": "חילוץ רכבת",
     "ventExtraction": "חילוץ פיר אוורור",
-    "weaponCase": "מארז נשק"
+    "weaponCase": "מארז נשק",
+    "hurricaneCache": "מטמון הוריקן",
+    "buriedCache": "מטמון קבור"
   },
   "PrivatePinIcons": {
     "categories": {
@@ -2234,7 +2262,9 @@
       "sortUnsorted": "לא ממוין",
       "searchPlaceholder": "חיפוש פריטים...",
       "sortRarity": "מיון לפי נדירות",
-      "sortName": "מיון לפי שם"
+      "sortName": "מיון לפי שם",
+      "tokenInvalidError": "החיבור שלך ל-ARC Raiders כבר אינו תקף. אנא חבר מחדש את החשבון שלך.",
+      "reconnectAccount": "חיבור מחדש לחשבון"
     },
     "currencies": {
       "cred": "קרדיט",
@@ -2348,7 +2378,9 @@
     "blueprintSyncDescription": "סנכרן שרטוטים שנלמדו מחשבון המשחק שלך",
     "tokenExpiredExtensionMissing": "תוקף החיבור פג — נדרש תוסף",
     "tokenExpiredExtensionMissingDescription": "תוקף החיבור שלך פג ותוסף הדפדפן אינו מותקן. התקן את התוסף תחילה, ולאחר מכן רענן את החיבור.",
-    "embarkErrorAlreadyLinkedDescription": "חשבון משחק זה כבר מקושר לחשבון ARCTracker אחר. עליך לבטל את הקישור מהחשבון האחר תחילה, או להשתמש בחשבון משחק שונה."
+    "embarkErrorAlreadyLinkedDescription": "חשבון משחק זה כבר מקושר לחשבון ARCTracker אחר. עליך לבטל את הקישור מהחשבון האחר תחילה, או להשתמש בחשבון משחק שונה.",
+    "consentSessionExpiry": "החיבור שלך תקף ל-24 שעות. יהיה עליך להתחבר מחדש לאחר מכן כדי להמשיך לסנכרן.",
+    "tokenExpiresIn": "פג בעוד {time}"
   },
   "HideoutSync": {
     "title": "סנכרן התקדמות מסתור",
@@ -2529,7 +2561,18 @@
     "responseFormat": "פורמט תגובה",
     "responseFormatDescription": "כל נקודות הקצה המאומתות מחזירות מעטפת JSON אחידה.",
     "successResponse": "תגובת הצלחה",
-    "title": "תיעוד API"
+    "title": "תיעוד API",
+    "endpointRounds": "היסטוריית הסבבים של המשתמש המסונכרנת עם Embark, כולל סטטיסטיקות (הריגות, נזק, תוצאה, שלל). כולל פריטי שלל כאשר מצורף צילום מסך.",
+    "paramRoundsLimit": "מספר סבבים מקסימלי להחזרה (ברירת מחדל: 50, מקסימום: 200).",
+    "paramRoundsOffset": "היסט דפדוף (Offset) (ברירת מחדל: 0).",
+    "paramRoundsOutcome": "סינון: extracted (חולץ), died (מת), unknown (לא ידוע).",
+    "paramRoundsMap": "סינון לפי מזהה מפה (slug): dam-battleground, the-spaceport, blue-gate, stella-montis, buried-city, riven-tides.",
+    "paramRoundsSeason": "סינון לפי מספר עונה (לדוגמה: 1, 2).",
+    "paramRoundsDateFrom": "תאריך התחלה כולל (פורמט ISO, לדוגמה: 2025-01-01).",
+    "paramRoundsDateTo": "תאריך סיום כולל (פורמט ISO, לדוגמה: 2025-12-31).",
+    "paramRoundsSort": "סדר מיון: newest (החדש ביותר - ברירת מחדל), oldest (הישן ביותר), value_desc (ערך יורד), value_asc (ערך עולה).",
+    "endpointBlueprints": "סטטוס למידת השרטוטים (Blueprints) של המשתמש עם חלוקה לקטגוריות.",
+    "paramBlueprintsFilter": "סינון: learned (נלמד), missing (חסר)."
   },
   "BlueprintSync": {
     "applySync": "החל סנכרון",
@@ -2559,7 +2602,8 @@
     }
   },
   "ItemTooltip": {
-    "onYourLists": "ברשימות שלך"
+    "onYourLists": "ברשימות שלך",
+    "tapToView": "הקש שוב לצפייה בפרטים"
   },
   "SeasonsPage": {
     "title": "עונות",
@@ -2629,6 +2673,199 @@
     "totalPhases": "שלבים",
     "turnIn": "מסירה",
     "uniqueItems": "פריטים ייחודיים",
-    "valueRequirement": "דרישת ערך"
+    "valueRequirement": "דרישת ערך",
+    "damageTiers": "שלבי נזק",
+    "singleObjective": "יעד בודד"
+  },
+  "Cipher": {
+    "alphaBadge": "נסיוני",
+    "clearChat": "נקה צ'אט",
+    "closeCipher": "סגור",
+    "emptyStateDescription": "המערכות מקוונות. שאל אותי על המחסן שלך, ביצועי הפשיטות, סיכויי הנפילה, או כל דבר הקשור לפני השטח. ייתכן שהתשובות לא יהיו מדויקות תמיד — נא לאמת מידע חשוב.",
+    "emptyStateTitle": "סייפר",
+    "inputPlaceholder": "שאל את סייפר...",
+    "openCipher": "פתח את סייפר",
+    "panelTitle": "סייפר",
+    "sendMessage": "שלח הודעה",
+    "tools": {
+      "checkStashForItem": {
+        "active": "סורק את המחסן...",
+        "done": "המחסן נסרק"
+      },
+      "createChart": {
+        "active": "מפיק ויזואליזציה...",
+        "done": "הויזואליזציה הופקה"
+      },
+      "fallbackActive": "משתמש ב-{toolName}...",
+      "fallbackDone": "נעשה שימוש ב-{toolName}",
+      "findBestFarmingMaps": {
+        "active": "מייעל נתיבי איסוף...",
+        "done": "נתיבי האיסוף עברו אופטימיזציה"
+      },
+      "getHideoutModules": {
+        "active": "בודק מודולים במסתור...",
+        "done": "המודולים במסתור נבדקו"
+      },
+      "getItem": {
+        "active": "שולף נתוני פריט...",
+        "done": "נתוני הפריט נשלפו"
+      },
+      "getItemDropLocations": {
+        "active": "מנתח מיקומי נפילה...",
+        "done": "מיקומי הנפילה נותחו"
+      },
+      "getItemDropStats": {
+        "active": "מנתח אחוזי נפילה...",
+        "done": "אחוזי הנפילה נותחו"
+      },
+      "getPlayerStats": {
+        "active": "שולף מדדי שחקן...",
+        "done": "מדדי השחקן נשלפו"
+      },
+      "getQuest": {
+        "active": "שולף נתוני משימה...",
+        "done": "נתוני המשימה נשלפו"
+      },
+      "getRaidHistory": {
+        "active": "שולף יומני פשיטה...",
+        "done": "יומני הפשיטה נשלפו"
+      },
+      "getRaidStats": {
+        "active": "מעבד נתוני פשיטה...",
+        "done": "נתוני הפשיטה עובדו"
+      },
+      "getUserHideoutProgress": {
+        "active": "בודק התקדמות במסתור...",
+        "done": "ההתקדמות במסתור נבדקה"
+      },
+      "getUserLoadout": {
+        "active": "שולף תצורת ציוד...",
+        "done": "הציוד נשלף"
+      },
+      "getUserNeededItems": {
+        "active": "מחשב פריטים נדרשים...",
+        "done": "הפריטים הנדרשים חושבו"
+      },
+      "getUserQuestProgress": {
+        "active": "בודק התקדמות משימה...",
+        "done": "התקדמות המשימה נבדקה"
+      },
+      "getUserStash": {
+        "active": "ניגש לרשומות המחסן...",
+        "done": "בוצעה גישה למחסן"
+      },
+      "getWeaponDamage": {
+        "active": "מנתח נזק נשק...",
+        "done": "נזק הנשק נותח"
+      },
+      "getWeaponKills": {
+        "active": "שולף נתוני נשק...",
+        "done": "נתוני הנשק נשלפו"
+      },
+      "searchItems": {
+        "active": "סורק את מאגר הפריטים...",
+        "done": "מאגר הפריטים נסרק"
+      },
+      "searchQuests": {
+        "active": "סורק רשומות משימות...",
+        "done": "רשומות המשימות נסרקו"
+      },
+      "getMapEvents": {
+        "active": "בודק אירועי מפה...",
+        "done": "אירועי מפה נבדקו"
+      },
+      "searchCraftableItems": {
+        "active": "מחפש מתכונים...",
+        "done": "חיפש מתכונים"
+      },
+      "searchSkillNodes": {
+        "active": "מחפש בעץ המיומנויות...",
+        "done": "חיפש בעץ המיומנויות"
+      },
+      "getSkillNode": {
+        "active": "טוען פרטי מיומנות...",
+        "done": "טען פרטי מיומנות"
+      },
+      "getProjects": {
+        "active": "טוען פרויקטים...",
+        "done": "טען פרויקטים"
+      },
+      "getUserLists": {
+        "active": "טוען את הרשימות שלך...",
+        "done": "טען את הרשימות שלך"
+      },
+      "getListItems": {
+        "active": "טוען פריטי רשימה...",
+        "done": "טען פריטי רשימה"
+      },
+      "addItemToList": {
+        "active": "מוסיף לרשימה...",
+        "denied": "בוטל",
+        "done": "נוסף לרשימה"
+      },
+      "removeItemFromList": {
+        "active": "מסיר מהרשימה...",
+        "denied": "בוטל",
+        "done": "הוסר מהרשימה"
+      },
+      "createList": {
+        "active": "יוצר רשימה...",
+        "denied": "בוטל",
+        "done": "רשימה נוצרה"
+      },
+      "deleteList": {
+        "active": "מוחק רשימה...",
+        "denied": "בוטל",
+        "done": "רשימה נמחקה"
+      },
+      "fallbackDenied": "{toolName} בוטל",
+      "getItemFarmingContext": {
+        "active": "מנתח הקשר השגת פריטים...",
+        "done": "ניתוח הקשר השגת פריטים הושלם"
+      }
+    },
+    "approval": {
+      "addItemToList": "הוסף את \"{itemName}\" ל-\"{listName}\"",
+      "approve": "אישור",
+      "createList": "צור רשימה \"{name}\"",
+      "deleteList": "מחק את הרשימה \"{listName}\"",
+      "deleteWarning": "פעולה זו תסיר את הרשימה ואת {count, plural, one {# הפריט} other {כל # הפריטים}} שבה.",
+      "deny": "דחייה",
+      "removeItemFromList": "הסר את \"{itemName}\" מ-\"{listName}\""
+    },
+    "feedback": {
+      "helpful": "תגובה מועילה",
+      "notHelpful": "תגובה לא מועילה"
+    },
+    "confirmation": {
+      "denied": "הפעולה בוטלה",
+      "error": "משהו השתבש",
+      "executing": "מבצע...",
+      "success": {
+        "addItemToList": "נוסף לרשימה",
+        "createList": "הרשימה נוצרה",
+        "deleteList": "הרשימה נמחקה",
+        "generic": "בוצע",
+        "removeItemFromList": "הוסר מהרשימה"
+      }
+    },
+    "privateBetaNotice": "בטא פרטית — לתורמים בלבד. נא לקיים את הדיון בערוץ התורמים."
+  },
+  "TradersPage": {
+    "itemsForSale": "פריטים למכירה",
+    "quests": "משימות",
+    "title": "סוחרים"
+  },
+  "TraderPage": {
+    "backToTraders": "חזרה לסוחרים",
+    "coins": "מטבעות",
+    "limit": "הגבלה",
+    "noQuests": "אין משימות",
+    "noShopItems": "אין פריטים למכירה",
+    "quests": "משימות",
+    "refresh": "רענון",
+    "shop": "חנות",
+    "traderNotFound": "הסוחר לא נמצא",
+    "traderNotFoundDesc": "הסוחר שאתה מחפש אינו קיים."
   }
 }

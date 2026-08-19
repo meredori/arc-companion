@@ -75,7 +75,8 @@
     "terms": "Termos de Serviço",
     "squads": "Esquadrões",
     "stash": "Depósito",
-    "seasons": "Temporadas"
+    "seasons": "Temporadas",
+    "traders": "Comerciantes"
   },
   "MapEvents": {
     "startsIn": "Começa em",
@@ -109,8 +110,10 @@
       "uncoveredCaches": "Esconderijos Descobertos",
       "launchTowerLoot": "Saque da Torre de Lançamento",
       "hiddenBunker": "Bunker Oculto",
+      "closeScrutiny": "Escrutínio minucioso",
       "none": "Nenhum",
       "birdCity": "Cidade dos Pássaros",
+      "beachcombing": "Beachcombing",
       "hurricane": "Furacão"
     }
   },
@@ -202,7 +205,12 @@
     "stashModeActive": "Contagens do estoque sincronizado",
     "lastSynced": "Sincronizado",
     "syncStash": "Sincronizar estoque",
-    "season3": "Temporada 3"
+    "season3": "Temporada 3",
+    "dealDamage": "Causar Dano às Máquinas ARC",
+    "completeObjective": "Completar Objetivo",
+    "skillPointReward": "Ponto de Habilidade",
+    "earnedDuringExpedition": "O progresso se acumula durante a janela de expedição. Cada nível concluído concede 1 ponto de habilidade para o seu próximo Raider.",
+    "season4": "Expedição 4"
   },
   "HideoutPage": {
     "level": "Nível",
@@ -584,7 +592,13 @@
     },
     "attachments": "Acessórios",
     "upgradePath": "Caminho de Aprimoramento",
-    "currentTier": "Atual"
+    "currentTier": "Atual",
+    "soldByTraders": "Vendido por Comerciantes",
+    "vendorCost": "Custo",
+    "vendorLimit": "Limite: {count}",
+    "vendorRefreshDaily": "Reabastece diariamente",
+    "vendorRefreshHourly": "Reabastece a cada hora",
+    "vendorRefreshHours": "Reabastece a cada {hours}h"
   },
   "ItemsListPage": {
     "searchPlaceholder": "Pesquisar itens...",
@@ -660,7 +674,9 @@
     "stashTitle": "Rastreador de Depósito - ARC Raiders",
     "stashDescription": "Sincronize e rastreie automaticamente o inventário do seu depósito, equipamento e moedas de ARC Raiders. Vincule sua conta de jogo para atualizações em tempo real.",
     "projectNotFoundTitle": "Projeto Não Encontrado - ARC Raiders",
-    "projectNotFoundDescription": "O projeto solicitado não pôde ser encontrado."
+    "projectNotFoundDescription": "O projeto solicitado não pôde ser encontrado.",
+    "tradersTitle": "Comerciantes - ARC Raiders | ARCTracker.io",
+    "tradersDescription": "Navegue por todos os comerciantes em ARC Raiders. Veja o inventário da loja e as missões associadas a cada comerciante."
   },
   "OverlayPage": {
     "pageTitle": "App Companheiro de Sobreposição",
@@ -793,7 +809,8 @@
     "theSpaceport": "Spaceport",
     "buriedCity": "Buried City",
     "theBlueGate": "The Blue Gate",
-    "stellaMontis": "Stella Montis"
+    "stellaMontis": "Stella Montis",
+    "rivenTides": "Marés Rasgadas"
   },
   "AppNames": {
     "overlay": "App de Sobreposição",
@@ -912,14 +929,21 @@
     "premiumActivatedDesc": "Obrigado por apoiar o ARCTracker! Sua assinatura premium agora está ativa.",
     "premiumBenefitsTitle": "Seus Benefícios Premium",
     "manageSubscriptionTitle": "Gerencie Sua Assinatura",
-    "manageSubscriptionDesc": "Você pode visualizar os detalhes da sua assinatura e gerenciar sua cobrança através da página de Configurações ou do portal de pagamento Tebex.",
+    "manageSubscriptionDesc": "Você pode visualizar os detalhes da sua assinatura e gerenciar sua cobrança através da página de Configurações ou do portal de pagamento.",
     "goToSettings": "Ir para Configurações",
     "tebexPaymentPortal": "Portal de Pagamento Tebex",
     "backToHome": "Voltar ao Início",
     "benefitUnlimitedPins": "Marcadores Privados e Rotas de Loot Ilimitados",
     "benefitUnlimitedPinsDesc": "Crie marcadores de mapa privados e rotas de loot ilimitados em qualquer mapa",
     "benefitAutoSync": "Sincronização Automática do Estoque",
-    "benefitAutoSyncDesc": "Sincroniza automaticamente seu estoque, equipamento e progresso do jogo a cada 30 minutos"
+    "benefitAutoSyncDesc": "Sincroniza automaticamente seu estoque, equipamento e progresso do jogo a cada 30 minutos",
+    "managedByPolar": "Assinatura gerenciada pela Polar",
+    "polarPaymentPortal": "Portal de Pagamentos da Polar",
+    "upgradeToYearly": "Atualizar para Anual",
+    "upgradeToYearlyDesc": "Mude para o faturamento anual e economize 44%. Você receberá crédito pelo tempo restante do seu plano mensal.",
+    "upgradeSuccess": "Atualizado para o plano anual com sucesso!",
+    "upgradeError": "Falha ao atualizar. Por favor, tente novamente.",
+    "upgradeSaving": "Economize {percent}%"
   },
   "Favorites": {
     "addToList": "Adicionar à Lista",
@@ -1035,7 +1059,9 @@
       "decentLoot": "Saque Decente",
       "sparseLoot": "Saque Escasso",
       "regions": "Regiões",
-      "landmarks": "Marcos"
+      "landmarks": "Marcos",
+      "hurricaneCache": "Esconderijo Hurricane",
+      "buriedCache": "Esconderijo Enterrado"
     },
     "questDetails": "Detalhes da Missão",
     "viewQuest": "Ver Missão",
@@ -2044,7 +2070,9 @@
     "supplyCallStation": "Estação de Chamada de Suprimentos",
     "trainExtraction": "Extração de Trem",
     "ventExtraction": "Extração por Ventilação",
-    "weaponCase": "Caixa de Armas"
+    "weaponCase": "Caixa de Armas",
+    "hurricaneCache": "Esconderijo Hurricane",
+    "buriedCache": "Esconderijo Enterrado"
   },
   "PrivatePinIcons": {
     "categories": {
@@ -2233,7 +2261,9 @@
       "sortUnsorted": "Não ordenado",
       "searchPlaceholder": "Pesquisar itens...",
       "sortRarity": "Ordenar por Raridade",
-      "sortName": "Ordenar por Nome"
+      "sortName": "Ordenar por Nome",
+      "tokenInvalidError": "Sua conexão com ARC Raiders não é mais válida. Por favor, reconecte sua conta.",
+      "reconnectAccount": "Reconectar Conta"
     },
     "currencies": {
       "cred": "Cred",
@@ -2347,7 +2377,9 @@
     "blueprintSyncDescription": "Sincronize diagramas aprendidos da sua conta do jogo",
     "tokenExpiredExtensionMissing": "Conexão Expirada — Extensão Necessária",
     "tokenExpiredExtensionMissingDescription": "Sua sessão expirou e a extensão do navegador não está instalada. Instale a extensão primeiro, depois atualize sua conexão.",
-    "embarkErrorAlreadyLinkedDescription": "Esta conta de jogo já está vinculada a uma conta ARCTracker diferente. Você deve desvinculá-la da outra conta primeiro, ou usar uma conta de jogo diferente."
+    "embarkErrorAlreadyLinkedDescription": "Esta conta de jogo já está vinculada a uma conta ARCTracker diferente. Você deve desvinculá-la da outra conta primeiro, ou usar uma conta de jogo diferente.",
+    "consentSessionExpiry": "Sua conexão é válida por 24 horas. Você precisará se reconectar após esse período para continuar a sincronização.",
+    "tokenExpiresIn": "Expira em {time}"
   },
   "HideoutSync": {
     "title": "Sincronizar Progresso do Esconderijo",
@@ -2528,7 +2560,18 @@
     "responseFormat": "Formato da Resposta",
     "responseFormatDescription": "Todos os endpoints autenticados retornam um envelope JSON consistente.",
     "successResponse": "Resposta de Sucesso",
-    "title": "Documentação da API"
+    "title": "Documentação da API",
+    "endpointRounds": "Histórico de partidas do usuário sincronizado com a Embark, com estatísticas (abates, dano, resultado, saque). Inclui itens saqueados quando uma captura de tela está anexada.",
+    "paramRoundsLimit": "Máximo de partidas para retornar (padrão: 50, máx: 200).",
+    "paramRoundsOffset": "Deslocamento da paginação (padrão: 0).",
+    "paramRoundsOutcome": "Filtro: extracted (extraído), died (morto), unknown (desconhecido).",
+    "paramRoundsMap": "Filtrar por slug do mapa: dam-battleground, the-spaceport, blue-gate, stella-montis, buried-city, riven-tides.",
+    "paramRoundsSeason": "Filtrar por número da temporada (ex: 1, 2).",
+    "paramRoundsDateFrom": "Data de início inclusiva (formato ISO, ex: 2025-01-01).",
+    "paramRoundsDateTo": "Data de término inclusiva (formato ISO, ex: 2025-12-31).",
+    "paramRoundsSort": "Ordem de classificação: newest (mais recente, padrão), oldest (mais antigo), value_desc, value_asc.",
+    "endpointBlueprints": "Status de aprendizado de projetos do usuário com detalhamento por categoria.",
+    "paramBlueprintsFilter": "Filtro: learned (aprendido), missing (faltando)."
   },
   "BlueprintSync": {
     "applySync": "Aplicar Sincronização",
@@ -2558,7 +2601,8 @@
     }
   },
   "ItemTooltip": {
-    "onYourLists": "Nas suas listas"
+    "onYourLists": "Nas suas listas",
+    "tapToView": "Toque novamente para ver detalhes"
   },
   "SeasonsPage": {
     "title": "Temporadas",
@@ -2628,6 +2672,199 @@
     "totalPhases": "Fases",
     "turnIn": "Entregar",
     "uniqueItems": "Itens Únicos",
-    "valueRequirement": "Requisito de Valor"
+    "valueRequirement": "Requisito de Valor",
+    "damageTiers": "Níveis de dano",
+    "singleObjective": "Objetivo único"
+  },
+  "Cipher": {
+    "alphaBadge": "Experimental",
+    "clearChat": "Limpar chat",
+    "closeCipher": "Fechar",
+    "emptyStateDescription": "Sistemas online. Pergunte-me sobre o seu depósito, desempenho nas incursões, taxas de drop ou qualquer coisa sobre a superfície. As respostas podem nem sempre ser precisas — por favor, verifique informações importantes.",
+    "emptyStateTitle": "Cipher",
+    "inputPlaceholder": "Perguntar ao Cipher...",
+    "openCipher": "Abrir Cipher",
+    "panelTitle": "Cipher",
+    "sendMessage": "Enviar mensagem",
+    "tools": {
+      "checkStashForItem": {
+        "active": "Escaneando estoque...",
+        "done": "Estoque escaneado"
+      },
+      "createChart": {
+        "active": "Gerando visualização...",
+        "done": "Visualização gerada"
+      },
+      "fallbackActive": "Usando {toolName}...",
+      "fallbackDone": "{toolName} utilizado",
+      "findBestFarmingMaps": {
+        "active": "Otimizando rotas de farm...",
+        "done": "Rotas de farm otimizadas"
+      },
+      "getHideoutModules": {
+        "active": "Verificando módulos do refúgio...",
+        "done": "Módulos do refúgio verificados"
+      },
+      "getItem": {
+        "active": "Obtendo dados do item...",
+        "done": "Dados do item obtidos"
+      },
+      "getItemDropLocations": {
+        "active": "Analisando locais de drop...",
+        "done": "Locais de drop analisados"
+      },
+      "getItemDropStats": {
+        "active": "Analisando taxas de drop...",
+        "done": "Taxas de drop analisadas"
+      },
+      "getPlayerStats": {
+        "active": "Obtendo métricas do jogador...",
+        "done": "Métricas do jogador obtidas"
+      },
+      "getQuest": {
+        "active": "Obtendo dados da missão...",
+        "done": "Dados da missão obtidos"
+      },
+      "getRaidHistory": {
+        "active": "Obtendo registros de raid...",
+        "done": "Registros de raid obtidos"
+      },
+      "getRaidStats": {
+        "active": "Processando dados da raid...",
+        "done": "Dados da raid processados"
+      },
+      "getUserHideoutProgress": {
+        "active": "Verificando progresso do refúgio...",
+        "done": "Progresso do refúgio verificado"
+      },
+      "getUserLoadout": {
+        "active": "Obtendo configuração de loadout...",
+        "done": "Loadout obtido"
+      },
+      "getUserNeededItems": {
+        "active": "Calculando itens necessários...",
+        "done": "Itens necessários calculados"
+      },
+      "getUserQuestProgress": {
+        "active": "Verificando progresso da missão...",
+        "done": "Progresso da missão verificado"
+      },
+      "getUserStash": {
+        "active": "Acessando registros do estoque...",
+        "done": "Estoque acessado"
+      },
+      "getWeaponDamage": {
+        "active": "Analisando dano da arma...",
+        "done": "Dano da arma analisado"
+      },
+      "getWeaponKills": {
+        "active": "Obtendo dados da arma...",
+        "done": "Dados da arma obtidos"
+      },
+      "searchItems": {
+        "active": "Escaneando banco de dados de itens...",
+        "done": "Banco de dados de itens escaneado"
+      },
+      "searchQuests": {
+        "active": "Escaneando registros de missões...",
+        "done": "Registros de missões escaneados"
+      },
+      "getMapEvents": {
+        "active": "Verificando eventos do mapa...",
+        "done": "Eventos do mapa verificados"
+      },
+      "searchCraftableItems": {
+        "active": "Pesquisando receitas...",
+        "done": "Receitas pesquisadas"
+      },
+      "searchSkillNodes": {
+        "active": "Pesquisando árvore de habilidades...",
+        "done": "Árvore de habilidades pesquisada"
+      },
+      "getSkillNode": {
+        "active": "Carregando detalhes da habilidade...",
+        "done": "Detalhes da habilidade carregados"
+      },
+      "getProjects": {
+        "active": "Carregando projetos...",
+        "done": "Projetos carregados"
+      },
+      "getUserLists": {
+        "active": "Carregando suas listas...",
+        "done": "Suas listas carregadas"
+      },
+      "getListItems": {
+        "active": "Carregando itens da lista...",
+        "done": "Itens da lista carregados"
+      },
+      "addItemToList": {
+        "active": "Adicionando à lista...",
+        "denied": "Cancelado",
+        "done": "Adicionado à lista"
+      },
+      "removeItemFromList": {
+        "active": "Removendo da lista...",
+        "denied": "Cancelado",
+        "done": "Removido da lista"
+      },
+      "createList": {
+        "active": "Criando lista...",
+        "denied": "Cancelado",
+        "done": "Lista criada"
+      },
+      "deleteList": {
+        "active": "Excluindo lista...",
+        "denied": "Cancelado",
+        "done": "Lista excluída"
+      },
+      "fallbackDenied": "{toolName} cancelado",
+      "getItemFarmingContext": {
+        "active": "Analisando contexto de farming...",
+        "done": "Contexto de farming analisado"
+      }
+    },
+    "approval": {
+      "addItemToList": "Adicionar \"{itemName}\" à \"{listName}\"",
+      "approve": "Aprovar",
+      "createList": "Criar lista \"{name}\"",
+      "deleteList": "Excluir lista \"{listName}\"",
+      "deleteWarning": "Isto removerá a lista e {count, plural, one {# item} other {# itens}} nela.",
+      "deny": "Recusar",
+      "removeItemFromList": "Remover \"{itemName}\" de \"{listName}\""
+    },
+    "feedback": {
+      "helpful": "Resposta útil",
+      "notHelpful": "Resposta não útil"
+    },
+    "confirmation": {
+      "denied": "Ação cancelada",
+      "error": "Algo deu errado",
+      "executing": "Executando...",
+      "success": {
+        "addItemToList": "Adicionado à lista",
+        "createList": "Lista criada",
+        "deleteList": "Lista excluída",
+        "generic": "Concluído",
+        "removeItemFromList": "Removido da lista"
+      }
+    },
+    "privateBetaNotice": "Beta privada — apenas para contribuidores. Por favor, mantenham a discussão no canal de contribuidores."
+  },
+  "TradersPage": {
+    "itemsForSale": "itens à venda",
+    "quests": "missões",
+    "title": "Comerciantes"
+  },
+  "TraderPage": {
+    "backToTraders": "Voltar aos Comerciantes",
+    "coins": "Moedas",
+    "limit": "Limite",
+    "noQuests": "Sem missões",
+    "noShopItems": "Sem itens à venda",
+    "quests": "Missões",
+    "refresh": "atualização",
+    "shop": "Loja",
+    "traderNotFound": "Comerciante não encontrado",
+    "traderNotFoundDesc": "O comerciante que você procura não existe."
   }
 }

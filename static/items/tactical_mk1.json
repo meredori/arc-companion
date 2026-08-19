@@ -19,7 +19,7 @@
     "sr": "Taktički Mk. 1",
     "tr": "Taktiksel Mod. 1",
     "uk": "Тактичний Mk. 1",
-    "zh-CN": "战术型 Mk. 1",
+    "zh-CN": "战术 Mk. 1",
     "zh-TW": "戰術型 Mk. 1"
   },
   "description": {
@@ -133,8 +133,9 @@
   "salvagesInto": {
     "plastic_parts": 3
   },
-  "imageFilename": "https://cdn.arctracker.io/items/tactical_i.png",
-  "updatedAt": "02/24/2026",
+  "imageFilename": "https://cdn.arctracker.io/items/v2/tactical_mk1.png",
+  "updatedAt": "03/17/2026",
+  "addedIn": "base",
   "repairCost": {
     "plastic_parts": 3,
     "rubber_parts": 3
