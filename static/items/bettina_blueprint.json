@@ -9,7 +9,7 @@
     "he": "שרטוט בטינה",
     "hr": "Nacrt Bettina",
     "it": "Progetto Bettina",
-    "ja": "ベッティーナ設計図",
+    "ja": "ベティーナ設計図",
     "ko-KR": "베티나 설계도",
     "no": "Bettina-tegning",
     "pl": "Projekt Bettina",
@@ -49,7 +49,7 @@
   "value": 5000,
   "weightKg": 0,
   "stackSize": 1,
-  "imageFilename": "https://cdn.arctracker.io/items/bettina_blueprint.png",
+  "imageFilename": "https://cdn.arctracker.io/items/v2/bettina_blueprint.png",
   "updatedAt": "12/07/2025",
   "addedIn": "base"
 }

@@ -9,7 +9,7 @@
     "he": "ביזה Mk. 3 (שומר)",
     "hr": "Pljačkanje Mk. 3 (Čuvar)",
     "it": "Saccheggio Mk. 3 (Custode)",
-    "ja": "略奪MK3 (守護者)",
+    "ja": "略奪MK3 (セーフキーパー)",
     "ko-KR": "노획 마크 3 (수호자)",
     "no": "Plyndring Mk. 3 (Vokter)",
     "pl": "Grabież Mk. 3 (Strażnik)",
@@ -19,7 +19,7 @@
     "sr": "Pljačkanje Mk. 3 (Čuvar)",
     "tr": "Yağmalama Mod.3 (Koruyucu)",
     "uk": "Мародерство Mk. 3 (Охоронець)",
-    "zh-CN": "掠夺 Mk. 3 (守护者)",
+    "zh-CN": "搜刮 Mk. 3 (守护者)",
     "zh-TW": "掠奪 Mk. 3 (守護者)"
   },
   "description": {
@@ -134,6 +134,7 @@
   "salvagesInto": {
     "electrical_components": 2
   },
-  "imageFilename": "https://cdn.arctracker.io/items/looting_mk3_safekeeper.png",
-  "updatedAt": "02/24/2026"
+  "imageFilename": "https://cdn.arctracker.io/items/v2/looting_mk3_safekeeper.png",
+  "updatedAt": "03/17/2026",
+  "addedIn": "base"
 }

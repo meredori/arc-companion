@@ -9,7 +9,7 @@
     "he": "טקטי Mk. 3 (החייאה)",
     "hr": "Taktički Mk. 3 (Oživljavanje)",
     "it": "Tattico Mk. 3 (Rianimazione)",
-    "ja": "戦術MK3 (蘇生)",
+    "ja": "戦術MK3 (リバイバル)",
     "ko-KR": "전술 마크 3 (소생)",
     "no": "Taktisk Mk. 3 (Gjenopplivning)",
     "pl": "Taktyczny Mk. 3 (Wskrzeszenie)",
@@ -19,7 +19,7 @@
     "sr": "Taktički Mk. 3 (Oživljavanje)",
     "tr": "Taktiksel Mod. 3 (Diriltici)",
     "uk": "Тактичний Mk. 3 (Відродження)",
-    "zh-CN": "战术型 Mk. 3 (复活)",
+    "zh-CN": "战术型 Mk. 3 (复苏)",
     "zh-TW": "戰術型 Mk. 3 (復活)"
   },
   "description": {
@@ -134,6 +134,7 @@
   "salvagesInto": {
     "electrical_components": 2
   },
-  "imageFilename": "https://cdn.arctracker.io/items/tactical_mk3_revival.png",
-  "updatedAt": "02/24/2026"
+  "imageFilename": "https://cdn.arctracker.io/items/v2/tactical_mk3_revival.png",
+  "updatedAt": "03/17/2026",
+  "addedIn": "base"
 }

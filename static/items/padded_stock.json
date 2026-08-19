@@ -19,7 +19,7 @@
     "sr": "Podstavljeno kundak",
     "tr": "Yastıklı Dipçik",
     "uk": "М'який приклад",
-    "zh-CN": "软垫枪托",
+    "zh-CN": "减震枪托",
     "zh-TW": "軟墊槍托"
   },
   "description": {
@@ -54,6 +54,7 @@
     "Arpeggio",
     "Bettina",
     "Bobcat",
+    "Canto",
     "Ferro",
     "Hullcracker",
     "Il Toro",
@@ -219,8 +220,8 @@
   "salvagesInto": {
     "mechanical_components": 2
   },
-  "imageFilename": "https://cdn.arctracker.io/items/padded_stock.png",
-  "updatedAt": "02/24/2026",
+  "imageFilename": "https://cdn.arctracker.io/items/v2/padded_stock.png",
+  "updatedAt": "03/22/2026",
   "addedIn": "base",
   "vendors": [
     {
@@ -229,6 +230,7 @@
       },
       "limit": 1,
       "refreshSeconds": 86400,
+      "requiredLevel": 20,
       "trader": "Tian Wen"
     }
   ]
